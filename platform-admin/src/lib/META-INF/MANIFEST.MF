@@ -16,9 +16,9 @@ Class-Path: batik-svggen-1.7.jar spring-boot-starter-jdbc-2.1.2.RELEASE.
  1.4.0.jar byte-buddy-1.9.7.jar curvesapi-1.04.jar commons-email-1.4.jar
   mybatis-plus-boot-starter-3.1.0.jar mysql-connector-java-8.0.13.jar js
  qlparser-1.4.jar jackson-core-2.9.8.jar logstash-logback-encoder-5.1.ja
- r mchange-commons-java-0.2.11.jar batik-ext-1.7.jar batik-util-1.7.jar 
+ r mchange-commons-java-0.2.11.jar batik-ext-1.7.jar batik-util-1.7.jar
  mybatis-spring-2.0.0.jar javax.annotation-api-1.3.2.jar batik-codec-1.7
- .jar velocity-tools-2.0.jar shiro-crypto-hash-1.4.0.jar jjwt-0.9.1.jar 
+ .jar velocity-tools-2.0.jar shiro-crypto-hash-1.4.0.jar jjwt-0.9.1.jar
  activiti-dmn-api-6.0.0.jar client-sdk.example-1.0.0-SNAPSHOT.jar fastjs
  on-1.2.6.jar guava-20.0.jar spring-expression-5.1.4.RELEASE.jar shiro-l
  ang-1.4.0.jar weixin-java-common-3.4.0.jar shiro-cache-1.4.0.jar shiro-
@@ -32,7 +32,7 @@ Class-Path: batik-svggen-1.7.jar spring-boot-starter-jdbc-2.1.2.RELEASE.
  ync-http-client-1.9.32.jar commons-pool2-2.6.0.jar activiti-form-model-
  6.0.0.jar lombok-1.18.4.jar commons-compress-1.18.jar snakeyaml-1.23.ja
  r commons-collections-3.2.1.jar juel-api-2.2.7.jar log4j-to-slf4j-2.11.
- 1.jar mybatis-plus-3.1.0.jar spring-boot-starter-web-2.1.2.RELEASE.jar 
+ 1.jar mybatis-plus-3.1.0.jar spring-boot-starter-web-2.1.2.RELEASE.jar
  batik-js-1.7.jar client-sdk.core-1.0.0-SNAPSHOT.jar commons-digester-1.
  8.jar kaptcha-0.0.9.jar spring-context-support-5.1.4.RELEASE.jar juel-s
  pi-2.2.7.jar batik-xml-1.7.jar spring-boot-2.1.2.RELEASE.jar commons-po
@@ -69,4 +69,3 @@ Class-Path: batik-svggen-1.7.jar spring-boot-starter-jdbc-2.1.2.RELEASE.
  ar shiro-crypto-core-1.4.0.jar velocity-1.7.jar mybatis-plus-annotation
  -3.1.0.jar client-sdk.common-1.0.0-SNAPSHOT.jar spring-plugin-core-1.2.
  0.RELEASE.jar
-
