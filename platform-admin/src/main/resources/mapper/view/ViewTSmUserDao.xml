@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.modules.view.dao.ViewTSmUserDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.USERID,
+        T.USER_NAME,
+        T.REAL_NAME,
+        T.SEX,
+        T.ORG_NO,
+        T.STATUS,
+        T.ROLEIDLIST,
+        T.CREATE_TIME,
+        T.CREATE_STATE
+        FROM view_t_sm_reusr T
+        WHERE 1=1
+        <if test="params.startDate != null and params.startDate.trim() != ''">
+            AND T.CREATE_TIME>='${params.startDate}'
+        </if>
+        <if test="params.endDate != null and params.endDate.trim() != ''">
+            AND T.CREATE_TIME &lt;'${params.endDate}'
+        </if>
+    </sql>
+
+    <select id="selectViewTSmUserPage" resultType="com.platform.modules.view.entity.ViewTSmUserEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.platform.modules.view.entity.ViewTSmUserEntity">
+        <include refid="selectSql"/>
+    </select>
+</mapper>

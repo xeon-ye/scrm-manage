@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.modules.qkj.dao.QkjRMaterialDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.FID,
+        T.FNAME_L2,
+        T.FNUMBER,
+        T.FMODEL,
+        T.FBASEUNIT,
+        T.groupid
+        FROM QKJ_R_MATERIAL T
+        WHERE 1=1
+        <if test="params.fnameL2 != null and params.fnameL2.trim() != ''">
+            AND T.FNAME_L2 LIKE '%${params.fnameL2}%'
+        </if>
+    </sql>
+
+    <select id="selectQkjRMaterialPage" resultType="com.platform.modules.qkj.entity.QkjRMaterialEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.platform.modules.qkj.entity.QkjRMaterialEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <update id="truncateTable">
+        truncate table qkj_r_material
+    </update>
+</mapper>

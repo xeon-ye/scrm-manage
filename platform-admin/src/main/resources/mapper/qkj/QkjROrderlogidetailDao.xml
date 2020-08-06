@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.modules.qkj.dao.QkjROrderlogidetailDao">
+
+    <sql id="selectSql">
+        SELECT
+        main.id id,main.orderid,main.loginame,
+        main.loginum,main.logiphone,main.logidate,'0' parentId,
+        null matername,null num
+        from qkj_r_orderlogi main
+        where 1=1
+        <if test="params.orderid != null and params.orderid.trim() != ''">
+            AND main.orderid='${params.orderid}'
+        </if>
+        union ALL
+        SELECT detail.id id,b.orderid,null loginame,
+        null loginum,null logiphone,null logidate,detail.logiid parentId,
+        m.FName_L2 matername,detail.num
+        from qkj_r_orderlogidetail detail
+        join qkj_r_orderlogi b on (detail.logiid=b.id)
+        join qkj_r_sonorder s on (detail.materid=s.id)
+        join qkj_r_material m on (s.materielid=m.fid)
+        where 1=1
+        <if test="params.orderid != null and params.orderid.trim() != ''">
+            AND b.orderid='${params.orderid}'
+        </if>
+    </sql>
+
+    <sql id="selectPrintSql">
+        SELECT mm.Fnumber fnum,mm.FName_L2 matername,mm.Fmodel,d.num,s.num totle,mm.FBaseUnit fbaseunit,
+        case when d.bancle>0 then d.bancle
+        else 0 end as bancle
+
+        from qkj_r_orderlogidetail d
+        join qkj_r_orderlogi m on (d.logiid=m.id)
+        join qkj_r_sonorder s on (d.materid=s.id)
+        join qkj_r_material mm on (s.materielid=mm.fid)
+        where 1=1
+        <if test="params.logiid != null and params.logiid.trim() != ''">
+            AND d.logiid='${params.logiid}'
+        </if>
+
+    </sql>
+
+    <select id="selectQkjROrderlogidetailPage" resultType="com.platform.modules.qkj.entity.QkjROrderlogidetailEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.platform.modules.qkj.entity.QkjROrderlogidetailEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryPrintAll" resultType="com.platform.modules.qkj.entity.QkjROrderlogidetailEntity">
+        <include refid="selectPrintSql"/>
+    </select>
+</mapper>
