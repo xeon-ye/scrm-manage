@@ -10,21 +10,27 @@
  */
 package com.platform.modules.quartz.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.platform.common.annotation.SysLog;
+import com.platform.common.utils.DateUtils;
+import com.platform.common.utils.StringUtils;
+import com.platform.modules.qkjvip.entity.MemberBasicEntity;
+import com.platform.modules.qkjvip.service.MemberBasicService;
+import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.util.HttpClient;
+import com.platform.modules.util.MD5Utils;
+import com.platform.modules.util.Vars;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.platform.modules.util.MD5Sign.getMD5Sign;
 
 /**
  * QrtzMemberController
@@ -36,7 +42,9 @@ import static com.platform.modules.util.MD5Sign.getMD5Sign;
 @RestController
 @Component("qrtzMember")
 @Slf4j
-public class QrtzMemberController {
+public class QrtzMemberController extends AbstractController {
+    @Autowired
+    private MemberBasicService memberBasicService;
 
     /**
      * 会员定时任务
@@ -44,26 +52,73 @@ public class QrtzMemberController {
      */
     @SysLog("会员读取定时任务")
     @RequestMapping("/getMembers")
-    public void getMembers() throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    @Test
+    public void getMembers(String params) throws IOException, NoSuchAlgorithmException {
         String url = "http://open.api.zhongjiu.cn/DashboardOpenAPI/ShopMeberDataSync";
-        SimpleDateFormat sdf = new SimpleDateFormat( "yyyyMMddHHmmss" );
-        String nowTime = sdf.format(new Date());
-        List<NameValuePair> list = new ArrayList<>();
-        list.add(new BasicNameValuePair("starttime","2020-01-02 00:00:00"));
-        list.add(new BasicNameValuePair("endtime","2020-03-02 00:00:00"));
-        list.add(new BasicNameValuePair("timetype","1"));
-        list.add(new BasicNameValuePair("timestamp", nowTime));
-        list.add(new BasicNameValuePair("app_key","open100010fb1n94ev9"));
+        String timeStamp = DateUtils.getTimeStamp();  //时间戳
         SortedMap<String, String> map = new TreeMap<>();
-        map.put("starttime", "2020-01-02 00:00:00");
-        map.put("endtime", "2020-03-02 00:00:00");
-        map.put("timetype", "1");
-        map.put("timestamp", nowTime);
-        map.put("app_key", "open100010fb1n94ev9");
-        map.put("sign", "00000");
-        String sign = getMD5Sign(map);
-        list.add(new BasicNameValuePair("sign",sign));
-        String resultPost = HttpClient.doPost(url,list);
-        System.out.println("post请求" + resultPost);
+        String urlParam = "";
+        String sign = "";
+        String resultPost = "";  //返回结果
+        List<MemberBasicEntity> mbList = new ArrayList<MemberBasicEntity>();
+        if (!StringUtils.isEmpty(params)) {   //当定时任务有参数时，按照参数指定日期同步数据
+            String[] paramArr = new String[params.split(",").length];
+            paramArr = params.split(",");
+            map.clear();
+            map.put("starttime", paramArr[0].trim());
+            map.put("endtime", paramArr[1].trim());
+            map.put("timetype", paramArr[2].trim());
+            map.put("timestamp", timeStamp);
+            map.put("app_key", Vars.APP_KEY);
+            sign = MD5Utils.getMD5Sign(map);
+            urlParam = "?starttime=" + paramArr[0].trim()
+                    + "&endtime=" + paramArr[1].trim()
+                    + "&timetype=" + paramArr[2].trim()
+                    + "&timestamp=" + timeStamp
+                    + "&app_key=" + Vars.APP_KEY
+                    + "&sign=" + sign;
+            resultPost = HttpClient.doPost(url + urlParam);
+            //TODO
+            //DateUtils.getTimeStamp()==0(只新注册) DateUtils.getTimeStamp()==1(更新)
+            mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
+            memberBasicService.saveOrUpdate(mbList);
+        } else {
+            Date nowDate = new Date();
+            String endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
+            String starttime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -30), "yyyy-MM-dd HH:mm:ss"); //前半小时时间
+            map.clear();
+            map.put("starttime", starttime);
+            map.put("endtime", endtime);
+            map.put("timetype", "0");
+            map.put("timestamp", timeStamp);
+            map.put("app_key", Vars.APP_KEY);
+            sign = MD5Utils.getMD5Sign(map);
+            urlParam = "?starttime=" + starttime
+                    + "&endtime=" + endtime
+                    + "&timetype=0"
+                    + "&timestamp=" + timeStamp
+                    + "&app_key=" + Vars.APP_KEY
+                    + "&sign=" + sign;
+            resultPost = HttpClient.doPost(url + urlParam);
+            mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
+            memberBasicService.saveOrUpdate(mbList);
+            map.clear();
+            map.put("starttime", starttime);
+            map.put("endtime", endtime);
+            map.put("timetype", "1");
+            map.put("timestamp", timeStamp);
+            map.put("app_key", Vars.APP_KEY);
+            sign = MD5Utils.getMD5Sign(map);
+            urlParam = "?starttime=" + starttime
+                    + "&endtime=" + endtime
+                    + "&timetype=1"
+                    + "&timestamp=" + timeStamp
+                    + "&app_key=" + Vars.APP_KEY
+                    + "&sign=" + sign;
+            resultPost = HttpClient.doPost(url + urlParam);
+            mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
+            memberBasicService.saveOrUpdate(mbList);
+            //TODO 会员更新
+        }
     }
 }

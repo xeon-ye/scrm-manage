@@ -20,7 +20,7 @@ public class DingMsg {
         //发送消息
         MessageBody.LinkBody linkBody = new MessageBody.LinkBody();
         linkBody.setPicUrl("@lALOACZwe2Rk");
-        linkBody.setTitle("供应商管理");
+        linkBody.setTitle("SCRM系统管理");
         linkBody.setText(msg);
         // 发送微应用消息
         String toUsers = user;

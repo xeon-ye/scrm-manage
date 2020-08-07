@@ -174,4 +174,15 @@ public class DateUtils {
         DateTime dateTime = new DateTime(date);
         return dateTime.plusYears(years).toDate();
     }
+
+    /**
+     * 获取时间戳
+     * @return
+     */
+    public static String getTimeStamp() {
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String str = sdf.format(now);
+        return str;
+    }
 }
