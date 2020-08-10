@@ -44,4 +44,18 @@ public interface MemberBasicDao extends BaseMapper<MemberBasicEntity> {
      * @return List
      */
     List<MemberBasicEntity> selectMemberList(IPage page, @Param("params") Map<String, Object> params);
+    /**
+     * 批量插入更新
+     *
+     * @param mbList mbList
+     * @return int
+     */
+    void saveOrUpdateBatch(List<MemberBasicEntity> mbList);
+    /**
+     * 批量更新
+     *
+     * @param mbList mbList
+     * @return int
+     */
+    void updateBatchByMobile(List<MemberBasicEntity> mbList);
 }

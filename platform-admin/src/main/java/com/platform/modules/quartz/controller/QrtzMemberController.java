@@ -61,7 +61,7 @@ public class QrtzMemberController extends AbstractController {
         String sign = "";
         String resultPost = "";  //返回结果
         List<MemberBasicEntity> mbList = new ArrayList<MemberBasicEntity>();
-        if (!StringUtils.isEmpty(params)) {   //当定时任务有参数时，按照参数指定日期同步数据
+        if (!StringUtils.isEmpty(params) && params.split(",").length == 3) {   //当定时任务有参数时，按照参数指定日期同步数据
             String[] paramArr = new String[params.split(",").length];
             paramArr = params.split(",");
             map.clear();
@@ -78,10 +78,12 @@ public class QrtzMemberController extends AbstractController {
                     + "&app_key=" + Vars.APP_KEY
                     + "&sign=" + sign;
             resultPost = HttpClient.doPost(url + urlParam);
-            //TODO
-            //DateUtils.getTimeStamp()==0(只新注册) DateUtils.getTimeStamp()==1(更新)
             mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
-            memberBasicService.saveOrUpdate(mbList);
+            if ("0".equals(paramArr[2].trim())) {  //注册
+                List<MemberBasicEntity> existsList = new ArrayList<MemberBasicEntity>();
+                existsList = memberBasicService.
+            }
+            memberBasicService.saveBatch(mbList);
         } else {
             Date nowDate = new Date();
             String endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
@@ -101,7 +103,7 @@ public class QrtzMemberController extends AbstractController {
                     + "&sign=" + sign;
             resultPost = HttpClient.doPost(url + urlParam);
             mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
-            memberBasicService.saveOrUpdate(mbList);
+            memberBasicService.saveOrUpdate(mbList);   //此时间段注册的会员
             map.clear();
             map.put("starttime", starttime);
             map.put("endtime", endtime);
@@ -117,8 +119,7 @@ public class QrtzMemberController extends AbstractController {
                     + "&sign=" + sign;
             resultPost = HttpClient.doPost(url + urlParam);
             mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
-            memberBasicService.saveOrUpdate(mbList);
-            //TODO 会员更新
+            memberBasicService.updateBatchByMobile(mbList);  //此时间段更新的会员
         }
     }
 }

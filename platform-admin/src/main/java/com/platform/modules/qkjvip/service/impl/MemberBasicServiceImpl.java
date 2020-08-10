@@ -16,7 +16,9 @@ import com.platform.modules.qkjvip.dao.MemberDao;
 import com.platform.modules.qkjvip.entity.MemberBasicEntity;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.service.MemberBasicService;
+import com.platform.modules.sys.entity.SysUserEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,7 +31,14 @@ import java.util.List;
 @Service("memberBasicService")
 public class MemberBasicServiceImpl extends ServiceImpl<MemberBasicDao, MemberBasicEntity> implements MemberBasicService {
     @Override
-    public void saveOrUpdate(List<MemberBasicEntity> mbList) {
+    @Transactional(rollbackFor = Exception.class)
+    public void saveBatch(List<MemberBasicEntity> mbList) {
         this.saveBatch(mbList);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateBatchByMobile(List<MemberBasicEntity> mbList) {
+        baseMapper.updateBatchByMobile(mbList);
     }
 }
