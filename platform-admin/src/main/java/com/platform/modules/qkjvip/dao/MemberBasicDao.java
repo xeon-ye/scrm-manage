@@ -37,25 +37,18 @@ public interface MemberBasicDao extends BaseMapper<MemberBasicEntity> {
     List<MemberBasicEntity> queryAll(@Param("params") Map<String, Object> params);
 
     /**
-     * 自定义分页查询
+     * 查询所有列表
      *
-     * @param page   分页参数
-     * @param params 查询参数
+     * @param mbList 查询参数
      * @return List
      */
-    List<MemberBasicEntity> selectMemberList(IPage page, @Param("params") Map<String, Object> params);
-    /**
-     * 批量插入更新
-     *
-     * @param mbList mbList
-     * @return int
-     */
-    void saveOrUpdateBatch(List<MemberBasicEntity> mbList);
+    List<MemberBasicEntity> queryList(@Param("mbList") List<MemberBasicEntity> mbList);
+
     /**
      * 批量更新
      *
      * @param mbList mbList
      * @return int
      */
-    void updateBatchByMobile(List<MemberBasicEntity> mbList);
+    void updateBatchByCondition(List<MemberBasicEntity> mbList);
 }

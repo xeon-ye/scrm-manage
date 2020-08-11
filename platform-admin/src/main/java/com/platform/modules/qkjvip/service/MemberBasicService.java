@@ -25,6 +25,7 @@ import java.util.Map;
  * @date 2020/8/7 15:48
  */
 public interface MemberBasicService extends IService<MemberBasicEntity> {
+
     /**
      * 查询所有
      *
@@ -32,17 +33,26 @@ public interface MemberBasicService extends IService<MemberBasicEntity> {
      * @return List
      */
     List<MemberBasicEntity> queryAll(Map<String, Object> params);
+
     /**
-     * saveBatch
+     * 查询所有
      *
-     * @param mbList mbList
+     * @param mbList 查询参数
+     * @return List
      */
-    void saveBatch(List<MemberBasicEntity> mbList);
+    List<MemberBasicEntity> queryList(List<MemberBasicEntity> mbList);
+
+    /**
+     * 插入会员信息
+     *
+     * @param mbList 用户
+     */
+    void saveOrUpdate(List<MemberBasicEntity> mbList);
 
     /**
      * 批量修改会员
      *
      * @param mbList mbList
      */
-    void updateBatchByMobile(List<MemberBasicEntity> mbList);
+    void updateBatchByCondition(List<MemberBasicEntity> mbList);
 }

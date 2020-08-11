@@ -80,10 +80,21 @@ public class QrtzMemberController extends AbstractController {
             resultPost = HttpClient.doPost(url + urlParam);
             mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
             if ("0".equals(paramArr[2].trim())) {  //注册
-                List<MemberBasicEntity> existsList = new ArrayList<MemberBasicEntity>();
-                existsList = memberBasicService.
+                List<MemberBasicEntity> fromDbList = new ArrayList<MemberBasicEntity>();
+                if (mbList.size() > 0) {
+                    fromDbList = memberBasicService.queryList(mbList);
+                    for(MemberBasicEntity mbn : mbList) {
+                        for(MemberBasicEntity dbmb : fromDbList) {
+                            if (mbn.getCellphone() != null && mbn.getCellphone().equals(dbmb.getCellphone()) && mbn.getShopname() != null && mbn.getShopname().equals(dbmb.getShopname())) {
+                                continue;
+                            }
+                        }
+                        memberBasicService.saveOrUpdate(mbn);
+                    }
+                }
+            } else if ("1".equals(paramArr[2].trim())) {
+                memberBasicService.updateBatchByCondition(mbList);
             }
-            memberBasicService.saveBatch(mbList);
         } else {
             Date nowDate = new Date();
             String endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
@@ -103,7 +114,12 @@ public class QrtzMemberController extends AbstractController {
                     + "&sign=" + sign;
             resultPost = HttpClient.doPost(url + urlParam);
             mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
-            memberBasicService.saveOrUpdate(mbList);   //此时间段注册的会员
+//            memberBasicService.saveOrUpdate(mbList);   //此时间段注册的会员
+            if (mbList.size() > 0) {
+                for(MemberBasicEntity mbn : mbList) {
+                    memberBasicService.saveOrUpdate(mbn);
+                }
+            }
             map.clear();
             map.put("starttime", starttime);
             map.put("endtime", endtime);
@@ -119,7 +135,8 @@ public class QrtzMemberController extends AbstractController {
                     + "&sign=" + sign;
             resultPost = HttpClient.doPost(url + urlParam);
             mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
-            memberBasicService.updateBatchByMobile(mbList);  //此时间段更新的会员
+//            memberBasicService.updateBatchByMobile(mbList);  //此时间段更新的会员
+            memberBasicService.updateBatchByCondition(mbList);
         }
     }
 }

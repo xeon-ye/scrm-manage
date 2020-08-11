@@ -69,4 +69,7 @@ public class MemberBasicEntity implements Serializable {
      * 所属专卖店
      */
     private String shopname;
+
+    @TableField(exist = false)
+    private int count;
 }

@@ -1,70 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.platform.modules.qkjvip.dao.MemberBasicDao">
-	<insert id="saveOrUpdateBatch" parameterType="java.util.List" useGeneratedKeys="false">
-		insert into qkjvip_member_basic
-		( cellphone,realname,typename,gradename,integral,realtotalprice,createdate,sex,shopname)
-		values
-		<foreach collection="list" item="item" index="index" separator=",">
-			(
-			#{item.cellphone},
-			#{item.realname},
-			#{item.typename},
-			#{item.gradename},
-			#{item.integral},
-			#{item.realtotalprice},
-			#{item.createdate},
-			#{item.sex},
-			#{item.shopname}
-			)
+	<select id="queryList" parameterType="java.util.List" resultType="com.platform.modules.qkjvip.entity.MemberBasicEntity">
+		SELECT * FROM qkjvip_member_basic
+		WHERE cellphone in
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			#{item.cellphone}
 		</foreach>
-		on duplicate key update
-		realname=values(realname),
-		typename=values(typename),
-		gradename=values(gradename),
-		integral=values(integral),
-		realtotalprice=values(realtotalprice),
-		sex=values(sex)
-	</insert>
+	</select>
 
-	<update id="updateBatchByMobile" parameterType="java.util.List">
-		update qkjvip_member_basic
-		<trim prefix="set" suffixOverrides=",">
-			<trim prefix="realname =case" suffix="end,">
-				<foreach collection="list" item="item" index="index">
-					when cellphone=#{item.cellphone} and shopname=#{item.shopname} then #{item.realname}
-				</foreach>
-			</trim>
-			<trim prefix="typename =case" suffix="end,">
-				<foreach collection="list" item="item" index="index">
-					when cellphone=#{item.cellphone} and shopname=#{item.shopname} then #{item.typename}
-				</foreach>
-			</trim>
-			<trim prefix="gradename =case" suffix="end,">
-				<foreach collection="list" item="item" index="index">
-					when cellphone=#{item.cellphone} and shopname=#{item.shopname} then #{item.gradename}
-				</foreach>
-			</trim>
-			<trim prefix="integral =case" suffix="end,">
-				<foreach collection="list" item="item" index="index">
-					when cellphone=#{item.cellphone} and shopname=#{item.shopname} then #{item.integral}
-				</foreach>
-			</trim>
-			<trim prefix="realtotalprice =case" suffix="end,">
-				<foreach collection="list" item="item" index="index">
-					when cellphone=#{item.cellphone} and shopname=#{item.shopname} then #{item.realtotalprice}
-				</foreach>
-			</trim>
-			<trim prefix="sex =case" suffix="end,">
-				<foreach collection="list" item="item" index="index">
-					when cellphone=#{item.cellphone} and shopname=#{item.shopname} then #{item.sex}
-				</foreach>
-			</trim>
-		</trim>
-		where
-		<foreach collection="list" index="index" item="item" separator="," open="(" close=")">
-			cellphone=#{item.cellphone} and shopname=#{item.shopname}
+	<update id="updateBatchByCondition" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			update qkjvip_member_basic
+			<set>
+				realname=#{item.realname},
+				typename=#{item.typename},
+				gradename=#{item.gradename},
+				integral=#{item.integral},
+				realtotalprice=#{item.realtotalprice},
+				sex=#{item.sex}
+			</set>
+			where cellphone=#{item.cellphone} and shopname=#{item.shopname}
 		</foreach>
 	</update>
 </mapper>
