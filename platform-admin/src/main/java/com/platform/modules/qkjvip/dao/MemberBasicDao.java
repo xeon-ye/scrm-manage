@@ -50,5 +50,5 @@ public interface MemberBasicDao extends BaseMapper<MemberBasicEntity> {
      * @param mbList mbList
      * @return int
      */
-    void updateBatchByCondition(List<MemberBasicEntity> mbList);
+    void updateByCondition(List<MemberBasicEntity> mbList);
 }

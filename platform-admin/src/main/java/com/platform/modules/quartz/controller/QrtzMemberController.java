@@ -79,22 +79,7 @@ public class QrtzMemberController extends AbstractController {
                     + "&sign=" + sign;
             resultPost = HttpClient.doPost(url + urlParam);
             mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
-            if ("0".equals(paramArr[2].trim())) {  //注册
-                List<MemberBasicEntity> fromDbList = new ArrayList<MemberBasicEntity>();
-                if (mbList.size() > 0) {
-                    fromDbList = memberBasicService.queryList(mbList);
-                    for(MemberBasicEntity mbn : mbList) {
-                        for(MemberBasicEntity dbmb : fromDbList) {
-                            if (mbn.getCellphone() != null && mbn.getCellphone().equals(dbmb.getCellphone()) && mbn.getShopname() != null && mbn.getShopname().equals(dbmb.getShopname())) {
-                                continue;
-                            }
-                        }
-                        memberBasicService.saveOrUpdate(mbn);
-                    }
-                }
-            } else if ("1".equals(paramArr[2].trim())) {
-                memberBasicService.updateBatchByCondition(mbList);
-            }
+            this.saveOrUpdateMember(mbList, paramArr[2].trim());
         } else {
             Date nowDate = new Date();
             String endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
@@ -114,12 +99,7 @@ public class QrtzMemberController extends AbstractController {
                     + "&sign=" + sign;
             resultPost = HttpClient.doPost(url + urlParam);
             mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
-//            memberBasicService.saveOrUpdate(mbList);   //此时间段注册的会员
-            if (mbList.size() > 0) {
-                for(MemberBasicEntity mbn : mbList) {
-                    memberBasicService.saveOrUpdate(mbn);
-                }
-            }
+            this.saveOrUpdateMember(mbList, "0");
             map.clear();
             map.put("starttime", starttime);
             map.put("endtime", endtime);
@@ -135,8 +115,40 @@ public class QrtzMemberController extends AbstractController {
                     + "&sign=" + sign;
             resultPost = HttpClient.doPost(url + urlParam);
             mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
-//            memberBasicService.updateBatchByMobile(mbList);  //此时间段更新的会员
-            memberBasicService.updateBatchByCondition(mbList);
+            this.saveOrUpdateMember(mbList, "1");
+        }
+    }
+
+    public void saveOrUpdateMember(List<MemberBasicEntity> list, String timeType) {
+        List<MemberBasicEntity> fromDbList = new ArrayList<MemberBasicEntity>();
+        List<MemberBasicEntity> tmpList = new ArrayList<MemberBasicEntity>();
+        if ("0".equals(timeType)) {  //注册
+            if (list.size() > 0) {
+                fromDbList = memberBasicService.queryList(list);  //检索数据库已存在的会员信息
+                if (fromDbList.size() == 0) {  //说明数据库不存在，都要插入
+                    tmpList = list;
+                } else {
+                    boolean flag = false;
+                    for(MemberBasicEntity mbn : list) {
+                        for(MemberBasicEntity dbmb : fromDbList) {
+                            if (mbn.getCellphone() != null && mbn.getCellphone().equals(dbmb.getCellphone()) && mbn.getShopname() != null && mbn.getShopname().equals(dbmb.getShopname())) {
+                                flag = true;
+                                break;
+                            }
+                        }
+                        if (!flag) {
+                            tmpList.add(mbn);
+                        }
+                    }
+                }
+                if (tmpList.size() > 0) {
+                    memberBasicService.saveOrUpdate(tmpList);  //会员批量插入
+                }
+            }
+        } else if ("1".equals(timeType)) {
+            if (list.size() > 0) {
+                memberBasicService.updateByCondition(list);
+            }
         }
     }
 }

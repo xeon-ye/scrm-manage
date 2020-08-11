@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.platform.modules.qkjvip.dao.MemberBasicDao">
-	<select id="queryList" parameterType="java.util.List" resultType="com.platform.modules.qkjvip.entity.MemberBasicEntity">
+	<select id="queryList" resultType="com.platform.modules.qkjvip.entity.MemberBasicEntity">
 		SELECT * FROM qkjvip_member_basic
 		WHERE cellphone in
-		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		<foreach collection="mbList" item="item" open="(" close=")" separator=",">
 			#{item.cellphone}
 		</foreach>
 	</select>
 
-	<update id="updateBatchByCondition" parameterType="java.util.List">
+	<update id="updateByCondition" parameterType="java.util.List">
 		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
 			update qkjvip_member_basic
-			<set>
-				realname=#{item.realname},
+			set realname=#{item.realname},
 				typename=#{item.typename},
 				gradename=#{item.gradename},
 				integral=#{item.integral},
 				realtotalprice=#{item.realtotalprice},
-				sex=#{item.sex}
-			</set>
+				sex=#{item.sex},
+				last_update_time=now()
 			where cellphone=#{item.cellphone} and shopname=#{item.shopname}
 		</foreach>
 	</update>

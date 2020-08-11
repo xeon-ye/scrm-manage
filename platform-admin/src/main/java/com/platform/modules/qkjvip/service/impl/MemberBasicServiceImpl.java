@@ -46,7 +46,7 @@ public class MemberBasicServiceImpl extends ServiceImpl<MemberBasicDao, MemberBa
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateBatchByCondition(List<MemberBasicEntity> mbList) {
-        baseMapper.updateBatchByCondition(mbList);
+    public void updateByCondition(List<MemberBasicEntity> mbList) {
+        baseMapper.updateByCondition(mbList);
     }
 }
