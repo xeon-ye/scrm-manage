@@ -54,5 +54,5 @@ public interface MemberBasicService extends IService<MemberBasicEntity> {
      *
      * @param mbList mbList
      */
-    void updateBatchByCondition(List<MemberBasicEntity> mbList);
+    void updateByCondition(List<MemberBasicEntity> mbList);
 }
