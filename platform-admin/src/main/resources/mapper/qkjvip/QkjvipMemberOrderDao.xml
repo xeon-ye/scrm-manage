@@ -34,6 +34,14 @@
         <include refid="selectSql"/>
     </select>
 
+    <select id="queryOrderIdList" resultType="com.platform.modules.qkjvip.entity.MemberBasicEntity">
+        SELECT OrderId FROM QKJVIP_MEMBER_ORDER
+        WHERE OrderId in
+        <foreach collection="mbList" item="item" open="(" close=")" separator=",">
+            #{item.OrderId}
+        </foreach>
+    </select>
+
     <update id="updateBatchByOrderyId" parameterType="java.util.List">
         <foreach collection="list" item="item" index="index" open="" close="" separator=";">
             update qkjvip_member_order

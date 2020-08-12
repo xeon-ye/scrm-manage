@@ -35,6 +35,14 @@ public interface QkjvipMemberOrderService extends IService<QkjvipMemberOrderEnti
     List<QkjvipMemberOrderEntity> queryAll(Map<String, Object> params);
 
     /**
+     * 查询所有列表
+     *
+     * @param mbList 查询参数
+     * @return List
+     */
+    List<QkjvipMemberOrderEntity> queryOrderIdList(List<QkjvipMemberOrderEntity> mbList);
+
+    /**
      * 分页查询
      *
      * @param params 查询参数

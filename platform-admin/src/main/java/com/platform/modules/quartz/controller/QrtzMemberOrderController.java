@@ -107,9 +107,13 @@ public class QrtzMemberOrderController extends AbstractController {
             resultPost = HttpClient.doPost(url + urlParam);
             if(i==0){
                 addList = JSON.parseArray(resultPost, QkjvipMemberOrderEntity.class);
+                List<QkjvipMemberOrderEntity> inList= new ArrayList<QkjvipMemberOrderEntity>();
+                inList=qkjvipMemberOrderService.queryOrderIdList(addList);
+                addList.removeAll(inList);
+                qkjvipMemberOrderService.saveBatch(addList);
             }else {
                 mdyList = JSON.parseArray(resultPost, QkjvipMemberOrderEntity.class);
-                qkjvipMemberOrderService.saveBatch(mdyList);
+                qkjvipMemberOrderService.updateBatch(mdyList);
             }
 
         }

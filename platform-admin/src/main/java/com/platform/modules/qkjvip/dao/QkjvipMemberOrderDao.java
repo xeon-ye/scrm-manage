@@ -38,6 +38,14 @@ public interface QkjvipMemberOrderDao extends BaseMapper<QkjvipMemberOrderEntity
     List<QkjvipMemberOrderEntity> queryAll(@Param("params") Map<String, Object> params);
 
     /**
+     * 查询所有orderid
+     *
+     * @param mbList 查询参数
+     * @return List
+     */
+    List<QkjvipMemberOrderEntity> queryOrderIdList(@Param("mbList") List<QkjvipMemberOrderEntity> mbList);
+
+    /**
      * 自定义分页查询
      *
      * @param page   分页参数

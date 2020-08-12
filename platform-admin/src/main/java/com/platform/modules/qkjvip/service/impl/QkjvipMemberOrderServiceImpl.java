@@ -39,6 +39,11 @@ public class QkjvipMemberOrderServiceImpl extends ServiceImpl<QkjvipMemberOrderD
     }
 
     @Override
+    public List<QkjvipMemberOrderEntity> queryOrderIdList(List<QkjvipMemberOrderEntity> mbList) {
+        return baseMapper.queryOrderIdList(mbList);
+    }
+
+    @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
         params.put("sidx", "T.id");
