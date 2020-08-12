@@ -52,102 +52,87 @@ public class QrtzMemberController extends AbstractController {
      */
     @SysLog("会员读取定时任务")
     @RequestMapping("/getMembers")
-    @Test
     public void getMembers(String params) throws IOException, NoSuchAlgorithmException {
         String url = "http://open.api.zhongjiu.cn/DashboardOpenAPI/ShopMeberDataSync";
         String timeStamp = DateUtils.getTimeStamp();  //时间戳
+        Date nowDate = new Date();
+        String endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
+        String starttime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -30), "yyyy-MM-dd HH:mm:ss"); //前半小时时间
         SortedMap<String, String> map = new TreeMap<>();
         String urlParam = "";
         String sign = "";
         String resultPost = "";  //返回结果
         List<MemberBasicEntity> mbList = new ArrayList<MemberBasicEntity>();
-        if (!StringUtils.isEmpty(params) && params.split(",").length == 3) {   //当定时任务有参数时，按照参数指定日期同步数据
+        if (!StringUtils.isEmpty(params) && params.split(",").length == 2) {   //当定时任务有参数时，按照参数指定日期同步数据
             String[] paramArr = new String[params.split(",").length];
             paramArr = params.split(",");
-            map.clear();
-            map.put("starttime", paramArr[0].trim());
-            map.put("endtime", paramArr[1].trim());
-            map.put("timetype", paramArr[2].trim());
-            map.put("timestamp", timeStamp);
-            map.put("app_key", Vars.APP_KEY);
-            sign = MD5Utils.getMD5Sign(map);
-            urlParam = "?starttime=" + paramArr[0].trim()
-                    + "&endtime=" + paramArr[1].trim()
-                    + "&timetype=" + paramArr[2].trim()
-                    + "&timestamp=" + timeStamp
-                    + "&app_key=" + Vars.APP_KEY
-                    + "&sign=" + sign;
-            resultPost = HttpClient.doPost(url + urlParam);
-            mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
-            this.saveOrUpdateMember(mbList, paramArr[2].trim());
-        } else {
-            Date nowDate = new Date();
-            String endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
-            String starttime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -30), "yyyy-MM-dd HH:mm:ss"); //前半小时时间
-            map.clear();
-            map.put("starttime", starttime);
-            map.put("endtime", endtime);
-            map.put("timetype", "0");
-            map.put("timestamp", timeStamp);
-            map.put("app_key", Vars.APP_KEY);
+            starttime = paramArr[0].trim();
+            endtime = paramArr[1].trim();
+        }
+        map.clear();
+        map.put("starttime", starttime);
+        map.put("endtime", endtime);
+        map.put("timestamp", timeStamp);
+        map.put("app_key", Vars.APP_KEY);
+        for(int i = 0; i <= 1; i++) {
+            map.put("timetype", i + "");
             sign = MD5Utils.getMD5Sign(map);
             urlParam = "?starttime=" + starttime
                     + "&endtime=" + endtime
-                    + "&timetype=0"
+                    + "&timetype=" + i+""
                     + "&timestamp=" + timeStamp
                     + "&app_key=" + Vars.APP_KEY
                     + "&sign=" + sign;
+            System.out.println("key:sign" + " vlaue:" + sign);
             resultPost = HttpClient.doPost(url + urlParam);
             mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
-            this.saveOrUpdateMember(mbList, "0");
-            map.clear();
-            map.put("starttime", starttime);
-            map.put("endtime", endtime);
-            map.put("timetype", "1");
-            map.put("timestamp", timeStamp);
-            map.put("app_key", Vars.APP_KEY);
-            sign = MD5Utils.getMD5Sign(map);
-            urlParam = "?starttime=" + starttime
-                    + "&endtime=" + endtime
-                    + "&timetype=1"
-                    + "&timestamp=" + timeStamp
-                    + "&app_key=" + Vars.APP_KEY
-                    + "&sign=" + sign;
-            resultPost = HttpClient.doPost(url + urlParam);
-            mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
-            this.saveOrUpdateMember(mbList, "1");
+            this.saveOrUpdateMember(mbList, i + "");
         }
     }
 
     public void saveOrUpdateMember(List<MemberBasicEntity> list, String timeType) {
         List<MemberBasicEntity> fromDbList = new ArrayList<MemberBasicEntity>();
-        List<MemberBasicEntity> tmpList = new ArrayList<MemberBasicEntity>();
+        List<MemberBasicEntity> addList = new ArrayList<MemberBasicEntity>();
         if ("0".equals(timeType)) {  //注册
             if (list.size() > 0) {
                 fromDbList = memberBasicService.queryList(list);  //检索数据库已存在的会员信息
                 if (fromDbList.size() == 0) {  //说明数据库不存在，都要插入
-                    tmpList = list;
+                    addList = list;
                 } else {
-                    boolean flag = false;
-                    for(MemberBasicEntity mbn : list) {
-                        for(MemberBasicEntity dbmb : fromDbList) {
-                            if (mbn.getCellphone() != null && mbn.getCellphone().equals(dbmb.getCellphone()) && mbn.getShopname() != null && mbn.getShopname().equals(dbmb.getShopname())) {
-                                flag = true;
-                                break;
-                            }
-                        }
-                        if (!flag) {
-                            tmpList.add(mbn);
-                        }
-                    }
+                    list.removeAll(fromDbList);
+                    addList = list;
                 }
-                if (tmpList.size() > 0) {
-                    memberBasicService.saveOrUpdate(tmpList);  //会员批量插入
+                if (addList.size() > 0) {
+                    memberBasicService.saveOrUpdate(addList);  //会员批量插入
                 }
             }
         } else if ("1".equals(timeType)) {
             if (list.size() > 0) {
                 memberBasicService.updateByCondition(list);
+            }
+        }
+    }
+
+    /**
+     * 会员定时任务
+     *
+     */
+    @SysLog("会员循环读取")
+    @RequestMapping("/getLoopMembers")
+    public void getLoopMembers(String params) throws IOException, NoSuchAlgorithmException {
+        String starttime = "";
+        String endtime = "";
+        if (!StringUtils.isEmpty(params)) {
+            Date fromtime = DateUtils.stringToDate(params, DateUtils.DATE_TIME_PATTERN);
+            Date totime = DateUtils.addDateMonths(fromtime, 1); //一个月后的日期
+            for (int i = 0; i < 12; i++) {
+                if (i > 0) { //第一个月
+                    fromtime = totime;
+                    totime = DateUtils.addDateMonths(fromtime, 1); //一个月后的日期
+                }
+                starttime = DateUtils.format(fromtime, "yyyy-MM-dd HH:mm:ss");
+                endtime = DateUtils.format(totime, "yyyy-MM-dd HH:mm:ss");
+                this.getMembers(starttime + "," + endtime);
             }
         }
     }
