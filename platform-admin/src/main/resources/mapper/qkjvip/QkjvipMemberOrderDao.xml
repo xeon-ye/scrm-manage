@@ -34,11 +34,11 @@
         <include refid="selectSql"/>
     </select>
 
-    <select id="queryOrderIdList" resultType="com.platform.modules.qkjvip.entity.MemberBasicEntity">
+    <select id="queryOrderIdList" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberOrderEntity">
         SELECT OrderId FROM QKJVIP_MEMBER_ORDER
         WHERE OrderId in
         <foreach collection="mbList" item="item" open="(" close=")" separator=",">
-            #{item.OrderId}
+            #{item.orderid}
         </foreach>
     </select>
 
@@ -46,19 +46,20 @@
         <foreach collection="list" item="item" index="index" open="" close="" separator=";">
             update qkjvip_member_order
             <set>
-                ProductName=#{item.ProductName},
-                SalePrice=#{item.SalePrice},
-                Quantity=#{item.Quantity},
-                RealTotalPrice=#{item.RealTotalPrice},
+                ProductName=#{item.productname},
+                SalePrice=#{item.saleprice},
+                Quantity=#{item.quantity},
+                RealTotalPrice=#{item.realtotalprice},
                 orderdate=#{item.orderdate},
-                CellPhone=#{item.CellPhone},
-                ShopName=#{item.ShopName},
-                ShopProvinceName=#{item.ShopProvinceName},
-                ShopCityName=#{item.ShopCityName},
-                OrderStatus=#{item.OrderStatus},
-                Giveaway=#{item.Giveaway}
+                CellPhone=#{item.cellphone},
+                buyertype=#{item.buyertype},
+                ShopName=#{item.shopname},
+                ShopProvinceName=#{item.shopprovincename},
+                ShopCityName=#{item.shopcityname},
+                OrderStatus=#{item.orderstatus},
+                Giveaway=#{item.giveaway}
             </set>
-            where OrderId=#{item.OrderId}
+            where OrderId=#{item.orderid}
         </foreach>
     </update>
 </mapper>
