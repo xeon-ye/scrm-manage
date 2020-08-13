@@ -45,6 +45,7 @@ import java.util.*;
 public class QrtzMemberController extends AbstractController {
     @Autowired
     private MemberBasicService memberBasicService;
+    private List<MemberBasicEntity> addList;
 
     /**
      * 会员定时任务
@@ -92,8 +93,9 @@ public class QrtzMemberController extends AbstractController {
 
     public void saveOrUpdateMember(List<MemberBasicEntity> list, String timeType) {
         List<MemberBasicEntity> fromDbList = new ArrayList<MemberBasicEntity>();
-        List<MemberBasicEntity> addList = new ArrayList<MemberBasicEntity>();
+//        List<MemberBasicEntity> addList = new ArrayList<MemberBasicEntity>();
         if ("0".equals(timeType)) {  //注册
+            addList = new ArrayList<MemberBasicEntity>();
             if (list.size() > 0) {
                 fromDbList = memberBasicService.queryList(list);  //检索数据库已存在的会员信息
                 if (fromDbList.size() == 0) {  //说明数据库不存在，都要插入
@@ -107,6 +109,7 @@ public class QrtzMemberController extends AbstractController {
                 }
             }
         } else if ("1".equals(timeType)) {
+            list.removeAll(addList);
             if (list.size() > 0) {
                 memberBasicService.updateByCondition(list);
             }
