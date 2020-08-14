@@ -74,4 +74,11 @@ public class MemberBasicEntity implements Serializable {
      */
     private Date lastUpdateTime;
 
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof MemberBasicEntity
+                && this.cellphone != null && this.cellphone.equals(((MemberBasicEntity)o).cellphone)
+                && this.shopname != null && this.shopname.equals(((MemberBasicEntity)o).shopname);
+    }
+
 }
