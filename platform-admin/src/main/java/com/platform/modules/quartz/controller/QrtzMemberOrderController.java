@@ -95,7 +95,7 @@ public class QrtzMemberOrderController extends AbstractController {
         map.put("endtime", endtime);
         map.put("timestamp", timeStamp);
         map.put("app_key", Vars.APP_KEY);
-        for(int i=0;i<=1;i++){
+        for(int i=1;i<=1;i++){
             map.put("timetype", i+"");
             sign = MD5Utils.getMD5Sign(map);
             urlParam = "?starttime=" + starttime
@@ -105,15 +105,13 @@ public class QrtzMemberOrderController extends AbstractController {
                     + "&app_key=" + Vars.APP_KEY
                     + "&sign=" + sign;
             resultPost = HttpClient.doPost(url + urlParam);
-            if(i==0){
+            if(i==1){
                 addList = JSON.parseArray(resultPost, QkjvipMemberOrderEntity.class);
-                List<QkjvipMemberOrderEntity> inList= new ArrayList<QkjvipMemberOrderEntity>();
-                inList=qkjvipMemberOrderService.queryOrderIdList(addList);
-                addList.removeAll(inList);
+                qkjvipMemberOrderService.deleteBatchByOrder(addList);
                 qkjvipMemberOrderService.saveBatch(addList);
             }else {
-                mdyList = JSON.parseArray(resultPost, QkjvipMemberOrderEntity.class);
-                qkjvipMemberOrderService.updateBatch(mdyList);
+                //mdyList = JSON.parseArray(resultPost, QkjvipMemberOrderEntity.class);
+                //qkjvipMemberOrderService.updateBatch(mdyList);
             }
 
         }

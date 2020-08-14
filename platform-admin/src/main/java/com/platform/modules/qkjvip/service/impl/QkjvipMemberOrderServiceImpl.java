@@ -80,7 +80,20 @@ public class QkjvipMemberOrderServiceImpl extends ServiceImpl<QkjvipMemberOrderD
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteBatch(List<QkjvipMemberOrderEntity> mbList) {
+        baseMapper.deleteBatchByOrderyId(mbList);
+    }
+
+    @Override
+    public int deleteBatchByOrder(List<QkjvipMemberOrderEntity> mbList) {
+        return baseMapper.deleteBatchByOrder(mbList);
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void saveBatch(List<QkjvipMemberOrderEntity> mbList) {
-        this.saveBatch(mbList);
+        this.saveBatch(mbList, 1000);
     }
 }

@@ -62,4 +62,19 @@
             where OrderId=#{item.orderid}
         </foreach>
     </update>
+
+    <delete id="deleteBatchByOrderyId" parameterType="java.util.List">
+        DELETE FROM  qkjvip_member_order  where OrderId in
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+
+           #{item.orderid}
+        </foreach>
+    </delete>
+
+    <delete id="deleteBatchByOrder">
+        DELETE FROM qkjvip_member_order WHERE OrderId IN
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item.orderid}
+        </foreach>
+    </delete>
 </mapper>

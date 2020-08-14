@@ -61,4 +61,20 @@ public interface QkjvipMemberOrderDao extends BaseMapper<QkjvipMemberOrderEntity
      * @return int
      */
     void updateBatchByOrderyId(List<QkjvipMemberOrderEntity> mbList);
+
+    /**
+     * 批量删除
+     *
+     * @param mbList mbList
+     * @return int
+     */
+    void deleteBatchByOrderyId(List<QkjvipMemberOrderEntity> mbList);
+
+    /**
+     * 根据角色ID数组，批量删除
+     *
+     * @param mbList 角色Ids
+     * @return int
+     */
+    int deleteBatchByOrder(List<QkjvipMemberOrderEntity> mbList);
 }

@@ -79,6 +79,14 @@ public interface QkjvipMemberOrderService extends IService<QkjvipMemberOrderEnti
      * @param mbList mbList
      */
     void updateBatch(List<QkjvipMemberOrderEntity> mbList);
+
+    /**
+     * 批量删除
+     *
+     * @param mbList mbList
+     */
+    void deleteBatch(List<QkjvipMemberOrderEntity> mbList);
+
     /**
      * 根据主键删除
      *
@@ -94,4 +102,12 @@ public interface QkjvipMemberOrderService extends IService<QkjvipMemberOrderEnti
      * @return 删除结果
      */
     boolean deleteBatch(String[] ids);
+
+    /**
+     * 根据角色ID数组，批量删除
+     *
+     * @param roleIds roleIds
+     * @return int
+     */
+    int deleteBatchByOrder(List<QkjvipMemberOrderEntity> mbList);
 }
