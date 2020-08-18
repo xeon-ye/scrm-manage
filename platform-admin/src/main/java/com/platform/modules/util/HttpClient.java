@@ -43,7 +43,7 @@ public class HttpClient {
      * get 请求
      * @return
      */
-    public static String doHttpGet(String url, List<NameValuePair> params){
+    public static String doGet(String url, List<NameValuePair> params){
         String result = null;
         //1.获取httpclient
         CloseableHttpClient httpClient = HttpClients.createDefault();

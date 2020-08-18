@@ -13,23 +13,20 @@ package com.platform.modules.qkjvip.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
-import com.platform.common.utils.Constant;
 import com.platform.common.utils.RestResponse;
-import com.platform.common.validator.AbstractAssert;
 import com.platform.common.validator.ValidatorUtils;
-import com.platform.common.validator.group.AddGroup;
 import com.platform.common.validator.group.UpdateGroup;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.service.MemberService;
 import com.platform.modules.sys.controller.AbstractController;
-import com.platform.modules.sys.entity.SysUserEntity;
-import com.platform.modules.sys.form.PasswordForm;
-import org.apache.commons.lang.ArrayUtils;
+import com.platform.modules.util.ExportExcelUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -149,4 +146,19 @@ public class MemberController extends AbstractController {
         return RestResponse.success();
     }
 
+    /**
+     * 导出会员数据
+     */
+    @SysLog("导出会员")
+    @RequestMapping("/export")
+    @RequiresPermissions("qkjvip:member:export")
+    public void exportWord(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params) {
+        String filepath="D:/aaa.xls";
+        List<MemberEntity> list = memberService.queryAll(params);
+        try {
+            ExportExcelUtils.exportExcel(list,"会员信息表","会员信息",MemberEntity.class,"会员信息",response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

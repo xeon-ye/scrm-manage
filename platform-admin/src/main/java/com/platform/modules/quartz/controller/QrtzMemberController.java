@@ -58,7 +58,7 @@ public class QrtzMemberController extends AbstractController {
         String timeStamp = DateUtils.getTimeStamp();  //时间戳
         Date nowDate = new Date();
         String endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
-        String starttime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -30), "yyyy-MM-dd HH:mm:ss"); //前半小时时间
+        String starttime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -60), "yyyy-MM-dd HH:mm:ss"); //前半小时时间
         SortedMap<String, String> map = new TreeMap<>();
         String urlParam = "";
         String sign = "";
