@@ -10,6 +10,7 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -37,48 +38,59 @@ public class MemberEntity implements Serializable {
     /**
      * 会员名称
      */
+    @Excel(name = "会员昵称", orderNum = "0", width = 15)
     @NotBlank(message = "会员名称不能为空", groups = {AddGroup.class, UpdateGroup.class})
     private String memberName;
     /*
     * 会员真实姓名
      */
+    @Excel(name = "真实姓名", orderNum = "1", width = 15)
     private String realName;
     /*
      * 会员手机
      */
+    @Excel(name = "电话", orderNum = "2", width = 15)
     @NotBlank(message = "会员手机号不能为空", groups = {AddGroup.class, UpdateGroup.class})
     private String mobile;
     /*
      * 会员邮件
      */
+    @Excel(name = "邮件", orderNum = "3", width = 15)
     private String email;
     /*
      * 会员性别
      */
+    @Excel(name = "性别", orderNum = "4", width = 15,replace={"男_1","女_2","未知_3"})
     private Integer sex;
     /*
      * 年龄区间
      */
+    @Excel(name = "年龄区间", orderNum = "5", width = 15)
     private String ageSection;
     /*
      * 生日
      */
+    @Excel(name = "生日", orderNum = "6", width = 15)
     private String birthday;
     /*
      * 会员类型
      */
+    @Excel(name = "会员类型", orderNum = "7", width = 15,replace={"门店会员_0","团购会员_1","大店会员_2","意见领袖_3","普通消费者_4","公众粉丝_5","其他_6"})
     private String memberType;
     /*
      * 会员性质
      */
+    @Excel(name = "会员性质", orderNum = "8", width = 15,replace={"企业单位_0","事业单位_1","政府机关_2","个人_3"})
     private String memberNature;
     /*
      * 会员等级
      */
+    @Excel(name = "会员等级", orderNum = "9", width = 15,replace={"普通会员_0","三星会员_1","四星会员_2","五星会员_3","六星会员_4"})
     private String memberLevel;
     /*
      * 会员来源
      */
+    @Excel(name = "会员来源", orderNum = "10", width = 15,replace={"OMS门店_0","线下活动_1","线上活动_2","线上交易_3","线下交易_4","会员推荐_5","旅游景区_6","其他来源_7"})
     private String memberSource;
     /*
      * 行业类别
@@ -132,6 +144,26 @@ public class MemberEntity implements Serializable {
      * 添加时间
      */
     private Date addTime;
+    /*
+    * 积分
+     */
+    private Integer integral;
+    /*
+    * 余额
+     */
+    private Double realtotalprice;
+    /*
+    * 所属店铺
+     */
+    private String shopname;
+    /*
+    * 微信id
+     */
+    private String openid;
+    /*
+    * 微信头像
+     */
+    private String headImgUrl;
 
     @TableField(exist = false)
     private String orgUsername;
