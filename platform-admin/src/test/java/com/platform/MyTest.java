@@ -18,12 +18,16 @@ import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.poi.xssf.usermodel.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +45,7 @@ public class MyTest {
     private WxMpService wxService;
 
     @Test
-    public void main() throws WxErrorException {
+    public void main() throws WxErrorException, IOException {
         /*获取access_token start*/
 //        String appid = "wxc64e4c7b44af0595";
 //        String appsecret = "3fd8281d244ecdc38b77bd4ad7cdea28";
@@ -54,11 +58,50 @@ public class MyTest {
         /*获取access_token end*/
 
         /*获取粉丝列表 start*/
-        String url = "https://api.weixin.qq.com/cgi-bin/user/get";
-        List<NameValuePair> list = new ArrayList<>();
-        list.add(new BasicNameValuePair("access_token","36_enDka3cZ_eXqCovbs8wL-bdaya1VWMpJs9hrqUMrDOcq3DTZlat3UTALNrQidUaxTdsuNUWsMQ_9262Rr8f3Ie1hG3MU4XAX7sXdMmuPE7Ie2Y-voxo9EEHlLuelqL4wyVUG4VeOFphzsvY9OYOjACAEOE"));
-        String strResult = HttpClient.doGet(url, list);
-        System.out.print(strResult);
+//        String url = "https://api.weixin.qq.com/cgi-bin/user/get";
+//        List<NameValuePair> list = new ArrayList<>();
+//        list.add(new BasicNameValuePair("access_token","36_enDka3cZ_eXqCovbs8wL-bdaya1VWMpJs9hrqUMrDOcq3DTZlat3UTALNrQidUaxTdsuNUWsMQ_9262Rr8f3Ie1hG3MU4XAX7sXdMmuPE7Ie2Y-voxo9EEHlLuelqL4wyVUG4VeOFphzsvY9OYOjACAEOE"));
+//        String strResult = HttpClient.doGet(url, list);
+//        System.out.print(strResult);
         /*获取粉丝列表 end*/
+
+        // 创建工作簿对象
+        XSSFWorkbook wb = new XSSFWorkbook();
+        // 创建工作表对象
+        XSSFSheet sheet = wb.createSheet("我的工作表");
+        // 创建绘图对象
+        XSSFDrawing p = sheet.createDrawingPatriarch();
+        // 创建单元格对象,批注插入到4行,1列,B5单元格
+        //XSSFCell cell = sheet.createRow(4).createCell(1);
+        // 插入单元格内容
+        //cell.setCellValue(new XSSFRichTextString("批注"));
+        final String[] excelHeaderArr = {"身份证号", "姓名", "性别", "专业", "金额", "支付时间"};
+        // 生成表格第一行 第一行表头
+        final XSSFRow row = sheet.createRow(0);
+        XSSFCell cell = null;
+        for (int i = 0; i < excelHeaderArr.length; i ++ ) {
+            cell = row.createCell(i);
+            // 设置数值
+            cell.setCellValue(excelHeaderArr[i]);
+            // 设置样式
+//            cell.setCellStyle(style);
+            // 前四个参数是坐标点,后四个参数是编辑和显示批注时的大小.
+            XSSFComment comment = p.createCellComment(new XSSFClientAnchor(0, 0, 0,0, (short) 3, 3, (short) 5, 6));
+            // 输入批注信息
+            comment.setString(new XSSFRichTextString("这是批注内容!\n\r这是批注内容!\n\r这是批注内容!\n\r这是批注内容!\n\r这是批注内容!"));
+            // 添加作者,选中B5单元格,看状态栏
+            comment.setAuthor("toad");
+            // 将批注添加到单元格对象中
+            cell.setCellComment(comment);
+        }
+        // 获取批注对象
+        // (int dx1, int dy1, int dx2, int dy2, short col1, int row1, short
+        // col2, int row2)
+        // 创建输出流
+        FileOutputStream out = new FileOutputStream("d:/writerPostil.xlsx");
+
+        wb.write(out);
+        // 关闭流对象
+        out.close();
     }
 }

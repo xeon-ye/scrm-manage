@@ -11,7 +11,8 @@
  */
 package com.platform.modules.qkjvip.controller;
 
-import cn.afterturn.easypoi.util.PoiPublicUtil;
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
@@ -21,8 +22,12 @@ import com.platform.common.validator.group.UpdateGroup;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.service.MemberService;
 import com.platform.modules.sys.controller.AbstractController;
+import com.platform.modules.sys.entity.SysDictEntity;
+import com.platform.modules.sys.service.SysDictService;
+import com.platform.modules.util.ExcelSelectListUtil;
 import com.platform.modules.util.ExportExcelUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -44,6 +50,8 @@ import java.util.*;
 public class MemberController extends AbstractController {
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private SysDictService sysDictService;
 
     /**
      * 查看所有列表
@@ -170,8 +178,54 @@ public class MemberController extends AbstractController {
     @RequiresPermissions("qkjvip:member:exportTpl")
     public void exportTplExcel(HttpServletRequest request, HttpServletResponse response) {
         List<MemberEntity> list = new ArrayList<>();
+        Map<String, Object> params = new HashMap<>();
+        List<SysDictEntity> dictList = new ArrayList<>();
+        String[] dictAttr = null;
         try {
-            ExportExcelUtils.exportExcel(list,"会员信息表","会员信息",MemberEntity.class,"会员信息",response);
+            Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("会员信息表","会员信息"), MemberEntity .class, list);
+            //这里是自己加的 带下拉框的代码
+            ExcelSelectListUtil.selectList(workbook, 4, 4, new String[]{"男","女","未知"});
+            ExcelSelectListUtil.selectList(workbook, 18, 18, new String[]{"是","否"});
+            params.clear();
+            params.put("code", "MEMBERTYPE"); //会员类型
+            dictList = sysDictService.queryByCode(params);
+            dictAttr = new String[dictList.size()];
+            for (int i = 0; i < dictList.size(); i++) {
+                dictAttr[i] = dictList.get(i).getName();
+            }
+            ExcelSelectListUtil.selectList(workbook, 7, 7, dictAttr);
+
+            params.clear();
+            params.put("code", "MEMBERNATURE"); //会员性质
+            dictList = sysDictService.queryByCode(params);
+            dictAttr = new String[dictList.size()];
+            for (int i = 0; i < dictList.size(); i++) {
+                dictAttr[i] = dictList.get(i).getName();
+            }
+            ExcelSelectListUtil.selectList(workbook, 8, 8, dictAttr);
+
+            params.clear();
+            params.put("code", "MEMBERLEVEL"); //会员等级
+            dictList = sysDictService.queryByCode(params);
+            dictAttr = new String[dictList.size()];
+            for (int i = 0; i < dictList.size(); i++) {
+                dictAttr[i] = dictList.get(i).getName();
+            }
+            ExcelSelectListUtil.selectList(workbook, 9, 9, dictAttr);
+
+            params.clear();
+            params.put("code", "MEMBERSOURCE"); //会员来源
+            dictList = sysDictService.queryByCode(params);
+            dictAttr = new String[dictList.size()];
+            for (int i = 0; i < dictList.size(); i++) {
+                dictAttr[i] = dictList.get(i).getName();
+            }
+            ExcelSelectListUtil.selectList(workbook, 10, 10, dictAttr);
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode( "会员信息表." + ExportExcelUtils.ExcelTypeEnum.XLS.getValue(), "UTF-8"));
+            workbook.write(response.getOutputStream());
+//            ExportExcelUtils.exportExcel(list,"会员信息表","会员信息",MemberEntity.class,"会员信息",response);
         } catch (IOException e) {
             e.printStackTrace();
         }

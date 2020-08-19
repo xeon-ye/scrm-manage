@@ -244,7 +244,7 @@ public class ExportExcelUtils {
     /**
      * Excel 类型枚举
      */
-    enum ExcelTypeEnum {
+    public enum ExcelTypeEnum {
         XLS("xls"), XLSX("xlsx");
         private String value;
 
