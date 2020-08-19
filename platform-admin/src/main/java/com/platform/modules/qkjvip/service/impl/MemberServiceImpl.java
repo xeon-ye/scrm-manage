@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.platform.common.utils.Query;
 import com.platform.modules.qkjvip.dao.MemberDao;
+import com.platform.modules.qkjvip.entity.MemberBasicEntity;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.service.MemberService;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,11 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     @Override
     public void add(MemberEntity member) {
         this.save(member);
+    }
+
+    @Override
+    public void addBatch(List<MemberEntity> mList) {
+        this.saveBatch(mList);
     }
 
     @Override

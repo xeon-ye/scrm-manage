@@ -95,30 +95,37 @@ public class MemberEntity implements Serializable {
     /*
      * 行业类别
      */
+    @Excel(name = "行业类别", orderNum = "11", width = 15)
     private String industryType;
     /*
      * 单位性质
      */
+    @Excel(name = "单位性质", orderNum = "12", width = 15)
     private String unitProperty;
     /*
      * 公司名称
      */
+    @Excel(name = "公司名称", orderNum = "13", width = 15)
     private String companyName;
     /*
      * 职位
      */
+    @Excel(name = "职位", orderNum = "14", width = 15)
     private String jobTitle;
     /*
      * 加入时间/注册时间
      */
+    @Excel(name = "注册时间", orderNum = "15", width = 15)
     private String regTime;
     /*
      * 推荐人部门
      */
+    @Excel(name = "推荐人部门", orderNum = "16", width = 15)
     private String referrerDept;
     /*
      * 推荐人
      */
+    @Excel(name = "推荐人", orderNum = "17", width = 15)
     private String referrer;
     /*
      * 所属办事处
@@ -131,6 +138,7 @@ public class MemberEntity implements Serializable {
     /*
      * 是否潜在客户(0否1是)
      */
+    @Excel(name = "是否潜在客户", orderNum = "18", width = 15,replace={"否_0","是_1"})
     private Integer isCustomers;
     /*
      * 添加人
@@ -147,22 +155,27 @@ public class MemberEntity implements Serializable {
     /*
     * 积分
      */
+    @Excel(name = "积分", orderNum = "19", width = 15)
     private Integer integral;
     /*
     * 余额
      */
+    @Excel(name = "余额", orderNum = "20", width = 15)
     private Double realtotalprice;
     /*
     * 所属店铺
      */
+    @Excel(name = "所属店铺", orderNum = "21", width = 15)
     private String shopname;
     /*
     * 微信id
      */
+    @Excel(name = "微信id", orderNum = "22", width = 15)
     private String openid;
     /*
     * 微信头像
      */
+    @Excel(name = "微信头像", orderNum = "23", width = 15)
     private String headImgUrl;
 
     @TableField(exist = false)

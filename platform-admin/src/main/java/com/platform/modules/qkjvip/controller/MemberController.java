@@ -11,8 +11,10 @@
  */
 package com.platform.modules.qkjvip.controller;
 
+import cn.afterturn.easypoi.util.PoiPublicUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
+import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.validator.ValidatorUtils;
 import com.platform.common.validator.group.UpdateGroup;
@@ -20,17 +22,16 @@ import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.service.MemberService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.util.ExportExcelUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Controller
@@ -152,13 +153,53 @@ public class MemberController extends AbstractController {
     @SysLog("导出会员")
     @RequestMapping("/export")
     @RequiresPermissions("qkjvip:member:export")
-    public void exportWord(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params) {
-        String filepath="D:/aaa.xls";
+    public void exportExcel(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params) {
         List<MemberEntity> list = memberService.queryAll(params);
         try {
             ExportExcelUtils.exportExcel(list,"会员信息表","会员信息",MemberEntity.class,"会员信息",response);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 导出会员数据模板
+     */
+    @SysLog("导出会员模板")
+    @RequestMapping("/exportTpl")
+    @RequiresPermissions("qkjvip:member:exportTpl")
+    public void exportTplExcel(HttpServletRequest request, HttpServletResponse response) {
+        List<MemberEntity> list = new ArrayList<>();
+        try {
+            ExportExcelUtils.exportExcel(list,"会员信息表","会员信息",MemberEntity.class,"会员信息",response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 导入会员数据
+     */
+    @SysLog("导入会员")
+    @RequestMapping("/import")
+    @RequiresPermissions("qkjvip:member:import")
+    public RestResponse importExcel(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        if (StringUtils.isBlank(fileName)) {
+            throw new BusinessException("请选择要导入的文件");
+        } else {
+            try {
+                List<MemberEntity> list = ExportExcelUtils.importExcel(file, 1, 1,MemberEntity.class);
+                for (int i = 0; i < list.size(); i++) {
+                    list.get(i).setAddUser(getUserId());
+                    list.get(i).setAddDept(getOrgNo());
+                    list.get(i).setAddTime(new Date());
+                }
+                memberService.addBatch(list);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return RestResponse.success().put("msg", "导入成功！");
     }
 }

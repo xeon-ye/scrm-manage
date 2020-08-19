@@ -126,8 +126,8 @@ public class ExportExcelUtils {
     private static void downLoadExcel(String fileName, HttpServletResponse response, Workbook workbook) throws IOException {
         try {
             response.setCharacterEncoding("UTF-8");
-//            response.setHeader("content-Type", "application/vnd.ms-excel");
-            response.setHeader("content-Type", "multipart/form-data");
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+//            response.setHeader("content-Type", "multipart/form-data");
             response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName + "." + ExcelTypeEnum.XLS.getValue(), "UTF-8"));
             workbook.write(response.getOutputStream());
         } catch (Exception e) {

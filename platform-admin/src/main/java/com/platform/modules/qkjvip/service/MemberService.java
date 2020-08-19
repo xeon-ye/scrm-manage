@@ -12,6 +12,7 @@ package com.platform.modules.qkjvip.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.platform.modules.qkjvip.entity.MemberBasicEntity;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 
 import java.util.List;
@@ -47,6 +48,7 @@ public interface MemberService extends IService<MemberEntity> {
      */
     void add(MemberEntity member, Map<String, Object> params);
     void add(MemberEntity member);
+    void addBatch(List<MemberEntity> mList);
     /**
      * 修改用户
      *
