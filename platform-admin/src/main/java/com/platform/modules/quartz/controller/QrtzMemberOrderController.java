@@ -107,7 +107,20 @@ public class QrtzMemberOrderController extends AbstractController {
             resultPost = HttpClient.doPost(url + urlParam);
             if(i==1){
                 addList = JSON.parseArray(resultPost, QkjvipMemberOrderEntity.class);
-                qkjvipMemberOrderService.deleteBatchByOrder(addList);
+                if(addList.size()>1000){
+                    int listSize=addList.size();
+                    int toIndex=1000;
+                    for(int j = 0;j<addList.size();j+=1000){
+                        if(j+1000>listSize){        //作用为toIndex最后没有100条数据则剩余几条newList中就装几条
+                            toIndex=listSize-j;
+                        }
+                        List newList = addList.subList(j,j+toIndex);
+                        qkjvipMemberOrderService.deleteBatchByOrder(newList);
+                    }
+                }else{
+                    qkjvipMemberOrderService.deleteBatchByOrder(addList);
+                }
+
                 qkjvipMemberOrderService.saveBatch(addList);
             }else {
                 //mdyList = JSON.parseArray(resultPost, QkjvipMemberOrderEntity.class);
