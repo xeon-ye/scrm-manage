@@ -47,7 +47,7 @@ public interface MemberBasicService extends IService<MemberBasicEntity> {
      *
      * @param mbList 用户
      */
-    void saveOrUpdate(List<MemberBasicEntity> mbList);
+    void addBatch(List<MemberBasicEntity> mbList);
 
     /**
      * 批量修改会员

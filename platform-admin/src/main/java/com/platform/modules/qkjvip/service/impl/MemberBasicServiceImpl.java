@@ -40,7 +40,7 @@ public class MemberBasicServiceImpl extends ServiceImpl<MemberBasicDao, MemberBa
     }
 
     @Override
-    public void saveOrUpdate(List<MemberBasicEntity> mbList) {
+    public void addBatch(List<MemberBasicEntity> mbList) {
         this.saveBatch(mbList);
     }
 

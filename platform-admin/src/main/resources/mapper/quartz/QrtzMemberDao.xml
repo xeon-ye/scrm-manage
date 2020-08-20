@@ -18,7 +18,7 @@
 				integral=#{item.integral},
 				realtotalprice=#{item.realtotalprice},
 				sex=#{item.sex},
-				last_update_time=now()
+				last_update_time=getdate()
 			where cellphone=#{item.cellphone} and shopname=#{item.shopname}
 		</foreach>
 	</update>

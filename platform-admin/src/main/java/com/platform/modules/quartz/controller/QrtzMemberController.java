@@ -97,21 +97,64 @@ public class QrtzMemberController extends AbstractController {
         if ("0".equals(timeType)) {  //注册
             addList = new ArrayList<MemberBasicEntity>();
             if (list.size() > 0) {
-                fromDbList = memberBasicService.queryList(list);  //检索数据库已存在的会员信息
-                if (fromDbList.size() == 0) {  //说明数据库不存在，都要插入
+                if (list.size() > 1000) {
+                    //listSize为集合长度
+                    int listSize = list.size();
+                    //每次取1000条
+                    int index=1000;
+                    //用map存起来新的分组后数据
+                    Map map = new HashMap();
+                    int keyToken = 0;
+                    for(int i = 0; i < listSize; i+=1000){
+                        //作用为Index最后没有1000条数据，则剩余的条数newList中就装几条
+                        if(i+1000 > listSize) {
+                            index = listSize - i;
+                        }
+                        List newList = list.subList(i, i+index);
+                        fromDbList = memberBasicService.queryList(newList);  //检索数据库已存在的会员信息
+                        map.put("keyName" + keyToken, fromDbList);
+                        keyToken++;
+
+                    }
+                    for (Object key : map.keySet()) {
+                        list.removeAll((Collection<?>) map.get(key));
+                    }
                     addList = list;
+                    if (addList.size() > 0) {
+                        memberBasicService.addBatch(addList);  //会员批量插入
+                    }
                 } else {
-                    list.removeAll(fromDbList);
-                    addList = list;
-                }
-                if (addList.size() > 0) {
-                    memberBasicService.saveOrUpdate(addList);  //会员批量插入
+                    fromDbList = memberBasicService.queryList(list);  //检索数据库已存在的会员信息
+                    if (fromDbList.size() == 0) {  //说明数据库不存在，都要插入
+                        addList = list;
+                    } else {
+                        list.removeAll(fromDbList);
+                        addList = list;
+                    }
+                    if (addList.size() > 0) {
+                        memberBasicService.addBatch(addList);  //会员批量插入
+                    }
                 }
             }
         } else if ("1".equals(timeType)) {
             list.removeAll(addList);
             if (list.size() > 0) {
-                memberBasicService.updateByCondition(list);
+                if (list.size() > 1000) {
+                    //listSize为集合长度
+                    int listSize = list.size();
+                    //每次取1000条
+                    int index = 1000;
+                    for (int i = 0; i < listSize; i += 1000) {
+                        //作用为Index最后没有1000条数据，则剩余的条数newList中就装几条
+                        if (i + 1000 > listSize) {
+                            index = listSize - i;
+                        }
+                        List newList = list.subList(i, i + index);
+                        memberBasicService.updateByCondition(newList);
+                    }
+                } else {
+                    memberBasicService.updateByCondition(list);
+                }
             }
         }
     }
