@@ -35,18 +35,19 @@ public class MemberBasicServiceImpl extends ServiceImpl<MemberBasicDao, MemberBa
     }
 
     @Override
-    public List<MemberBasicEntity> queryList(List<MemberBasicEntity> mbList) {
-        return baseMapper.queryList(mbList);
+    public List<MemberBasicEntity> queryList() {
+        return baseMapper.queryList();
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void addBatch(List<MemberBasicEntity> mbList) {
         this.saveBatch(mbList);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateByCondition(List<MemberBasicEntity> mbList) {
-        baseMapper.updateByCondition(mbList);
+    public void updateBatch(List<MemberBasicEntity> mbList) {
+        this.updateBatchById(mbList);
     }
 }
