@@ -11,18 +11,30 @@
  */
 package com.platform.modules.qkjvip.controller;
 
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
+import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.RestResponse;
+import com.platform.common.utils.StringUtils;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipMemberOrderEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberOrderService;
+import com.platform.modules.sys.entity.SysDictEntity;
+import com.platform.modules.util.ExcelSelectListUtil;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.platform.modules.util.ExportExcelUtils;
 
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  * Controller
@@ -88,7 +100,7 @@ public class QkjvipMemberOrderController extends AbstractController {
     @RequestMapping("/save")
     @RequiresPermissions("qkjvip:memberorder:save")
     public RestResponse save(@RequestBody QkjvipMemberOrderEntity qkjvipMemberOrder) {
-
+        qkjvipMemberOrder.setSource(0);
         qkjvipMemberOrderService.add(qkjvipMemberOrder);
 
         return RestResponse.success();
@@ -123,5 +135,55 @@ public class QkjvipMemberOrderController extends AbstractController {
         qkjvipMemberOrderService.deleteBatch(ids);
 
         return RestResponse.success();
+    }
+
+    /**
+     * 导入会员数据
+     */
+    @SysLog("导入订单")
+    @RequestMapping("/import")
+    @RequiresPermissions("qkjvip:memberorder:save")
+    public RestResponse importExcel(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        if (StringUtils.isBlank(fileName)) {
+            throw new BusinessException("请选择要导入的文件");
+        } else {
+            try {
+                List<QkjvipMemberOrderEntity> list = ExportExcelUtils.importExcel(file, 1, 1,QkjvipMemberOrderEntity.class);
+                for (int i = 0; i < list.size(); i++) {
+                    list.get(i).setSource(0);
+                }
+                qkjvipMemberOrderService.saveBatch(list);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return RestResponse.success().put("msg", "导入成功！");
+    }
+
+    /**
+     * 导出会员数据模板
+     */
+    @SysLog("导出会员模板")
+    @RequestMapping("/exportTpl")
+    @RequiresPermissions("qkjvip:memberorder:save")
+    public void exportTplExcel(HttpServletRequest request, HttpServletResponse response) {
+        List<QkjvipMemberOrderEntity> list = new ArrayList<>();
+        Map<String, Object> params = new HashMap<>();
+        List<SysDictEntity> dictList = new ArrayList<>();
+        String[] dictAttr = null;
+        try {
+            Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("订单表","会员订单"), QkjvipMemberOrderEntity .class, list);
+            //这里是自己加的 带下拉框的代码
+            ExcelSelectListUtil.selectList(workbook, 12, 12, new String[]{"是","非"});
+
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode( "会员订单信息表." + ExportExcelUtils.ExcelTypeEnum.XLS.getValue(), "UTF-8"));
+            workbook.write(response.getOutputStream());
+//            ExportExcelUtils.exportExcel(list,"会员信息表","会员信息",MemberEntity.class,"会员信息",response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
