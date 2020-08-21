@@ -108,12 +108,16 @@ public class QrtzMemberController extends AbstractController {
             if (list.size() > 0) {
                 list.removeAll(fromDbList); //将中酒取出的数据去除表中已存在的数据
                 addList = list;
-                memberBasicService.addBatch(addList);  //会员批量插入
+                if (addList.size() > 0) {
+                    memberBasicService.addBatch(addList);  //会员批量插入
+                }
             }
         } else if ("1".equals(timeType)) {
             if (fromDbList.size() > 0) {
                 fromDbList.removeAll(addList);
-                memberBasicService.updateBatch(fromDbList);
+                if (fromDbList.size() > 0) {
+                    memberBasicService.updateBatch(fromDbList);
+                }
             }
         }
     }
