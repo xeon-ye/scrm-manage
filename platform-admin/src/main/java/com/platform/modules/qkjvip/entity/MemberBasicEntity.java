@@ -69,10 +69,6 @@ public class MemberBasicEntity implements Serializable {
      * 所属专卖店
      */
     private String shopname;
-    /*
-     * 最后更新时间
-     */
-    private Date lastUpdateTime;
 
     @Override
     public boolean equals(Object o) {

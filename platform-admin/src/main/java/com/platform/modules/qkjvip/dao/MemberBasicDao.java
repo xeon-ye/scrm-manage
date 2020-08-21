@@ -38,17 +38,7 @@ public interface MemberBasicDao extends BaseMapper<MemberBasicEntity> {
 
     /**
      * 查询所有列表
-     *
-     * @param mbList 查询参数
      * @return List
      */
-    List<MemberBasicEntity> queryList(@Param("mbList") List<MemberBasicEntity> mbList);
-
-    /**
-     * 批量更新
-     *
-     * @param mbList mbList
-     * @return int
-     */
-    void updateByCondition(List<MemberBasicEntity> mbList);
+    List<MemberBasicEntity> queryList();
 }

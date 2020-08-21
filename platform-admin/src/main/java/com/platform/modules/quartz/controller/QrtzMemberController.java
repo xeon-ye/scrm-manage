@@ -16,6 +16,8 @@ import com.platform.common.utils.DateUtils;
 import com.platform.common.utils.StringUtils;
 import com.platform.modules.qkjvip.entity.MemberBasicEntity;
 import com.platform.modules.qkjvip.service.MemberBasicService;
+import com.platform.modules.quartz.entity.TmpQkjvipMemberBasicEntity;
+import com.platform.modules.quartz.service.TmpQkjvipMemberBasicService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.MD5Utils;
@@ -45,6 +47,8 @@ import java.util.*;
 public class QrtzMemberController extends AbstractController {
     @Autowired
     private MemberBasicService memberBasicService;
+    @Autowired
+    private TmpQkjvipMemberBasicService tmpQkjvipMemberBasicService;
     private List<MemberBasicEntity> addList;
 
     /**
@@ -64,6 +68,7 @@ public class QrtzMemberController extends AbstractController {
         String sign = "";
         String resultPost = "";  //返回结果
         List<MemberBasicEntity> mbList = new ArrayList<MemberBasicEntity>();
+        List<TmpQkjvipMemberBasicEntity> tmpList = new ArrayList<TmpQkjvipMemberBasicEntity>();
         if (!StringUtils.isEmpty(params) && params.split(",").length == 2) {   //当定时任务有参数时，按照参数指定日期同步数据
             String[] paramArr = new String[params.split(",").length];
             paramArr = params.split(",");
@@ -87,73 +92,31 @@ public class QrtzMemberController extends AbstractController {
             System.out.println("key:sign" + " vlaue:" + sign);
             resultPost = HttpClient.doPost(url + urlParam);
             mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
-            this.saveOrUpdateMember(mbList, i + "");
+            tmpList = JSON.parseArray(resultPost, TmpQkjvipMemberBasicEntity.class);
+            this.saveOrUpdateMember(mbList, tmpList, i + "");
         }
     }
 
-    public void saveOrUpdateMember(List<MemberBasicEntity> list, String timeType) {
+    public void saveOrUpdateMember(List<MemberBasicEntity> list, List<TmpQkjvipMemberBasicEntity> tmpList, String timeType) {
         List<MemberBasicEntity> fromDbList = new ArrayList<MemberBasicEntity>();
-//        List<MemberBasicEntity> addList = new ArrayList<MemberBasicEntity>();
+        if (tmpList.size() > 0) {
+            tmpQkjvipMemberBasicService.addBatch(tmpList);  //批量插入会员临时表
+            fromDbList = memberBasicService.queryList();  //取出会员表与临时表的交集(插入是为重复数据，更新时即为要更新的数据)
+        }
         if ("0".equals(timeType)) {  //注册
             addList = new ArrayList<MemberBasicEntity>();
             if (list.size() > 0) {
-                if (list.size() > 1000) {
-                    //listSize为集合长度
-                    int listSize = list.size();
-                    //每次取1000条
-                    int index=1000;
-                    //用map存起来新的分组后数据
-                    Map map = new HashMap();
-                    int keyToken = 0;
-                    for(int i = 0; i < listSize; i+=1000){
-                        //作用为Index最后没有1000条数据，则剩余的条数newList中就装几条
-                        if(i+1000 > listSize) {
-                            index = listSize - i;
-                        }
-                        List newList = list.subList(i, i+index);
-                        fromDbList = memberBasicService.queryList(newList);  //检索数据库已存在的会员信息
-                        map.put("keyName" + keyToken, fromDbList);
-                        keyToken++;
-
-                    }
-                    for (Object key : map.keySet()) {
-                        list.removeAll((Collection<?>) map.get(key));
-                    }
-                    addList = list;
-                    if (addList.size() > 0) {
-                        memberBasicService.addBatch(addList);  //会员批量插入
-                    }
-                } else {
-                    fromDbList = memberBasicService.queryList(list);  //检索数据库已存在的会员信息
-                    if (fromDbList.size() == 0) {  //说明数据库不存在，都要插入
-                        addList = list;
-                    } else {
-                        list.removeAll(fromDbList);
-                        addList = list;
-                    }
-                    if (addList.size() > 0) {
-                        memberBasicService.addBatch(addList);  //会员批量插入
-                    }
+                list.removeAll(fromDbList); //将中酒取出的数据去除表中已存在的数据
+                addList = list;
+                if (addList.size() > 0) {
+                    memberBasicService.addBatch(addList);  //会员批量插入
                 }
             }
         } else if ("1".equals(timeType)) {
-            list.removeAll(addList);
-            if (list.size() > 0) {
-                if (list.size() > 1000) {
-                    //listSize为集合长度
-                    int listSize = list.size();
-                    //每次取1000条
-                    int index = 1000;
-                    for (int i = 0; i < listSize; i += 1000) {
-                        //作用为Index最后没有1000条数据，则剩余的条数newList中就装几条
-                        if (i + 1000 > listSize) {
-                            index = listSize - i;
-                        }
-                        List newList = list.subList(i, i + index);
-                        memberBasicService.updateByCondition(newList);
-                    }
-                } else {
-                    memberBasicService.updateByCondition(list);
+            if (fromDbList.size() > 0) {
+                fromDbList.removeAll(addList);
+                if (fromDbList.size() > 0) {
+                    memberBasicService.updateBatch(fromDbList);
                 }
             }
         }

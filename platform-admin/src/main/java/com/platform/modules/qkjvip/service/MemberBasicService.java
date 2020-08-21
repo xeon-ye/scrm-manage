@@ -37,10 +37,9 @@ public interface MemberBasicService extends IService<MemberBasicEntity> {
     /**
      * 查询所有
      *
-     * @param mbList 查询参数
      * @return List
      */
-    List<MemberBasicEntity> queryList(List<MemberBasicEntity> mbList);
+    List<MemberBasicEntity> queryList();
 
     /**
      * 插入会员信息
@@ -54,5 +53,5 @@ public interface MemberBasicService extends IService<MemberBasicEntity> {
      *
      * @param mbList mbList
      */
-    void updateByCondition(List<MemberBasicEntity> mbList);
+    void updateBatch(List<MemberBasicEntity> mbList);
 }
