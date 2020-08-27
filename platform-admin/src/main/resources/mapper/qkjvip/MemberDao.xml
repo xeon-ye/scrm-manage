@@ -22,5 +22,14 @@
 		<if test="params.mobile != null and params.mobile != ''">
 			AND m.mobile = #{params.mobile}
 		</if>
+		<if test="params.ageFrom != null and params.ageFrom != '' and params.ageTo != null and params.ageTo != ''">
+			AND m.age &lt; #{params.ageTo} and m.age &gt;= #{params.ageFrom}
+		</if>
+		<if test="params.regTimeFrom != null and params.regTimeFrom != '' and params.regTimeTo != null and params.regTimeTo != ''">
+			AND m.reg_time &lt; #{params.regTimeTo} and m.reg_time &gt;= #{params.regTimeFrom}
+		</if>
+		<if test="params.paramsStr != null and params.paramsStr != ''">
+			AND ${params.paramsStr}
+		</if>
 	</select>
 </mapper>

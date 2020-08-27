@@ -13,6 +13,7 @@ package com.platform.modules.qkjvip.controller;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
@@ -52,6 +53,8 @@ public class MemberController extends AbstractController {
     private MemberService memberService;
     @Autowired
     private SysDictService sysDictService;
+//    @Autowired
+//    private MemberLabelService memberLabelService;
 
     /**
      * 查看所有列表
@@ -70,16 +73,29 @@ public class MemberController extends AbstractController {
     /**
      * 所有会员列表
      *
-     * @param params 查询参数
+     * @param member 查询参数
      * @return RestResponse
      */
-    @GetMapping("/list")
+    @PostMapping("/list")
     @RequiresPermissions("qkjvip:member:list")
-    public RestResponse list(@RequestParam Map<String, Object> params) {
+    public RestResponse list(@RequestBody MemberEntity member) {
 
+        //改为post形式传输后修改以下start
+        Map<String, Object> params = new HashMap<>();
+        params = JSON.parseObject(JSON.toJSONString(member), Map.class);
         //如需数据权限，在参数中添加DataScope
         params.put("dataScope", getDataScope("m.add_user","m.add_dept", "org_userid"));
 
+        List<String> labelIds = (List<String>) params.get("labelIdList");
+        String paramsStr = "";
+        if (labelIds != null && labelIds.size() > 0) {
+            for (int i = 0; i < labelIds.size(); i++) {
+                paramsStr += "m.member_label like '%" + labelIds.get(i) + "%' and ";
+            }
+            paramsStr += "1=1";
+        }
+        params.put("paramsStr", paramsStr);
+        //改为post形式传输后修改以下end
         Page page = memberService.queryPage(params);
 
         return RestResponse.success().put("page", page);
@@ -95,6 +111,13 @@ public class MemberController extends AbstractController {
     @RequiresPermissions("qkjvip:member:info")
     public RestResponse info(@PathVariable("memberId") String memberId) {
         MemberEntity member = memberService.getById(memberId);
+        if (StringUtils.isNotEmpty(member.getMemberLabel())) {
+            member.setLabelIdList(Arrays.asList(member.getMemberLabel().split(",")));
+        }
+        //获取会员标签(主子表形式-目前暂时废弃)
+//        List<String> labelList = memberLabelService.queryLabelList(memberId);
+//        member.setLabelIdList(labelList);
+
         return RestResponse.success().put("member", member);
     }
 
@@ -115,6 +138,9 @@ public class MemberController extends AbstractController {
         member.setAddUser(getUserId());
         member.setAddDept(getOrgNo());
         member.setAddTime(new Date());
+        if (member.getLabelIdList() != null && member.getLabelIdList().size() > 0) {
+            member.setMemberLabel(StringUtils.join(member.getLabelIdList().toArray(), ","));
+        }
         memberService.add(member, params);
 
         return RestResponse.success().put("member", member);
@@ -134,7 +160,9 @@ public class MemberController extends AbstractController {
 
         Map<String, Object> params = new HashMap<>(2);
         params.put("dataScope", getDataScope());
-
+        if (member.getLabelIdList() != null && member.getLabelIdList().size() > 0) {
+            member.setMemberLabel(StringUtils.join(member.getLabelIdList().toArray(), ","));
+        }
         memberService.update(member, params);
 
         return RestResponse.success().put("member", member);

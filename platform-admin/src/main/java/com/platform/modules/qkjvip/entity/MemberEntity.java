@@ -63,10 +63,10 @@ public class MemberEntity implements Serializable {
     @Excel(name = "性别", orderNum = "4", width = 15,replace={"男_1","女_2","未知_3"})
     private Integer sex;
     /*
-     * 年龄区间
+     * 年龄
      */
-    @Excel(name = "年龄区间", orderNum = "5", width = 15)
-    private String ageSection;
+    @Excel(name = "年龄", orderNum = "5", width = 15)
+    private Integer age;
     /*
      * 生日
      */
@@ -177,7 +177,34 @@ public class MemberEntity implements Serializable {
      */
     @Excel(name = "微信头像", orderNum = "23", width = 15)
     private String headImgUrl;
+    /*
+    * 会员标签
+     */
+    private String memberLabel;
 
     @TableField(exist = false)
     private String orgUsername;
+    /**
+     * 会员标签列表
+     */
+    @TableField(exist = false)
+    private List<String> labelIdList;
+
+    @TableField(exist = false)
+    private Integer ageFrom;
+
+    @TableField(exist = false)
+    private Integer ageTo;
+
+    @TableField(exist = false)
+    private String regTimeFrom;
+
+    @TableField(exist = false)
+    private String regTimeTo;
+
+    @TableField(exist = false)
+    private String page;
+
+    @TableField(exist = false)
+    private String limit;
 }

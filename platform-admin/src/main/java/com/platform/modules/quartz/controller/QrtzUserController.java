@@ -110,7 +110,7 @@ public class QrtzUserController extends AbstractController {
         for(SysUserEntity user:users){
             Boolean flag = true;  //用户是否在oa存在标识true不存在
             for (QrtzUserEntity oauser:oaUsers) {
-                if((user.getOaId() != null && user.getOaId().equals(oauser.getId().toString())) || user.getUserName().equals("admin")) {//存在
+                if((user.getOaId() != null && user.getOaId().equals(oauser.getId().toString())) || user.getUserName().contains("admin")) {//存在
                     flag=false;
                     break;
                 }

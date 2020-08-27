@@ -14,7 +14,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.platform.common.utils.Query;
 import com.platform.modules.qkjvip.dao.MemberDao;
-import com.platform.modules.qkjvip.entity.MemberBasicEntity;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.service.MemberService;
 import org.springframework.stereotype.Service;
@@ -31,6 +30,9 @@ import java.util.Map;
 
 @Service("memberService")
 public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> implements MemberService {
+//    @Autowired
+//    private MemberLabelService mmberLabelService;
+
     @Override
     public List<MemberEntity> queryAll(Map<String, Object> params) {
         return baseMapper.queryAll(params);
@@ -48,11 +50,15 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     @Override
     public void add(MemberEntity member, Map<String, Object> params) {
         this.save(member);
+        //保存会员与标签的关系
+//        mmberLabelService.saveOrUpdate(member.getMemberId(), member.getLabelIdList());
     }
 
     @Override
     public void add(MemberEntity member) {
         this.save(member);
+        //保存会员与标签的关系
+//        mmberLabelService.saveOrUpdate(member.getMemberId(), member.getLabelIdList());
     }
 
     @Override
@@ -63,6 +69,8 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     @Override
     public void update(MemberEntity member, Map<String, Object> params) {
         this.updateById(member);
+        //保存会员与标签的关系
+//        mmberLabelService.saveOrUpdate(member.getMemberId(), member.getLabelIdList());
     }
 
     @Override

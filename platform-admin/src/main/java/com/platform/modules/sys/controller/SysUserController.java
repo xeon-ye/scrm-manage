@@ -303,7 +303,7 @@ public class SysUserController extends AbstractController {
         for(SysUserEntity user:users){
             Boolean flag = true;  //用户是否在oa存在标识true不存在
             for (UserBean oauser:oaUsers) {
-                if((user.getOaId() != null && user.getOaId().equals(oauser.getUserid().toString())) || user.getUserName().equals("admin")) {//存在
+                if((user.getOaId() != null && user.getOaId().equals(oauser.getUserid().toString())) || user.getUserName().contains("admin")) {//存在
                     flag=false;
                     break;
                 }

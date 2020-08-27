@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.modules.qkjvip.dao.QkjvipTaglibsDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.LABEL_ID,
+        T.LABEL_NAME,
+        T.ADD_DEPT,
+        T.ADD_TIME,
+        T.ADD_USER
+        FROM QKJVIP_TAGLIBS T
+        WHERE 1=1
+        <if test="params.labelName != null and params.labelName.trim() != ''">
+            AND T.LABEL_NAME LIKE '%${params.labelName}%'
+        </if>
+    </sql>
+
+    <select id="selectQkjvipTaglibsPage" resultType="com.platform.modules.qkjvip.entity.QkjvipTaglibsEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.platform.modules.qkjvip.entity.QkjvipTaglibsEntity">
+        <include refid="selectSql"/>
+        ORDER BY add_time ASC
+    </select>
+</mapper>
