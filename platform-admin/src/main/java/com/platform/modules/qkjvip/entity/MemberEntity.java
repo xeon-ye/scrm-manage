@@ -181,6 +181,47 @@ public class MemberEntity implements Serializable {
     * 会员标签
      */
     private String memberLabel;
+    /*
+    * 近一个月购买金额
+     */
+    private Double amount1;
+    /*
+     * 近三个月购买金额
+     */
+    private Double amount3;
+    /*
+     * 近半年购买金额
+     */
+    private Double amount6;
+    /*
+     * 近一年购买金额
+     */
+    private Double amount12;
+    /*
+    * 近一个月购买次数
+     */
+    private Integer buynum1;
+    /*
+     * 近三个月购买次数
+     */
+    private Integer buynum3;
+    /*
+     * 近半年购买次数
+     */
+    private Integer buynum6;
+    /*
+     * 近一年购买次数
+     */
+    private Integer buynum12;
+    /*
+     * 近一年客单价
+     */
+    private Double unitprice;
+
+    /*
+     * 最后购买日期
+     */
+    private String lastbuydate;
 
     @TableField(exist = false)
     private String orgUsername;
@@ -207,4 +248,30 @@ public class MemberEntity implements Serializable {
 
     @TableField(exist = false)
     private String limit;
+
+    @TableField(exist = false)
+    private String buyPeriod;
+
+    @TableField(exist = false)
+    private Double amountfrom;
+    @TableField(exist = false)
+    private Double amountto;
+
+    @TableField(exist = false)
+    private Integer buynumfrom;
+    @TableField(exist = false)
+    private Integer buynumto;
+
+    @TableField(exist = false)
+    private Double unitpricefrom;
+    @TableField(exist = false)
+    private Double unitpriceto;
+
+    @TableField(exist = false)
+    private String lastbuydatefrom;
+
+    @TableField(exist = false)
+    private String lastbuydateto;
+
+
 }
