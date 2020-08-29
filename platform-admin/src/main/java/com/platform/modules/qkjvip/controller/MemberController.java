@@ -73,29 +73,31 @@ public class MemberController extends AbstractController {
     /**
      * 所有会员列表
      *
-     * @param member 查询参数
+     * @param params 查询参数
      * @return RestResponse
      */
-    @PostMapping("/list")
+    @GetMapping("/list")
     @RequiresPermissions("qkjvip:member:list")
-    public RestResponse list(@RequestBody MemberEntity member) {
+    public RestResponse list(@RequestParam Map<String, Object> params) {
 
-        //改为post形式传输后修改以下start
-        Map<String, Object> params = new HashMap<>();
-        params = JSON.parseObject(JSON.toJSONString(member), Map.class);
-        //如需数据权限，在参数中添加DataScope
-        params.put("dataScope", getDataScope("m.add_user","m.add_dept", "org_userid"));
+//        //改为post形式传输后修改以下start
+//        Map<String, Object> params = new HashMap<>();
+//        params = JSON.parseObject(JSON.toJSONString(member), Map.class);
+//        //如需数据权限，在参数中添加DataScope
+//        params.put("dataScope", getDataScope("m.add_user","m.add_dept", "org_userid"));
+//
+//        List<String> labelIds = (List<String>) params.get("labelIdList");
+//        String paramsStr = "";
+//        if (labelIds != null && labelIds.size() > 0) {
+//            for (int i = 0; i < labelIds.size(); i++) {
+//                paramsStr += "m.member_label like '%" + labelIds.get(i) + "%' and ";
+//            }
+//            paramsStr += "1=1";
+//        }
+//        params.put("paramsStr", paramsStr);
+//        //改为post形式传输后修改以下end
+//        Page page = memberService.queryPage(params);
 
-        List<String> labelIds = (List<String>) params.get("labelIdList");
-        String paramsStr = "";
-        if (labelIds != null && labelIds.size() > 0) {
-            for (int i = 0; i < labelIds.size(); i++) {
-                paramsStr += "m.member_label like '%" + labelIds.get(i) + "%' and ";
-            }
-            paramsStr += "1=1";
-        }
-        params.put("paramsStr", paramsStr);
-        //改为post形式传输后修改以下end
         Page page = memberService.queryPage(params);
 
         return RestResponse.success().put("page", page);
