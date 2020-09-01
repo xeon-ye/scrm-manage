@@ -12,6 +12,7 @@ package com.platform.modules.qkjvip.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.platform.modules.pageCont.pageCount;
 import com.platform.modules.qkjvip.entity.MemberBasicEntity;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 
@@ -31,6 +32,14 @@ public interface MemberService extends IService<MemberEntity> {
      * @return List
      */
     List<MemberEntity> queryAll(Map<String, Object> params);
+
+    /**
+     * 查询条数
+     *
+     * @param params 查询参数
+     * @return List
+     */
+    pageCount selectMemberCount(Map<String, Object> params);
 
     /**
      * 分页查询

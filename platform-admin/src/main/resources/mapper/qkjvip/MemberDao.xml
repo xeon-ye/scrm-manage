@@ -2,32 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.platform.modules.qkjvip.dao.MemberDao">
-	<select id="queryAll" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
-		SELECT * FROM qkjvip_member
-		WHERE 1=1
-		<if test="params.memberName != null and params.memberName != ''">
-			AND member_name LIKE '%${params.memberName}%'
-		</if>
-        <if test="params.realName != null and params.realName != ''">
-            AND real_name LIKE '%${params.realName}%'
+    <sql id="selectSql">
+        <if test="params.memberName != null and params.memberName != ''">
+            AND m.member_name LIKE '%${params.memberName}%'
         </if>
-		<if test="params.mobile != null and params.mobile != ''">
-			AND mobile = #{params.mobile}
-		</if>
-	</select>
-	<select id="selectMemberList" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
-		SELECT m.*,u.REAL_NAME orgUsername FROM qkjvip_member m
-		LEFT JOIN sys_user u ON (m.org_userid=u.USER_ID)
-		WHERE 1=1
-		<if test="params.memberName != null and params.memberName != ''">
-			AND m.member_name LIKE '%${params.memberName}%'
-		</if>
         <if test="params.realName != null and params.realName != ''">
             AND m.real_name LIKE '%${params.realName}%'
         </if>
-		<if test="params.mobile != null and params.mobile != ''">
-			AND m.mobile = #{params.mobile}
-		</if>
+        <if test="params.mobile != null and params.mobile != ''">
+            AND m.mobile = #{params.mobile}
+        </if>
         <if test="params.sex != null and params.sex != ''">
             AND m.sex = #{params.sex}
         </if>
@@ -37,7 +21,7 @@
         <if test="params.orgUserid != null and params.orgUserid != ''">
             AND m.org_userid = #{params.orgUserid}
         </if>
-		<!-- 年龄区间start -->
+        <!-- 年龄区间start -->
         <if test="params.ageFrom != null and params.ageFrom != ''">
             AND m.age &gt;= #{params.ageFrom}
         </if>
@@ -130,8 +114,22 @@
         </if>
         <!-- 最后购买日期end -->
 
-		<if test="params.paramsStr != null and params.paramsStr != ''">
-			AND ${params.paramsStr}
-		</if>
+        <if test="params.paramsStr != null and params.paramsStr != ''">
+            AND ${params.paramsStr}
+        </if>
+    </sql>
+	<select id="queryAll" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
+        SELECT m.* FROM qkjvip_member m
+        <include refid="selectSql"/>
 	</select>
+	<select id="selectMemberList" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
+        SELECT m.*,u.REAL_NAME orgUsername FROM qkjvip_member m
+        LEFT JOIN sys_user u ON (m.org_userid=u.USER_ID)
+        WHERE 1=1
+        <include refid="selectSql"/>
+	</select>
+    <select id="selectMemberCount" resultType="com.platform.modules.pageCont.pageCount">
+        SELECT count(*) as countNumber FROM qkjvip_member m where 1=1
+        <include refid="selectSql"/>
+    </select>
 </mapper>

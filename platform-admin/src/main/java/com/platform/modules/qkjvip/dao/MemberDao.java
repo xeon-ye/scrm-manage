@@ -12,6 +12,7 @@ package com.platform.modules.qkjvip.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.platform.modules.pageCont.pageCount;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -43,4 +44,12 @@ public interface MemberDao extends BaseMapper<MemberEntity> {
      * @return List
      */
     List<MemberEntity> selectMemberList(IPage page, @Param("params") Map<String, Object> params);
+
+    /**
+     * 查询条数
+     *
+     * @param params 查询参数
+     * @return List
+     */
+    pageCount selectMemberCount(@Param("params") Map<String, Object> params);
 }

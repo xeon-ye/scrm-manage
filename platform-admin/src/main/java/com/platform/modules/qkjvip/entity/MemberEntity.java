@@ -252,11 +252,11 @@ public class MemberEntity implements Serializable {
     @TableField(exist = false)
     private String regTimeTo;
 
-    @TableField(exist = false)
-    private String page;
-
-    @TableField(exist = false)
-    private String limit;
+//    @TableField(exist = false)
+//    private String page;
+//
+//    @TableField(exist = false)
+//    private String limit;
 
     @TableField(exist = false)
     private String buyPeriod;
