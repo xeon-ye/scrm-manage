@@ -75,7 +75,7 @@ public class MemberEntity implements Serializable {
     /*
      * 会员类型
      */
-    @Excel(name = "会员类型", orderNum = "7", width = 15,replace={"门店会员_0","团购会员_1","大店会员_2","意见领袖_3","普通消费者_4","公众粉丝_5","其他_6"})
+    @Excel(name = "会员类型", orderNum = "7", width = 15,replace={"门店会员_0","团购会员_1","大店会员_2","意见领袖_3","普通消费者_4","公众粉丝_5","其他_6","零售_7","批发_8","员工_9"})
     private String memberType;
     /*
      * 会员性质
@@ -85,7 +85,7 @@ public class MemberEntity implements Serializable {
     /*
      * 会员等级
      */
-    @Excel(name = "会员等级", orderNum = "9", width = 15,replace={"普通会员_0","三星会员_1","四星会员_2","五星会员_3","六星会员_4"})
+    @Excel(name = "会员等级", orderNum = "9", width = 15,replace={"普通会员_0","三星会员_1","四星会员_2","五星会员_3","六星会员_4","银牌会员_5"})
     private String memberLevel;
     /*
      * 会员来源
@@ -222,6 +222,15 @@ public class MemberEntity implements Serializable {
      * 最后购买日期
      */
     private String lastbuydate;
+    /*
+    * 身份证号
+     */
+    @Excel(name = "身份证", orderNum = "24", width = 15)
+    private String idcard;
+    /*
+    * 是否线下会员
+     */
+    private Integer offlineflag;
 
     @TableField(exist = false)
     private String orgUsername;

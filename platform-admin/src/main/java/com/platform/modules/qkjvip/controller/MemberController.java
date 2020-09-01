@@ -83,8 +83,8 @@ public class MemberController extends AbstractController {
 //        //改为post形式传输后修改以下start
 //        Map<String, Object> params = new HashMap<>();
 //        params = JSON.parseObject(JSON.toJSONString(member), Map.class);
-//        //如需数据权限，在参数中添加DataScope
-//        params.put("dataScope", getDataScope("m.add_user","m.add_dept", "org_userid"));
+        //如需数据权限，在参数中添加DataScope
+//        params.put("dataScope", getDataScope("m.add_user","m.add_dept","m.org_userid"));
 //
 //        List<String> labelIds = (List<String>) params.get("labelIdList");
 //        String paramsStr = "";
@@ -140,6 +140,7 @@ public class MemberController extends AbstractController {
         member.setAddUser(getUserId());
         member.setAddDept(getOrgNo());
         member.setAddTime(new Date());
+        member.setOfflineflag(1);
         if (member.getLabelIdList() != null && member.getLabelIdList().size() > 0) {
             member.setMemberLabel(StringUtils.join(member.getLabelIdList().toArray(), ","));
         }
@@ -278,6 +279,7 @@ public class MemberController extends AbstractController {
                     list.get(i).setAddUser(getUserId());
                     list.get(i).setAddDept(getOrgNo());
                     list.get(i).setAddTime(new Date());
+                    list.get(i).setOfflineflag(1);
                 }
                 memberService.addBatch(list);
             } catch (IOException e) {

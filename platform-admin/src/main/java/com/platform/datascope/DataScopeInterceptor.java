@@ -72,7 +72,7 @@ public class DataScopeInterceptor extends SqlExplainInterceptor implements Inter
                     String userId = dataScope.getUserId();
                     String newsql=filterSql.toString();
                     if(newsql.contains("ORDER BY")){
-                        Integer wz=newsql.indexOf("ORDER BY");
+                        Integer wz = newsql.indexOf("ORDER BY", newsql.indexOf("ORDER BY") + 1);
                         String beforsql="";
                         if (StringUtils.isNotBlank(alias)) {
                             beforsql+=" and ("+orgAlias+" in ("+alias+")";

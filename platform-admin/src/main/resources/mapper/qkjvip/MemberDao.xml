@@ -8,6 +8,9 @@
 		<if test="params.memberName != null and params.memberName != ''">
 			AND member_name LIKE '%${params.memberName}%'
 		</if>
+        <if test="params.realName != null and params.realName != ''">
+            AND real_name LIKE '%${params.realName}%'
+        </if>
 		<if test="params.mobile != null and params.mobile != ''">
 			AND mobile = #{params.mobile}
 		</if>
@@ -19,50 +22,39 @@
 		<if test="params.memberName != null and params.memberName != ''">
 			AND m.member_name LIKE '%${params.memberName}%'
 		</if>
+        <if test="params.realName != null and params.realName != ''">
+            AND m.real_name LIKE '%${params.realName}%'
+        </if>
 		<if test="params.mobile != null and params.mobile != ''">
 			AND m.mobile = #{params.mobile}
 		</if>
         <if test="params.sex != null and params.sex != ''">
             AND m.sex = #{params.sex}
         </if>
+        <if test="params.orgNo != null and params.orgNo != ''">
+            AND m.org_no = #{params.orgNo}
+        </if>
+        <if test="params.orgUserid != null and params.orgUserid != ''">
+            AND m.org_userid = #{params.orgUserid}
+        </if>
 		<!-- 年龄区间start -->
-		<if test="params.ageFrom != null and params.ageFrom != '' and params.ageTo != null and params.ageTo != ''">
-			AND m.age &lt; #{params.ageTo} and m.age &gt;= #{params.ageFrom}
-		</if>
-        <if test="params.ageFrom != null and params.ageFrom != '' and (params.ageTo == null or params.ageTo == '')">
+        <if test="params.ageFrom != null and params.ageFrom != ''">
             AND m.age &gt;= #{params.ageFrom}
         </if>
-        <if test="(params.ageFrom == null or params.ageFrom == '') and params.ageTo != null and params.ageTo != ''">
+        <if test="params.ageTo != null and params.ageTo != ''">
             AND m.age &lt; #{params.ageTo}
         </if>
         <!-- 年龄区间end -->
         <!-- 注册时间start -->
-		<if test="params.regTimeFrom != null and params.regTimeFrom != '' and params.regTimeTo != null and params.regTimeTo != ''">
-			AND m.reg_time &lt; #{params.regTimeTo} and m.reg_time &gt;= #{params.regTimeFrom}
-		</if>
-        <if test="params.regTimeFrom != null and params.regTimeFrom != '' and (params.regTimeTo == null or params.regTimeTo == '')">
+        <if test="params.regTimeFrom != null and params.regTimeFrom != ''">
             AND m.reg_time &gt;= #{params.regTimeFrom}
         </if>
-        <if test="(params.regTimeFrom == null or params.regTimeFrom == '') and params.regTimeTo != null and params.regTimeTo != ''">
+        <if test="params.regTimeTo != null and params.regTimeTo != ''">
             AND m.reg_time &lt; #{params.regTimeTo}
         </if>
         <!-- 注册时间end -->
         <!-- 近期购买金额start -->
-        <if test="params.amountfrom != null and params.amountfrom != '' and params.amountto != null and params.amountto != ''">
-            <if test="params.buyPeriod == 1">
-                AND m.amount1 &lt;= #{params.amountto} and m.amount1 &gt;= #{params.amountfrom}
-            </if>
-            <if test="params.buyPeriod == 2">
-                AND m.amount3 &lt;= #{params.amountto} and m.amount3 &gt;= #{params.amountfrom}
-            </if>
-            <if test="params.buyPeriod == 3">
-                AND m.amount6 &lt;= #{params.amountto} and m.amount6 &gt;= #{params.amountfrom}
-            </if>
-            <if test="params.buyPeriod == 4">
-                AND m.amount12 &lt;= #{params.amountto} and m.amount12 &gt;= #{params.amountfrom}
-            </if>
-        </if>
-        <if test="params.amountfrom != null and params.amountfrom != '' and (params.amountto == null or params.amountto == '')">
+        <if test="params.amountfrom != null and params.amountfrom != ''">
             <if test="params.buyPeriod == 1">
                 AND m.amount1 &gt;= #{params.amountfrom}
             </if>
@@ -76,37 +68,23 @@
                 AND m.amount12 &gt;= #{params.amountfrom}
             </if>
         </if>
-        <if test="(params.amountfrom == null or params.amountfrom == '') and params.amountto != null and params.amountto != ''">
+        <if test="params.amountto != null and params.amountto != ''">
             <if test="params.buyPeriod == 1">
-                AND m.amount1 &lt;= #{params.amountto}
+                AND m.amount1 &lt; #{params.amountto}
             </if>
             <if test="params.buyPeriod == 2">
-                AND m.amount3 &lt;= #{params.amountto}
+                AND m.amount3 &lt; #{params.amountto}
             </if>
             <if test="params.buyPeriod == 3">
-                AND m.amount6 &lt;= #{params.amountto}
+                AND m.amount6 &lt; #{params.amountto}
             </if>
             <if test="params.buyPeriod == 4">
-                AND m.amount12 &lt;= #{params.amountto}
+                AND m.amount12 &lt; #{params.amountto}
             </if>
         </if>
         <!-- 近期购买金额end -->
         <!-- 近期购买次数start -->
-        <if test="params.buynumfrom != null and params.buynumfrom != '' and params.buynumto != null and params.buynumto != ''">
-            <if test="params.buyPeriod == 1">
-                AND m.buynum1 &lt;= #{params.buynumto} and m.buynum1 &gt;= #{params.buynumfrom}
-            </if>
-            <if test="params.buyPeriod == 2">
-                AND m.buynum3 &lt;= #{params.buynumto} and m.buynum3 &gt;= #{params.buynumfrom}
-            </if>
-            <if test="params.buyPeriod == 3">
-                AND m.buynum6 &lt;= #{params.buynumto} and m.buynum6 &gt;= #{params.buynumfrom}
-            </if>
-            <if test="params.buyPeriod == 4">
-                AND m.buynum12 &lt;= #{params.buynumto} and m.buynum12 &gt;= #{params.buynumfrom}
-            </if>
-        </if>
-        <if test="params.buynumfrom != null and params.buynumfrom != '' and (params.buynumto == null or params.buynumto == '')">
+        <if test="params.buynumfrom != null and params.buynumfrom != ''">
             <if test="params.buyPeriod == 1">
                 AND m.buynum1 &gt;= #{params.buynumfrom}
             </if>
@@ -120,40 +98,34 @@
                 AND m.buynum12 &gt;= #{params.buynumfrom}
             </if>
         </if>
-        <if test="(params.buynumfrom == null or params.buynumfrom == '') and params.buynumto != null and params.buynumto != ''">
+        <if test="params.buynumto != null and params.buynumto != ''">
             <if test="params.buyPeriod == 1">
-                AND m.buynum1 &lt;= #{params.buynumto}
+                AND m.buynum1 &lt; #{params.buynumto}
             </if>
             <if test="params.buyPeriod == 2">
-                AND m.buynum3 &lt;= #{params.buynumto}
+                AND m.buynum3 &lt; #{params.buynumto}
             </if>
             <if test="params.buyPeriod == 3">
-                AND m.buynum6 &lt;= #{params.buynumto}
+                AND m.buynum6 &lt; #{params.buynumto}
             </if>
             <if test="params.buyPeriod == 4">
-                AND m.buynum12 &lt;= #{params.buynumto}
+                AND m.buynum12 &lt; #{params.buynumto}
             </if>
         </if>
         <!-- 近期购买次数end -->
         <!-- 近一年客单价start-->
-        <if test="params.unitpricefrom != null and params.unitpricefrom != '' and params.unitpriceto != null or params.unitpriceto != ''">
-            AND m.unitprice &lt;= #{params.unitpriceto} and m.unitprice &gt;= #{params.unitpricefrom}
-        </if>
-        <if test="params.unitpricefrom != null and params.unitpricefrom != '' and (params.unitpriceto == null or params.unitpriceto == '')">
+        <if test="params.unitpricefrom != null and params.unitpricefrom != ''">
             AND m.unitprice &gt;= #{params.unitpricefrom}
         </if>
-        <if test="(params.unitpricefrom == null or params.unitpricefrom == '') and params.unitpriceto != null and params.unitpriceto != ''">
-            AND m.unitprice &lt;= #{params.unitpriceto}
+        <if test="params.unitpriceto != null and params.unitpriceto != ''">
+            AND m.unitprice &lt; #{params.unitpriceto}
         </if>
         <!-- 近一年客单价end-->
         <!-- 最后购买日期start -->
-        <if test="params.lastbuydatefrom != null and params.lastbuydatefrom != '' and params.lastbuydateto != null or params.lastbuydateto != ''">
-            AND m.lastbuydate &lt; #{params.lastbuydateto} and m.lastbuydate &gt;= #{params.lastbuydatefrom}
-        </if>
-        <if test="params.lastbuydatefrom != null and params.lastbuydatefrom != '' and (params.lastbuydateto == null or params.lastbuydateto == '')">
+        <if test="params.lastbuydatefrom != null and params.lastbuydatefrom != ''">
             AND m.lastbuydate &gt;= #{params.lastbuydatefrom}
         </if>
-        <if test="(params.lastbuydatefrom == null or params.lastbuydatefrom == '') and params.lastbuydateto != null and params.lastbuydateto != ''">
+        <if test="params.lastbuydateto != null and params.lastbuydateto != ''">
             AND m.lastbuydate &lt; #{params.lastbuydateto}
         </if>
         <!-- 最后购买日期end -->
