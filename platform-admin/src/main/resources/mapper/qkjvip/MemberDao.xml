@@ -119,7 +119,7 @@
         </if>
     </sql>
 	<select id="queryAll" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
-        SELECT m.* FROM qkjvip_member m
+        SELECT m.* FROM qkjvip_member m WHERE 1=1
         <include refid="selectSql"/>
 	</select>
 	<select id="selectMemberList" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
