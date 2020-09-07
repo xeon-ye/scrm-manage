@@ -13,6 +13,7 @@ package com.platform.modules.qkjvip.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.platform.common.utils.Query;
+import com.platform.modules.pageCont.pageCount;
 import com.platform.modules.qkjvip.dao.MemberDao;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.service.MemberService;
@@ -36,6 +37,11 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     @Override
     public List<MemberEntity> queryAll(Map<String, Object> params) {
         return baseMapper.queryAll(params);
+    }
+
+    @Override
+    public pageCount selectMemberCount(Map<String, Object> params) {
+        return baseMapper.selectMemberCount(params);
     }
 
     @Override

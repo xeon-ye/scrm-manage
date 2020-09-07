@@ -20,6 +20,7 @@ import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.validator.ValidatorUtils;
 import com.platform.common.validator.group.UpdateGroup;
+import com.platform.modules.pageCont.pageCount;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.service.MemberService;
 import com.platform.modules.sys.controller.AbstractController;
@@ -73,31 +74,33 @@ public class MemberController extends AbstractController {
     /**
      * 所有会员列表
      *
-     * @param member 查询参数
+     * @param params 查询参数
      * @return RestResponse
      */
-    @PostMapping("/list")
+    @GetMapping("/list")
     @RequiresPermissions("qkjvip:member:list")
-    public RestResponse list(@RequestBody MemberEntity member) {
-
-        //改为post形式传输后修改以下start
-        Map<String, Object> params = new HashMap<>();
-        params = JSON.parseObject(JSON.toJSONString(member), Map.class);
+    public RestResponse list(@RequestParam Map<String, Object> params) {
+//        //改为post形式传输后修改以下start
+//        Map<String, Object> params = new HashMap<>();
+//        params = JSON.parseObject(JSON.toJSONString(member), Map.class);
         //如需数据权限，在参数中添加DataScope
-        params.put("dataScope", getDataScope("m.add_user","m.add_dept", "org_userid"));
+        params.put("dataScope", getDataScope("m.add_user","m.add_dept","m.org_userid"));
+//
+//        List<String> labelIds = (List<String>) params.get("labelIdList");
+//        String paramsStr = "";
+//        if (labelIds != null && labelIds.size() > 0) {
+//            for (int i = 0; i < labelIds.size(); i++) {
+//                paramsStr += "m.member_label like '%" + labelIds.get(i) + "%' and ";
+//            }
+//            paramsStr += "1=1";
+//        }
+//        params.put("paramsStr", paramsStr);
+//        //改为post形式传输后修改以下end
+//        Page page = memberService.queryPage(params);
 
-        List<String> labelIds = (List<String>) params.get("labelIdList");
-        String paramsStr = "";
-        if (labelIds != null && labelIds.size() > 0) {
-            for (int i = 0; i < labelIds.size(); i++) {
-                paramsStr += "m.member_label like '%" + labelIds.get(i) + "%' and ";
-            }
-            paramsStr += "1=1";
-        }
-        params.put("paramsStr", paramsStr);
-        //改为post形式传输后修改以下end
         Page page = memberService.queryPage(params);
-
+        pageCount pageCount = memberService.selectMemberCount(params);
+        page.setTotal(pageCount.getCountNumber());
         return RestResponse.success().put("page", page);
     }
 
@@ -138,6 +141,7 @@ public class MemberController extends AbstractController {
         member.setAddUser(getUserId());
         member.setAddDept(getOrgNo());
         member.setAddTime(new Date());
+        member.setOfflineflag(1);
         if (member.getLabelIdList() != null && member.getLabelIdList().size() > 0) {
             member.setMemberLabel(StringUtils.join(member.getLabelIdList().toArray(), ","));
         }
@@ -276,6 +280,7 @@ public class MemberController extends AbstractController {
                     list.get(i).setAddUser(getUserId());
                     list.get(i).setAddDept(getOrgNo());
                     list.get(i).setAddTime(new Date());
+                    list.get(i).setOfflineflag(1);
                 }
                 memberService.addBatch(list);
             } catch (IOException e) {

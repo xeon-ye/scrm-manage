@@ -75,7 +75,7 @@ public class MemberEntity implements Serializable {
     /*
      * 会员类型
      */
-    @Excel(name = "会员类型", orderNum = "7", width = 15,replace={"门店会员_0","团购会员_1","大店会员_2","意见领袖_3","普通消费者_4","公众粉丝_5","其他_6"})
+    @Excel(name = "会员类型", orderNum = "7", width = 15,replace={"门店会员_0","团购会员_1","大店会员_2","意见领袖_3","普通消费者_4","公众粉丝_5","其他_6","零售_7","批发_8","员工_9"})
     private String memberType;
     /*
      * 会员性质
@@ -85,7 +85,7 @@ public class MemberEntity implements Serializable {
     /*
      * 会员等级
      */
-    @Excel(name = "会员等级", orderNum = "9", width = 15,replace={"普通会员_0","三星会员_1","四星会员_2","五星会员_3","六星会员_4"})
+    @Excel(name = "会员等级", orderNum = "9", width = 15,replace={"普通会员_0","三星会员_1","四星会员_2","五星会员_3","六星会员_4","银牌会员_5"})
     private String memberLevel;
     /*
      * 会员来源
@@ -181,6 +181,56 @@ public class MemberEntity implements Serializable {
     * 会员标签
      */
     private String memberLabel;
+    /*
+    * 近一个月购买金额
+     */
+    private Double amount1;
+    /*
+     * 近三个月购买金额
+     */
+    private Double amount3;
+    /*
+     * 近半年购买金额
+     */
+    private Double amount6;
+    /*
+     * 近一年购买金额
+     */
+    private Double amount12;
+    /*
+    * 近一个月购买次数
+     */
+    private Integer buynum1;
+    /*
+     * 近三个月购买次数
+     */
+    private Integer buynum3;
+    /*
+     * 近半年购买次数
+     */
+    private Integer buynum6;
+    /*
+     * 近一年购买次数
+     */
+    private Integer buynum12;
+    /*
+     * 近一年客单价
+     */
+    private Double unitprice;
+
+    /*
+     * 最后购买日期
+     */
+    private String lastbuydate;
+    /*
+    * 身份证号
+     */
+    @Excel(name = "身份证", orderNum = "24", width = 15)
+    private String idcard;
+    /*
+    * 是否线下会员
+     */
+    private Integer offlineflag;
 
     @TableField(exist = false)
     private String orgUsername;
@@ -202,9 +252,35 @@ public class MemberEntity implements Serializable {
     @TableField(exist = false)
     private String regTimeTo;
 
-    @TableField(exist = false)
-    private String page;
+//    @TableField(exist = false)
+//    private String page;
+//
+//    @TableField(exist = false)
+//    private String limit;
 
     @TableField(exist = false)
-    private String limit;
+    private String buyPeriod;
+
+    @TableField(exist = false)
+    private Double amountfrom;
+    @TableField(exist = false)
+    private Double amountto;
+
+    @TableField(exist = false)
+    private Integer buynumfrom;
+    @TableField(exist = false)
+    private Integer buynumto;
+
+    @TableField(exist = false)
+    private Double unitpricefrom;
+    @TableField(exist = false)
+    private Double unitpriceto;
+
+    @TableField(exist = false)
+    private String lastbuydatefrom;
+
+    @TableField(exist = false)
+    private String lastbuydateto;
+
+
 }
