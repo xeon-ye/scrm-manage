@@ -112,12 +112,10 @@ public class QrtzMemberOrderController extends AbstractController {
                             toIndex=listSize-j;
                         }
                         List newList = addList.subList(j,j+toIndex);
-                        if (newList.size() > 0) {
-                            qkjvipMemberOrderService.deleteBatchByOrder(newList);
-                        }
+                        qkjvipMemberOrderService.deleteBatchByOrder(newList);
                     }
                 }else{
-                    if (addList.size() > 0) {
+                    if(addList!=null&&addList.size()>0){
                         qkjvipMemberOrderService.deleteBatchByOrder(addList);
                     }
                 }
