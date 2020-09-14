@@ -144,6 +144,12 @@
             <scope>system</scope>
             <systemPath>${pom.basedir}/src/lib/async-http-client-1.9.32.jar</systemPath>
         </dependency>
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.46</version>
+        </dependency>
     </dependencies>
 
     <build>

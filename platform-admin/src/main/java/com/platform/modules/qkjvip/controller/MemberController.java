@@ -84,7 +84,7 @@ public class MemberController extends AbstractController {
 //        Map<String, Object> params = new HashMap<>();
 //        params = JSON.parseObject(JSON.toJSONString(member), Map.class);
         //如需数据权限，在参数中添加DataScope
-        params.put("dataScope", getDataScope("m.add_user","m.add_dept","m.org_userid"));
+        //params.put("dataScope", getDataScope("m.add_user","m.add_dept","m.org_userid"));
 //
 //        List<String> labelIds = (List<String>) params.get("labelIdList");
 //        String paramsStr = "";

@@ -8,18 +8,13 @@
  *     2020/3/9 14:21            liuqianru    初版做成
  *
  */
-package com.platform.modules.qkjvip.entity;
+package com.platform.modules.quartz.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.platform.common.validator.group.AddGroup;
-import com.platform.common.validator.group.UpdateGroup;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author liuqianru
@@ -28,7 +23,7 @@ import java.util.Date;
 
 @Data
 @TableName("qkjvip_member_basic")
-public class MemberBasicEntity implements Serializable {
+public class QrtzMemberBasicEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId
@@ -72,9 +67,9 @@ public class MemberBasicEntity implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof MemberBasicEntity
-                && this.cellphone != null && this.cellphone.equals(((MemberBasicEntity)o).cellphone)
-                && this.shopname != null && this.shopname.equals(((MemberBasicEntity)o).shopname);
+        return o instanceof QrtzMemberBasicEntity
+                && this.cellphone != null && this.cellphone.equals(((QrtzMemberBasicEntity)o).cellphone)
+                && this.shopname != null && this.shopname.equals(((QrtzMemberBasicEntity)o).shopname);
     }
 
 }

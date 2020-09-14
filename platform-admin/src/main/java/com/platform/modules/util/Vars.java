@@ -10,4 +10,16 @@ public class Vars {
 	public static String CID = "";//cid需要通过jsapi获取，具体详情请查看开放平台文档--->客户端文档--->会话
 
 	public static String APP_KEY = "open100010fb1n94ev9";
+
+	//AES加密用常量start
+	public static String ENCODE = "UTF-8";
+	// 密钥
+	public static String AESKEY = "1234567812345678";
+	//向量
+	public static String VECTOR = "1234567812345678";
+	// 加密算法
+	public static String ALGORITHM = "AES/CBC/NoPadding";
+	//PWD
+	public static String SECRETKEY = "6F4GBD47DFAE07";
+	//AES加密用常量end
 }

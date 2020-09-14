@@ -14,9 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.DateUtils;
 import com.platform.common.utils.StringUtils;
-import com.platform.modules.qkjvip.entity.MemberBasicEntity;
 import com.platform.modules.qkjvip.entity.QkjvipMemberOrderEntity;
-import com.platform.modules.qkjvip.service.MemberBasicService;
 import com.platform.modules.qkjvip.service.QkjvipMemberOrderService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.util.HttpClient;
@@ -64,7 +62,6 @@ public class QrtzMemberOrderController extends AbstractController {
         String urlParam = "";
         String sign = "";
         String resultPost = "";  //返回结果
-        List<MemberBasicEntity> mbList = new ArrayList<MemberBasicEntity>();
         map.clear();
         String startime="";
         String endtime="";
@@ -115,10 +112,14 @@ public class QrtzMemberOrderController extends AbstractController {
                             toIndex=listSize-j;
                         }
                         List newList = addList.subList(j,j+toIndex);
-                        qkjvipMemberOrderService.deleteBatchByOrder(newList);
+                        if (newList.size() > 0) {
+                            qkjvipMemberOrderService.deleteBatchByOrder(newList);
+                        }
                     }
                 }else{
-                    qkjvipMemberOrderService.deleteBatchByOrder(addList);
+                    if (addList.size() > 0) {
+                        qkjvipMemberOrderService.deleteBatchByOrder(addList);
+                    }
                 }
 
                 qkjvipMemberOrderService.saveBatch(addList);

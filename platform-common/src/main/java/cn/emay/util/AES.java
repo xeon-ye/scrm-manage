@@ -91,14 +91,18 @@ public class AES {
 			return null;
 		try {
 			Cipher cipher = null;
-			if (algorithm.endsWith("PKCS7Padding")) {
-				cipher = Cipher.getInstance(algorithm, "BC");
-			} else {
-				cipher = Cipher.getInstance(algorithm);
+			cipher = Cipher.getInstance(algorithm);
+			int blockSize = cipher.getBlockSize();
+			int length = content.length;
+			if (length % blockSize != 0) {
+				length = length + (blockSize - (length % blockSize));
 			}
+			byte[] plaintext = new byte[length];
+			//填充
+			System.arraycopy(content, 0, plaintext, 0, content.length);
 			IvParameterSpec iv = new IvParameterSpec(ivStr);
 			cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(password, "AES"), iv);
-			return cipher.doFinal(content);
+			return cipher.doFinal(plaintext);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
