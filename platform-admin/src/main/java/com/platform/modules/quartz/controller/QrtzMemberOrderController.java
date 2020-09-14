@@ -118,7 +118,10 @@ public class QrtzMemberOrderController extends AbstractController {
                         qkjvipMemberOrderService.deleteBatchByOrder(newList);
                     }
                 }else{
-                    qkjvipMemberOrderService.deleteBatchByOrder(addList);
+                    if(addList!=null&&addList.size()>0){
+                        qkjvipMemberOrderService.deleteBatchByOrder(addList);
+                    }
+
                 }
 
                 qkjvipMemberOrderService.saveBatch(addList);
