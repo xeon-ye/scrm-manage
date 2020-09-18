@@ -17,8 +17,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.platform.common.annotation.SysLog;
 import com.platform.modules.quartz.entity.QrtzMemberFansEntity;
+import com.platform.modules.quartz.entity.QrtzMemberFansUpdateTimeEntity;
 import com.platform.modules.quartz.entity.TmpQkjvipMemberFansEntity;
 import com.platform.modules.quartz.service.QrtzMemberFansService;
+import com.platform.modules.quartz.service.QrtzMemberFansUpdateTimeService;
 import com.platform.modules.quartz.service.TmpQkjvipMemberFansService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.util.HttpClient;
@@ -33,6 +35,8 @@ import sun.misc.BASE64Encoder;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static cn.emay.util.Md5.md5;
@@ -51,6 +55,8 @@ public class QrtzMemberFansController extends AbstractController {
     private QrtzMemberFansService qrtzMemberFansService;
     @Autowired
     private TmpQkjvipMemberFansService tmpQkjvipMemberFansService;
+    @Autowired
+    private QrtzMemberFansUpdateTimeService qrtzMemberFansUpdateTimeService;
 
     /**
      * 粉丝定时任务
@@ -59,8 +65,8 @@ public class QrtzMemberFansController extends AbstractController {
     @SysLog("粉丝读取定时任务")
     @RequestMapping("/getMemberFans")
     @Test
-    public void getMemberFans() throws IOException, NoSuchAlgorithmException {
-        String url = "http://test.open.zhongjiuyun.com:9000/datapool/userdetail";
+    public void getMemberFans() throws IOException, NoSuchAlgorithmException, ParseException {
+        String url = "http://api.zhongjiu.cn/datapool/userdetail";
         List<QrtzMemberFansEntity> fanList = new ArrayList<QrtzMemberFansEntity>();
         List<TmpQkjvipMemberFansEntity> tmpList = new ArrayList<TmpQkjvipMemberFansEntity>();
         RandomGUID myGUID = new RandomGUID();
@@ -68,6 +74,16 @@ public class QrtzMemberFansController extends AbstractController {
         String resultPost = "";  //返回结果
         Map map = new HashMap();
         Map subMap = new HashMap();
+        String updateTime = "";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        List<QrtzMemberFansUpdateTimeEntity> updateTimeList = qrtzMemberFansUpdateTimeService.queryAll(null);
+        QrtzMemberFansUpdateTimeEntity fansUpdateTimeEntity = new QrtzMemberFansUpdateTimeEntity();
+        fansUpdateTimeEntity = updateTimeList.get(0);
+        if (updateTimeList.get(0).getLastUpdateTime() == null) {
+            updateTime = "2017-01-01";
+        } else {
+            updateTime = sdf.format(updateTimeList.get(0).getLastUpdateTime());
+        }
         subMap.put("user", "");
         subMap.put("imei", "12312312312");
         subMap.put("version", 1);
@@ -75,8 +91,8 @@ public class QrtzMemberFansController extends AbstractController {
         subMap.put("phonemodel", "hua wei");
         subMap.put("platform", 0);
         subMap.put("IsApp", 0);
-        map.put("UpdateTime", "2018-09-01");
-        map.put("OriginId", "gh_82456394f186");
+        map.put("UpdateTime", updateTime);
+        map.put("OriginId", "");
         map.put("meta", subMap);
         JSONObject json = new JSONObject(map);
         String requestJson = JsonHelper.toJsonString(json);
@@ -94,21 +110,26 @@ public class QrtzMemberFansController extends AbstractController {
         System.out.println("key:sign" + " vlaue:" + sign);
         System.out.println("key:key" + " vlaue:" + guid);
         resultPost = HttpClient.sendPost(url + urlParam, res);
-        JSONObject fanObject = JSONObject.parseObject(resultPost);
-        if ("0".equals(fanObject.get("result").toString()) && fanObject.get("UserList").toString().length() > 0) {
+        JSONObject fanObject = JSON.parseObject(resultPost);
+        if ("0".equals(fanObject.get("result").toString())) {
             String listStr = fanObject.get("UserList").toString();
             fanList = JSON.parseArray(listStr, QrtzMemberFansEntity.class);
-            tmpList = JSON.parseArray(listStr, TmpQkjvipMemberFansEntity.class);
-            System.out.println("result:" + fanList);
-            List<QrtzMemberFansEntity> updList = new ArrayList<QrtzMemberFansEntity>();
-            tmpQkjvipMemberFansService.addBatch(tmpList);  //批量插入粉丝临时表
-            updList = qrtzMemberFansService.queryList();  //取出粉丝表与临时表的交集(插入是为重复数据，更新时即为要更新的数据)
-            if (updList.size() > 0) {  //更新
-                qrtzMemberFansService.updateBatch(updList);
-            }
-            fanList.removeAll(updList);
+            fansUpdateTimeEntity.setLastUpdateTime(fanList.get(fanList.size() -1).getUpdatetime());
             if (fanList.size() > 0) {
-                qrtzMemberFansService.addBatch(fanList);  //粉丝批量插入
+                tmpList = JSON.parseArray(listStr, TmpQkjvipMemberFansEntity.class);
+                System.out.println("result:" + fanList);
+                List<QrtzMemberFansEntity> updList = new ArrayList<QrtzMemberFansEntity>();
+                tmpQkjvipMemberFansService.addBatch(tmpList);  //批量插入粉丝临时表
+                updList = qrtzMemberFansService.queryList();  //取出粉丝表与临时表的交集(插入是为重复数据，更新时即为要更新的数据)
+                if (updList.size() > 0) {  //更新
+                    qrtzMemberFansService.updateBatch(updList);
+                }
+                fanList.removeAll(updList);
+                if (fanList.size() > 0) {
+                    qrtzMemberFansService.addBatch(fanList);  //粉丝批量插入
+                }
+                //将最后更新数据存入数据库
+                qrtzMemberFansUpdateTimeService.update(fansUpdateTimeEntity);
             }
         }
     }

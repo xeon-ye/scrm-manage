@@ -94,4 +94,8 @@ public class TmpQkjvipMemberFansEntity implements Serializable {
      * UnionId
      */
     private String unionid;
+    /**
+     * Appid
+     */
+    private String appid;
 }

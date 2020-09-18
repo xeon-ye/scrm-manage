@@ -14,12 +14,12 @@ public class Vars {
 	//AES加密用常量start
 	public static String ENCODE = "UTF-8";
 	// 密钥
-	public static String AESKEY = "1234567812345678";
+	public static String AESKEY = "2139226343519743";
 	//向量
-	public static String VECTOR = "1234567812345678";
+	public static String VECTOR = "4370627107694550";
 	// 加密算法
 	public static String ALGORITHM = "AES/CBC/NoPadding";
 	//PWD
-	public static String SECRETKEY = "6F4GBD47DFAE07";
+	public static String SECRETKEY = "5E2#BD40&FAE^7";
 	//AES加密用常量end
 }

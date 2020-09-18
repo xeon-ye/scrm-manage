@@ -4,6 +4,6 @@
 <mapper namespace="com.platform.modules.quartz.dao.QrtzMemberFansDao">
     <select id="queryList" resultType="com.platform.modules.quartz.entity.QrtzMemberFansEntity">
 		SELECT mf.id,tmpmf.* FROM qkjvip_member_fans mf
-		INNER JOIN tmp_qkjvip_member_fans tmpmf ON (mf.OpenId=tmpmf.OpenId AND mf.ServiceName=tmpmf.ServiceName)
+		INNER JOIN tmp_qkjvip_member_fans tmpmf ON (mf.OpenId=tmpmf.OpenId AND mf.AppId=tmpmf.AppId)
 	</select>
 </mapper>

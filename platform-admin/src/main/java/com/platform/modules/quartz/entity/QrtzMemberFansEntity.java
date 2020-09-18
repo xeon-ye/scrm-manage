@@ -94,4 +94,16 @@ public class QrtzMemberFansEntity implements Serializable {
      * UnionId
      */
     private String unionid;
+
+    /**
+     * Appid
+     */
+    private String appid;
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof QrtzMemberFansEntity
+                && this.openid != null && this.openid.equals(((QrtzMemberFansEntity)o).openid)
+                && this.appid != null && this.appid.equals(((QrtzMemberFansEntity)o).appid);
+    }
 }
