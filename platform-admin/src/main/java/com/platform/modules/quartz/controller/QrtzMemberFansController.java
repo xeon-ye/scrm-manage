@@ -24,6 +24,7 @@ import com.platform.modules.quartz.service.QrtzMemberFansUpdateTimeService;
 import com.platform.modules.quartz.service.TmpQkjvipMemberFansService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.util.HttpClient;
+import com.platform.modules.util.RabbitMQUtil;
 import com.platform.modules.util.RandomGUID;
 import com.platform.modules.util.Vars;
 import lombok.extern.slf4j.Slf4j;
@@ -110,27 +111,29 @@ public class QrtzMemberFansController extends AbstractController {
         System.out.println("key:sign" + " vlaue:" + sign);
         System.out.println("key:key" + " vlaue:" + guid);
         resultPost = HttpClient.sendPost(url + urlParam, res);
-//        JSONObject fanObject = JSON.parseObject(resultPost);
-//        if ("0".equals(fanObject.get("result").toString())) {
-//            String listStr = fanObject.get("UserList").toString();
-//            fanList = JSON.parseArray(listStr, QrtzMemberFansEntity.class);
-//            fansUpdateTimeEntity.setLastUpdateTime(fanList.get(fanList.size() -1).getUpdatetime());
-//            if (fanList.size() > 0) {
-//                tmpList = JSON.parseArray(listStr, TmpQkjvipMemberFansEntity.class);
-//                System.out.println("result:" + fanList);
-//                List<QrtzMemberFansEntity> updList = new ArrayList<QrtzMemberFansEntity>();
-//                tmpQkjvipMemberFansService.addBatch(tmpList);  //批量插入粉丝临时表
-//                updList = qrtzMemberFansService.queryList();  //取出粉丝表与临时表的交集(插入是为重复数据，更新时即为要更新的数据)
-//                if (updList.size() > 0) {  //更新
-//                    qrtzMemberFansService.updateBatch(updList);
-//                }
-//                fanList.removeAll(updList);
-//                if (fanList.size() > 0) {
-//                    qrtzMemberFansService.addBatch(fanList);  //粉丝批量插入
-//                }
-//                //将最后更新数据存入数据库
-//                qrtzMemberFansUpdateTimeService.update(fansUpdateTimeEntity);
-//            }
-//        }
+        JSONObject fanObject = JSON.parseObject(resultPost);
+        if ("0".equals(fanObject.get("result").toString())) {
+            String listStr = fanObject.get("UserList").toString();
+            fanList = JSON.parseArray(listStr, QrtzMemberFansEntity.class);
+            fansUpdateTimeEntity.setLastUpdateTime(fanList.get(fanList.size() -1).getUpdatetime());
+            if (fanList.size() > 0) {
+                tmpList = JSON.parseArray(listStr, TmpQkjvipMemberFansEntity.class);
+                System.out.println("result:" + fanList);
+                List<QrtzMemberFansEntity> updList = new ArrayList<QrtzMemberFansEntity>();
+                tmpQkjvipMemberFansService.addBatch(tmpList);  //批量插入粉丝临时表
+                updList = qrtzMemberFansService.queryList();  //取出粉丝表与临时表的交集(插入是为重复数据，更新时即为要更新的数据)
+                if (updList.size() > 0) {  //更新
+                    qrtzMemberFansService.updateBatch(updList);
+                }
+                fanList.removeAll(updList);
+                if (fanList.size() > 0) {
+                    qrtzMemberFansService.addBatch(fanList);  //粉丝批量插入
+                }
+                //将最后更新数据存入数据库
+                qrtzMemberFansUpdateTimeService.update(fansUpdateTimeEntity);
+                //降数据存入队列
+                RabbitMQUtil.getConnection("qkjvip_member_fans", listStr);
+            }
+        }
     }
 }

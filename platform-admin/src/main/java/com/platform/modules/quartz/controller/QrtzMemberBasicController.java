@@ -120,6 +120,7 @@ public class QrtzMemberBasicController extends AbstractController {
                 }
             }
         }
+        //将数据存入队列
         RabbitMQUtil.getConnection("qkjvip_member_basic", resultPost);
     }
 

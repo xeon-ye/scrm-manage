@@ -32,24 +32,8 @@ public class RabbitMQTest {
     @Test
     public static void main(String[] args)
     {
-        try
-        {
-            //获取连接
-            Connection connection = RabbitMQUtil.getConnection();
-            //从连接中获取一个通道
-            Channel channel = connection.createChannel();
-            //声明队列
-            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-            String message = "This is simple queue";
-            //发送消息
-            channel.basicPublish("", QUEUE_NAME, null, message.getBytes("utf-8"));
-            System.out.println("[send]：" + message);
-            channel.close();
-            connection.close();
-        }
-        catch (IOException | TimeoutException e)
-        {
-            e.printStackTrace();
-        }
+        String message = "This is simple queue";
+        //发送消息
+        RabbitMQUtil.getConnection(QUEUE_NAME, message);
     }
 }
