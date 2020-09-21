@@ -64,6 +64,10 @@ public class QrtzMemberBasicEntity implements Serializable {
      * 所属专卖店
      */
     private String shopname;
+    /*
+    * 清洗失败的标识，失败则为1
+     */
+    private Integer isfail;
 
     @Override
     public boolean equals(Object o) {
