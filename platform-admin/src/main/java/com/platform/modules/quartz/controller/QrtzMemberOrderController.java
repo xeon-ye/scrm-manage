@@ -87,11 +87,11 @@ public class QrtzMemberOrderController extends AbstractController {
             updateTimeEntity.setOrderLastDatetime(nowDate);
         }
         Integer listsize=getMemberBasicEntities(url,timeStamp,startime,endtime);//订单生成修改
+        end2 = System.currentTimeMillis();
         //将最后更新数据存入数据库
         if (!StringUtils.isEmpty(updateTimeEntity.getId())) {
             qrtzLastUpdateTimeService.updateOrderLastDatetime(updateTimeEntity);
         }
-        end2 = System.currentTimeMillis();
         System.out.println("批量处理"+listsize+"条数据，耗费了" + (end2 - start) + "ms");
     }
 
