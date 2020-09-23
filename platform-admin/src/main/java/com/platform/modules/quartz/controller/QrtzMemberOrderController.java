@@ -14,9 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.DateUtils;
 import com.platform.common.utils.StringUtils;
-import com.platform.modules.qkjvip.entity.MemberBasicEntity;
 import com.platform.modules.qkjvip.entity.QkjvipMemberOrderEntity;
-import com.platform.modules.qkjvip.service.MemberBasicService;
 import com.platform.modules.qkjvip.service.QkjvipMemberOrderService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.util.HttpClient;
@@ -64,7 +62,6 @@ public class QrtzMemberOrderController extends AbstractController {
         String urlParam = "";
         String sign = "";
         String resultPost = "";  //返回结果
-        List<MemberBasicEntity> mbList = new ArrayList<MemberBasicEntity>();
         map.clear();
         String startime="";
         String endtime="";
@@ -78,9 +75,9 @@ public class QrtzMemberOrderController extends AbstractController {
             endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
             startime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -2), "yyyy-MM-dd HH:mm:ss"); //前半小时时间
         }
-        //Integer listsize=getMemberBasicEntities(url,timeStamp,startime,endtime);//订单生成修改
+        Integer listsize=getMemberBasicEntities(url,timeStamp,startime,endtime);//订单生成修改
         end2 = System.currentTimeMillis();
-        //System.out.println("批量处理"+listsize+"条数据，耗费了" + (end2 - start) + "ms");
+        System.out.println("批量处理"+listsize+"条数据，耗费了" + (end2 - start) + "ms");
     }
 
     private Integer getMemberBasicEntities(String url, String timeStamp, String starttime, String endtime) throws IOException {
@@ -121,7 +118,6 @@ public class QrtzMemberOrderController extends AbstractController {
                     if(addList!=null&&addList.size()>0){
                         qkjvipMemberOrderService.deleteBatchByOrder(addList);
                     }
-
                 }
 
                 qkjvipMemberOrderService.saveBatch(addList);

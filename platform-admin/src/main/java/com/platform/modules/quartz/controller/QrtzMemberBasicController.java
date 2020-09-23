@@ -14,16 +14,16 @@ import com.alibaba.fastjson.JSON;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.DateUtils;
 import com.platform.common.utils.StringUtils;
-import com.platform.modules.qkjvip.entity.MemberBasicEntity;
-import com.platform.modules.qkjvip.service.MemberBasicService;
+import com.platform.modules.quartz.entity.QrtzMemberBasicEntity;
 import com.platform.modules.quartz.entity.TmpQkjvipMemberBasicEntity;
+import com.platform.modules.quartz.service.QrtzMemberBasicService;
 import com.platform.modules.quartz.service.TmpQkjvipMemberBasicService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.MD5Utils;
+import com.platform.modules.util.RabbitMQUtil;
 import com.platform.modules.util.Vars;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,12 +44,12 @@ import java.util.*;
 @RestController
 @Component("qrtzMember")
 @Slf4j
-public class QrtzMemberController extends AbstractController {
+public class QrtzMemberBasicController extends AbstractController {
     @Autowired
-    private MemberBasicService memberBasicService;
+    private QrtzMemberBasicService memberBasicService;
     @Autowired
     private TmpQkjvipMemberBasicService tmpQkjvipMemberBasicService;
-    private List<MemberBasicEntity> addList;
+    private List<QrtzMemberBasicEntity> addList;
 
     /**
      * 会员定时任务
@@ -62,13 +62,11 @@ public class QrtzMemberController extends AbstractController {
         String timeStamp = DateUtils.getTimeStamp();  //时间戳
         Date nowDate = new Date();
         String endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
-        String starttime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -60), "yyyy-MM-dd HH:mm:ss"); //前半小时时间
+        String starttime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -2), "yyyy-MM-dd HH:mm:ss"); //前半小时时间
         SortedMap<String, String> map = new TreeMap<>();
         String urlParam = "";
         String sign = "";
         String resultPost = "";  //返回结果
-        List<MemberBasicEntity> mbList = new ArrayList<MemberBasicEntity>();
-        List<TmpQkjvipMemberBasicEntity> tmpList = new ArrayList<TmpQkjvipMemberBasicEntity>();
         if (!StringUtils.isEmpty(params) && params.split(",").length == 2) {   //当定时任务有参数时，按照参数指定日期同步数据
             String[] paramArr = new String[params.split(",").length];
             paramArr = params.split(",");
@@ -91,23 +89,25 @@ public class QrtzMemberController extends AbstractController {
                     + "&sign=" + sign;
             System.out.println("key:sign" + " vlaue:" + sign);
             resultPost = HttpClient.doPost(url + urlParam);
-            mbList = JSON.parseArray(resultPost, MemberBasicEntity.class);
-            tmpList = JSON.parseArray(resultPost, TmpQkjvipMemberBasicEntity.class);
-            this.saveOrUpdateMember(mbList, tmpList, i + "");
+            if (resultPost != null && !"".equals(resultPost)) {
+                this.saveOrUpdateMember(resultPost, i + "");
+            }
         }
     }
 
-    public void saveOrUpdateMember(List<MemberBasicEntity> list, List<TmpQkjvipMemberBasicEntity> tmpList, String timeType) {
-        List<MemberBasicEntity> fromDbList = new ArrayList<MemberBasicEntity>();
+    public void saveOrUpdateMember(String resultPost, String timeType) {
+        List<QrtzMemberBasicEntity> mbList = JSON.parseArray(resultPost, QrtzMemberBasicEntity.class);
+        List<TmpQkjvipMemberBasicEntity> tmpList = JSON.parseArray(resultPost, TmpQkjvipMemberBasicEntity.class);
+        List<QrtzMemberBasicEntity> fromDbList = new ArrayList<QrtzMemberBasicEntity>();
         if (tmpList.size() > 0) {
             tmpQkjvipMemberBasicService.addBatch(tmpList);  //批量插入会员临时表
             fromDbList = memberBasicService.queryList();  //取出会员表与临时表的交集(插入是为重复数据，更新时即为要更新的数据)
         }
         if ("0".equals(timeType)) {  //注册
-            addList = new ArrayList<MemberBasicEntity>();
-            if (list.size() > 0) {
-                list.removeAll(fromDbList); //将中酒取出的数据去除表中已存在的数据
-                addList = list;
+            addList = new ArrayList<QrtzMemberBasicEntity>();
+            if (mbList.size() > 0) {
+                mbList.removeAll(fromDbList); //将中酒取出的数据去除表中已存在的数据
+                addList = mbList;
                 if (addList.size() > 0) {
                     memberBasicService.addBatch(addList);  //会员批量插入
                 }
@@ -120,6 +120,8 @@ public class QrtzMemberController extends AbstractController {
                 }
             }
         }
+        //将数据存入队列
+        RabbitMQUtil.getConnection("qkjvip_member_basic", resultPost);
     }
 
     /**

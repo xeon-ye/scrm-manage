@@ -144,6 +144,20 @@
             <scope>system</scope>
             <systemPath>${pom.basedir}/src/lib/async-http-client-1.9.32.jar</systemPath>
         </dependency>
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.46</version>
+        </dependency>
+
+        <!--rabbitmq队列-->
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>5.1.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

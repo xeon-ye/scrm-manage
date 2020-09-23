@@ -13,7 +13,6 @@ package com.platform.modules.qkjvip.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.platform.modules.pageCont.pageCount;
-import com.platform.modules.qkjvip.entity.MemberBasicEntity;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 
 import java.util.List;

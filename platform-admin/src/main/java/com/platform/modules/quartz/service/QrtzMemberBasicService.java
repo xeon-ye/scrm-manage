@@ -8,12 +8,10 @@
  *     2020/8/7 15:48            liuqianru    初版做成
  *
  */
-package com.platform.modules.qkjvip.service;
+package com.platform.modules.quartz.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.platform.modules.qkjvip.entity.MemberActiveEntity;
-import com.platform.modules.qkjvip.entity.MemberBasicEntity;
-import com.platform.modules.sys.entity.SysUserEntity;
+import com.platform.modules.quartz.entity.QrtzMemberBasicEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +22,7 @@ import java.util.Map;
  * @author liuqianru
  * @date 2020/8/7 15:48
  */
-public interface MemberBasicService extends IService<MemberBasicEntity> {
+public interface QrtzMemberBasicService extends IService<QrtzMemberBasicEntity> {
 
     /**
      * 查询所有
@@ -32,26 +30,26 @@ public interface MemberBasicService extends IService<MemberBasicEntity> {
      * @param params 查询参数
      * @return List
      */
-    List<MemberBasicEntity> queryAll(Map<String, Object> params);
+    List<QrtzMemberBasicEntity> queryAll(Map<String, Object> params);
 
     /**
      * 查询所有
      *
      * @return List
      */
-    List<MemberBasicEntity> queryList();
+    List<QrtzMemberBasicEntity> queryList();
 
     /**
      * 插入会员信息
      *
      * @param mbList 用户
      */
-    void addBatch(List<MemberBasicEntity> mbList);
+    void addBatch(List<QrtzMemberBasicEntity> mbList);
 
     /**
      * 批量修改会员
      *
      * @param mbList mbList
      */
-    void updateBatch(List<MemberBasicEntity> mbList);
+    void updateBatch(List<QrtzMemberBasicEntity> mbList);
 }
