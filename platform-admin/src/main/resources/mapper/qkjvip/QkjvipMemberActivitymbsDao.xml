@@ -7,8 +7,12 @@
         SELECT
         T.ID,
         T.MEMBER_ID,
-        T.ACTIVITY_ID
+        T.ACTIVITY_ID,
+        a.member_name,
+        a.real_name,
+        a.mobile
         FROM QKJVIP_MEMBER_ACTIVITYMBS T
+        join qkjvip_member a on (t.MEMBER_ID=a.member_id)
         WHERE 1=1
         <if test="params.activityId != null and params.activityId.trim() != ''">
             AND T.ACTIVITY_ID LIKE '%${params.activityId}%'
@@ -24,9 +28,6 @@
     </select>
 
     <delete id="deleteBatchByOrder">
-        DELETE FROM QKJVIP_MEMBER_ACTIVITYMBS WHERE ACTIVITY_ID IN
-        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
-            #{item.activityId}
-        </foreach>
+        DELETE FROM QKJVIP_MEMBER_ACTIVITYMBS WHERE ACTIVITY_ID = #{activityId}
     </delete>
 </mapper>

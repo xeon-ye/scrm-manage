@@ -87,5 +87,5 @@ public interface QkjvipMemberActivitymbsService extends IService<QkjvipMemberAct
      */
     void batchUpdate(List<QkjvipMemberActivitymbsEntity> qkjvipMemberActivitymbs);
 
-    int deleteBatchByOrder(List<QkjvipMemberActivitymbsEntity> mbList);
+    int deleteBatchByOrder(String activityId);
 }

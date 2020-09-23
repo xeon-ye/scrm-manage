@@ -80,7 +80,7 @@ public class QkjvipMemberActivitymbsServiceImpl extends ServiceImpl<QkjvipMember
         this.updateBatchById(qkjvipMemberActivitymbs, 100);
     }
     @Override
-    public int deleteBatchByOrder(List<QkjvipMemberActivitymbsEntity> mbList) {
-        return baseMapper.deleteBatchByOrder(mbList);
+    public int deleteBatchByOrder(String activityId) {
+        return baseMapper.deleteBatchByOrder(activityId);
     }
 }

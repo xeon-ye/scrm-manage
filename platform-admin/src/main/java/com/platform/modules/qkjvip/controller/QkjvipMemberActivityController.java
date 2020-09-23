@@ -127,7 +127,7 @@ public class QkjvipMemberActivityController extends AbstractController {
 
         if(mbs!=null&&mbs.size()>0){
             //删除
-
+            qkjvipMemberActivitymbsService.deleteBatchByOrder(qkjvipMemberActivity.getId());
             List<QkjvipMemberActivitymbsEntity> newmemList=new ArrayList<>();
             for(QkjvipMemberActivitymbsEntity m:mbs){
                 m.setActivityId(qkjvipMemberActivity.getId());
