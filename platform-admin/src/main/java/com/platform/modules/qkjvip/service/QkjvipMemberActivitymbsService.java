@@ -73,4 +73,19 @@ public interface QkjvipMemberActivitymbsService extends IService<QkjvipMemberAct
      * @return 删除结果
      */
     boolean deleteBatch(String[] ids);
+
+    /**
+     * 批量添加
+     *
+     * @param qkjvipMemberActivitymbs 用户
+     */
+    void batchAdd(List<QkjvipMemberActivitymbsEntity> qkjvipMemberActivitymbs);
+    /**
+     * 批量更新
+     *
+     * @param qkjvipMemberActivitymbs 用户
+     */
+    void batchUpdate(List<QkjvipMemberActivitymbsEntity> qkjvipMemberActivitymbs);
+
+    int deleteBatchByOrder(List<QkjvipMemberActivitymbsEntity> mbList);
 }

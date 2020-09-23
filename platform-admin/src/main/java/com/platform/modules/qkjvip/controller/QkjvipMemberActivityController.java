@@ -14,6 +14,8 @@ package com.platform.modules.qkjvip.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
+import com.platform.modules.qkjvip.entity.QkjvipMemberActivitymbsEntity;
+import com.platform.modules.qkjvip.service.QkjvipMemberActivitymbsService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipMemberActivityEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberActivityService;
@@ -21,6 +23,8 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +39,8 @@ import java.util.Map;
 public class QkjvipMemberActivityController extends AbstractController {
     @Autowired
     private QkjvipMemberActivityService qkjvipMemberActivityService;
+    @Autowired
+    private QkjvipMemberActivitymbsService qkjvipMemberActivitymbsService;
 
     /**
      * 查看所有列表
@@ -74,7 +80,9 @@ public class QkjvipMemberActivityController extends AbstractController {
     @RequiresPermissions("qkjvip:memberactivity:info")
     public RestResponse info(@PathVariable("id") String id) {
         QkjvipMemberActivityEntity qkjvipMemberActivity = qkjvipMemberActivityService.getById(id);
-
+        Map<String, Object> map=new HashMap<String,Object>();
+        map.put("activityId",id);
+        qkjvipMemberActivity.setMbs(qkjvipMemberActivitymbsService.queryAll(map));
         return RestResponse.success().put("memberactivity", qkjvipMemberActivity);
     }
 
@@ -88,8 +96,17 @@ public class QkjvipMemberActivityController extends AbstractController {
     @RequestMapping("/save")
     @RequiresPermissions("qkjvip:memberactivity:save")
     public RestResponse save(@RequestBody QkjvipMemberActivityEntity qkjvipMemberActivity) {
-
+        List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
+        mbs=qkjvipMemberActivity.getMbs();
         qkjvipMemberActivityService.add(qkjvipMemberActivity);
+        if(mbs!=null&&mbs.size()>0){
+            List<QkjvipMemberActivitymbsEntity> newmemList=new ArrayList<>();
+            for(QkjvipMemberActivitymbsEntity m:mbs){
+                m.setActivityId(qkjvipMemberActivity.getId());
+                newmemList.add(m);
+            }
+            qkjvipMemberActivitymbsService.batchAdd(mbs);
+        }
 
         return RestResponse.success();
     }
@@ -104,9 +121,20 @@ public class QkjvipMemberActivityController extends AbstractController {
     @RequestMapping("/update")
     @RequiresPermissions("qkjvip:memberactivity:update")
     public RestResponse update(@RequestBody QkjvipMemberActivityEntity qkjvipMemberActivity) {
-
+        List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
+        mbs=qkjvipMemberActivity.getMbs();
         qkjvipMemberActivityService.update(qkjvipMemberActivity);
 
+        if(mbs!=null&&mbs.size()>0){
+            //删除
+
+            List<QkjvipMemberActivitymbsEntity> newmemList=new ArrayList<>();
+            for(QkjvipMemberActivitymbsEntity m:mbs){
+                m.setActivityId(qkjvipMemberActivity.getId());
+                newmemList.add(m);
+            }
+            qkjvipMemberActivitymbsService.batchAdd(mbs);
+        }
         return RestResponse.success();
     }
 

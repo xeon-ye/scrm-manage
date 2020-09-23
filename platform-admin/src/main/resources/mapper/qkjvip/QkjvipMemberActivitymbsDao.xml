@@ -10,8 +10,8 @@
         T.ACTIVITY_ID
         FROM QKJVIP_MEMBER_ACTIVITYMBS T
         WHERE 1=1
-        <if test="params.name != null and params.name.trim() != ''">
-            AND T.NAME LIKE '%${params.name}%'
+        <if test="params.activityId != null and params.activityId.trim() != ''">
+            AND T.ACTIVITY_ID LIKE '%${params.activityId}%'
         </if>
     </sql>
 
@@ -22,4 +22,11 @@
     <select id="queryAll" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberActivitymbsEntity">
         <include refid="selectSql"/>
     </select>
+
+    <delete id="deleteBatchByOrder">
+        DELETE FROM QKJVIP_MEMBER_ACTIVITYMBS WHERE ACTIVITY_ID IN
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item.activityId}
+        </foreach>
+    </delete>
 </mapper>
