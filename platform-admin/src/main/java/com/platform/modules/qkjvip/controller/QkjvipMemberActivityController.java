@@ -13,8 +13,13 @@ package com.platform.modules.qkjvip.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
+import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.RestResponse;
+import com.platform.common.utils.StringUtils;
+import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.entity.QkjvipMemberActivitymbsEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberImportEntity;
+import com.platform.modules.qkjvip.service.MemberService;
 import com.platform.modules.qkjvip.service.QkjvipMemberActivitymbsService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipMemberActivityEntity;
@@ -22,11 +27,13 @@ import com.platform.modules.qkjvip.service.QkjvipMemberActivityService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.platform.modules.util.ExportExcelUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
+
+import static cn.afterturn.easypoi.excel.entity.enmus.CellValueType.Date;
 
 /**
  * Controller
@@ -41,6 +48,8 @@ public class QkjvipMemberActivityController extends AbstractController {
     private QkjvipMemberActivityService qkjvipMemberActivityService;
     @Autowired
     private QkjvipMemberActivitymbsService qkjvipMemberActivitymbsService;
+    @Autowired
+    private MemberService memberService;
 
     /**
      * 查看所有列表
@@ -151,5 +160,38 @@ public class QkjvipMemberActivityController extends AbstractController {
         qkjvipMemberActivityService.deleteBatch(ids);
 
         return RestResponse.success();
+    }
+
+    /**
+     * 导入会员数据
+     */
+    @SysLog("导入会员")
+    @RequestMapping("/import")
+    public RestResponse importExcel(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        List<MemberEntity> mees=new ArrayList<>();
+        if (StringUtils.isBlank(fileName)) {
+            throw new BusinessException("请选择要导入的文件");
+        } else {
+            //插入impont 表
+            try {
+                List<QkjvipMemberImportEntity> list = ExportExcelUtils.importExcel(file, 1, 1,QkjvipMemberImportEntity.class);
+                for (int i = 0; i < list.size(); i++) {
+                    list.get(i).setAddUser(getUserId());
+                    list.get(i).setAddDept(getOrgNo());
+                    list.get(i).setAddTime(new Date());
+                    list.get(i).setOfflineflag(1);
+                }
+                //memberService.addBatch(list);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //调用清洗数据接口
+
+            Map<String, Object> map=new HashMap<String,Object>();
+            map.put("realName","杨贵录");
+            mees=memberService.queryAll(map);
+        }
+        return RestResponse.success().put("memberlist", mees);
     }
 }
