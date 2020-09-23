@@ -15,12 +15,13 @@ import cn.emay.util.AES;
 import cn.emay.util.JsonHelper;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.platform.common.annotation.SysLog;
+import com.platform.modules.quartz.entity.QrtzLastUpdateTimeEntity;
 import com.platform.modules.quartz.entity.QrtzMemberFansEntity;
-import com.platform.modules.quartz.entity.QrtzMemberFansUpdateTimeEntity;
 import com.platform.modules.quartz.entity.TmpQkjvipMemberFansEntity;
 import com.platform.modules.quartz.service.QrtzMemberFansService;
-import com.platform.modules.quartz.service.QrtzMemberFansUpdateTimeService;
+import com.platform.modules.quartz.service.QrtzLastUpdateTimeService;
 import com.platform.modules.quartz.service.TmpQkjvipMemberFansService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.util.HttpClient;
@@ -57,7 +58,7 @@ public class QrtzMemberFansController extends AbstractController {
     @Autowired
     private TmpQkjvipMemberFansService tmpQkjvipMemberFansService;
     @Autowired
-    private QrtzMemberFansUpdateTimeService qrtzMemberFansUpdateTimeService;
+    private QrtzLastUpdateTimeService qrtzLastUpdateTimeService;
 
     /**
      * 粉丝定时任务
@@ -77,13 +78,13 @@ public class QrtzMemberFansController extends AbstractController {
         Map subMap = new HashMap();
         String updateTime = "";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        List<QrtzMemberFansUpdateTimeEntity> updateTimeList = qrtzMemberFansUpdateTimeService.queryAll(null);
-        QrtzMemberFansUpdateTimeEntity fansUpdateTimeEntity = new QrtzMemberFansUpdateTimeEntity();
-        fansUpdateTimeEntity = updateTimeList.get(0);
-        if (updateTimeList.get(0).getLastUpdateTime() == null) {
+        List<QrtzLastUpdateTimeEntity> updateTimeList = qrtzLastUpdateTimeService.queryAll(null);
+        QrtzLastUpdateTimeEntity updateTimeEntity = new QrtzLastUpdateTimeEntity();
+        updateTimeEntity = updateTimeList.get(0);
+        if (updateTimeList.get(0).getFansLastDatetime() == null) {
             updateTime = "2017-01-01";
         } else {
-            updateTime = sdf.format(updateTimeList.get(0).getLastUpdateTime());
+            updateTime = sdf.format(updateTimeList.get(0).getFansLastDatetime());
         }
         subMap.put("user", "");
         subMap.put("imei", "12312312312");
@@ -113,9 +114,9 @@ public class QrtzMemberFansController extends AbstractController {
         resultPost = HttpClient.sendPost(url + urlParam, res);
         JSONObject fanObject = JSON.parseObject(resultPost);
         if ("0".equals(fanObject.get("result").toString())) {
-            String listStr = fanObject.get("UserList").toString();
+            String listStr = JSON.toJSONString(fanObject.get("UserList"), SerializerFeature.WriteMapNullValue);  //Fastjson序列化Null字段丢失解决方法
             fanList = JSON.parseArray(listStr, QrtzMemberFansEntity.class);
-            fansUpdateTimeEntity.setLastUpdateTime(fanList.get(fanList.size() -1).getUpdatetime());
+            updateTimeEntity.setFansLastDatetime(fanList.get(fanList.size() -1).getUpdatetime());
             if (fanList.size() > 0) {
                 tmpList = JSON.parseArray(listStr, TmpQkjvipMemberFansEntity.class);
                 System.out.println("result:" + fanList);
@@ -130,7 +131,7 @@ public class QrtzMemberFansController extends AbstractController {
                     qrtzMemberFansService.addBatch(fanList);  //粉丝批量插入
                 }
                 //将最后更新数据存入数据库
-                qrtzMemberFansUpdateTimeService.update(fansUpdateTimeEntity);
+                qrtzLastUpdateTimeService.updateFansLastDatetime(updateTimeEntity);
                 //降数据存入队列
                 RabbitMQUtil.getConnection("qkjvip_member_fans", listStr);
             }

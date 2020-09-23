@@ -12,7 +12,7 @@
 package com.platform.modules.quartz.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.platform.modules.quartz.entity.QrtzMemberFansUpdateTimeEntity;
+import com.platform.modules.quartz.entity.QrtzLastUpdateTimeEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -26,7 +26,7 @@ import java.util.Map;
  * @date 2020-09-09 14:02:22
  */
 @Mapper
-public interface QrtzMemberFansUpdateTimeDao extends BaseMapper<QrtzMemberFansUpdateTimeEntity> {
+public interface QrtzLastUpdateTimeDao extends BaseMapper<QrtzLastUpdateTimeEntity> {
 
     /**
      * 查询所有列表
@@ -34,6 +34,12 @@ public interface QrtzMemberFansUpdateTimeDao extends BaseMapper<QrtzMemberFansUp
      * @param params 查询参数
      * @return List
      */
-    List<QrtzMemberFansUpdateTimeEntity> queryAll(@Param("params") Map<String, Object> params);
+    List<QrtzLastUpdateTimeEntity> queryAll(@Param("params") Map<String, Object> params);
+
+    void updateFansLastDatetime(QrtzLastUpdateTimeEntity updateTimeEntity);
+
+    void updateMemberLastDatetime(QrtzLastUpdateTimeEntity updateTimeEntity);
+
+    void updateOrderLastDatetime(QrtzLastUpdateTimeEntity updateTimeEntity);
 
 }

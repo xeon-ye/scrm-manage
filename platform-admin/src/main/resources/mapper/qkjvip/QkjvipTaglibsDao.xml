@@ -5,15 +5,19 @@
 
     <sql id="selectSql">
         SELECT
-        T.LABEL_ID,
-        T.LABEL_NAME,
+        T.TAG_ID,
+        T.TAG_NAME,
         T.ADD_DEPT,
         T.ADD_TIME,
-        T.ADD_USER
+        T.ADD_USER,
+        T.TAG_GROUP_ID
         FROM QKJVIP_TAGLIBS T
         WHERE 1=1
-        <if test="params.labelName != null and params.labelName.trim() != ''">
-            AND T.LABEL_NAME LIKE '%${params.labelName}%'
+        <if test="params.tagName != null and params.tagName.trim() != ''">
+            AND T.TAG_NAME LIKE '%${params.tagName}%'
+        </if>
+        <if test="params.tagGroupId != null and params.tagGroupId.trim() != ''">
+            AND T.tag_group_id = #{params.tagGroupId}
         </if>
     </sql>
 

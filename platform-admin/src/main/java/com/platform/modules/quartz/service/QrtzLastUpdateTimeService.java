@@ -12,10 +12,7 @@
 package com.platform.modules.quartz.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.platform.modules.qkjvip.entity.MemberEntity;
-import com.platform.modules.quartz.entity.QrtzMemberFansEntity;
-import com.platform.modules.quartz.entity.QrtzMemberFansUpdateTimeEntity;
-
+import com.platform.modules.quartz.entity.QrtzLastUpdateTimeEntity;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +22,7 @@ import java.util.Map;
  * @author liuqianru
  * @date 2020-09-09 14:02:22
  */
-public interface QrtzMemberFansUpdateTimeService extends IService<QrtzMemberFansUpdateTimeEntity> {
+public interface QrtzLastUpdateTimeService extends IService<QrtzLastUpdateTimeEntity> {
 
     /**
      * 查询所有列表
@@ -33,12 +30,24 @@ public interface QrtzMemberFansUpdateTimeService extends IService<QrtzMemberFans
      * @param params 查询参数
      * @return List
      */
-    List<QrtzMemberFansUpdateTimeEntity> queryAll(Map<String, Object> params);
+    List<QrtzLastUpdateTimeEntity> queryAll(Map<String, Object> params);
 
     /**
      * 修改最后更新时间
      *
-     * @param fansUpdateTimeEntity 用户
+     * @param updateTimeEntity 用户
      */
-    void update(QrtzMemberFansUpdateTimeEntity fansUpdateTimeEntity);
+    void updateFansLastDatetime(QrtzLastUpdateTimeEntity updateTimeEntity);
+    /**
+     * 修改最后更新时间
+     *
+     * @param updateTimeEntity 用户
+     */
+    void updateMemberLastDatetime(QrtzLastUpdateTimeEntity updateTimeEntity);
+    /**
+     * 修改最后更新时间
+     *
+     * @param updateTimeEntity 用户
+     */
+    void updateOrderLastDatetime(QrtzLastUpdateTimeEntity updateTimeEntity);
 }
