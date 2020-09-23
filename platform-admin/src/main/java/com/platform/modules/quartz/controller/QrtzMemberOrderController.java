@@ -16,6 +16,8 @@ import com.platform.common.utils.DateUtils;
 import com.platform.common.utils.StringUtils;
 import com.platform.modules.qkjvip.entity.QkjvipMemberOrderEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberOrderService;
+import com.platform.modules.quartz.entity.QrtzLastUpdateTimeEntity;
+import com.platform.modules.quartz.service.QrtzLastUpdateTimeService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.MD5Utils;
@@ -45,6 +47,8 @@ import java.util.*;
 public class QrtzMemberOrderController extends AbstractController {
     @Autowired
     private QkjvipMemberOrderService qkjvipMemberOrderService;
+    @Autowired
+    private QrtzLastUpdateTimeService qrtzLastUpdateTimeService;
 
     /**
      * 会员定时任务
@@ -54,6 +58,7 @@ public class QrtzMemberOrderController extends AbstractController {
     @RequestMapping("/getMembersOrder")
     @Test
     public void getMembersOrder(String params) throws IOException, NoSuchAlgorithmException {
+        QrtzLastUpdateTimeEntity updateTimeEntity = new QrtzLastUpdateTimeEntity();
         long start, end2;
         start = System.currentTimeMillis();
         String url = "http://open.api.zhongjiu.cn/DashboardOpenAPI/ShopOrderDataSync";
@@ -74,10 +79,20 @@ public class QrtzMemberOrderController extends AbstractController {
             Date nowDate = new Date();
             endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
             startime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -2), "yyyy-MM-dd HH:mm:ss"); //前半小时时间
+            List<QrtzLastUpdateTimeEntity> updateTimeList = qrtzLastUpdateTimeService.queryAll(null);
+            updateTimeEntity = updateTimeList.get(0);
+            if (updateTimeList.get(0).getOrderLastDatetime() != null) {
+                startime = DateUtils.format(updateTimeList.get(0).getOrderLastDatetime(), "yyyy-MM-dd HH:mm:ss");
+            }
+            updateTimeEntity.setOrderLastDatetime(nowDate);
         }
-//        Integer listsize=getMemberBasicEntities(url,timeStamp,startime,endtime);//订单生成修改
-//        end2 = System.currentTimeMillis();
-//        System.out.println("批量处理"+listsize+"条数据，耗费了" + (end2 - start) + "ms");
+        Integer listsize=getMemberBasicEntities(url,timeStamp,startime,endtime);//订单生成修改
+        //将最后更新数据存入数据库
+        if (!StringUtils.isEmpty(updateTimeEntity.getId())) {
+            qrtzLastUpdateTimeService.updateOrderLastDatetime(updateTimeEntity);
+        }
+        end2 = System.currentTimeMillis();
+        System.out.println("批量处理"+listsize+"条数据，耗费了" + (end2 - start) + "ms");
     }
 
     private Integer getMemberBasicEntities(String url, String timeStamp, String starttime, String endtime) throws IOException {

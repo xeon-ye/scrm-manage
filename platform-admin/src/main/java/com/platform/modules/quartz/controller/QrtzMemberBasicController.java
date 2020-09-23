@@ -14,8 +14,10 @@ import com.alibaba.fastjson.JSON;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.DateUtils;
 import com.platform.common.utils.StringUtils;
+import com.platform.modules.quartz.entity.QrtzLastUpdateTimeEntity;
 import com.platform.modules.quartz.entity.QrtzMemberBasicEntity;
 import com.platform.modules.quartz.entity.TmpQkjvipMemberBasicEntity;
+import com.platform.modules.quartz.service.QrtzLastUpdateTimeService;
 import com.platform.modules.quartz.service.QrtzMemberBasicService;
 import com.platform.modules.quartz.service.TmpQkjvipMemberBasicService;
 import com.platform.modules.sys.controller.AbstractController;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -49,6 +52,8 @@ public class QrtzMemberBasicController extends AbstractController {
     private QrtzMemberBasicService memberBasicService;
     @Autowired
     private TmpQkjvipMemberBasicService tmpQkjvipMemberBasicService;
+    @Autowired
+    private QrtzLastUpdateTimeService qrtzLastUpdateTimeService;
     private List<QrtzMemberBasicEntity> addList;
 
     /**
@@ -59,10 +64,11 @@ public class QrtzMemberBasicController extends AbstractController {
     @RequestMapping("/getMembers")
     public void getMembers(String params) throws IOException, NoSuchAlgorithmException {
         String url = "http://open.api.zhongjiu.cn/DashboardOpenAPI/ShopMeberDataSync";
+        QrtzLastUpdateTimeEntity updateTimeEntity = new QrtzLastUpdateTimeEntity();
         String timeStamp = DateUtils.getTimeStamp();  //时间戳
         Date nowDate = new Date();
         String endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
-        String starttime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -2), "yyyy-MM-dd HH:mm:ss"); //前半小时时间
+        String starttime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -2), "yyyy-MM-dd HH:mm:ss"); //默认是2分钟前
         SortedMap<String, String> map = new TreeMap<>();
         String urlParam = "";
         String sign = "";
@@ -72,6 +78,13 @@ public class QrtzMemberBasicController extends AbstractController {
             paramArr = params.split(",");
             starttime = paramArr[0].trim();
             endtime = paramArr[1].trim();
+        } else {
+            List<QrtzLastUpdateTimeEntity> updateTimeList = qrtzLastUpdateTimeService.queryAll(null);
+            updateTimeEntity = updateTimeList.get(0);
+            if (updateTimeList.get(0).getMemberLastDatetime() != null) {
+                starttime = DateUtils.format(updateTimeList.get(0).getMemberLastDatetime(), "yyyy-MM-dd HH:mm:ss");
+            }
+            updateTimeEntity.setMemberLastDatetime(nowDate);
         }
         map.clear();
         map.put("starttime", starttime);
@@ -91,6 +104,10 @@ public class QrtzMemberBasicController extends AbstractController {
             resultPost = HttpClient.doPost(url + urlParam);
             if (resultPost != null && !"".equals(resultPost)) {
                 this.saveOrUpdateMember(resultPost, i + "");
+            }
+            //将最后更新数据存入数据库
+            if (!StringUtils.isEmpty(updateTimeEntity.getId())) {
+                qrtzLastUpdateTimeService.updateMemberLastDatetime(updateTimeEntity);
             }
         }
     }

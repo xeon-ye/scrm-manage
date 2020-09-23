@@ -23,6 +23,7 @@ import com.platform.common.validator.group.UpdateGroup;
 import com.platform.modules.pageCont.pageCount;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.service.MemberService;
+import com.platform.modules.qkjvip.service.MemberTagsService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysDictEntity;
 import com.platform.modules.sys.service.SysDictService;
@@ -54,8 +55,8 @@ public class MemberController extends AbstractController {
     private MemberService memberService;
     @Autowired
     private SysDictService sysDictService;
-//    @Autowired
-//    private MemberLabelService memberLabelService;
+    @Autowired
+    private MemberTagsService memberTagsService;
 
     /**
      * 查看所有列表

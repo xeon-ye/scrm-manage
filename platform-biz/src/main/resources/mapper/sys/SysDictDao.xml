@@ -4,7 +4,7 @@
 <mapper namespace="com.platform.modules.sys.dao.SysDictDao">
 
     <select id="queryByCode" resultType="com.platform.modules.sys.entity.SysDictEntity">
-        SELECT NAME,VALUE FROM SYS_DICT WHERE 1=1
+        SELECT ID,NAME,VALUE FROM SYS_DICT WHERE 1=1
             AND GROUP_ID = (SELECT ID FROM SYS_DICT_GROUP WHERE CODE = #{code})
             AND STATUS = 1 ORDER BY SORT
     </select>
