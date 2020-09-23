@@ -11,11 +11,13 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 实体
@@ -45,4 +47,17 @@ public class QkjvipMemberActivityEntity implements Serializable {
      */
     @TableId
     private String id;
+
+    private String regStarDate;
+    private String regEndDate;
+    private String starDate;
+    private String endDate;
+    private Integer ispri;
+    private String priPerson;
+    private String leading;
+    private String remark;
+    private Integer isaud;
+
+    @TableField(exist = false)
+    private List<QkjvipMemberActivitymbsEntity> mbs;
 }

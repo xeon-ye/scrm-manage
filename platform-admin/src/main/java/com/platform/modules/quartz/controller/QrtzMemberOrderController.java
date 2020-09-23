@@ -78,9 +78,9 @@ public class QrtzMemberOrderController extends AbstractController {
             endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
             startime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -2), "yyyy-MM-dd HH:mm:ss"); //前半小时时间
         }
-        Integer listsize=getMemberBasicEntities(url,timeStamp,startime,endtime);//订单生成修改
+        //Integer listsize=getMemberBasicEntities(url,timeStamp,startime,endtime);//订单生成修改
         end2 = System.currentTimeMillis();
-        System.out.println("批量处理"+listsize+"条数据，耗费了" + (end2 - start) + "ms");
+        //System.out.println("批量处理"+listsize+"条数据，耗费了" + (end2 - start) + "ms");
     }
 
     private Integer getMemberBasicEntities(String url, String timeStamp, String starttime, String endtime) throws IOException {
