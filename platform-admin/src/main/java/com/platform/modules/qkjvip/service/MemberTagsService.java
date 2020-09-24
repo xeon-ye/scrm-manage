@@ -12,9 +12,11 @@
 package com.platform.modules.qkjvip.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.entity.MemberTagsEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service接口
@@ -26,25 +28,24 @@ public interface MemberTagsService extends IService<MemberTagsEntity> {
     /**
      * saveOrUpdate
      *
-     * @param memberId 用户Id
-     * @param tagList tagList
+     * @param member 用户member
      */
-    void saveOrUpdate(String memberId, List<String> tagList);
+    void saveOrUpdate(MemberEntity member);
 
     /**
      * 根据用户ID，获取标签ID列表
      *
-     * @param memberId 用户Id
+     * @param params 用户Id
      * @return List
      */
-    List<String> queryTagsList(String memberId);
+    List<MemberTagsEntity> queryTagsList(Map<String, Object> params);
 
     /**
-     * 根据角色ID数组，批量删除
+     * 根据会员ID数组，批量删除会员标签
      *
-     * @param tagIds tagIds
+     * @param memberIds memberIds
      * @return int
      */
-    int deleteBatch(String[] tagIds);
+    int deleteBatch(String[] memberIds);
 
 }

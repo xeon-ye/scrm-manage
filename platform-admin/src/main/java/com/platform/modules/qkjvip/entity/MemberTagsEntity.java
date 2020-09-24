@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -46,7 +47,8 @@ public class MemberTagsEntity implements Serializable {
      */
     private String tagGroupId;
     /**
-     * 会员电话
+     * 以逗号隔开的标签字符串
      */
-    private String mobile;
+    @TableField(exist = false)
+    private String items;
 }

@@ -3,13 +3,34 @@
 
 <mapper namespace="com.platform.modules.qkjvip.dao.MemberTagsDao">
     <delete id="deleteBatch">
-        DELETE FROM qkjvip_member_tags WHERE tag_id IN
-        <foreach item="tagId" collection="array" open="(" separator="," close=")">
-            #{tagId}
+        DELETE FROM qkjvip_member_tags WHERE member_id IN
+        <foreach item="memberId" collection="array" open="(" separator="," close=")">
+            #{memberId}
         </foreach>
     </delete>
 
-    <select id="queryTagsList" resultType="string">
-		SELECT tag_id FROM qkjvip_member_tags WHERE member_id = #{value}
+    <select id="queryTagsList" resultType="com.platform.modules.qkjvip.entity.MemberTagsEntity">
+		SELECT
+            member_id,
+            tag_group_id,
+            stuff(
+                (
+                    SELECT DISTINCT
+                        ',' + tag_id
+                    FROM
+                        qkjvip_member_tags
+                    WHERE
+                        a.member_id = member_id AND a.tag_group_id = tag_group_id FOR xml path ('')
+                ),
+                1,
+                1,
+                ''
+            ) items
+        FROM
+            qkjvip_member_tags a
+        WHERE member_id = #{params.memberId}
+        GROUP BY
+            member_id,
+            tag_group_id
 	</select>
 </mapper>

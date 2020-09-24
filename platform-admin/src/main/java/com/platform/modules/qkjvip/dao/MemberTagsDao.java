@@ -14,7 +14,10 @@ package com.platform.modules.qkjvip.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.platform.modules.qkjvip.entity.MemberTagsEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * Dao
@@ -28,10 +31,10 @@ public interface MemberTagsDao extends BaseMapper<MemberTagsEntity> {
     /**
      * 根据用户ID，获取标签ID列表
      *
-     * @param memberId 用户ID
+     * @param params 用户ID
      * @return List
      */
-    List<String> queryTagsList(String memberId);
+    List<MemberTagsEntity> queryTagsList(@Param("params") Map<String, Object> params);
 
 
     /**

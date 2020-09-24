@@ -234,11 +234,6 @@ public class MemberEntity implements Serializable {
 
     @TableField(exist = false)
     private String orgUsername;
-    /**
-     * 会员标签列表
-     */
-    @TableField(exist = false)
-    private List<String> labelIdList;
 
     @TableField(exist = false)
     private Integer ageFrom;
@@ -251,12 +246,6 @@ public class MemberEntity implements Serializable {
 
     @TableField(exist = false)
     private String regTimeTo;
-
-//    @TableField(exist = false)
-//    private String page;
-//
-//    @TableField(exist = false)
-//    private String limit;
 
     @TableField(exist = false)
     private String buyPeriod;

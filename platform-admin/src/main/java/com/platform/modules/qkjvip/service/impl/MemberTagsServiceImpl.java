@@ -11,8 +11,10 @@
  */
 package com.platform.modules.qkjvip.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.platform.modules.qkjvip.dao.MemberTagsDao;
+import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.entity.MemberTagsEntity;
 import com.platform.modules.qkjvip.service.MemberTagsService;
 import org.springframework.stereotype.Service;
@@ -28,36 +30,39 @@ import java.util.*;
 public class MemberTagsServiceImpl extends ServiceImpl<MemberTagsDao, MemberTagsEntity> implements MemberTagsService {
 
     @Override
-    public void saveOrUpdate(String memberId, List<String> tagList) {
+    public void saveOrUpdate(MemberEntity member) {
         Map<String, Object> map = new HashMap<>(2);
-        map.put("member_id", memberId);
+        map.put("member_id", member.getMemberId());
         //先删除会员与标签关系
         this.removeByMap(map);
 
-        if (tagList == null || tagList.size() == 0) {
-            return;
+        JSONArray jsonArray = JSONArray.parseArray(member.getMemberLabel());
+        List<MemberTagsEntity> memberTagsEntityList = new ArrayList<>();
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONArray tagIdList = (JSONArray) jsonArray.getJSONObject(i).get("tagIdList");
+            String tagGroupId = jsonArray.getJSONObject(i).get("tagGroupId").toString();
+            for (int j = 0; j < tagIdList.size(); j++) {
+                MemberTagsEntity memberTagsEntity = new MemberTagsEntity();
+                memberTagsEntity.setMemberId(member.getMemberId());
+                memberTagsEntity.setTagGroupId(tagGroupId);
+                memberTagsEntity.setTagId(tagIdList.get(j).toString());
+                memberTagsEntityList.add(memberTagsEntity);
+            }
         }
-
-        //保存用户与角色关系
-        List<MemberTagsEntity> list = new ArrayList<>(tagList.size());
-        for (String tagId : tagList) {
-            MemberTagsEntity memberTagsEntity = new MemberTagsEntity();
-            memberTagsEntity.setTagId(tagId);
-            memberTagsEntity.setMemberId(memberId);
-
-            list.add(memberTagsEntity);
+        //保存用户与标签关系
+        if (memberTagsEntityList.size() > 0) {
+            this.saveBatch(memberTagsEntityList);
         }
-        this.saveBatch(list);
     }
 
     @Override
-    public List<String> queryTagsList(String memberId) {
-        return baseMapper.queryTagsList(memberId);
+    public List<MemberTagsEntity> queryTagsList(Map<String, Object> params) {
+        return baseMapper.queryTagsList(params);
     }
 
     @Override
-    public int deleteBatch(String[] tagIds) {
-        return baseMapper.deleteBatch(tagIds);
+    public int deleteBatch(String[] memberIds) {
+        return baseMapper.deleteBatch(memberIds);
     }
 
 }

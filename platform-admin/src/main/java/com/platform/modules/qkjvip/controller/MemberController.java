@@ -14,6 +14,8 @@ package com.platform.modules.qkjvip.controller;
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
@@ -22,8 +24,11 @@ import com.platform.common.validator.ValidatorUtils;
 import com.platform.common.validator.group.UpdateGroup;
 import com.platform.modules.pageCont.pageCount;
 import com.platform.modules.qkjvip.entity.MemberEntity;
+import com.platform.modules.qkjvip.entity.MemberTagsEntity;
+import com.platform.modules.qkjvip.entity.QkjvipTaglibsEntity;
 import com.platform.modules.qkjvip.service.MemberService;
 import com.platform.modules.qkjvip.service.MemberTagsService;
+import com.platform.modules.qkjvip.service.QkjvipTaglibsService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysDictEntity;
 import com.platform.modules.sys.service.SysDictService;
@@ -57,6 +62,8 @@ public class MemberController extends AbstractController {
     private SysDictService sysDictService;
     @Autowired
     private MemberTagsService memberTagsService;
+    @Autowired
+    private QkjvipTaglibsService qkjvipTaglibsService;
 
     /**
      * 查看所有列表
@@ -81,23 +88,8 @@ public class MemberController extends AbstractController {
     @GetMapping("/list")
     @RequiresPermissions("qkjvip:member:list")
     public RestResponse list(@RequestParam Map<String, Object> params) {
-//        //改为post形式传输后修改以下start
-//        Map<String, Object> params = new HashMap<>();
-//        params = JSON.parseObject(JSON.toJSONString(member), Map.class);
         //如需数据权限，在参数中添加DataScope
-        //params.put("dataScope", getDataScope("m.add_user","m.add_dept","m.org_userid"));
-//
-//        List<String> labelIds = (List<String>) params.get("labelIdList");
-//        String paramsStr = "";
-//        if (labelIds != null && labelIds.size() > 0) {
-//            for (int i = 0; i < labelIds.size(); i++) {
-//                paramsStr += "m.member_label like '%" + labelIds.get(i) + "%' and ";
-//            }
-//            paramsStr += "1=1";
-//        }
-//        params.put("paramsStr", paramsStr);
-//        //改为post形式传输后修改以下end
-//        Page page = memberService.queryPage(params);
+//        params.put("dataScope", getDataScope("m.add_user","m.add_dept","m.org_userid"));
 
         Page page = memberService.queryPage(params);
         pageCount pageCount = memberService.selectMemberCount(params);
@@ -115,12 +107,26 @@ public class MemberController extends AbstractController {
     @RequiresPermissions("qkjvip:member:info")
     public RestResponse info(@PathVariable("memberId") String memberId) {
         MemberEntity member = memberService.getById(memberId);
-        if (StringUtils.isNotEmpty(member.getMemberLabel())) {
-            member.setLabelIdList(Arrays.asList(member.getMemberLabel().split(",")));
+
+        //当表中的member_label字段为空时代表业务员没有手动给会员打标签或者定时脚本没有给会员打标签，所以要从会员-标签对应表中查询
+        if (member.getMemberLabel() == null || "".equals(member.getMemberLabel())) {
+            //获取会员标签
+            Map<String, Object> params = new HashMap<>();
+            params.put("memberId", memberId);
+            List<MemberTagsEntity> memberTags = memberTagsService.queryTagsList(params);
+            if (memberTags.size() > 0) {   //会员打了标签的情况下
+                List<Object> domains = new ArrayList<>();
+                for (int i = 0; i < memberTags.size(); i++) {
+                    params = new HashMap<>();
+                    params.put("tagGroupId", memberTags.get(i).getTagGroupId());
+                    List<QkjvipTaglibsEntity> tagList = qkjvipTaglibsService.queryAll(params);
+                    params.put("tagList", tagList);
+                    params.put("tagIdList", memberTags.get(i).getItems().split(","));
+                    domains.add(params);
+                }
+                member.setMemberLabel(JSON.toJSONString(domains));
+            }
         }
-        //获取会员标签(主子表形式-目前暂时废弃)
-//        List<String> labelList = memberLabelService.queryLabelList(memberId);
-//        member.setLabelIdList(labelList);
 
         return RestResponse.success().put("member", member);
     }
@@ -143,11 +149,9 @@ public class MemberController extends AbstractController {
         member.setAddDept(getOrgNo());
         member.setAddTime(new Date());
         member.setOfflineflag(1);
-        if (member.getLabelIdList() != null && member.getLabelIdList().size() > 0) {
-            member.setMemberLabel(StringUtils.join(member.getLabelIdList().toArray(), ","));
-        }
         memberService.add(member, params);
-
+        //插入会员标签
+        memberTagsService.saveOrUpdate(member);
         return RestResponse.success().put("member", member);
     }
 
@@ -165,10 +169,9 @@ public class MemberController extends AbstractController {
 
         Map<String, Object> params = new HashMap<>(2);
         params.put("dataScope", getDataScope());
-        if (member.getLabelIdList() != null && member.getLabelIdList().size() > 0) {
-            member.setMemberLabel(StringUtils.join(member.getLabelIdList().toArray(), ","));
-        }
         memberService.update(member, params);
+        //修改会员标签
+        memberTagsService.saveOrUpdate(member);
 
         return RestResponse.success().put("member", member);
     }
@@ -184,7 +187,8 @@ public class MemberController extends AbstractController {
     @RequiresPermissions("qkjvip:member:delete")
     public RestResponse delete(@RequestBody String[] memberIds) {
         memberService.deleteBatch(memberIds);
-
+        //同时删除会员对应的标签
+        memberTagsService.deleteBatch(memberIds);
         return RestResponse.success();
     }
 
