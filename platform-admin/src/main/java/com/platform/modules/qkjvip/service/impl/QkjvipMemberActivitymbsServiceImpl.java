@@ -67,4 +67,20 @@ public class QkjvipMemberActivitymbsServiceImpl extends ServiceImpl<QkjvipMember
     public boolean deleteBatch(String[] ids) {
         return this.removeByIds(Arrays.asList(ids));
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void batchAdd(List<QkjvipMemberActivitymbsEntity> qkjvipMemberActivitymbs) {
+        this.saveBatch(qkjvipMemberActivitymbs, 100);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void batchUpdate(List<QkjvipMemberActivitymbsEntity> qkjvipMemberActivitymbs) {
+        this.updateBatchById(qkjvipMemberActivitymbs, 100);
+    }
+    @Override
+    public int deleteBatchByOrder(String activityId) {
+        return baseMapper.deleteBatchByOrder(activityId);
+    }
 }

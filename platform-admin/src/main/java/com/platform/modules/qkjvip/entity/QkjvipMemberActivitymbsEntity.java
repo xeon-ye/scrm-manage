@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -41,4 +42,20 @@ public class QkjvipMemberActivitymbsEntity implements Serializable {
      * activity_id
      */
     private String activityId;
+
+    /**
+     * 会员名称
+     */
+    @TableField(exist = false)
+    private String memberName;
+    /*
+     * 会员真实姓名
+     */
+    @TableField(exist = false)
+    private String realName;
+    /*
+     * 会员手机
+     */
+    @TableField(exist = false)
+    private String mobile;
 }

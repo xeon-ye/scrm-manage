@@ -45,4 +45,5 @@ public interface QkjvipMemberActivitymbsDao extends BaseMapper<QkjvipMemberActiv
      * @return List
      */
     List<QkjvipMemberActivitymbsEntity> selectQkjvipMemberActivitymbsPage(IPage page, @Param("params") Map<String, Object> params);
+    int deleteBatchByOrder(String activityId);
 }
