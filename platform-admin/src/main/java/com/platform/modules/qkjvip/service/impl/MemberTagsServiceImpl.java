@@ -36,22 +36,24 @@ public class MemberTagsServiceImpl extends ServiceImpl<MemberTagsDao, MemberTags
         //先删除会员与标签关系
         this.removeByMap(map);
 
-        JSONArray jsonArray = JSONArray.parseArray(member.getMemberLabel());
-        List<MemberTagsEntity> memberTagsEntityList = new ArrayList<>();
-        for (int i = 0; i < jsonArray.size(); i++) {
-            JSONArray tagIdList = (JSONArray) jsonArray.getJSONObject(i).get("tagIdList");
-            String tagGroupId = jsonArray.getJSONObject(i).get("tagGroupId").toString();
-            for (int j = 0; j < tagIdList.size(); j++) {
-                MemberTagsEntity memberTagsEntity = new MemberTagsEntity();
-                memberTagsEntity.setMemberId(member.getMemberId());
-                memberTagsEntity.setTagGroupId(tagGroupId);
-                memberTagsEntity.setTagId(tagIdList.get(j).toString());
-                memberTagsEntityList.add(memberTagsEntity);
+        if (member.getMemberLabel() != null && !"".equals(member.getMemberLabel())) {
+            JSONArray jsonArray = JSONArray.parseArray(member.getMemberLabel());
+            List<MemberTagsEntity> memberTagsEntityList = new ArrayList<>();
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONArray tagIdList = (JSONArray) jsonArray.getJSONObject(i).get("tagIdList");
+                String tagGroupId = jsonArray.getJSONObject(i).get("tagGroupId").toString();
+                for (int j = 0; j < tagIdList.size(); j++) {
+                    MemberTagsEntity memberTagsEntity = new MemberTagsEntity();
+                    memberTagsEntity.setMemberId(member.getMemberId());
+                    memberTagsEntity.setTagGroupId(tagGroupId);
+                    memberTagsEntity.setTagId(tagIdList.get(j).toString());
+                    memberTagsEntityList.add(memberTagsEntity);
+                }
             }
-        }
-        //保存用户与标签关系
-        if (memberTagsEntityList.size() > 0) {
-            this.saveBatch(memberTagsEntityList);
+            //保存用户与标签关系
+            if (memberTagsEntityList.size() > 0) {
+                this.saveBatch(memberTagsEntityList);
+            }
         }
     }
 

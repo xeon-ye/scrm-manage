@@ -22,4 +22,9 @@ public class Vars {
 	//PWD
 	public static String SECRETKEY = "5E2#BD40&FAE^7";
 	//AES加密用常量end
+
+	//数据清洗url start
+	public static String MEMBER_ADD_URL = "http://api.scrm.qkj.com.cn/api/Member/AddMember";
+	public static String MEMBER_IMPORT_URL = "http://api.scrm.qkj.com.cn//api/Member/BatchImportMember";
+	//数据清洗url end
 }

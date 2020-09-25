@@ -31,8 +31,6 @@ import java.util.Map;
 
 @Service("memberService")
 public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> implements MemberService {
-//    @Autowired
-//    private MemberLabelService mmberLabelService;
 
     @Override
     public List<MemberEntity> queryAll(Map<String, Object> params) {
@@ -56,15 +54,11 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     @Override
     public void add(MemberEntity member, Map<String, Object> params) {
         this.save(member);
-        //保存会员与标签的关系
-//        mmberLabelService.saveOrUpdate(member.getMemberId(), member.getLabelIdList());
     }
 
     @Override
     public void add(MemberEntity member) {
         this.save(member);
-        //保存会员与标签的关系
-//        mmberLabelService.saveOrUpdate(member.getMemberId(), member.getLabelIdList());
     }
 
     @Override
@@ -75,8 +69,6 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     @Override
     public void update(MemberEntity member, Map<String, Object> params) {
         this.updateById(member);
-        //保存会员与标签的关系
-//        mmberLabelService.saveOrUpdate(member.getMemberId(), member.getLabelIdList());
     }
 
     @Override

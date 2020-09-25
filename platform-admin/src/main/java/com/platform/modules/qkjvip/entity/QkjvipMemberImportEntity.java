@@ -14,7 +14,9 @@ package com.platform.modules.qkjvip.entity;
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -70,6 +72,7 @@ public class QkjvipMemberImportEntity implements Serializable {
      * 生日
      */
     @Excel(name = "生日", orderNum = "6", width = 15)
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date birthday;
     /**
      * 会员类型
@@ -115,6 +118,7 @@ public class QkjvipMemberImportEntity implements Serializable {
      * 加入时间/注册时间
      */
     @Excel(name = "注册时间", orderNum = "15", width = 15)
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date regTime;
     /**
      * 推荐人部门
@@ -229,6 +233,54 @@ public class QkjvipMemberImportEntity implements Serializable {
      * 是否是手动导入的会员(1：是）
      */
     private Integer offlineflag;
+    /**
+     * 是否关注
+     */
+    private Integer isunsubscribe;
+    /**
+     * 取消关注时间
+     */
+    private Date unsubscribetime;
+    /**
+     * 服务号名称
+     */
+    private String servicename;
+    /**
+     * 用户的语言，简体中文为zh_CN
+     */
+    private String language;
+    /**
+     * 用户所在城市
+     */
+    private String city;
+    /**
+     * 用户所在省份
+     */
+    private String province;
+    /**
+     * 用户所在国家
+     */
+    private String country;
+    /**
+     * 用户关注时间。如果用户曾多次关注，则取最后关注时间
+     */
+    private Date subscribetime;
+    /**
+     * UnionId
+     */
+    private String unionid;
+    /**
+     * 用户更新时间
+     */
+    private Date updatetime;
+    /**
+     * AppId
+     */
+    private String appid;
+    /**
+     * 清洗备注
+     */
+    private String remark;
     /**
      * 清洗失败的标识，失败则为1
      */

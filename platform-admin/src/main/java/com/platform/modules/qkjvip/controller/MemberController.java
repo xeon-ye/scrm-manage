@@ -13,6 +13,7 @@ package com.platform.modules.qkjvip.controller;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.emay.util.JsonHelper;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -21,19 +22,22 @@ import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.validator.ValidatorUtils;
-import com.platform.common.validator.group.UpdateGroup;
 import com.platform.modules.pageCont.pageCount;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.entity.MemberTagsEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberImportEntity;
 import com.platform.modules.qkjvip.entity.QkjvipTaglibsEntity;
 import com.platform.modules.qkjvip.service.MemberService;
 import com.platform.modules.qkjvip.service.MemberTagsService;
+import com.platform.modules.qkjvip.service.QkjvipMemberImportService;
 import com.platform.modules.qkjvip.service.QkjvipTaglibsService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysDictEntity;
 import com.platform.modules.sys.service.SysDictService;
 import com.platform.modules.util.ExcelSelectListUtil;
 import com.platform.modules.util.ExportExcelUtils;
+import com.platform.modules.util.HttpClient;
+import com.platform.modules.util.Vars;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -64,6 +68,8 @@ public class MemberController extends AbstractController {
     private MemberTagsService memberTagsService;
     @Autowired
     private QkjvipTaglibsService qkjvipTaglibsService;
+    @Autowired
+    private QkjvipMemberImportService qkjvipMemberImportService;
 
     /**
      * 查看所有列表
@@ -89,7 +95,7 @@ public class MemberController extends AbstractController {
     @RequiresPermissions("qkjvip:member:list")
     public RestResponse list(@RequestParam Map<String, Object> params) {
         //如需数据权限，在参数中添加DataScope
-//        params.put("dataScope", getDataScope("m.add_user","m.add_dept","m.org_userid"));
+        params.put("dataScope", getDataScope("m.add_user","m.add_dept","m.org_userid"));
 
         Page page = memberService.queryPage(params);
         pageCount pageCount = memberService.selectMemberCount(params);
@@ -134,24 +140,36 @@ public class MemberController extends AbstractController {
     /**
      * 保存会员信息
      *
-     * @param member member
+     * @param memberImport memberImport
      * @return RestResponse
      */
     @SysLog("保存会员信息")
     @PostMapping("/save")
     @RequiresPermissions("qkjvip:member:save")
-    public RestResponse save(@RequestBody MemberEntity member) {
-
-        Map<String, Object> params = new HashMap<>(2);
-        params.put("dataScope", getDataScope());
-
-        member.setAddUser(getUserId());
-        member.setAddDept(getOrgNo());
-        member.setAddTime(new Date());
-        member.setOfflineflag(1);
-        memberService.add(member, params);
-        //插入会员标签
-        memberTagsService.saveOrUpdate(member);
+    public RestResponse save(@RequestBody QkjvipMemberImportEntity memberImport) {
+        memberImport.setAddUser(getUserId());
+        memberImport.setAddDept(getOrgNo());
+        memberImport.setAddTime(new Date());
+        memberImport.setOfflineflag(1);
+        qkjvipMemberImportService.add(memberImport);  //将数据保存到中间表
+        //调用数据清洗接口
+        MemberEntity member = new MemberEntity();
+        try {
+            Object obj = JSONArray.toJSON(memberImport);
+            String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+            String resultPost = HttpClient.sendPost(Vars.MEMBER_ADD_URL, memberJsonStr);
+            //插入会员标签
+            JSONObject resultObject = JSON.parseObject(resultPost);
+            if ("200".equals(resultObject.get("resultcode").toString())) {  //清洗成功
+                member.setMemberId(resultObject.get("memberid").toString());
+                member.setMemberLabel(memberImport.getMemberLabel());
+                memberTagsService.saveOrUpdate(member);
+            } else {
+                return RestResponse.error(resultObject.get("descr").toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return RestResponse.success().put("member", member);
     }
 
@@ -165,7 +183,7 @@ public class MemberController extends AbstractController {
     @PostMapping("/update")
     @RequiresPermissions("qkjvip:member:update")
     public RestResponse update(@RequestBody MemberEntity member) {
-        ValidatorUtils.validateEntity(member, UpdateGroup.class);
+        ValidatorUtils.validateEntity(member);
 
         Map<String, Object> params = new HashMap<>(2);
         params.put("dataScope", getDataScope());
@@ -280,14 +298,26 @@ public class MemberController extends AbstractController {
             throw new BusinessException("请选择要导入的文件");
         } else {
             try {
-                List<MemberEntity> list = ExportExcelUtils.importExcel(file, 1, 1,MemberEntity.class);
+                List<QkjvipMemberImportEntity> list = ExportExcelUtils.importExcel(file, 1, 1,QkjvipMemberImportEntity.class);
                 for (int i = 0; i < list.size(); i++) {
                     list.get(i).setAddUser(getUserId());
                     list.get(i).setAddDept(getOrgNo());
                     list.get(i).setAddTime(new Date());
                     list.get(i).setOfflineflag(1);
                 }
-                memberService.addBatch(list);
+                if (list.size() > 0) {
+                    qkjvipMemberImportService.addBatch(list); //批量导入临时表
+
+                    //调用数据清洗接口
+                    Object objList = JSONArray.toJSON(list);
+                    String memberJsonStr = JsonHelper.toJsonString(objList, "yyyy-MM-dd HH:mm:ss");
+                    String resultPost = HttpClient.sendPost(Vars.MEMBER_IMPORT_URL, memberJsonStr);
+
+                    JSONObject resultObject = JSON.parseObject(resultPost);
+                    if (!"200".equals(resultObject.get("resultcode").toString())) {  //清洗失败
+                        return RestResponse.error(resultObject.get("descr").toString());
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
