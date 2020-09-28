@@ -48,6 +48,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -93,9 +94,37 @@ public class MemberController extends AbstractController {
      */
     @GetMapping("/list")
     @RequiresPermissions("qkjvip:member:list")
-    public RestResponse list(@RequestParam Map<String, Object> params) {
+    public RestResponse list(@RequestParam Map<String, Object> params) throws UnsupportedEncodingException {
         //如需数据权限，在参数中添加DataScope
         params.put("dataScope", getDataScope("m.add_user","m.add_dept","m.org_userid"));
+
+        // 如果追加的会员标签的检索条件start
+        if (params.get("memberLabel") != null && !"".equals(params.get("memberLabel").toString())) {
+            String memberLabel = java.net.URLDecoder.decode(params.get("memberLabel").toString(),"UTF-8");
+            JSONArray jsonArray = JSONArray.parseArray(memberLabel);
+            String conditionSql = "";
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONArray tagIdList = (JSONArray) jsonArray.getJSONObject(i).get("tagIdList");
+                String tagGroupId = jsonArray.getJSONObject(i).get("tagGroupId").toString();
+                if (i == 0) {
+                    conditionSql += " ( ";
+                }
+                if (com.platform.common.utils.StringUtils.isNotBlank(tagGroupId)) {
+                    for (int j = 0; j < tagIdList.size(); j++) {
+                        if (i == jsonArray.size() - 1 && j == tagIdList.size() - 1) {
+                            conditionSql += " (mt.tag_group_id='" + tagGroupId + "' and mt.tag_id='" + tagIdList.get(j).toString() + "')";
+                        } else {
+                            conditionSql += " (mt.tag_group_id='" + tagGroupId + "' and mt.tag_id='" + tagIdList.get(j).toString() + "') or ";
+                        }
+                    }
+                }
+            }
+            if (!"".equals(conditionSql)) {
+                conditionSql += " ) ";
+            }
+            params.put("conditionSql", conditionSql);
+        }
+        // 如果追加的会员标签的检索条件end
 
         Page page = memberService.queryPage(params);
         pageCount pageCount = memberService.selectMemberCount(params);
