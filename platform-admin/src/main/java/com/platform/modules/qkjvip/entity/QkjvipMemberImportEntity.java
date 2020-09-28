@@ -161,12 +161,10 @@ public class QkjvipMemberImportEntity implements Serializable {
     /**
      * 微信id
      */
-    @Excel(name = "微信id", orderNum = "22", width = 15)
     private String openid;
     /**
      * 微信头像
      */
-    @Excel(name = "微信头像", orderNum = "23", width = 15)
     private String headImgUrl;
     /**
      * 添加人
@@ -227,7 +225,7 @@ public class QkjvipMemberImportEntity implements Serializable {
     /**
      * 身份证
      */
-    @Excel(name = "身份证", orderNum = "24", width = 15)
+    @Excel(name = "身份证", orderNum = "22", width = 15)
     private String idcard;
     /**
      * 是否是手动导入的会员(1：是）
@@ -281,6 +279,11 @@ public class QkjvipMemberImportEntity implements Serializable {
      * 清洗备注
      */
     private String remark;
+    /**
+     * 新增或导入时备注
+     */
+    @Excel(name = "备注", orderNum = "23", width = 15)
+    private String remark2;
     /**
      * 清洗失败的标识，失败则为1
      */

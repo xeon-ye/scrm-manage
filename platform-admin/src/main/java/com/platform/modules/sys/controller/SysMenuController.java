@@ -19,10 +19,7 @@ import com.platform.common.utils.RestResponse;
 import com.platform.common.validator.ValidatorUtils;
 import com.platform.common.validator.group.AddGroup;
 import com.platform.common.validator.group.UpdateGroup;
-import com.platform.modules.sys.entity.SysDictEntity;
-import com.platform.modules.sys.entity.SysMenuEntity;
-import com.platform.modules.sys.entity.SysOrgEntity;
-import com.platform.modules.sys.entity.SysUserEntity;
+import com.platform.modules.sys.entity.*;
 import com.platform.modules.sys.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -66,7 +63,7 @@ public class SysMenuController extends AbstractController {
         Map<String, Object> map = new HashMap<>(2);
 
         List<SysDictEntity> dictList = sysDictService.queryAll(map);
-        List<SysOrgEntity> orgList = orgService.list();
+        List<SysOrgEntity> orgList = orgService.list(new QueryWrapper<SysOrgEntity>().eq("STATUS", 1)); //liuqianru mod
         List<SysUserEntity> userList = userService.list(new QueryWrapper<SysUserEntity>().select("USER_ID,REAL_NAME"));
         return RestResponse.success()
                 .put("menuList", menuList)
