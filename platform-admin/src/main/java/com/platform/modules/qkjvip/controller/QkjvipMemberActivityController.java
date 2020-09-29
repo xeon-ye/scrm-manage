@@ -11,6 +11,10 @@
  */
 package com.platform.modules.qkjvip.controller;
 
+import cn.emay.util.JsonHelper;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
@@ -21,9 +25,12 @@ import com.platform.modules.qkjvip.entity.QkjvipMemberActivitymbsEntity;
 import com.platform.modules.qkjvip.entity.QkjvipMemberImportEntity;
 import com.platform.modules.qkjvip.service.MemberService;
 import com.platform.modules.qkjvip.service.QkjvipMemberActivitymbsService;
+import com.platform.modules.qkjvip.service.QkjvipMemberImportService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipMemberActivityEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberActivityService;
+import com.platform.modules.util.HttpClient;
+import com.platform.modules.util.Vars;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +56,7 @@ public class QkjvipMemberActivityController extends AbstractController {
     @Autowired
     private QkjvipMemberActivitymbsService qkjvipMemberActivitymbsService;
     @Autowired
-    private MemberService memberService;
+    private QkjvipMemberImportService qkjvipMemberImportService;
 
     /**
      * 查看所有列表
@@ -182,15 +189,24 @@ public class QkjvipMemberActivityController extends AbstractController {
                     list.get(i).setAddTime(new Date());
                     list.get(i).setOfflineflag(1);
                 }
-                //memberService.addBatch(list);
+                if (list.size() > 0) {
+                    qkjvipMemberImportService.addBatch(list); //批量导入临时表
+
+                    //调用数据清洗接口
+                    Object objList = JSONArray.toJSON(list);
+                    String memberJsonStr = JsonHelper.toJsonString(objList, "yyyy-MM-dd HH:mm:ss");
+                    String resultPost = HttpClient.sendPost(Vars.MEMBER_IMPORT_URL, memberJsonStr);
+
+                    JSONObject resultObject = JSON.parseObject(resultPost);
+                    if (!"200".equals(resultObject.get("resultcode").toString())) {  //清洗失败
+                        return RestResponse.error(resultObject.get("descr").toString());
+                    }else {
+                        mees=JSON.parseArray(resultObject.getString("listmember"),MemberEntity.class);
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //调用清洗数据接口
-
-            Map<String, Object> map=new HashMap<String,Object>();
-            map.put("realName","杨贵录");
-            mees=memberService.queryAll(map);
         }
         return RestResponse.success().put("memberlist", mees);
     }
