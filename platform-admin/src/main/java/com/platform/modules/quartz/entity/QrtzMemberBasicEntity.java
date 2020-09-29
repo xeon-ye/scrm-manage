@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author liuqianru
@@ -55,7 +56,7 @@ public class QrtzMemberBasicEntity implements Serializable {
     /*
      * 注册时间
      */
-    private String createdate;
+    private Date createdate;
     /*
      * 会员性别
      */

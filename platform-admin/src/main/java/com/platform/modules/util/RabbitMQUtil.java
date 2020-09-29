@@ -46,7 +46,7 @@ public class RabbitMQUtil {
             //从连接中获取一个通道
             Channel channel = connection.createChannel();
             //声明队列
-            channel.queueDeclare(queue_name, false, false, false, null);
+            channel.queueDeclare(queue_name, true, false, false, null);
             //发送消息
             channel.basicPublish("", queue_name, null, jsonData.getBytes("utf-8"));
             System.out.println("[RabbitMQ send]：" + jsonData);
