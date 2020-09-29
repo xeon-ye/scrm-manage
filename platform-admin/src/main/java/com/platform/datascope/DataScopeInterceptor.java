@@ -70,7 +70,7 @@ public class DataScopeInterceptor extends SqlExplainInterceptor implements Inter
                     String alias = dataScope.getOrgNos();
                     boolean self = dataScope.getSelf();
                     String userId = dataScope.getUserId();
-                    String newsql=filterSql.toString();
+                    String newsql = filterSql.toString();
                     if(newsql.contains("ORDER BY")){
                         Integer wz = newsql.indexOf("ORDER BY", newsql.indexOf("ORDER BY") + 1);
                         String beforsql="";
@@ -93,25 +93,7 @@ public class DataScopeInterceptor extends SqlExplainInterceptor implements Inter
 
                         filterSql.insert(wz,beforsql);
                         System.out.println(filterSql);
-                    }else{
-                        if (StringUtils.isNotBlank(alias)) {
-                            filterSql.append(" and (").append(orgAlias).append(" in (").append(alias).append(")");
-                            if (self) {
-                                filterSql.append(" or ").append(userAlias).append("='").append(user.getUserId()).append("' ");
-                            }
-                            if (StringUtils.isNotBlank(userId)) { //liuqianru add
-                                filterSql.append(" or ").append(userId).append("='").append(user.getUserId()).append("' ");
-                            }
-                            filterSql.append(" ) ");
-                        } else if (self) {
-                            filterSql.append(" and (").append(userAlias).append("='").append(user.getUserId()).append("' ");
-                            if (StringUtils.isNotBlank(userId)) { //liuqianru add
-                                filterSql.append(" or ").append(userId).append("='").append(user.getUserId()).append("' ");
-                            }
-                            filterSql.append(" ) ");
-                        }
                     }
-
                 }
                 metaObject.setValue("delegate.boundSql.sql", filterSql.toString());
             }

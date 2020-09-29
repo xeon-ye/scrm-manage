@@ -46,6 +46,15 @@ public interface MemberDao extends BaseMapper<MemberEntity> {
     List<MemberEntity> selectMemberList(IPage page, @Param("params") Map<String, Object> params);
 
     /**
+     * 自定义分页查询-带会员标签
+     *
+     * @param page   分页参数
+     * @param params 查询参数
+     * @return List
+     */
+    List<MemberEntity> selectMemberList2(IPage page, @Param("params") Map<String, Object> params);
+
+    /**
      * 查询条数
      *
      * @param params 查询参数

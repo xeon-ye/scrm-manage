@@ -10,16 +10,20 @@
  */
 package com.platform.modules.qkjvip.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.platform.common.utils.Query;
+import com.platform.common.utils.StringUtils;
 import com.platform.modules.pageCont.pageCount;
 import com.platform.modules.qkjvip.dao.MemberDao;
 import com.platform.modules.qkjvip.entity.MemberEntity;
+import com.platform.modules.qkjvip.entity.MemberTagsEntity;
 import com.platform.modules.qkjvip.service.MemberService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +52,13 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
         params.put("sidx", "m.add_time");
         params.put("asc", false);
         Page<MemberEntity> page = new Query<MemberEntity>(params).getPage();
+
+        // 如果追加了会员标签的检索条件start
+        if (params.get("conditionSql") != null && !"".equals(params.get("conditionSql").toString())) {
+            return page.setRecords(baseMapper.selectMemberList2(page, params));
+        }
+        // 如果追加了会员标签的检索条件end
+
         return page.setRecords(baseMapper.selectMemberList(page, params));
     }
 

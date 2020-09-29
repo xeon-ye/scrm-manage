@@ -113,9 +113,9 @@
             AND m.lastbuydate &lt; #{params.lastbuydateto}
         </if>
         <!-- 最后购买日期end -->
-
-        <if test="params.paramsStr != null and params.paramsStr != ''">
-            AND ${params.paramsStr}
+        <!-- 标签 -->
+        <if test="params.conditionSql != null and params.conditionSql != ''">
+            AND ${params.conditionSql}
         </if>
     </sql>
 	<select id="queryAll" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
@@ -128,8 +128,18 @@
         WHERE 1=1
         <include refid="selectSql"/>
 	</select>
-    <select id="selectMemberCount" resultType="com.platform.modules.pageCont.pageCount">
-        SELECT count(*) as countNumber FROM qkjvip_member m where 1=1
+    <select id="selectMemberList2" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
+        SELECT DISTINCT m.*,u.REAL_NAME orgUsername FROM qkjvip_member m
+        INNER JOIN qkjvip_member_tags mt ON (m.member_id=mt.member_id)
+        LEFT JOIN sys_user u ON (m.org_userid=u.USER_ID)
+        WHERE 1=1
         <include refid="selectSql"/>
+    </select>
+    <select id="selectMemberCount" resultType="com.platform.modules.pageCont.pageCount">
+        SELECT count(*) as countNumber FROM (SELECT DISTINCT m.*,u.REAL_NAME orgUsername FROM qkjvip_member m
+        INNER JOIN qkjvip_member_tags mt ON (m.member_id=mt.member_id)
+        LEFT JOIN sys_user u ON (m.org_userid=u.USER_ID)
+        WHERE 1=1
+        <include refid="selectSql"/>) a
     </select>
 </mapper>
