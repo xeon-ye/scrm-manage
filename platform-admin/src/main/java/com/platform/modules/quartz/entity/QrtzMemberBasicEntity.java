@@ -10,9 +10,12 @@
  */
 package com.platform.modules.quartz.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -54,9 +57,9 @@ public class QrtzMemberBasicEntity implements Serializable {
      */
     private String realtotalprice;
     /*
-     * 注册时间
+     * 注册时间(*不可修改数据类型，否则定时任务出错，除非让中酒将日期格式化为"yyyy-MM-dd HH:mm:ss"返回)
      */
-    private Date createdate;
+    private String createdate;
     /*
      * 会员性别
      */
