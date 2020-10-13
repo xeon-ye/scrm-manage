@@ -77,6 +77,7 @@ public class ShiroConfig {
         filterMap.put("/diagram-viewer/**", "anon");
         filterMap.put("/editor-app/**", "anon");
         filterMap.put("/service/**", "anon");
+        filterMap.put("/ajax/**", "anon");  //liuqianru add 前端调用ajax允许匿名访问
         filterMap.put("/**", "oauth2");
         shiroFilter.setFilterChainDefinitionMap(filterMap);
 

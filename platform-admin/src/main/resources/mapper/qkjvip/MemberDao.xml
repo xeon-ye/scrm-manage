@@ -136,10 +136,9 @@
         <include refid="selectSql"/>
     </select>
     <select id="selectMemberCount" resultType="com.platform.modules.pageCont.pageCount">
-        SELECT count(*) as countNumber FROM (SELECT DISTINCT m.*,u.REAL_NAME orgUsername FROM qkjvip_member m
-        INNER JOIN qkjvip_member_tags mt ON (m.member_id=mt.member_id)
-        LEFT JOIN sys_user u ON (m.org_userid=u.USER_ID)
+        SELECT count(*) as countNumber FROM qkjvip_member m
+        LEFT JOIN qkjvip_member_tags mt ON (m.member_id=mt.member_id)
         WHERE 1=1
-        <include refid="selectSql"/>) a
+        <include refid="selectSql"/>
     </select>
 </mapper>
