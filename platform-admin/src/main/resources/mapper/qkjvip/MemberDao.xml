@@ -129,15 +129,15 @@
         <include refid="selectSql"/>
 	</select>
     <select id="selectMemberList2" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
-        SELECT DISTINCT m.*,u.REAL_NAME orgUsername FROM qkjvip_member m
-        INNER JOIN qkjvip_member_tags mt ON (m.member_id=mt.member_id)
+        SELECT m.*,u.REAL_NAME orgUsername FROM qkjvip_member m
+        INNER JOIN (SELECT DISTINCT member_id FROM qkjvip_member_tags) mt ON (m.member_id=mt.member_id)
         LEFT JOIN sys_user u ON (m.org_userid=u.USER_ID)
         WHERE 1=1
         <include refid="selectSql"/>
     </select>
     <select id="selectMemberCount" resultType="com.platform.modules.pageCont.pageCount">
         SELECT count(*) as countNumber FROM qkjvip_member m
-        LEFT JOIN qkjvip_member_tags mt ON (m.member_id=mt.member_id)
+        LEFT JOIN (SELECT DISTINCT member_id FROM qkjvip_member_tags) mt ON (m.member_id=mt.member_id)
         WHERE 1=1
         <include refid="selectSql"/>
     </select>

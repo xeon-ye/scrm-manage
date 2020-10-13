@@ -56,7 +56,6 @@ public class QrtzMemberOrderController extends AbstractController {
      */
     @SysLog("会员订单读取定时任务")
     @RequestMapping("/getMembersOrder")
-    @Test
     public void getMembersOrder(String params) throws IOException, NoSuchAlgorithmException {
         QrtzLastUpdateTimeEntity updateTimeEntity = new QrtzLastUpdateTimeEntity();
         long start, end2;

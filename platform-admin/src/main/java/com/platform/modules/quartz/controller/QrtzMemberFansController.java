@@ -66,7 +66,6 @@ public class QrtzMemberFansController extends AbstractController {
      */
     @SysLog("粉丝读取定时任务")
     @RequestMapping("/getMemberFans")
-    @Test
     public void getMemberFans() throws IOException, NoSuchAlgorithmException, ParseException {
         String url = "http://api.zhongjiu.cn/datapool/userdetail";
         List<QrtzMemberFansEntity> fanList = new ArrayList<QrtzMemberFansEntity>();
