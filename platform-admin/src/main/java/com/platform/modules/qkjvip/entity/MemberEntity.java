@@ -11,6 +11,7 @@
 package com.platform.modules.qkjvip.entity;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -180,6 +181,7 @@ public class MemberEntity implements Serializable {
     /*
     * 会员标签
      */
+    @TableField(fill = FieldFill.UPDATE)
     private String memberLabel;
     /*
     * 近一个月购买金额

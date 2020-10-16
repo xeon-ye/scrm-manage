@@ -27,6 +27,13 @@ import java.util.Map;
  */
 @Mapper
 public interface MemberTagsDao extends BaseMapper<MemberTagsEntity> {
+    /**
+     * 查询所有列表
+     *
+     * @param params 查询参数
+     * @return List
+     */
+    List<MemberTagsEntity> queryAll(@Param("params") Map<String, Object> params);
 
     /**
      * 根据用户ID，获取标签ID列表
@@ -38,10 +45,16 @@ public interface MemberTagsDao extends BaseMapper<MemberTagsEntity> {
 
 
     /**
-     * 根据角色ID数组，批量删除
+     * 根据标签ID数组，批量删除
      *
      * @param tagIds 角色ids
      * @return int
      */
     int deleteBatch(String[] tagIds);
+    /**
+     * 根据list，批量修改会员标签的lock状态     *
+     * @param memberTags memberTags
+     * @return int
+     */
+    int mdyBatch(List<MemberTagsEntity> memberTags);
 }

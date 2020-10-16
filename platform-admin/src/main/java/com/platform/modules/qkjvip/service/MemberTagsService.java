@@ -26,6 +26,14 @@ import java.util.Map;
  */
 public interface MemberTagsService extends IService<MemberTagsEntity> {
     /**
+     * 查询所有
+     *
+     * @param params 查询参数
+     * @return List
+     */
+    List<MemberTagsEntity> queryAll(Map<String, Object> params);
+
+    /**
      * saveOrUpdate
      *
      * @param member 用户member

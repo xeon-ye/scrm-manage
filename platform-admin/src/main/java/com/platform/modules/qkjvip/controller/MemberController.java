@@ -156,9 +156,18 @@ public class MemberController extends AbstractController {
                 for (int i = 0; i < memberTags.size(); i++) {
                     params = new HashMap<>();
                     params.put("tagGroupId", memberTags.get(i).getTagGroupId());
+                    params.put("tagGroupName", memberTags.get(i).getTagGroupName());
+                    params.put("tagType", memberTags.get(i).getTagType());
                     List<QkjvipTaglibsEntity> tagList = qkjvipTaglibsService.queryAll(params);
                     params.put("tagList", tagList);
-                    params.put("tagIdList", memberTags.get(i).getItems().split(","));
+                    if (memberTags.get(i).getTagType() != null && memberTags.get(i).getTagType() == 2) {
+                        params.put("tagIdList", memberTags.get(i).getItems().split(","));
+                        params.put("tagValue", "");
+                    } else {
+                        String[] tagIdList = new String[0];
+                        params.put("tagIdList", tagIdList);
+                        params.put("tagValue", memberTags.get(i).getTagValue());
+                    }
                     domains.add(params);
                 }
                 member.setMemberLabel(JSON.toJSONString(domains));

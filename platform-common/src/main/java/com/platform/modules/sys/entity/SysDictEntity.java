@@ -62,6 +62,10 @@ public class SysDictEntity implements Serializable {
      * 备注
      */
     private String remark;
+    /**
+     * 标签组类型（1: 输入型标签，2：选项标签）
+     */
+    private Integer tagType;
 
     @TableField(exist = false)
     private String code;
