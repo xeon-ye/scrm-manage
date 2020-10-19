@@ -71,9 +71,9 @@ public class DataScopeInterceptor extends SqlExplainInterceptor implements Inter
                     boolean self = dataScope.getSelf();
                     String userId = dataScope.getUserId();
                     String newsql = filterSql.toString();
+                    String beforsql="";
                     if(newsql.contains("ORDER BY")){
                         Integer wz = newsql.indexOf("ORDER BY", newsql.indexOf("ORDER BY") + 1);
-                        String beforsql="";
                         if (StringUtils.isNotBlank(alias)) {
                             beforsql+=" and ("+orgAlias+" in ("+alias+")";
                             if (self) {
@@ -92,6 +92,26 @@ public class DataScopeInterceptor extends SqlExplainInterceptor implements Inter
                         }
 
                         filterSql.insert(wz,beforsql);
+                        System.out.println(filterSql);
+                    } else {
+                        if (StringUtils.isNotBlank(alias)) {
+                            beforsql+=" and ("+orgAlias+" in ("+alias+")";
+                            if (self) {
+                                beforsql+=" or "+userAlias+"='"+user.getUserId()+"' ";
+                            }
+                            if (StringUtils.isNotBlank(userId)) {
+                                beforsql+=" or "+userId+"='"+user.getUserId()+"' ";
+                            }
+                            beforsql+=" ) ";
+                        } else if (self) {
+                            beforsql+=" and ("+userAlias+"='"+user.getUserId()+"' ";
+                            if (StringUtils.isNotBlank(userId)) {
+                                beforsql+=" or "+userId+"='"+user.getUserId()+"' ";
+                            }
+                            beforsql+=" ) ";
+                        }
+
+                        filterSql.append(beforsql);
                         System.out.println(filterSql);
                     }
                 }

@@ -98,7 +98,7 @@ public class MemberController extends AbstractController {
         //如需数据权限，在参数中添加DataScope
         params.put("dataScope", getDataScope("m.add_user","m.add_dept","m.org_userid"));
 
-        // 如果追加的会员标签的检索条件start
+        // 如果追加了会员标签的检索条件start
         if (params.get("memberLabel") != null && !"".equals(params.get("memberLabel").toString())) {
             String memberLabel = java.net.URLDecoder.decode(params.get("memberLabel").toString(),"UTF-8");
             JSONArray jsonArray = JSONArray.parseArray(memberLabel);
@@ -124,11 +124,13 @@ public class MemberController extends AbstractController {
             }
             params.put("conditionSql", conditionSql);
         }
-        // 如果追加的会员标签的检索条件end
+        // 如果追加了会员标签的检索条件end
 
         Page page = memberService.queryPage(params);
-        pageCount pageCount = memberService.selectMemberCount(params);
-        page.setTotal(pageCount.getCountNumber());
+        if (!getUser().getUserName().contains("admin")) {  //非超级管理员重新计算检索条数
+            pageCount pageCount = memberService.selectMemberCount(params);
+            page.setTotal(pageCount.getCountNumber());
+        }
         return RestResponse.success().put("page", page);
     }
 
@@ -154,9 +156,18 @@ public class MemberController extends AbstractController {
                 for (int i = 0; i < memberTags.size(); i++) {
                     params = new HashMap<>();
                     params.put("tagGroupId", memberTags.get(i).getTagGroupId());
+                    params.put("tagGroupName", memberTags.get(i).getTagGroupName());
+                    params.put("tagType", memberTags.get(i).getTagType());
                     List<QkjvipTaglibsEntity> tagList = qkjvipTaglibsService.queryAll(params);
                     params.put("tagList", tagList);
-                    params.put("tagIdList", memberTags.get(i).getItems().split(","));
+                    if (memberTags.get(i).getTagType() != null && memberTags.get(i).getTagType() == 2) {
+                        params.put("tagIdList", memberTags.get(i).getItems().split(","));
+                        params.put("tagValue", "");
+                    } else {
+                        String[] tagIdList = new String[0];
+                        params.put("tagIdList", tagIdList);
+                        params.put("tagValue", memberTags.get(i).getTagValue());
+                    }
                     domains.add(params);
                 }
                 member.setMemberLabel(JSON.toJSONString(domains));

@@ -66,7 +66,6 @@ public class QrtzMemberFansController extends AbstractController {
      */
     @SysLog("粉丝读取定时任务")
     @RequestMapping("/getMemberFans")
-    @Test
     public void getMemberFans() throws IOException, NoSuchAlgorithmException, ParseException {
         String url = "http://api.zhongjiu.cn/datapool/userdetail";
         List<QrtzMemberFansEntity> fanList = new ArrayList<QrtzMemberFansEntity>();
@@ -114,11 +113,14 @@ public class QrtzMemberFansController extends AbstractController {
         resultPost = HttpClient.sendPost(url + urlParam, res);
         JSONObject fanObject = JSON.parseObject(resultPost);
         if ("0".equals(fanObject.get("result").toString())) {
-            String listStr = JSON.toJSONString(fanObject.get("UserList"), SerializerFeature.WriteMapNullValue);  //Fastjson序列化Null字段丢失解决方法
-            fanList = JSON.parseArray(listStr, QrtzMemberFansEntity.class);
+//            String listStr = JSON.toJSONString(fanObject.get("UserList"), SerializerFeature.WriteMapNullValue);  //Fastjson序列化Null字段丢失解决方法
+            fanList = JSON.parseArray(fanObject.get("UserList").toString(), QrtzMemberFansEntity.class);
+            map.clear();
+            map.put("QueueData", fanList);
+            String jsonData = JsonHelper.toJsonString(map, "yyyy-MM-dd HH:mm:ss");
             updateTimeEntity.setFansLastDatetime(fanList.get(fanList.size() -1).getUpdatetime());
             if (fanList.size() > 0) {
-                tmpList = JSON.parseArray(listStr, TmpQkjvipMemberFansEntity.class);
+                tmpList = JSON.parseArray(fanObject.get("UserList").toString(), TmpQkjvipMemberFansEntity.class);
                 System.out.println("result:" + fanList);
                 List<QrtzMemberFansEntity> updList = new ArrayList<QrtzMemberFansEntity>();
                 tmpQkjvipMemberFansService.addBatch(tmpList);  //批量插入粉丝临时表
@@ -130,10 +132,10 @@ public class QrtzMemberFansController extends AbstractController {
                 if (fanList.size() > 0) {
                     qrtzMemberFansService.addBatch(fanList);  //粉丝批量插入
                 }
-                //将最后更新数据存入数据库
+                //将最后更新时间存入数据库
                 qrtzLastUpdateTimeService.updateFansLastDatetime(updateTimeEntity);
-                //降数据存入队列
-                RabbitMQUtil.getConnection("qkjvip_member_fans", listStr);
+                //将数据存入队列
+                RabbitMQUtil.getConnection("qkjvip_member_fans", jsonData);
             }
         }
     }

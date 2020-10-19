@@ -128,7 +128,7 @@ public class MyTest2 {
                 "  \"descr\": \"\"\n" +
                 "}";
         JSONObject fanObject = JSON.parseObject(resultPost);
-        String jsonStr = JSON.toJSONString(fanObject.get("UserList"), SerializerFeature.WriteMapNullValue);
+        String jsonStr = JSON.toJSONString(fanObject.get("UserList"), SerializerFeature.WriteMapNullValue);  //序列化对象，使null或空的字段不被过滤掉
         System.out.print(jsonStr);
     }
 }

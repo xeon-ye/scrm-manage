@@ -47,8 +47,28 @@ public class MemberTagsEntity implements Serializable {
      */
     private String tagGroupId;
     /**
+     * 标签值/标签name
+     */
+    private String tagValue;
+    /**
+     * 标签锁定标识(0：正常 1：删除 2：锁定)
+     */
+    private Integer tagLocktype;
+    /**
      * 以逗号隔开的标签字符串
      */
     @TableField(exist = false)
     private String items;
+
+    /**
+     * 标签组类型（1：输入型 2：选择性 3：只读）
+     */
+    @TableField(exist = false)
+    private Integer tagType;
+
+    /**
+     * 标签组名称
+     */
+    @TableField(exist = false)
+    private String tagGroupName;
 }

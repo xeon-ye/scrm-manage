@@ -10,7 +10,9 @@
  */
 package com.platform.modules.quartz.controller;
 
+import cn.emay.util.JsonHelper;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.DateUtils;
 import com.platform.common.utils.StringUtils;
@@ -102,10 +104,10 @@ public class QrtzMemberBasicController extends AbstractController {
                     + "&sign=" + sign;
             System.out.println("key:sign" + " vlaue:" + sign);
             resultPost = HttpClient.doPost(url + urlParam);
-            if (resultPost != null && !"".equals(resultPost)) {
+            if (resultPost != null && !"[]".equals(resultPost)) {
                 this.saveOrUpdateMember(resultPost, i + "");
             }
-            //将最后更新数据存入数据库
+            //将最后更新时间存入数据库
             if (!StringUtils.isEmpty(updateTimeEntity.getId())) {
                 qrtzLastUpdateTimeService.updateMemberLastDatetime(updateTimeEntity);
             }
@@ -115,6 +117,9 @@ public class QrtzMemberBasicController extends AbstractController {
     public void saveOrUpdateMember(String resultPost, String timeType) {
         List<QrtzMemberBasicEntity> mbList = JSON.parseArray(resultPost, QrtzMemberBasicEntity.class);
         List<TmpQkjvipMemberBasicEntity> tmpList = JSON.parseArray(resultPost, TmpQkjvipMemberBasicEntity.class);
+        Map map = new HashMap();
+        map.put("QueueData", mbList);
+        String jsonData = JsonHelper.toJsonString(map, "yyyy-MM-dd HH:mm:ss");
         List<QrtzMemberBasicEntity> fromDbList = new ArrayList<QrtzMemberBasicEntity>();
         if (tmpList.size() > 0) {
             tmpQkjvipMemberBasicService.addBatch(tmpList);  //批量插入会员临时表
@@ -138,7 +143,7 @@ public class QrtzMemberBasicController extends AbstractController {
             }
         }
         //将数据存入队列
-        RabbitMQUtil.getConnection("qkjvip_member_basic", resultPost);
+        RabbitMQUtil.getConnection("qkjvip_member_basic", jsonData);
     }
 
     /**

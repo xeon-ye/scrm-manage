@@ -9,10 +9,29 @@
         </foreach>
     </delete>
 
+    <delete id="mdyBatch">
+        UPDATE qkjvip_member_tags
+        SET tag_locktype = 1
+        WHERE id IN
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </delete>
+
+    <select id="queryAll" resultType="com.platform.modules.qkjvip.entity.MemberTagsEntity">
+        SELECT mt.* FROM qkjvip_member_tags mt WHERE mt.tag_locktype &lt;&gt; 1
+        <if test="params.memberId != null and params.memberId != ''">
+            AND mt.member_id = #{params.memberId}
+        </if>
+    </select>
+
     <select id="queryTagsList" resultType="com.platform.modules.qkjvip.entity.MemberTagsEntity">
 		SELECT
-            member_id,
-            tag_group_id,
+            a.member_id,
+            a.tag_group_id,
+            d.name as tagGroupName,
+            a.tag_value,
+            d.tag_type,
             stuff(
                 (
                     SELECT DISTINCT
@@ -28,9 +47,13 @@
             ) items
         FROM
             qkjvip_member_tags a
-        WHERE member_id = #{params.memberId}
+        LEFT JOIN sys_dict d ON (a.tag_group_id=d.id)
+        WHERE a.tag_locktype &lt;&gt; 1 and a.member_id = #{params.memberId}
         GROUP BY
-            member_id,
-            tag_group_id
+            a.member_id,
+            a.tag_group_id,
+            d.name,
+            a.tag_value,
+			d.tag_type
 	</select>
 </mapper>
