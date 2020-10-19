@@ -58,6 +58,13 @@ public class QkjvipMemberActivityEntity implements Serializable {
     private String remark;
     private Integer isaud;
 
+    private String adduser;
+    private String adddept;
+    private String address;
+    private String bgimg;
+
     @TableField(exist = false)
     private List<QkjvipMemberActivitymbsEntity> mbs;
+    @TableField(exist = false)
+    private List<QkjvipMemberSignupaddressEntity> addresses;
 }
