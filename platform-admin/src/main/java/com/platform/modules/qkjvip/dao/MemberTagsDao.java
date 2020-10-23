@@ -57,4 +57,12 @@ public interface MemberTagsDao extends BaseMapper<MemberTagsEntity> {
      * @return int
      */
     int mdyBatch(List<MemberTagsEntity> memberTags);
+
+    /**
+     * 根据标签ID，批量删除
+     *
+     * @param tagId tagId
+     * @return int
+     */
+    int removeByTagId(String tagId);
 }

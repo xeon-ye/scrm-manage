@@ -56,4 +56,12 @@ public interface MemberTagsService extends IService<MemberTagsEntity> {
      */
     int deleteBatch(String[] memberIds);
 
+    /**
+     * 根据tagid删除
+     *
+     * @param tagId tagId
+     * @return 删除结果
+     */
+    int delete(String tagId);
+
 }

@@ -14,6 +14,7 @@ package com.platform.modules.qkjvip.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
+import com.platform.modules.qkjvip.service.MemberTagsService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipTaglibsEntity;
 import com.platform.modules.qkjvip.service.QkjvipTaglibsService;
@@ -36,6 +37,8 @@ import java.util.Map;
 public class QkjvipTaglibsController extends AbstractController {
     @Autowired
     private QkjvipTaglibsService qkjvipTaglibsService;
+    @Autowired
+    private MemberTagsService memberTagsService;
 
     /**
      * 查看所有列表
@@ -126,6 +129,9 @@ public class QkjvipTaglibsController extends AbstractController {
     public RestResponse delete(@PathVariable("labelId") String labelId) {
 
         qkjvipTaglibsService.delete(labelId);
+
+        //同时删除会员标签对应关系表中的数据
+        memberTagsService.delete(labelId);
 
         return RestResponse.success();
     }
