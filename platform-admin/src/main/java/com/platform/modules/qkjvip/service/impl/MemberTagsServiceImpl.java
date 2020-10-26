@@ -161,4 +161,9 @@ public class MemberTagsServiceImpl extends ServiceImpl<MemberTagsDao, MemberTags
         return baseMapper.deleteBatch(memberIds);
     }
 
+    @Override
+    public int delete(String tagId) {
+        return baseMapper.removeByTagId(tagId);
+    }
+
 }
