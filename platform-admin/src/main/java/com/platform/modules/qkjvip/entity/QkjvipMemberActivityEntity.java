@@ -62,6 +62,7 @@ public class QkjvipMemberActivityEntity implements Serializable {
     private String adddept;
     private String address;
     private String bgimg;
+    private String issignimg;
 
     @TableField(exist = false)
     private List<QkjvipMemberActivitymbsEntity> mbs;

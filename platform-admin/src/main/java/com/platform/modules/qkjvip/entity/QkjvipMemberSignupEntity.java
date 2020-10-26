@@ -69,4 +69,6 @@ public class QkjvipMemberSignupEntity implements Serializable {
     private String memadduser;
     @TableField(exist = false)
     private String memadddept;
+    @TableField(exist = false)
+    private String addressstr;
 }

@@ -112,6 +112,7 @@ public class QkjvipMemberSignupController extends AbstractController {
         List<QkjvipMemberSignupEntity> list = qkjvipMemberSignupService.queryAll(params);
         if(list.size()>0){
             //return RestResponse.error("已报名成功，谢谢");
+            qkjvipMemberSignup = list.get(0);
         }else{
             //清洗会员
             QkjvipMemberImportEntity memberImport=new QkjvipMemberImportEntity();
@@ -144,7 +145,7 @@ public class QkjvipMemberSignupController extends AbstractController {
 
         //查询活动情况
         //QkjvipMemberActivityEntity qkjvipMemberActivity = qkjvipMemberActivityService.getById(qkjvipMemberSignup.getAcitvityId());
-        return RestResponse.success();
+        return RestResponse.success().put("membersignup",qkjvipMemberSignup);
     }
 
     /**

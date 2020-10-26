@@ -5,18 +5,18 @@
 
     <sql id="selectSql">
         SELECT
-        T.SDATE,
-        T.SNUMBER,
-        T.USER_NAME,
-        T.SEX,
-        T.ACITVITY_ID,
-        T.PHONE,
-        T.ADDRESS,
-        T.ID
+        T.*,a.address addressstr
         FROM QKJVIP_MEMBER_SIGNUP T
+        join qkjvip_member_signupaddress a on (a.id=t.address)
         WHERE 1=1
-        <if test="params.name != null and params.name.trim() != ''">
-            AND T.NAME LIKE '%${params.name}%'
+        <if test="params.phone != null and params.phone.trim() != ''">
+            AND T.phone LIKE '${params.phone}'
+        </if>
+        <if test="params.acitvityid != null and params.acitvityid.trim() != ''">
+            AND T.acitvity_id LIKE '${params.acitvityid}'
+        </if>
+        <if test="params.userName != null and params.userName.trim() != ''">
+            AND T.user_name LIKE '%${params.userName}%'
         </if>
     </sql>
 

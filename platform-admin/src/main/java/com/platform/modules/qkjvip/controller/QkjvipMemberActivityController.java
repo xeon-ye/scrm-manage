@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.zxing.WriterException;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.RestResponse;
@@ -24,6 +25,7 @@ import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.qkjvip.service.*;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.util.HttpClient;
+import com.platform.modules.util.QRCodeUtil;
 import com.platform.modules.util.Vars;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.platform.modules.util.ExportExcelUtils;
 
+import javax.servlet.ServletOutputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -128,6 +131,17 @@ public class QkjvipMemberActivityController extends AbstractController {
     @RequestMapping("/save")
     @RequiresPermissions("qkjvip:memberactivity:save")
     public RestResponse save(@RequestBody QkjvipMemberActivityEntity qkjvipMemberActivity) {
+        //如果签到生成二维码
+        if(qkjvipMemberActivity.getIssign()!=null&&qkjvipMemberActivity.getIssign().equals(1)){
+            try{
+                String url= QRCodeUtil.createQrCode("http://baidu.com.cn",90,".jpg");
+                qkjvipMemberActivity.setIssignimg(url);
+            }catch (IOException e){
+
+            }catch (WriterException e1){
+
+            }
+        }
         qkjvipMemberActivity.setAdduser(getUserId());
         qkjvipMemberActivity.setAdddept(getOrgNo());
         List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
@@ -152,6 +166,7 @@ public class QkjvipMemberActivityController extends AbstractController {
             }
             qkjvipMemberSignupaddressService.batchAdd(addresses);
         }
+
         return RestResponse.success();
     }
 
@@ -165,6 +180,21 @@ public class QkjvipMemberActivityController extends AbstractController {
     @RequestMapping("/update")
     @RequiresPermissions("qkjvip:memberactivity:update")
     public RestResponse update(@RequestBody QkjvipMemberActivityEntity qkjvipMemberActivity) {
+        //如果签到生成二维码
+        QkjvipMemberActivityEntity oldact = qkjvipMemberActivityService.getById(qkjvipMemberActivity.getId());
+        if(qkjvipMemberActivity.getIssign()!=null&&qkjvipMemberActivity.getIssign().equals(1)&&oldact.getIssignimg()==null){
+            //String erweima=QRCodeUtil.getBase64QRCode("https://www.baidu.com/");
+            try{
+                String url= QRCodeUtil.createQrCode("http://baidu.com.cn",90,".jpg");
+                qkjvipMemberActivity.setIssignimg(url);
+            }catch (IOException e){
+
+            }catch (WriterException e1){
+
+            }
+
+            //System.out.println(erweima);
+        }
         List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
         mbs=qkjvipMemberActivity.getMbs();
         qkjvipMemberActivityService.update(qkjvipMemberActivity);
