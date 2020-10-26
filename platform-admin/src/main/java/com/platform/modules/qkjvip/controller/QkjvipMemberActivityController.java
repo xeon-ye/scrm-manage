@@ -20,15 +20,9 @@ import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.utils.StringUtils;
-import com.platform.modules.qkjvip.entity.MemberEntity;
-import com.platform.modules.qkjvip.entity.QkjvipMemberActivitymbsEntity;
-import com.platform.modules.qkjvip.entity.QkjvipMemberImportEntity;
-import com.platform.modules.qkjvip.service.MemberService;
-import com.platform.modules.qkjvip.service.QkjvipMemberActivitymbsService;
-import com.platform.modules.qkjvip.service.QkjvipMemberImportService;
+import com.platform.modules.qkjvip.entity.*;
+import com.platform.modules.qkjvip.service.*;
 import com.platform.modules.sys.controller.AbstractController;
-import com.platform.modules.qkjvip.entity.QkjvipMemberActivityEntity;
-import com.platform.modules.qkjvip.service.QkjvipMemberActivityService;
 import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.Vars;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -57,6 +51,8 @@ public class QkjvipMemberActivityController extends AbstractController {
     private QkjvipMemberActivitymbsService qkjvipMemberActivitymbsService;
     @Autowired
     private QkjvipMemberImportService qkjvipMemberImportService;
+    @Autowired
+    private QkjvipMemberSignupaddressService qkjvipMemberSignupaddressService;
 
     /**
      * 查看所有列表
@@ -99,6 +95,26 @@ public class QkjvipMemberActivityController extends AbstractController {
         Map<String, Object> map=new HashMap<String,Object>();
         map.put("activityId",id);
         qkjvipMemberActivity.setMbs(qkjvipMemberActivitymbsService.queryAll(map));
+        //查询地址
+        qkjvipMemberActivity.setAddresses(qkjvipMemberSignupaddressService.queryAll(map));
+
+        return RestResponse.success().put("memberactivity", qkjvipMemberActivity);
+    }
+
+    /**
+     * 根据主键查询详情
+     *
+     * @param params 主键
+     * @return RestResponse
+     */
+    @RequestMapping("/infohtml")
+    public RestResponse infohtml(@RequestParam Map<String, Object> params) {
+        QkjvipMemberActivityEntity qkjvipMemberActivity = qkjvipMemberActivityService.getById(params.get("id").toString());
+        Map<String, Object> map=new HashMap<String,Object>();
+        map.put("activityId",params.get("id").toString());
+        qkjvipMemberActivity.setMbs(qkjvipMemberActivitymbsService.queryAll(map));
+        //查询地址
+        qkjvipMemberActivity.setAddresses(qkjvipMemberSignupaddressService.queryAll(map));
         return RestResponse.success().put("memberactivity", qkjvipMemberActivity);
     }
 
@@ -112,6 +128,8 @@ public class QkjvipMemberActivityController extends AbstractController {
     @RequestMapping("/save")
     @RequiresPermissions("qkjvip:memberactivity:save")
     public RestResponse save(@RequestBody QkjvipMemberActivityEntity qkjvipMemberActivity) {
+        qkjvipMemberActivity.setAdduser(getUserId());
+        qkjvipMemberActivity.setAdddept(getOrgNo());
         List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
         mbs=qkjvipMemberActivity.getMbs();
         qkjvipMemberActivityService.add(qkjvipMemberActivity);
@@ -124,6 +142,16 @@ public class QkjvipMemberActivityController extends AbstractController {
             qkjvipMemberActivitymbsService.batchAdd(mbs);
         }
 
+        List<QkjvipMemberSignupaddressEntity> addresses=new ArrayList<>();
+        addresses=qkjvipMemberActivity.getAddresses();
+        if(addresses!=null&&addresses.size()>0){
+            List<QkjvipMemberSignupaddressEntity> newList=new ArrayList<>();
+            for(QkjvipMemberSignupaddressEntity m:addresses){
+                m.setActivityid(qkjvipMemberActivity.getId());
+                newList.add(m);
+            }
+            qkjvipMemberSignupaddressService.batchAdd(addresses);
+        }
         return RestResponse.success();
     }
 
@@ -150,6 +178,19 @@ public class QkjvipMemberActivityController extends AbstractController {
                 newmemList.add(m);
             }
             qkjvipMemberActivitymbsService.batchAdd(mbs);
+        }
+
+        List<QkjvipMemberSignupaddressEntity> addresses=new ArrayList<>();
+        addresses=qkjvipMemberActivity.getAddresses();
+        if(addresses!=null&&addresses.size()>0){
+            //删除
+            qkjvipMemberSignupaddressService.deleteBatchByOrder(qkjvipMemberActivity.getId());
+            List<QkjvipMemberSignupaddressEntity> newList=new ArrayList<>();
+            for(QkjvipMemberSignupaddressEntity m:addresses){
+                m.setActivityid(qkjvipMemberActivity.getId());
+                newList.add(m);
+            }
+            qkjvipMemberSignupaddressService.batchAdd(addresses);
         }
         return RestResponse.success();
     }
