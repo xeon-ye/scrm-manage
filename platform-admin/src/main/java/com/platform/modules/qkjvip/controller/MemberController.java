@@ -17,16 +17,14 @@ import cn.emay.util.JsonHelper;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.validator.ValidatorUtils;
 import com.platform.modules.pageCont.pageCount;
-import com.platform.modules.qkjvip.entity.MemberEntity;
-import com.platform.modules.qkjvip.entity.MemberTagsEntity;
-import com.platform.modules.qkjvip.entity.QkjvipMemberImportEntity;
-import com.platform.modules.qkjvip.entity.QkjvipTaglibsEntity;
+import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.qkjvip.service.MemberService;
 import com.platform.modules.qkjvip.service.MemberTagsService;
 import com.platform.modules.qkjvip.service.QkjvipMemberImportService;
@@ -34,6 +32,7 @@ import com.platform.modules.qkjvip.service.QkjvipTaglibsService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysDictEntity;
 import com.platform.modules.sys.service.SysDictService;
+import com.platform.modules.sys.service.SysRoleOrgService;
 import com.platform.modules.util.ExcelSelectListUtil;
 import com.platform.modules.util.ExportExcelUtils;
 import com.platform.modules.util.HttpClient;
@@ -71,6 +70,8 @@ public class MemberController extends AbstractController {
     private QkjvipTaglibsService qkjvipTaglibsService;
     @Autowired
     private QkjvipMemberImportService qkjvipMemberImportService;
+    @Autowired
+    private SysRoleOrgService sysRoleOrgService;
 
     /**
      * 查看所有列表
@@ -94,44 +95,28 @@ public class MemberController extends AbstractController {
      */
     @GetMapping("/list")
     @RequiresPermissions("qkjvip:member:list")
-    public RestResponse list(@RequestParam Map<String, Object> params) throws UnsupportedEncodingException {
-        //如需数据权限，在参数中添加DataScope
-        params.put("dataScope", getDataScope("m.add_user","m.add_dept","m.org_userid"));
+    public RestResponse list(@RequestParam Map<String, Object> params) throws IOException {
+        params.put("currentmemberid", getUserId());
+        params.put("listorgno", sysRoleOrgService.queryOrgNoListByUserId(getUserId()));  // 部门权限
+        MemberQueryEntity memberQueryEntity = JSON.parseObject(JSON.toJSONString(params, SerializerFeature.WriteMapNullValue), MemberQueryEntity.class);
+        Object obj = JSONArray.toJSON(memberQueryEntity);
+        String queryJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
 
-        // 如果追加了会员标签的检索条件start
-        if (params.get("memberLabel") != null && !"".equals(params.get("memberLabel").toString())) {
-            String memberLabel = java.net.URLDecoder.decode(params.get("memberLabel").toString(),"UTF-8");
-            JSONArray jsonArray = JSONArray.parseArray(memberLabel);
-            String conditionSql = "";
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JSONArray tagIdList = (JSONArray) jsonArray.getJSONObject(i).get("tagIdList");
-                String tagGroupId = jsonArray.getJSONObject(i).get("tagGroupId").toString();
-                if (i == 0) {
-                    conditionSql += " ( ";
-                }
-                if (com.platform.common.utils.StringUtils.isNotBlank(tagGroupId)) {
-                    for (int j = 0; j < tagIdList.size(); j++) {
-                        if (i == jsonArray.size() - 1 && j == tagIdList.size() - 1) {
-                            conditionSql += " (mt.tag_group_id='" + tagGroupId + "' and mt.tag_id='" + tagIdList.get(j).toString() + "')";
-                        } else {
-                            conditionSql += " (mt.tag_group_id='" + tagGroupId + "' and mt.tag_id='" + tagIdList.get(j).toString() + "') or ";
-                        }
-                    }
-                }
-            }
-            if (!"".equals(conditionSql)) {
-                conditionSql += " ) ";
-            }
-            params.put("conditionSql", conditionSql);
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_GETLIST_URL, queryJsonStr);
+        //插入会员标签
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+            List<MemberEntity> memberList = new ArrayList<>();
+            memberList = JSON.parseArray(resultObject.getString("listmember"),MemberEntity.class);
+            Page page = new Page();
+            page.setRecords(memberList);
+            page.setTotal(Long.parseLong(resultObject.get("totalcount").toString()));
+            page.setSize(memberQueryEntity.getPagesize());
+            page.setCurrent(memberQueryEntity.getPageindex());
+            return RestResponse.success().put("page", page);
+        } else {
+            return RestResponse.error(resultObject.get("descr").toString());
         }
-        // 如果追加了会员标签的检索条件end
-
-        Page page = memberService.queryPage(params);
-        if (!getUser().getUserName().contains("admin")) {  //非超级管理员重新计算检索条数
-            pageCount pageCount = memberService.selectMemberCount(params);
-            page.setTotal(pageCount.getCountNumber());
-        }
-        return RestResponse.success().put("page", page);
     }
 
     /**

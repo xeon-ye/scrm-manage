@@ -77,7 +77,7 @@ public class MemberEntity implements Serializable {
     /*
      * 会员类型
      */
-    @Excel(name = "会员类型", orderNum = "7", width = 15,replace={"门店会员_0","团购会员_1","大店会员_2","意见领袖_3","普通消费者_4","公众粉丝_5","其他_6","零售_7","批发_8","员工_9"})
+    @Excel(name = "会员类型", orderNum = "7", width = 15,replace={"门店会员_0","团购会员_1","大店会员_2","意见领袖_3","普通消费者_4","公众粉丝_5","工业游_6","零售_7","批发_8","员工_9","旅游特通_10","其他_20"})
     private String memberType;
     /*
      * 会员性质
@@ -287,15 +287,24 @@ public class MemberEntity implements Serializable {
     @Excel(name = "备注", orderNum = "23", width = 15)
     private String remark2;
 
+    /**
+     * 所属人姓名
+     */
     @TableField(exist = false)
     private String orgUsername;
 
+    /**
+     * 年龄
+     */
     @TableField(exist = false)
     private Integer ageFrom;
 
     @TableField(exist = false)
     private Integer ageTo;
 
+    /**
+     * 注册时间
+     */
     @TableField(exist = false)
     private String regTimeFrom;
 
@@ -321,10 +330,31 @@ public class MemberEntity implements Serializable {
     private Double unitpriceto;
 
     @TableField(exist = false)
-    private String lastbuydatefrom;
+    private String activitydatefrom;
 
     @TableField(exist = false)
-    private String lastbuydateto;
+    private String activitydateto;
 
+    /**
+     * 最后一次参加活动日期
+     */
+    @TableField(exist = false)
+    private String lastactivitydate;
+    /**
+     * 最后一次参加活动标题
+     */
+    @TableField(exist = false)
+    private String activityTitle;
+    /**
+     * 活动类型
+     */
+    @TableField(exist = false)
+    private String activeType;
+
+    /**
+     * 地区类型
+     */
+    @TableField(exist = false)
+    private String areaType;
 
 }
