@@ -60,7 +60,6 @@ public class MemberVisitEntity implements Serializable {
     /**
      * 结果反馈
      */
-    @NotBlank(message = "结果反馈不能为空", groups = {AddGroup.class, UpdateGroup.class})
     private String content;
     /**
      * 是否生成订单

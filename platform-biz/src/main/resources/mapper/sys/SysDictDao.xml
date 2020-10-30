@@ -16,7 +16,7 @@
             and D.NAME LIKE '%${params.name}%'
         </if>
         <if test="params.code != null and params.code != ''">
-            and G.CODE LIKE '%${params.code}%'
+            and G.CODE = #{params.code}
         </if>
         <if test="params.status != null">
             and D.STATUS = #{params.status}
