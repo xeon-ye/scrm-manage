@@ -48,6 +48,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -96,6 +97,9 @@ public class MemberController extends AbstractController {
     @GetMapping("/list")
     @RequiresPermissions("qkjvip:member:list")
     public RestResponse list(@RequestParam Map<String, Object> params) throws IOException {
+
+//        Page page = memberService.queryPage(params);
+//        return RestResponse.success().put("page", page);
         params.put("currentmemberid", getUserId());
         params.put("listorgno", sysRoleOrgService.queryOrgNoListByUserId(getUserId()));  // 部门权限
         MemberQueryEntity memberQueryEntity = JSON.parseObject(JSON.toJSONString(params, SerializerFeature.WriteMapNullValue), MemberQueryEntity.class);
@@ -242,8 +246,9 @@ public class MemberController extends AbstractController {
     @RequestMapping("/export")
     @RequiresPermissions("qkjvip:member:export")
     public void exportExcel(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params) {
-        List<MemberEntity> list = memberService.queryAll(params);
+//        List<MemberEntity> list = memberService.queryAll(params);
         try {
+            List<MemberEntity> list = JSON.parseArray(URLDecoder.decode(params.get("dataStr").toString()), MemberEntity.class);
             ExportExcelUtils.exportExcel(list,"会员信息表","会员信息",MemberEntity.class,"会员信息",response);
         } catch (IOException e) {
             e.printStackTrace();
