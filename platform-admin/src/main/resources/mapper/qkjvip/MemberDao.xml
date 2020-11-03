@@ -21,6 +21,9 @@
         <if test="params.orgUserid != null and params.orgUserid != ''">
             AND m.org_userid = #{params.orgUserid}
         </if>
+        <if test="params.memberType != null and params.memberType != ''">
+            AND m.member_type = #{params.memberType}
+        </if>
         <!-- 年龄区间start -->
         <if test="params.ageFrom != null and params.ageFrom != ''">
             AND m.age &gt;= #{params.ageFrom}
@@ -105,14 +108,6 @@
             AND m.unitprice &lt; #{params.unitpriceto}
         </if>
         <!-- 近一年客单价end-->
-        <!-- 最后购买日期start -->
-        <if test="params.lastbuydatefrom != null and params.lastbuydatefrom != ''">
-            AND m.lastbuydate &gt;= #{params.lastbuydatefrom}
-        </if>
-        <if test="params.lastbuydateto != null and params.lastbuydateto != ''">
-            AND m.lastbuydate &lt; #{params.lastbuydateto}
-        </if>
-        <!-- 最后购买日期end -->
         <!-- 标签 -->
         <if test="params.conditionSql != null and params.conditionSql != ''">
             AND ${params.conditionSql}

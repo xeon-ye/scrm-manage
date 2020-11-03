@@ -11,6 +11,7 @@
  */
 package com.platform.modules.sys.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -65,6 +66,8 @@ public class SysDictEntity implements Serializable {
     /**
      * 标签组类型（1: 输入型标签，2：选项标签）
      */
+
+    @TableField(fill = FieldFill.UPDATE)
     private Integer tagType;
 
     @TableField(exist = false)

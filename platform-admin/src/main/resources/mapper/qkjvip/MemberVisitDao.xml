@@ -8,8 +8,11 @@
 		<if test="params.uuid != null and params.uuid != ''">
 			AND mv.uuid = #{params.uuid}
 		</if>
-		<if test="params.memberId != null and params.memberId != ''">
-			AND mv.member_id = #{params.memberId}
+<!--		<if test="params.memberId != null and params.memberId != ''">-->
+<!--			AND mv.member_id = #{params.memberId}-->
+<!--		</if>-->
+		<if test="params.mobile != null and params.mobile != ''">
+			AND mv.mobile = #{params.mobile}
 		</if>
 	</select>
 </mapper>
