@@ -43,6 +43,8 @@ public class QkjvipMemberActivitymbsEntity implements Serializable {
      */
     private String activityId;
 
+    private Integer status;
+
     /**
      * 会员名称
      */

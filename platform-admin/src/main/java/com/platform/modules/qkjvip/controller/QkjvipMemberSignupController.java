@@ -18,13 +18,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
-import com.platform.modules.qkjvip.entity.MemberEntity;
-import com.platform.modules.qkjvip.entity.QkjvipMemberActivityEntity;
-import com.platform.modules.qkjvip.entity.QkjvipMemberImportEntity;
+import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.qkjvip.service.QkjvipMemberActivityService;
+import com.platform.modules.qkjvip.service.QkjvipMemberActivitymbsService;
 import com.platform.modules.qkjvip.service.QkjvipMemberImportService;
 import com.platform.modules.sys.controller.AbstractController;
-import com.platform.modules.qkjvip.entity.QkjvipMemberSignupEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberSignupService;
 import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.Vars;
@@ -33,10 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Controller
@@ -53,6 +48,8 @@ public class QkjvipMemberSignupController extends AbstractController {
     private QkjvipMemberActivityService qkjvipMemberActivityService;
     @Autowired
     private QkjvipMemberImportService qkjvipMemberImportService;
+    @Autowired
+    private QkjvipMemberActivitymbsService qkjvipMemberActivitymbsService;
 
 
     /**
@@ -138,6 +135,9 @@ public class QkjvipMemberSignupController extends AbstractController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            //如果没有邀约记录则补充
+            qkjvipMemberActivitymbsService.supadd(qkjvipMemberSignup.getAcitvityId(),member.getMemberId());
+            //添加报名记录
             qkjvipMemberSignup.setMemberid(member.getMemberId());
             qkjvipMemberSignupService.add(qkjvipMemberSignup);
 

@@ -131,10 +131,16 @@ public class QkjvipMemberActivityController extends AbstractController {
     @RequestMapping("/save")
     @RequiresPermissions("qkjvip:memberactivity:save")
     public RestResponse save(@RequestBody QkjvipMemberActivityEntity qkjvipMemberActivity) {
+        qkjvipMemberActivity.setAdduser(getUserId());
+        qkjvipMemberActivity.setAdddept(getOrgNo());
+        List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
+        mbs=qkjvipMemberActivity.getMbs();
+        qkjvipMemberActivityService.add(qkjvipMemberActivity);
         //如果签到生成二维码
-        if(qkjvipMemberActivity.getIssign()!=null&&qkjvipMemberActivity.getIssign().equals(1)){
+        if(qkjvipMemberActivity.getIssign()!=null&&qkjvipMemberActivity.getIssign().equals(1)&&qkjvipMemberActivity.getHtmlurl()!=null){
             try{
-                String url= QRCodeUtil.createQrCode("http://baidu.com.cn",90,".jpg");
+                String htmlur=qkjvipMemberActivity.getHtmlurl().substring(0,qkjvipMemberActivity.getHtmlurl().indexOf("#"));
+                String url= QRCodeUtil.createQrCode(htmlur+"#/signmember?activityid="+qkjvipMemberActivity.getId(),90,".jpg");
                 qkjvipMemberActivity.setIssignimg(url);
             }catch (IOException e){
 
@@ -142,15 +148,11 @@ public class QkjvipMemberActivityController extends AbstractController {
 
             }
         }
-        qkjvipMemberActivity.setAdduser(getUserId());
-        qkjvipMemberActivity.setAdddept(getOrgNo());
-        List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
-        mbs=qkjvipMemberActivity.getMbs();
-        qkjvipMemberActivityService.add(qkjvipMemberActivity);
         if(mbs!=null&&mbs.size()>0){
             List<QkjvipMemberActivitymbsEntity> newmemList=new ArrayList<>();
             for(QkjvipMemberActivitymbsEntity m:mbs){
                 m.setActivityId(qkjvipMemberActivity.getId());
+                m.setStatus(1);//邀约
                 newmemList.add(m);
             }
             qkjvipMemberActivitymbsService.batchAdd(mbs);
@@ -182,10 +184,11 @@ public class QkjvipMemberActivityController extends AbstractController {
     public RestResponse update(@RequestBody QkjvipMemberActivityEntity qkjvipMemberActivity) {
         //如果签到生成二维码
         QkjvipMemberActivityEntity oldact = qkjvipMemberActivityService.getById(qkjvipMemberActivity.getId());
-        if(qkjvipMemberActivity.getIssign()!=null&&qkjvipMemberActivity.getIssign().equals(1)&&oldact.getIssignimg()==null){
+        if(qkjvipMemberActivity.getIssign()!=null&&qkjvipMemberActivity.getIssign().equals(1)&&(oldact.getIssignimg()==null||oldact.getIssignimg().equals(""))&&qkjvipMemberActivity.getHtmlurl()!=null){
             //String erweima=QRCodeUtil.getBase64QRCode("https://www.baidu.com/");
             try{
-                String url= QRCodeUtil.createQrCode("http://baidu.com.cn",90,".jpg");
+                String htmlur=qkjvipMemberActivity.getHtmlurl().substring(0,qkjvipMemberActivity.getHtmlurl().indexOf("#"));
+                String url= QRCodeUtil.createQrCode(htmlur+"#/signmember?activityid="+qkjvipMemberActivity.getId(),90,".jpg");
                 qkjvipMemberActivity.setIssignimg(url);
             }catch (IOException e){
 
@@ -195,6 +198,7 @@ public class QkjvipMemberActivityController extends AbstractController {
 
             //System.out.println(erweima);
         }
+
         List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
         mbs=qkjvipMemberActivity.getMbs();
         qkjvipMemberActivityService.update(qkjvipMemberActivity);
@@ -205,6 +209,7 @@ public class QkjvipMemberActivityController extends AbstractController {
             List<QkjvipMemberActivitymbsEntity> newmemList=new ArrayList<>();
             for(QkjvipMemberActivitymbsEntity m:mbs){
                 m.setActivityId(qkjvipMemberActivity.getId());
+                m.setStatus(1);//邀约
                 newmemList.add(m);
             }
             qkjvipMemberActivitymbsService.batchAdd(mbs);

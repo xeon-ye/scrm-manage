@@ -20,9 +20,7 @@ import com.platform.modules.qkjvip.service.QkjvipMemberActivitymbsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Service实现类
@@ -82,5 +80,21 @@ public class QkjvipMemberActivitymbsServiceImpl extends ServiceImpl<QkjvipMember
     @Override
     public int deleteBatchByOrder(String activityId) {
         return baseMapper.deleteBatchByOrder(activityId);
+    }
+    @Override
+    public void supadd(String activity,String member_id){
+        //是否存在记录
+        Map<String, Object> map=new HashMap<String,Object>();
+        map.put("activityId",activity);
+        map.put("memberId",member_id);
+        List<QkjvipMemberActivitymbsEntity> mbslist = new ArrayList<>();
+        mbslist=this.queryAll(map);
+        if(mbslist.size()<=0){//无邀约
+            QkjvipMemberActivitymbsEntity m=new QkjvipMemberActivitymbsEntity();
+            m.setStatus(2);//自主报名
+            m.setActivityId(activity);
+            m.setMemberId(member_id);
+            this.add(m);
+        }
     }
 }

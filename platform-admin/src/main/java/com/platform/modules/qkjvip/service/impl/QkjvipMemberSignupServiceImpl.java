@@ -15,14 +15,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.platform.common.utils.Query;
 import com.platform.modules.qkjvip.dao.QkjvipMemberSignupDao;
+import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.entity.QkjvipMemberSignupEntity;
+import com.platform.modules.qkjvip.service.MemberService;
 import com.platform.modules.qkjvip.service.QkjvipMemberSignupService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Service实现类
@@ -32,6 +33,9 @@ import java.util.Map;
  */
 @Service("qkjvipMemberSignupService")
 public class QkjvipMemberSignupServiceImpl extends ServiceImpl<QkjvipMemberSignupDao, QkjvipMemberSignupEntity> implements QkjvipMemberSignupService {
+
+    @Autowired
+    private MemberService memberService;
 
     @Override
     public List<QkjvipMemberSignupEntity> queryAll(Map<String, Object> params) {
@@ -66,5 +70,25 @@ public class QkjvipMemberSignupServiceImpl extends ServiceImpl<QkjvipMemberSignu
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteBatch(String[] ids) {
         return this.removeByIds(Arrays.asList(ids));
+    }
+
+    @Override
+    public void supadd(String activity,String member_id){
+        MemberEntity mem=new MemberEntity();
+        mem=memberService.getById(member_id);
+        //是否存在记录
+        Map<String, Object> map=new HashMap<String,Object>();
+        map.put("activityId",activity);
+        map.put("memberId",member_id);
+        List<QkjvipMemberSignupEntity> mbslist = new ArrayList<>();
+        mbslist=this.queryAll(map);
+        if(mbslist.size()<=0){//无报名
+            QkjvipMemberSignupEntity m=new QkjvipMemberSignupEntity();
+            m.setMemberid(member_id);
+            m.setAcitvityId(activity);
+            m.setPhone(mem.getMobile());
+            m.setUserName(mem.getMemberName());
+            this.add(m);
+        }
     }
 }

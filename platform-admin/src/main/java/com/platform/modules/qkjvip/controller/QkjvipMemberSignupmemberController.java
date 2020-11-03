@@ -14,6 +14,8 @@ package com.platform.modules.qkjvip.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
+import com.platform.modules.qkjvip.service.QkjvipMemberActivitymbsService;
+import com.platform.modules.qkjvip.service.QkjvipMemberSignupService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipMemberSignupmemberEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberSignupmemberService;
@@ -35,7 +37,11 @@ import java.util.Map;
 public class QkjvipMemberSignupmemberController extends AbstractController {
     @Autowired
     private QkjvipMemberSignupmemberService qkjvipMemberSignupmemberService;
+    @Autowired
+    private QkjvipMemberActivitymbsService qkjvipMemberActivitymbsService;
 
+    @Autowired
+    private QkjvipMemberSignupService qkjvipMemberSignupService;
     /**
      * 查看所有列表
      *
@@ -107,6 +113,29 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
 
         qkjvipMemberSignupmemberService.update(qkjvipMemberSignupmember);
 
+        return RestResponse.success();
+    }
+
+    /**
+     * 签到
+     *
+     * @param qkjvipMemberSignupmember qkjvipMemberSignupmember
+     * @return RestResponse
+     */
+    @SysLog("新增")
+    @RequestMapping("/savesign")
+    public RestResponse savesign(@RequestBody QkjvipMemberSignupmemberEntity qkjvipMemberSignupmember) {
+
+        // 清洗会员(微信id有则不清洗,无清洗)
+
+        
+        //邀请补充
+        //qkjvipMemberActivitymbsService.supadd(qkjvipMemberSignup.getAcitvityId(),member.getMemberId());
+        //报名补充
+        //qkjvipMemberSignupService.supadd(activityid,memberid);
+        //签到
+        //已签到显示行程安排、参加的活动记录、用户的积分、积分商城
+        qkjvipMemberSignupmemberService.add(qkjvipMemberSignupmember);
         return RestResponse.success();
     }
 
