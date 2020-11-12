@@ -91,19 +91,23 @@ public class MemberController extends AbstractController {
     /**
      * 所有会员列表
      *
-     * @param params 查询参数
+     * @param memberQuery 查询参数
      * @return RestResponse
      */
-    @GetMapping("/list")
+    @PostMapping("/list")
     @RequiresPermissions("qkjvip:member:list")
-    public RestResponse list(@RequestParam Map<String, Object> params) throws IOException {
+    public RestResponse list(@RequestBody MemberQueryEntity memberQuery) throws IOException {
 
 //        Page page = memberService.queryPage(params);
 //        return RestResponse.success().put("page", page);
-        params.put("currentmemberid", getUserId());
-        params.put("listorgno", sysRoleOrgService.queryOrgNoListByUserId(getUserId()));  // 部门权限
-        MemberQueryEntity memberQueryEntity = JSON.parseObject(JSON.toJSONString(params, SerializerFeature.WriteMapNullValue), MemberQueryEntity.class);
-        Object obj = JSONArray.toJSON(memberQueryEntity);
+        if (getUser().getUserName().contains("admin")) {
+            memberQuery.setCurrentmemberid("");
+            memberQuery.setListorgno("");
+        } else {
+            memberQuery.setCurrentmemberid(getUserId());
+            memberQuery.setListorgno(sysRoleOrgService.queryOrgNoListByUserId(getUserId()));
+        }
+        Object obj = JSONArray.toJSON(memberQuery);
         String queryJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
 
         String resultPost = HttpClient.sendPost(Vars.MEMBER_GETLIST_URL, queryJsonStr);
@@ -115,8 +119,8 @@ public class MemberController extends AbstractController {
             Page page = new Page();
             page.setRecords(memberList);
             page.setTotal(Long.parseLong(resultObject.get("totalcount").toString()));
-            page.setSize(memberQueryEntity.getPagesize());
-            page.setCurrent(memberQueryEntity.getPageindex());
+            page.setSize(memberQuery.getPagesize());
+            page.setCurrent(memberQuery.getPageindex());
             return RestResponse.success().put("page", page);
         } else {
             return RestResponse.error(resultObject.get("descr").toString());
@@ -134,34 +138,32 @@ public class MemberController extends AbstractController {
     public RestResponse info(@PathVariable("memberId") String memberId) {
         MemberEntity member = memberService.getById(memberId);
 
-        //当表中的member_label字段为空时代表业务员没有手动给会员打标签或者定时脚本没有给会员打标签，所以要从会员-标签对应表中查询
-        if (member.getMemberLabel() == null || "".equals(member.getMemberLabel())) {
-            //获取会员标签
-            Map<String, Object> params = new HashMap<>();
-            params.put("memberId", memberId);
-            List<MemberTagsEntity> memberTags = memberTagsService.queryTagsList(params);
-            if (memberTags.size() > 0) {   //会员打了标签的情况下
-                List<Object> domains = new ArrayList<>();
-                for (int i = 0; i < memberTags.size(); i++) {
-                    params = new HashMap<>();
-                    params.put("tagGroupId", memberTags.get(i).getTagGroupId());
-                    params.put("tagGroupName", memberTags.get(i).getTagGroupName());
-                    params.put("tagType", memberTags.get(i).getTagType());
-                    List<QkjvipTaglibsEntity> tagList = qkjvipTaglibsService.queryAll(params);
-                    params.put("tagList", tagList);
-                    if (memberTags.get(i).getTagType() != null && memberTags.get(i).getTagType() == 2) {
-                        params.put("tagIdList", memberTags.get(i).getItems().split(","));
-                        params.put("tagValue", "");
-                    } else {
-                        String[] tagIdList = new String[0];
-                        params.put("tagIdList", tagIdList);
-                        params.put("tagValue", memberTags.get(i).getTagValue());
-                    }
-                    domains.add(params);
+        //获取会员标签
+        Map<String, Object> params = new HashMap<>();
+        params.put("memberId", memberId);
+        List<MemberTagsEntity> memberTagsEntities = memberTagsService.queryTagsList(params);
+        List<MemberTagsQueryEntity> membertags = new ArrayList<>();
+        if (memberTagsEntities.size() > 0) {   //会员打了标签的情况下
+            for (int i = 0; i < memberTagsEntities.size(); i++) {
+                MemberTagsQueryEntity memberTagsQueryEntity = new MemberTagsQueryEntity();
+                memberTagsQueryEntity.setTagGroupId(memberTagsEntities.get(i).getTagGroupId());
+                memberTagsQueryEntity.setTagGroupName(memberTagsEntities.get(i).getTagGroupName());
+                memberTagsQueryEntity.setTagType(memberTagsEntities.get(i).getTagType());
+                params.put("tagGroupId", memberTagsEntities.get(i).getTagGroupId());
+                List<QkjvipTaglibsEntity> tagList = qkjvipTaglibsService.queryAll(params);
+                memberTagsQueryEntity.setTagList(tagList);
+                if (memberTagsEntities.get(i).getTagType() != null && memberTagsEntities.get(i).getTagType() == 2) {
+                    memberTagsQueryEntity.setTagIdList(Arrays.asList(memberTagsEntities.get(i).getItems().split(",")));
+                    memberTagsQueryEntity.setTagValue("");
+                } else {
+                    List<String> tagIdList = new ArrayList<>();
+                    memberTagsQueryEntity.setTagIdList(tagIdList);
+                    memberTagsQueryEntity.setTagValue(memberTagsEntities.get(i).getTagValue());
                 }
-                member.setMemberLabel(JSON.toJSONString(domains));
+                membertags.add(memberTagsQueryEntity);
             }
         }
+        member.setMembertags(membertags);
 
         return RestResponse.success().put("member", member);
     }
@@ -191,7 +193,7 @@ public class MemberController extends AbstractController {
             JSONObject resultObject = JSON.parseObject(resultPost);
             if ("200".equals(resultObject.get("resultcode").toString())) {  //清洗成功
                 member.setMemberId(resultObject.get("memberid").toString());
-                member.setMemberLabel(memberImport.getMemberLabel());
+                member.setMembertags(memberImport.getMembertags());
                 memberTagsService.saveOrUpdate(member);
             } else {
                 return RestResponse.error(resultObject.get("descr").toString());
