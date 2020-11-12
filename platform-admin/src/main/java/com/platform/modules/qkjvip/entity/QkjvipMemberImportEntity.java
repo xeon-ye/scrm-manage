@@ -12,6 +12,7 @@
 package com.platform.modules.qkjvip.entity;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -21,6 +22,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 实体
@@ -288,4 +290,9 @@ public class QkjvipMemberImportEntity implements Serializable {
      * 清洗失败的标识，失败则为1
      */
     private Integer isfail;
+    /**
+     * 标签数组
+     */
+    @TableField(exist = false)
+    private List<MemberTagsQueryEntity> membertags;
 }

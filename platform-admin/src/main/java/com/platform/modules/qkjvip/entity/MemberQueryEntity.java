@@ -24,6 +24,7 @@ import org.apache.poi.hpsf.Decimal;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author liuqianru
@@ -34,6 +35,7 @@ import java.util.Date;
 public class MemberQueryEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private String memberid;
     private String membername;
     private String realname;
     private String mobile;
@@ -62,14 +64,14 @@ public class MemberQueryEntity implements Serializable {
     private Integer endbuynum12;
     private Double startunitprice;
     private Double endunitprice;
-    private Integer areatype;
-    private Integer membertype;
-    private Integer activitytype;
+    private String areatype;
+    private String membertype;
+    private String activitytype;
     private String startlastactivitydate;
     private String endlastactivitydate;
     private String listorgno;
     private String currentmemberid;
-    private String usercustomtag;
+    private List<MemberTagsQueryEntity> membertags;
     private Integer pageindex;
     private Integer pagesize;
     private Integer queryall;  // 0:分页 1：不分页

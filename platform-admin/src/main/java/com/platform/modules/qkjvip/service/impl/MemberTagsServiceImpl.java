@@ -18,6 +18,7 @@ import com.platform.common.utils.StringUtils;
 import com.platform.modules.qkjvip.dao.MemberTagsDao;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.entity.MemberTagsEntity;
+import com.platform.modules.qkjvip.entity.MemberTagsQueryEntity;
 import com.platform.modules.qkjvip.entity.QkjvipTaglibsEntity;
 import com.platform.modules.qkjvip.service.MemberTagsService;
 import org.springframework.stereotype.Service;
@@ -44,25 +45,27 @@ public class MemberTagsServiceImpl extends ServiceImpl<MemberTagsDao, MemberTags
         //先删除会员与标签关系
 //        this.removeByMap(map);
 
-        if (member.getMemberLabel() != null && !"".equals(member.getMemberLabel())) {
+        if (member.getMembertags().size() > 0) {
             List<MemberTagsEntity> memberTagsList = baseMapper.queryAll(map);  //根据会员id读取目前会员标签表
-            JSONArray jsonArray = JSONArray.parseArray(member.getMemberLabel());
+//            JSONArray jsonArray = JSONArray.parseArray(member.getMemberLabel());
             List<MemberTagsEntity> memberTagsAddList = new ArrayList<>();
             List<MemberTagsEntity> memberTagsMdyList = new ArrayList<>();
             List<MemberTagsEntity> memberTagsHaveList = new ArrayList<>();
-            for (int i = 0; i < jsonArray.size(); i++) {
-                String tagGroupId = jsonArray.getJSONObject(i).get("tagGroupId").toString();
-                String tagType = jsonArray.getJSONObject(i).get("tagType").toString();
+            MemberTagsQueryEntity memberTagsQueryEntity = new MemberTagsQueryEntity();
+            for (int i = 0; i < member.getMembertags().size(); i++) {
+                memberTagsQueryEntity = member.getMembertags().get(i);
+                String tagGroupId = memberTagsQueryEntity.getTagGroupId();
+                int tagType = memberTagsQueryEntity.getTagType();
 
                 if (memberTagsList.size() > 0) {  //修改
-                    if ("2".equals(tagType)) {  //选择型标签
-                        List<QkjvipTaglibsEntity> tagList = JSON.parseArray(jsonArray.getJSONObject(i).get("tagList").toString(), QkjvipTaglibsEntity.class);
-                        JSONArray tagIdList = (JSONArray) jsonArray.getJSONObject(i).get("tagIdList");
+                    if (tagType == 2) {  //选择型标签
+                        List<QkjvipTaglibsEntity> tagList = memberTagsQueryEntity.getTagList();
+                        List<String> tagIdList = memberTagsQueryEntity.getTagIdList();
                         for (int j = 0; j < tagIdList.size(); j++) {
                             MemberTagsEntity memberTagsEntity = new MemberTagsEntity();
                             boolean isHave = false;
                             for (MemberTagsEntity memberTag : memberTagsList) {
-                                if (StringUtils.isNotBlank(memberTag.getTagId()) && memberTag.getTagId().equals(tagIdList.get(j).toString())) {
+                                if (StringUtils.isNotBlank(memberTag.getTagId()) && memberTag.getTagId().equals(tagIdList.get(j))) {
                                     isHave = true;
                                     memberTagsEntity = memberTag;
                                     break;
@@ -84,7 +87,7 @@ public class MemberTagsServiceImpl extends ServiceImpl<MemberTagsDao, MemberTags
                                 memberTagsHaveList.add(memberTagsEntity);
                             }
                         }
-                    } else if ("1".equals(tagType)) {
+                    } else if (tagType == 1) {
                         MemberTagsEntity memberTagsEntity = new MemberTagsEntity();
                         boolean isHave = false;
                         for (MemberTagsEntity memberTag : memberTagsList) {
@@ -98,16 +101,16 @@ public class MemberTagsServiceImpl extends ServiceImpl<MemberTagsDao, MemberTags
                             memberTagsEntity.setMemberId(member.getMemberId());
                             memberTagsEntity.setTagGroupId(tagGroupId);
                             memberTagsEntity.setTagLocktype(2); //插入的数据全部锁定不可再修改
-                            memberTagsEntity.setTagValue(jsonArray.getJSONObject(i).get("tagValue").toString());
+                            memberTagsEntity.setTagValue(memberTagsQueryEntity.getTagValue());
                             memberTagsAddList.add(memberTagsEntity);
                         } else {
                             memberTagsHaveList.add(memberTagsEntity);
                         }
                     }
                 } else {  //插入
-                    if ("2".equals(tagType)) {  //选择型标签
-                        List<QkjvipTaglibsEntity> tagList = JSON.parseArray(jsonArray.getJSONObject(i).get("tagList").toString(), QkjvipTaglibsEntity.class);
-                        JSONArray tagIdList = (JSONArray) jsonArray.getJSONObject(i).get("tagIdList");
+                    if (tagType == 2) {  //选择型标签
+                        List<QkjvipTaglibsEntity> tagList = memberTagsQueryEntity.getTagList();
+                        List<String> tagIdList = memberTagsQueryEntity.getTagIdList();
                         for (int j = 0; j < tagIdList.size(); j++) {
                             MemberTagsEntity memberTagsEntity = new MemberTagsEntity();
                             memberTagsEntity.setMemberId(member.getMemberId());
@@ -115,19 +118,19 @@ public class MemberTagsServiceImpl extends ServiceImpl<MemberTagsDao, MemberTags
                             memberTagsEntity.setTagId(tagIdList.get(j).toString());
                             memberTagsEntity.setTagLocktype(2); //插入的数据全部锁定不可再修改
                             for (QkjvipTaglibsEntity tag : tagList) {
-                                if (tag.getTagId().equals(tagIdList.get(j).toString())) {
+                                if (tag.getTagId().equals(tagIdList.get(j))) {
                                     memberTagsEntity.setTagValue(tag.getTagName());
                                     break;
                                 }
                             }
                             memberTagsAddList.add(memberTagsEntity);
                         }
-                    } else if ("1".equals(tagType)) {  //输入型非只读标签
+                    } else if (tagType == 1) {  //输入型非只读标签
                         MemberTagsEntity memberTagsEntity = new MemberTagsEntity();
                         memberTagsEntity.setMemberId(member.getMemberId());
                         memberTagsEntity.setTagGroupId(tagGroupId);
                         memberTagsEntity.setTagLocktype(2); //插入的数据全部锁定不可再修改
-                        memberTagsEntity.setTagValue(jsonArray.getJSONObject(i).get("tagValue").toString());
+                        memberTagsEntity.setTagValue(memberTagsQueryEntity.getTagValue());
                         memberTagsAddList.add(memberTagsEntity);
                     }
                 }

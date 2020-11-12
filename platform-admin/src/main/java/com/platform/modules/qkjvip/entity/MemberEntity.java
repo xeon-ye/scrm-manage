@@ -23,6 +23,7 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author liuqianru
@@ -356,5 +357,11 @@ public class MemberEntity implements Serializable {
      */
     @TableField(exist = false)
     private String areaType;
+
+    /**
+     * 标签数组
+     */
+    @TableField(exist = false)
+    private List<MemberTagsQueryEntity> membertags;
 
 }
