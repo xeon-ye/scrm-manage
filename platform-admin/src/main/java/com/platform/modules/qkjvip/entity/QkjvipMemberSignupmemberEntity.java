@@ -45,4 +45,6 @@ public class QkjvipMemberSignupmemberEntity implements Serializable {
      * 签到时间
      */
     private String time;
+
+    private String memberId;
 }

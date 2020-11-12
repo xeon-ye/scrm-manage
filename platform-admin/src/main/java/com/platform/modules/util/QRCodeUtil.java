@@ -20,6 +20,7 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Hashtable;
 
@@ -125,7 +126,9 @@ public class QRCodeUtil {
 
     public String imgUrl(){
         try{
-            String url=createQrCode("http://baidu.com.cn",90,"JPEG");
+            String redirect_uri = URLEncoder.encode("http://www.baidu.com", "GBK");
+            String wxurl="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx24b8ba9745158d1d&redirect_uri="+redirect_uri+"&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
+            String url=createQrCode(wxurl,90,"JPEG");
             System.out.println(url);
         }catch (IOException e){
 

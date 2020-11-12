@@ -71,4 +71,10 @@ public class QkjvipMemberActivityEntity implements Serializable {
     private List<QkjvipMemberActivitymbsEntity> mbs;
     @TableField(exist = false)
     private List<QkjvipMemberSignupaddressEntity> addresses;
+    @TableField(exist = false)
+    private Integer mbsnum;
+    @TableField(exist = false)
+    private Integer signupnum;
+    @TableField(exist = false)
+    private Integer smnum;
 }

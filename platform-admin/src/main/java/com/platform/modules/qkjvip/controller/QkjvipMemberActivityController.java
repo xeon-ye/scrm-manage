@@ -35,6 +35,7 @@ import com.platform.modules.util.ExportExcelUtils;
 
 import javax.servlet.ServletOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
 
 import static cn.afterturn.easypoi.excel.entity.enmus.CellValueType.Date;
@@ -81,6 +82,12 @@ public class QkjvipMemberActivityController extends AbstractController {
     @RequiresPermissions("qkjvip:memberactivity:list")
     public RestResponse list(@RequestParam Map<String, Object> params) {
         Page page = qkjvipMemberActivityService.queryPage(params);
+
+        return RestResponse.success().put("page", page);
+    }
+    @GetMapping("/listsum")
+    public RestResponse listsum (@RequestParam Map<String, Object> params) {
+        Page page = qkjvipMemberActivityService.queryPageCount(params);
 
         return RestResponse.success().put("page", page);
     }
@@ -188,7 +195,11 @@ public class QkjvipMemberActivityController extends AbstractController {
             //String erweima=QRCodeUtil.getBase64QRCode("https://www.baidu.com/");
             try{
                 String htmlur=qkjvipMemberActivity.getHtmlurl().substring(0,qkjvipMemberActivity.getHtmlurl().indexOf("#"));
-                String url= QRCodeUtil.createQrCode(htmlur+"#/signmember?activityid="+qkjvipMemberActivity.getId(),90,".jpg");
+                String redirect_uri = URLEncoder.encode("http://www.baidu.com", "GBK");
+                String wxurl="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7d6749694e2f73b7&redirect_uri=http://zzjx.qkj.com.cn&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
+
+                String url= QRCodeUtil.createQrCode(wxurl,90,".jpg");
+                //String url= QRCodeUtil.createQrCode(htmlur+"#/signmember?activityid="+qkjvipMemberActivity.getId(),90,".jpg");
                 qkjvipMemberActivity.setIssignimg(url);
             }catch (IOException e){
 

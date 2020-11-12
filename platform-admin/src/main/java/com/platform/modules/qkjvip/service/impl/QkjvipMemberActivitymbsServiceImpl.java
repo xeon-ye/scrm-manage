@@ -46,6 +46,15 @@ public class QkjvipMemberActivitymbsServiceImpl extends ServiceImpl<QkjvipMember
     }
 
     @Override
+    public Page queryPageCount(Map<String, Object> params) {
+        //排序
+        params.put("sidx", "a.id");
+        params.put("asc", false);
+        Page<QkjvipMemberActivitymbsEntity> page = new Query<QkjvipMemberActivitymbsEntity>(params).getPage();
+        return page.setRecords(baseMapper.selectQkjvipMemberActivitymbsPageCount(page, params));
+    }
+
+    @Override
     public boolean add(QkjvipMemberActivitymbsEntity qkjvipMemberActivitymbs) {
         return this.save(qkjvipMemberActivitymbs);
     }
