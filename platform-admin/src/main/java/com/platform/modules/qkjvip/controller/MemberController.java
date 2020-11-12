@@ -17,13 +17,11 @@ import cn.emay.util.JsonHelper;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.validator.ValidatorUtils;
-import com.platform.modules.pageCont.pageCount;
 import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.qkjvip.service.MemberService;
 import com.platform.modules.qkjvip.service.MemberTagsService;
@@ -47,7 +45,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.*;
@@ -100,6 +97,11 @@ public class MemberController extends AbstractController {
 
 //        Page page = memberService.queryPage(params);
 //        return RestResponse.success().put("page", page);
+        if (memberQuery.getMembertags() != null && memberQuery.getMembertags().size() > 0) {
+            for (int i = 0; i < memberQuery.getMembertags().size(); i++) {
+                memberQuery.getMembertags().get(i).setTagList(null);
+            }
+        }
         if (getUser().getUserName().contains("admin")) {
             memberQuery.setCurrentmemberid("");
             memberQuery.setListorgno("");
@@ -111,6 +113,7 @@ public class MemberController extends AbstractController {
         String queryJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
 
         String resultPost = HttpClient.sendPost(Vars.MEMBER_GETLIST_URL, queryJsonStr);
+        System.out.println("会员检索条件：" + queryJsonStr);
         //插入会员标签
         JSONObject resultObject = JSON.parseObject(resultPost);
         if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
@@ -135,9 +138,8 @@ public class MemberController extends AbstractController {
      */
     @GetMapping("/info/{memberId}")
     @RequiresPermissions("qkjvip:member:info")
-    public RestResponse info(@PathVariable("memberId") String memberId) {
+    public RestResponse info(@PathVariable("memberId") String memberId) throws IOException {
         MemberEntity member = memberService.getById(memberId);
-
         //获取会员标签
         Map<String, Object> params = new HashMap<>();
         params.put("memberId", memberId);
@@ -145,6 +147,9 @@ public class MemberController extends AbstractController {
         List<MemberTagsQueryEntity> membertags = new ArrayList<>();
         if (memberTagsEntities.size() > 0) {   //会员打了标签的情况下
             for (int i = 0; i < memberTagsEntities.size(); i++) {
+                if (i > 0 && memberTagsEntities.get(i).getTagGroupId().equals(memberTagsEntities.get(i - 1).getTagGroupId())) {
+                    continue;
+                }
                 MemberTagsQueryEntity memberTagsQueryEntity = new MemberTagsQueryEntity();
                 memberTagsQueryEntity.setTagGroupId(memberTagsEntities.get(i).getTagGroupId());
                 memberTagsQueryEntity.setTagGroupName(memberTagsEntities.get(i).getTagGroupName());
@@ -164,7 +169,6 @@ public class MemberController extends AbstractController {
             }
         }
         member.setMembertags(membertags);
-
         return RestResponse.success().put("member", member);
     }
 
