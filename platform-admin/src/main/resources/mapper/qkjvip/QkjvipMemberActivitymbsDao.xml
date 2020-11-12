@@ -22,6 +22,30 @@
         </if>
     </sql>
 
+    <sql id="selectSqlCount">
+        SELECT member.real_name,member.member_name,member.mobile,a.*,
+        case when ISNULL(b.id, '')='' then 0
+        else 1 end as bmstatus,
+        case when ISNULL(m.id, '')='' then 0
+        else 1 end as qdstatus
+
+        from qkjvip_member_activitymbs a
+        left join qkjvip_member_signup b on (a.activity_id=b.acitvity_id and a.member_id=b.memberid)
+        LEFT JOIN qkjvip_member_signupmember m on (m.activity_id=a.activity_id and m.member_id=a.member_id)
+        join qkjvip_member member on (member.member_id=a.member_id)
+        WHERE 1=1
+        <if test="params.activityId != null and params.activityId.trim() != ''">
+            AND a.ACTIVITY_ID LIKE '%${params.activityId}%'
+        </if>
+        <if test="params.memberId != null and params.memberId.trim() != ''">
+            AND a.member_id LIKE '${params.memberId}'
+        </if>
+    </sql>
+
+    <select id="selectQkjvipMemberActivitymbsPageCount" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberActivitymbsEntity">
+        <include refid="selectSqlCount"/>
+    </select>
+
     <select id="selectQkjvipMemberActivitymbsPage" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberActivitymbsEntity">
         <include refid="selectSql"/>
     </select>

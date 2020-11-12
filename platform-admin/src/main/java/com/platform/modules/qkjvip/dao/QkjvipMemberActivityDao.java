@@ -45,4 +45,12 @@ public interface QkjvipMemberActivityDao extends BaseMapper<QkjvipMemberActivity
      * @return List
      */
     List<QkjvipMemberActivityEntity> selectQkjvipMemberActivityPage(IPage page, @Param("params") Map<String, Object> params);
+    /**
+     * 自定义分页查询
+     *
+     * @param page   分页参数
+     * @param params 查询参数
+     * @return List
+     */
+    List<QkjvipMemberActivityEntity> selectQkjvipMemberActivityPageCount(IPage page, @Param("params") Map<String, Object> params);
 }

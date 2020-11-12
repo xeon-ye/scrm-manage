@@ -41,6 +41,7 @@ public interface QkjvipMemberActivitymbsService extends IService<QkjvipMemberAct
      * @return Page
      */
     Page queryPage(Map<String, Object> params);
+    Page queryPageCount(Map<String, Object> params);
 
     /**
      * 新增

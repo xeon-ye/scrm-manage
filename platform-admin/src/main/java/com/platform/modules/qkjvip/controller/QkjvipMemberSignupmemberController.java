@@ -11,20 +11,28 @@
  */
 package com.platform.modules.qkjvip.controller;
 
+import cn.emay.util.JsonHelper;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
-import com.platform.modules.qkjvip.service.QkjvipMemberActivitymbsService;
-import com.platform.modules.qkjvip.service.QkjvipMemberSignupService;
+import com.platform.modules.qkjvip.entity.MemberEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberActivityEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberImportEntity;
+import com.platform.modules.qkjvip.service.*;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipMemberSignupmemberEntity;
-import com.platform.modules.qkjvip.service.QkjvipMemberSignupmemberService;
+import com.platform.modules.util.HttpClient;
+import com.platform.modules.util.Vars;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Controller
@@ -39,9 +47,14 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
     private QkjvipMemberSignupmemberService qkjvipMemberSignupmemberService;
     @Autowired
     private QkjvipMemberActivitymbsService qkjvipMemberActivitymbsService;
-
+    @Autowired
+    private MemberService memberService;
     @Autowired
     private QkjvipMemberSignupService qkjvipMemberSignupService;
+    @Autowired
+    private QkjvipMemberImportService qkjvipMemberImportService;
+    @Autowired
+    private QkjvipMemberActivityService qkjvipMemberActivityService;
     /**
      * 查看所有列表
      *
@@ -125,17 +138,81 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
     @SysLog("新增")
     @RequestMapping("/savesign")
     public RestResponse savesign(@RequestBody QkjvipMemberSignupmemberEntity qkjvipMemberSignupmember) {
-
         // 清洗会员(微信id有则不清洗,无清洗)
+        MemberEntity member = new MemberEntity();
+        Map<String, Object> params=new HashMap<>();
+        String openid="ojipzwPJcEk0DG2Hn6CAjW2pDGYA";//模拟的微信id
+        String mobile="18810242427";//模拟的手机号
+        List<MemberEntity> ms=new ArrayList<>();
+        params.put("openid",openid);
+        ms=memberService.queryAll(params);
+        if(ms.size()>0){//有此会员
+            if(ms.get(0).getMobile()==null){//补充手机号
+                MemberEntity newM=new MemberEntity();
+                newM=ms.get(0);
+                newM.setMobile(mobile);
+                params.clear();
+                memberService.update(newM,params);
+            }
+            member=ms.get(0);
+        }else{
+            //查询活动
+            params.clear();
+            params.put("id",qkjvipMemberSignupmember.getActivityId());
+            List<QkjvipMemberActivityEntity> list =qkjvipMemberActivityService.queryAll(params);
+            if(list.size()>0){
+                QkjvipMemberActivityEntity newa=new QkjvipMemberActivityEntity();
+                //清洗会员
+                newa=list.get(0);
+                QkjvipMemberImportEntity memberImport=new QkjvipMemberImportEntity();
+                memberImport.setAddUser(newa.getAdduser());
+                memberImport.setAddDept(newa.getAdddept());
+                memberImport.setOrgUserid(newa.getAdduser());
+                memberImport.setOrgNo(newa.getAdddept());
+                memberImport.setAddTime(new Date());
+                memberImport.setOfflineflag(2);
+                memberImport.setMemberName("微信昵称");
+                memberImport.setMobile("手机号");
+                qkjvipMemberImportService.add(memberImport);  //将数据保存到中间表
 
-        
-        //邀请补充
-        //qkjvipMemberActivitymbsService.supadd(qkjvipMemberSignup.getAcitvityId(),member.getMemberId());
-        //报名补充
-        //qkjvipMemberSignupService.supadd(activityid,memberid);
-        //签到
-        //已签到显示行程安排、参加的活动记录、用户的积分、积分商城
-        qkjvipMemberSignupmemberService.add(qkjvipMemberSignupmember);
+                //调用数据清洗接口
+                try {
+                    Object obj = JSONArray.toJSON(memberImport);
+                    String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+                    String resultPost = HttpClient.sendPost(Vars.MEMBER_ADD_URL, memberJsonStr);
+                    //插入会员标签
+                    JSONObject resultObject = JSON.parseObject(resultPost);
+                    member.setMemberId(resultObject.get("memberid").toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+        //是否已签到
+        params.clear();
+        params.put("memberId",member.getMemberId());
+        params.put("activityId",qkjvipMemberSignupmember.getActivityId());
+        List<QkjvipMemberSignupmemberEntity> list = qkjvipMemberSignupmemberService.queryAll(params);
+        if(list.size()>0){//已签到
+            //return RestResponse.error("已签到成功，谢谢");
+            //已签到显示行程安排、参加的活动记录、用户的积分、积分商城
+        } else {
+            //邀请补充
+            qkjvipMemberActivitymbsService.supadd(qkjvipMemberSignupmember.getActivityId(),member.getMemberId());
+            //报名补充
+            String bmid=qkjvipMemberSignupService.supadd(qkjvipMemberSignupmember.getActivityId(),member.getMemberId());
+            //添加签到
+            Date date=new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            String date2=sdf.format(date);
+            qkjvipMemberSignupmember.setMemberId(member.getMemberId());
+            qkjvipMemberSignupmember.setTime(date2);
+            qkjvipMemberSignupmember.setSignupId(bmid);
+            qkjvipMemberSignupmemberService.add(qkjvipMemberSignupmember);
+        }
+
         return RestResponse.success();
     }
 

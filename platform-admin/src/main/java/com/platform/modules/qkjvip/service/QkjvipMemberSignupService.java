@@ -74,5 +74,5 @@ public interface QkjvipMemberSignupService extends IService<QkjvipMemberSignupEn
      */
     boolean deleteBatch(String[] ids);
 
-    void supadd(String activity,String member_id);
+    String supadd(String activity,String member_id);
 }

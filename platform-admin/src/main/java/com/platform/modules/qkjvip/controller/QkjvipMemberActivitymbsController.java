@@ -65,6 +65,18 @@ public class QkjvipMemberActivitymbsController extends AbstractController {
     }
 
     /**
+     * 分页查询根据活动id
+     *
+     * @param params 查询参数
+     * @return RestResponse
+     */
+    @GetMapping("/listCount")
+    public RestResponse listCount(@RequestParam Map<String, Object> params) {
+        Page page = qkjvipMemberActivitymbsService.queryPageCount(params);
+        return RestResponse.success().put("page", page);
+    }
+
+    /**
      * 根据主键查询详情
      *
      * @param id 主键
@@ -77,6 +89,8 @@ public class QkjvipMemberActivitymbsController extends AbstractController {
 
         return RestResponse.success().put("memberactivitymbs", qkjvipMemberActivitymbs);
     }
+
+
 
     /**
      * 新增

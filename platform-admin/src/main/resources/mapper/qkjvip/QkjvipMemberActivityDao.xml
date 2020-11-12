@@ -19,8 +19,30 @@
         </if>
     </sql>
 
+    <sql id="selectSqlCount">
+        SELECT t.*,
+        (SELECT ISNULL(sum(1), 0) from qkjvip_member_activitymbs m where m.activity_id=t.id) as mbsnum,
+        (SELECT ISNULL(sum(1), 0) from qkjvip_member_signup s where s.acitvity_id=t.id ) as signupnum,
+        (SELECT ISNULL(sum(1), 0) from qkjvip_member_signupmember sm where sm.activity_id=t.id ) as smnum
+        from qkjvip_member_activity t where 1=1
+
+        <if test="params.title != null and params.title.trim() != ''">
+            AND T.title LIKE '%${params.title}%'
+        </if>
+        <if test="params.id != null and params.id.trim() != ''">
+            AND T.NAME = '${params.id}'
+        </if>
+        <if test="params.memberId != null and params.memberId.trim() != ''">
+            AND EXISTS (SELECT 1 from qkjvip_member_signupmember b where b.activity_id=T.id and b.member_id=#{params.memberId})
+        </if>
+    </sql>
+
     <select id="selectQkjvipMemberActivityPage" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberActivityEntity">
         <include refid="selectSql"/>
+    </select>
+
+    <select id="selectQkjvipMemberActivityPageCount" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberActivityEntity">
+        <include refid="selectSqlCount"/>
     </select>
 
     <select id="queryAll" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberActivityEntity">
