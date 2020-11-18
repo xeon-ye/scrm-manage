@@ -27,7 +27,7 @@
         case when ISNULL(b.id, '')='' then 0
         else 1 end as bmstatus,
         case when ISNULL(m.id, '')='' then 0
-        else 1 end as qdstatus
+        else 1 end as qdstatus,b.id bmid
 
         from qkjvip_member_activitymbs a
         left join qkjvip_member_signup b on (a.activity_id=b.acitvity_id and a.member_id=b.memberid)
@@ -43,6 +43,10 @@
     </sql>
 
     <select id="selectQkjvipMemberActivitymbsPageCount" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberActivitymbsEntity">
+        <include refid="selectSqlCount"/>
+    </select>
+
+    <select id="queryAllCount" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberActivitymbsEntity">
         <include refid="selectSqlCount"/>
     </select>
 
