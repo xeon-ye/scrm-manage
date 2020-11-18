@@ -29,5 +29,6 @@ public class Vars {
 	//数据清洗url end
 	//会员检索url start
 	public static String MEMBER_GETLIST_URL = "http://api.scrm.qkj.com.cn/api/Member/GetMemberList";
+	public static String MEMBER_GETINFO_URL = "http://api.scrm.qkj.com.cn/api/Member/GetMemberEntity";
 	//会员检索url end
 }

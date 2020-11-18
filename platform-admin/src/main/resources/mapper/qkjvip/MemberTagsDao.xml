@@ -59,5 +59,6 @@
             d.name,
             a.tag_value,
 			d.tag_type
+        ORDER BY a.tag_group_id
 	</select>
 </mapper>
