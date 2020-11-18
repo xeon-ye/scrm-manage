@@ -60,4 +60,11 @@ public class QkjvipMemberActivitymbsEntity implements Serializable {
      */
     @TableField(exist = false)
     private String mobile;
+
+    @TableField(exist = false)
+    private Integer bmstatus;
+    @TableField(exist = false)
+    private Integer qdstatus;
+    @TableField(exist = false)
+    private String bmid;
 }

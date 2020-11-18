@@ -241,6 +241,41 @@ public class QkjvipMemberActivityController extends AbstractController {
         return RestResponse.success();
     }
 
+
+    /**
+     * 修改
+     *
+     * @param qkjvipMemberActivity qkjvipMemberActivity
+     * @return RestResponse
+     */
+    @SysLog("修改")
+    @RequestMapping("/updatembs")
+    public RestResponse updatembs(@RequestBody QkjvipMemberActivityEntity qkjvipMemberActivity) {
+        //QkjvipMemberActivityEntity oldact = qkjvipMemberActivityService.getById(qkjvipMemberActivity.getId());
+
+        List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
+        mbs=qkjvipMemberActivity.getMbs();
+        if(mbs!=null&&mbs.size()>0){
+            List<QkjvipMemberActivitymbsEntity> newmemList=new ArrayList<>();
+            for(QkjvipMemberActivitymbsEntity m:mbs){
+                //判断是否有此会员邀约
+                //是否存在记录
+                Map<String, Object> map=new HashMap<String,Object>();
+                map.put("activityId",qkjvipMemberActivity.getId());
+                map.put("memberId",m.getMemberId());
+                List<QkjvipMemberActivitymbsEntity> mbslist = new ArrayList<>();
+                mbslist=qkjvipMemberActivitymbsService.queryAll(map);
+                if(mbslist.size()<=0){//无邀约
+                    m.setActivityId(qkjvipMemberActivity.getId());
+                    m.setStatus(3);//现场
+                    newmemList.add(m);
+                }
+            }
+            qkjvipMemberActivitymbsService.batchAdd(mbs);
+        }
+        return RestResponse.success();
+    }
+
     /**
      * 根据主键删除
      *

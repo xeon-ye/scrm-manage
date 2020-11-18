@@ -114,7 +114,7 @@ public class QrtzMemberFansController extends AbstractController {
         JSONObject fanObject = JSON.parseObject(resultPost);
         if ("0".equals(fanObject.get("result").toString())) {
 //            String listStr = JSON.toJSONString(fanObject.get("UserList"), SerializerFeature.WriteMapNullValue);  //Fastjson序列化Null字段丢失解决方法
-            fanList = JSON.parseArray(fanObject.get("UserList").toString(), QrtzMemberFansEntity.class);
+            //fanList = JSON.parseArray(fanObject.get("UserList").toString(), QrtzMemberFansEntity.class);
             map.clear();
             map.put("QueueData", fanList);
             String jsonData = JsonHelper.toJsonString(map, "yyyy-MM-dd HH:mm:ss");

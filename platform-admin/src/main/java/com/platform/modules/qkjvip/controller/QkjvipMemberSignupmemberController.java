@@ -18,12 +18,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
-import com.platform.modules.qkjvip.entity.MemberEntity;
-import com.platform.modules.qkjvip.entity.QkjvipMemberActivityEntity;
-import com.platform.modules.qkjvip.entity.QkjvipMemberImportEntity;
+import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.qkjvip.service.*;
 import com.platform.modules.sys.controller.AbstractController;
-import com.platform.modules.qkjvip.entity.QkjvipMemberSignupmemberEntity;
 import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.Vars;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -109,6 +106,45 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
     public RestResponse save(@RequestBody QkjvipMemberSignupmemberEntity qkjvipMemberSignupmember) {
 
         qkjvipMemberSignupmemberService.add(qkjvipMemberSignupmember);
+
+        return RestResponse.success();
+    }
+
+    /**
+     * 批量签到
+     *
+     * @param qkjvipMemberSignupmember qkjvipMemberSignupmember
+     * @return RestResponse
+     */
+    @SysLog("批量签到")
+    @RequestMapping("/saveMems")
+    public RestResponse saveMems(@RequestBody QkjvipMemberSignupmemberEntity qkjvipMemberSignupmember) {
+        if(qkjvipMemberSignupmember.getMemlist().size()>0){
+            for(QkjvipMemberActivitymbsEntity mems:qkjvipMemberSignupmember.getMemlist()){
+                String bmid="";
+                if(mems.getQdstatus()!=null&&mems.getQdstatus().equals(1)){//已签到
+
+                }else{//未签到
+                    if(mems.getBmstatus()!=null&&mems.getBmstatus().equals(1)){//已报名
+                        bmid=mems.getBmid();
+                    }else{//补充报名
+                        bmid=qkjvipMemberSignupService.supadd(qkjvipMemberSignupmember.getActivityId(),mems.getMemberId());
+                    }
+                    //添加签到
+                    if(bmid!=""){
+                        Date date=new Date();
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        String date2=sdf.format(date);
+                        qkjvipMemberSignupmember.setMemberId(mems.getMemberId());
+                        qkjvipMemberSignupmember.setTime(date2);
+                        qkjvipMemberSignupmember.setSignupId(bmid);
+                        qkjvipMemberSignupmemberService.add(qkjvipMemberSignupmember);
+                    }
+
+                }
+            }
+        }
+        //qkjvipMemberSignupmemberService.add(qkjvipMemberSignupmember);
 
         return RestResponse.success();
     }
