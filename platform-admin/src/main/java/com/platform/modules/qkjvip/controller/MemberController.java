@@ -360,4 +360,16 @@ public class MemberController extends AbstractController {
         }
         return RestResponse.success().put("msg", "导入成功！");
     }
+
+    /**
+     * 根据openid查看所有列表
+     *
+     * @param params 查询参数
+     * @return RestResponse
+     */
+    @RequestMapping("/selectMemByOpenid")
+    public RestResponse selectMemByOpenid(@RequestParam Map<String, Object> params) {
+        List<MemberEntity> list = memberService.selectMemberByOpenid(params);
+        return RestResponse.success().put("list", list);
+    }
 }

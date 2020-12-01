@@ -77,4 +77,8 @@ public class QkjvipMemberActivityEntity implements Serializable {
     private Integer signupnum;
     @TableField(exist = false)
     private Integer smnum;
+    @TableField(exist = false)
+    private String url;
+    @TableField(exist = false)
+    private String msgcontent;
 }
