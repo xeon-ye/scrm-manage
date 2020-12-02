@@ -130,10 +130,18 @@
         WHERE 1=1
         <include refid="selectSql"/>
     </select>
-    <select id="selectMemberCount" resultType="com.platform.modules.pageCont.pageCount">
-        SELECT count(*) as countNumber FROM qkjvip_member m
-        LEFT JOIN (SELECT DISTINCT member_id FROM qkjvip_member_tags) mt ON (m.member_id=mt.member_id)
+    <!--根据openid判断是否关注公众号：孙珊珊-->
+    <select id="selectMemberByOpenid" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
+        SELECT member_id from qkjvip_member where openid=#{params.openid}
+    </select>
+    <select id="selectMemberAddrList" resultType="com.platform.modules.qkjvip.entity.MemberAddressEntity">
+        SELECT ma.* FROM qkjvip_member_address ma
         WHERE 1=1
-        <include refid="selectSql"/>
+        <if test="params.uuid != null and params.uuid != ''">
+            AND ma.uuid = #{params.uuid}
+        </if>
+        <if test="params.memberId != null and params.memberId != ''">
+            AND ma.member_id = #{params.memberId}
+        </if>
     </select>
 </mapper>

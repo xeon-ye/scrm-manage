@@ -24,6 +24,8 @@ import com.platform.common.utils.StringUtils;
 import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.qkjvip.service.*;
 import com.platform.modules.sys.controller.AbstractController;
+import com.platform.modules.sys.entity.SysSmsLogEntity;
+import com.platform.modules.sys.service.SysSmsLogService;
 import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.QRCodeUtil;
 import com.platform.modules.util.Vars;
@@ -57,6 +59,8 @@ public class QkjvipMemberActivityController extends AbstractController {
     private QkjvipMemberImportService qkjvipMemberImportService;
     @Autowired
     private QkjvipMemberSignupaddressService qkjvipMemberSignupaddressService;
+    @Autowired
+    private SysSmsLogService sysSmsLogService;
 
     /**
      * 查看所有列表
@@ -291,6 +295,36 @@ public class QkjvipMemberActivityController extends AbstractController {
         return RestResponse.success();
     }
 
+    @SysLog("发短信")
+    @RequestMapping("/sendMsg")
+    public RestResponse sendMsg(@RequestBody QkjvipMemberActivityEntity qkjvipMemberActivity) {
+        String url=qkjvipMemberActivity.getUrl()+qkjvipMemberActivity.getId();
+        //查询所有邀约人员
+        List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
+        Map<String, Object> map=new HashMap<String,Object>();
+        map.put("activityId",qkjvipMemberActivity.getId());
+        mbs=qkjvipMemberActivitymbsService.queryAll(map);
+        if(mbs.size()>0){
+            //发短信
+            SysSmsLogEntity smsLog=new SysSmsLogEntity();
+            smsLog.setContent(qkjvipMemberActivity.getMsgcontent()+"戳我直达："+url);
+            //smsLog.setMobile(a.getMobile());
+            smsLog.setMobile("18810242427");
+            SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSms(smsLog);
+//            for(QkjvipMemberActivitymbsEntity a:mbs){
+//                if(a!=null&&a.getMobile()!=null&&!a.getMobile().equals("")){
+//                    //发短信
+//                    SysSmsLogEntity smsLog=new SysSmsLogEntity();
+//                    smsLog.setContent(qkjvipMemberActivity.getMsgcontent()+"戳我直达："+url);
+//                    //smsLog.setMobile(a.getMobile());
+//                    smsLog.setMobile("18810242427");
+//                    SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSms(smsLog);
+//                }
+//            }
+        }
+        return RestResponse.success();
+    }
+
     /**
      * 导入会员数据
      */
@@ -313,7 +347,8 @@ public class QkjvipMemberActivityController extends AbstractController {
                 }
                 if (list.size() > 0) {
                     qkjvipMemberImportService.addBatch(list); //批量导入临时表
-
+                    long start, end2;
+                    start = System.currentTimeMillis();
                     //调用数据清洗接口
                     Object objList = JSONArray.toJSON(list);
                     String memberJsonStr = JsonHelper.toJsonString(objList, "yyyy-MM-dd HH:mm:ss");
@@ -325,6 +360,8 @@ public class QkjvipMemberActivityController extends AbstractController {
                     }else {
                         mees=JSON.parseArray(resultObject.getString("listmember"),MemberEntity.class);
                     }
+                    end2 = System.currentTimeMillis();
+                    System.out.println("批量处理n条数据，耗费了" + (end2 - start) + "ms");
                 }
             } catch (IOException e) {
                 e.printStackTrace();

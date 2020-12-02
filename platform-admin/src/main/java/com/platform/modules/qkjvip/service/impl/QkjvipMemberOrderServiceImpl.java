@@ -46,7 +46,7 @@ public class QkjvipMemberOrderServiceImpl extends ServiceImpl<QkjvipMemberOrderD
     @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
-        params.put("sidx", "T.id");
+        params.put("sidx", "convert(datetime,T.orderdate, 20)");
         params.put("asc", false);
         Page<QkjvipMemberOrderEntity> page = new Query<QkjvipMemberOrderEntity>(params).getPage();
         return page.setRecords(baseMapper.selectQkjvipMemberOrderPage(page, params));
