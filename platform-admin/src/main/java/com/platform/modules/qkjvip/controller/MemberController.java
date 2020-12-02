@@ -122,8 +122,8 @@ public class MemberController extends AbstractController {
             Page page = new Page();
             page.setRecords(memberList);
             page.setTotal(Long.parseLong(resultObject.get("totalcount").toString()));
-            page.setSize(memberQuery.getPagesize());
-            page.setCurrent(memberQuery.getPageindex());
+            page.setSize(memberQuery.getPagesize() == null? 0 : memberQuery.getPagesize());
+            page.setCurrent(memberQuery.getPageindex() == null? 0 : memberQuery.getPageindex());
             return RestResponse.success().put("page", page);
         } else {
             return RestResponse.error(resultObject.get("descr").toString());

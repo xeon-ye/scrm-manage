@@ -77,4 +77,7 @@ public interface QkjvipMemberOrderDao extends BaseMapper<QkjvipMemberOrderEntity
      * @return int
      */
     int deleteBatchByOrder(List<QkjvipMemberOrderEntity> mbList);
+
+    int removeByVisitId(String visitId);
+    boolean removeByVisitIds(String[] visitIds);
 }

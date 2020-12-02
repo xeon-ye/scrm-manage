@@ -26,6 +26,10 @@ public class Constant {
      */
     public static final String SUPER_ADMIN2 = "2";
     /**
+     * 超级管理员ID---另一个超级管理员
+     */
+    public static final String SUPER_ADMIN3 = "3";
+    /**
      * 超级管理员所属机构
      */
     public static final String SUPER_ADMIN_ORG = "01";

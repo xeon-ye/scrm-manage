@@ -79,7 +79,7 @@ public class QkjvipMemberImportEntity implements Serializable {
     /**
      * 会员类型
      */
-    @Excel(name = "会员类型", orderNum = "7", width = 15,replace={"门店会员_0","团购会员_1","大店会员_2","意见领袖_3","普通消费者_4","公众粉丝_5","其他_6","零售_7","批发_8","员工_9"})
+    @Excel(name = "会员类型", orderNum = "7", width = 15,replace={"门店会员_0","团购会员_1","大店会员_2","意见领袖_3","普通消费者_4","公众粉丝_5","工业游_6","零售_7","批发_8","员工_9","旅游特通_10","其他_20"})
     private String memberType;
     /**
      * 会员性质
@@ -94,7 +94,7 @@ public class QkjvipMemberImportEntity implements Serializable {
     /**
      * 会员来源
      */
-    @Excel(name = "会员来源", orderNum = "10", width = 15,replace={"OMS门店_0","线下活动_1","线上活动_2","线上交易_3","线下交易_4","会员推荐_5","旅游景区_6","其他来源_7"})
+    @Excel(name = "会员来源", orderNum = "10", width = 15,replace={"OMS门店_0","线下活动_1","线上活动_2","线上交易_3","线下交易_4","会员推荐_5","旅游景区_6","其他来源_20"})
     private String memberSource;
     /**
      * 行业类别

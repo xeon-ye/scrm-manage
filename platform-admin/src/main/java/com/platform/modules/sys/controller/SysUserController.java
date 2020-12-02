@@ -189,7 +189,7 @@ public class SysUserController extends AbstractController {
     @PostMapping("/delete")
     @RequiresPermissions("sys:user:delete")
     public RestResponse delete(@RequestBody String[] userIds) {
-        if (ArrayUtils.contains(userIds, Constant.SUPER_ADMIN) || ArrayUtils.contains(userIds, Constant.SUPER_ADMIN2)) {
+        if (ArrayUtils.contains(userIds, Constant.SUPER_ADMIN) || ArrayUtils.contains(userIds, Constant.SUPER_ADMIN2) || ArrayUtils.contains(userIds, Constant.SUPER_ADMIN3)) {
             return RestResponse.error("系统管理员不能删除");
         }
 
@@ -212,7 +212,7 @@ public class SysUserController extends AbstractController {
     @PostMapping("/resetPw")
     @RequiresPermissions("sys:user:resetPw")
     public RestResponse resetPw(@RequestBody String[] userIds) {
-        if (ArrayUtils.contains(userIds, Constant.SUPER_ADMIN) || ArrayUtils.contains(userIds, Constant.SUPER_ADMIN2)) {
+        if (ArrayUtils.contains(userIds, Constant.SUPER_ADMIN) || ArrayUtils.contains(userIds, Constant.SUPER_ADMIN2) || ArrayUtils.contains(userIds, Constant.SUPER_ADMIN3)) {
             return RestResponse.error("系统管理员不能重置");
         }
 

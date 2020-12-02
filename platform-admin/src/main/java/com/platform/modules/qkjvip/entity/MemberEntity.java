@@ -93,7 +93,7 @@ public class MemberEntity implements Serializable {
     /*
      * 会员来源
      */
-    @Excel(name = "会员来源", orderNum = "10", width = 15,replace={"OMS门店_0","线下活动_1","线上活动_2","线上交易_3","线下交易_4","会员推荐_5","旅游景区_6","其他来源_7"})
+    @Excel(name = "会员来源", orderNum = "10", width = 15,replace={"OMS门店_0","线下活动_1","线上活动_2","线上交易_3","线下交易_4","会员推荐_5","旅游景区_6","其他来源_20"})
     private String memberSource;
     /*
      * 行业类别
