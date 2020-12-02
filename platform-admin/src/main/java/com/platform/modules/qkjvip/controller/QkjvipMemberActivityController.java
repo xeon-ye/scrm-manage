@@ -305,16 +305,22 @@ public class QkjvipMemberActivityController extends AbstractController {
         map.put("activityId",qkjvipMemberActivity.getId());
         mbs=qkjvipMemberActivitymbsService.queryAll(map);
         if(mbs.size()>0){
-            for(QkjvipMemberActivitymbsEntity a:mbs){
-                if(a!=null&&a.getMobile()!=null&&!a.getMobile().equals("")){
-                    //发短信
-                    SysSmsLogEntity smsLog=new SysSmsLogEntity();
-                    smsLog.setContent(qkjvipMemberActivity.getMsgcontent()+"戳我直达："+url);
-                    //smsLog.setMobile(a.getMobile());
-                    smsLog.setMobile("18810242427");
-                    SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSms(smsLog);
-                }
-            }
+            //发短信
+            SysSmsLogEntity smsLog=new SysSmsLogEntity();
+            smsLog.setContent(qkjvipMemberActivity.getMsgcontent()+"戳我直达："+url);
+            //smsLog.setMobile(a.getMobile());
+            smsLog.setMobile("18810242427");
+            SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSms(smsLog);
+//            for(QkjvipMemberActivitymbsEntity a:mbs){
+//                if(a!=null&&a.getMobile()!=null&&!a.getMobile().equals("")){
+//                    //发短信
+//                    SysSmsLogEntity smsLog=new SysSmsLogEntity();
+//                    smsLog.setContent(qkjvipMemberActivity.getMsgcontent()+"戳我直达："+url);
+//                    //smsLog.setMobile(a.getMobile());
+//                    smsLog.setMobile("18810242427");
+//                    SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSms(smsLog);
+//                }
+//            }
         }
         return RestResponse.success();
     }
