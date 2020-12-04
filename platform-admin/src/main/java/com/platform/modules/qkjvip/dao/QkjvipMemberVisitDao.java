@@ -1,19 +1,19 @@
 /*
  * 项目名称:platform-plus
- * 类名称:MemberVisitDao.java
+ * 类名称:QkjvipMemberVisitDao.java
  * 包名称:com.platform.modules.qkjvip.dao
  *
  * 修改履历:
  *     日期                       修正者        主要内容
- *     2020/3/13 10:15            liuqianru    初版做成
+ *     2020-12-01 11:39:36        liuqianru     初版做成
  *
+ * Copyright (c) 2019-2019 微同软件
  */
 package com.platform.modules.qkjvip.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.platform.modules.qkjvip.entity.MemberVisitEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberVisitEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,20 +21,22 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * MemberVisitDao
+ * Dao
  *
  * @author liuqianru
- * @date 2020/3/13 10:15
+ * @date 2020-12-01 11:39:36
  */
 @Mapper
-public interface MemberVisitDao extends BaseMapper<MemberVisitEntity> {
+public interface QkjvipMemberVisitDao extends BaseMapper<QkjvipMemberVisitEntity> {
+
     /**
      * 查询所有列表
      *
      * @param params 查询参数
      * @return List
      */
-    List<MemberVisitEntity> queryAll(@Param("params") Map<String, Object> params);
+    List<QkjvipMemberVisitEntity> queryAll(@Param("params") Map<String, Object> params);
+
     /**
      * 自定义分页查询
      *
@@ -42,5 +44,7 @@ public interface MemberVisitDao extends BaseMapper<MemberVisitEntity> {
      * @param params 查询参数
      * @return List
      */
-    List<MemberVisitEntity> selectMemberVisitList(IPage page, @Param("params") Map<String, Object> params);
+    List<QkjvipMemberVisitEntity> selectQkjvipMemberVisitPage(IPage page, @Param("params") Map<String, Object> params);
+
+    boolean closeById(String id);
 }

@@ -112,7 +112,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRoleEntity> i
      */
     private void checkPrems(SysRoleEntity role) {
         //如果不是超级管理员，则需要判断角色的权限是否超过自己的权限
-        if (Constant.SUPER_ADMIN.equals(role.getCreateUserId()) || Constant.SUPER_ADMIN2.equals(role.getCreateUserId())) {
+        if (Constant.SUPER_ADMIN.equals(role.getCreateUserId()) || Constant.SUPER_ADMIN2.equals(role.getCreateUserId()) || Constant.SUPER_ADMIN3.equals(role.getCreateUserId())) {
             return;
         }
 

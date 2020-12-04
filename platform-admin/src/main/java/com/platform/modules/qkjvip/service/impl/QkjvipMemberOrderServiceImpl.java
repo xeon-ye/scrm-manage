@@ -58,6 +58,11 @@ public class QkjvipMemberOrderServiceImpl extends ServiceImpl<QkjvipMemberOrderD
     }
 
     @Override
+    public void addBatch(List<QkjvipMemberOrderEntity> memberOrderList) {
+        this.saveBatch(memberOrderList);
+    }
+
+    @Override
     public boolean update(QkjvipMemberOrderEntity qkjvipMemberOrder) {
         return this.updateById(qkjvipMemberOrder);
     }
@@ -90,6 +95,16 @@ public class QkjvipMemberOrderServiceImpl extends ServiceImpl<QkjvipMemberOrderD
         return baseMapper.deleteBatchByOrder(mbList);
     }
 
+    @Override
+    public int deleteByVisitId(String visitId) {
+        return baseMapper.removeByVisitId(visitId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteByVisitIds(String[] visitIds) {
+        return baseMapper.removeByVisitIds(visitIds);
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)

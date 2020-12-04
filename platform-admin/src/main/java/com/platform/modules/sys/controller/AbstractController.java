@@ -74,6 +74,17 @@ public abstract class AbstractController {
      *
      * @return DataScope
      */
+    protected DataScope getDataScope(String userAlias) {
+        DataScope dataScope = new DataScope();
+        dataScope.setUserAlias(userAlias);
+        return dataScope;
+    }
+
+    /**
+     * 数据权限构造
+     *
+     * @return DataScope
+     */
     protected DataScope getDataScope(String userAlias, String orgAlias) {
         DataScope dataScope = new DataScope();
         dataScope.setUserAlias(userAlias);

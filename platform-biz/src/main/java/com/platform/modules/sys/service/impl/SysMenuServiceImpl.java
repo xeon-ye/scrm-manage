@@ -67,7 +67,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
     @Override
     public List<SysMenuEntity> getUserMenuList(String userId) {
         //系统管理员，拥有最高权限
-        if (Constant.SUPER_ADMIN.equals(userId) || Constant.SUPER_ADMIN2.equals(userId)) {
+        if (Constant.SUPER_ADMIN.equals(userId) || Constant.SUPER_ADMIN2.equals(userId) || Constant.SUPER_ADMIN3.equals(userId)) {
             return getAllMenuList(null);
         }
 
