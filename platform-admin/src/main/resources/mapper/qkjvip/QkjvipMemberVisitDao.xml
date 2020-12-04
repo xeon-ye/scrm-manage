@@ -28,6 +28,9 @@
         <if test="params.mobile != null and params.mobile.trim() != ''">
             AND T.MOBILE = #{params.mobile}
         </if>
+        <if test="params.visitStatus != null and params.visitStatus.trim() != ''">
+            AND T.VISIT_STATUS = #{params.visitStatus}
+        </if>
     </sql>
 
     <select id="selectQkjvipMemberVisitPage" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberVisitEntity">
