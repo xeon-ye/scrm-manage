@@ -14,6 +14,7 @@ package com.platform.modules.qkjvip.controller;
 import cn.emay.util.JsonHelper;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.zxing.WriterException;
@@ -32,12 +33,17 @@ import com.platform.modules.util.Vars;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import com.platform.modules.util.ExportExcelUtils;
 
 import javax.servlet.ServletOutputStream;
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.*;
 
 import static cn.afterturn.easypoi.excel.entity.enmus.CellValueType.Date;
@@ -73,6 +79,40 @@ public class QkjvipMemberActivityController extends AbstractController {
     public RestResponse queryAll(@RequestParam Map<String, Object> params) {
         List<QkjvipMemberActivityEntity> list = qkjvipMemberActivityService.queryAll(params);
 
+        return RestResponse.success().put("list", list);
+    }
+
+
+    /**
+     * 查看所有列表
+     *
+     * @param params 查询参数
+     * @return RestResponse
+     */
+    @RequestMapping("/queryAllhtml")
+    public RestResponse queryAllhtml(@RequestParam Map<String, Object> params) {
+        //已参加的活动
+        List<QkjvipMemberActivityEntity> list=new ArrayList<>();
+        //附近的未参加的活动
+        HttpServletRequest request = getHttpServletRequest();
+        String ip = getIp(request);
+        // 百度地图申请的ak
+        String ak = "Ed5GYHTqRm1E5VZgHB6jm7Qz2vckMfQg";
+        // 这里调用百度的ip定位api服务 详见 http://api.map.baidu.com/lbsapi/cloud/ip-location-api.htm
+        try{
+            JSONObject json = readJsonFromUrl("http://api.map.baidu.com/location/ip?ip=" + ip + "&ak=" + ak);
+            //这里只取出了两个参数，根据自己需求去获取
+            if(json.get("content")!=null){
+                JSONObject obj = (JSONObject) ((JSONObject) json.get("content")).get("address_detail");
+                String province = obj.getString("province");
+                String city = obj.getString("city");
+                System.out.println(province);
+                params.put("memberIdSignAddress",city);
+            }
+            list = qkjvipMemberActivityService.queryAll(params);
+        }catch (IOException e){
+
+        }
         return RestResponse.success().put("list", list);
     }
 
@@ -369,4 +409,90 @@ public class QkjvipMemberActivityController extends AbstractController {
         }
         return RestResponse.success().put("memberlist", mees);
     }
+
+    public static String getIp(HttpServletRequest request){
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
+    }
+
+    /**
+     * 百度获取城市信息
+     *
+     * @param ip
+     * @return
+     * @throws JSONException
+     * @throws IOException
+     */
+    public static void main(String[] args) throws JSONException, IOException {
+//        HttpServletRequest request = getHttpServletRequest();
+//        String ip = getIp(request);
+//        // 百度地图申请的ak
+//        String ak = "Ed5GYHTqRm1E5VZgHB6jm7Qz2vckMfQg";
+//        // 这里调用百度的ip定位api服务 详见 http://api.map.baidu.com/lbsapi/cloud/ip-location-api.htm
+//        JSONObject json = readJsonFromUrl("http://api.map.baidu.com/location/ip?ip=" + ip + "&ak=" + ak);
+//
+//        //这里只取出了两个参数，根据自己需求去获取
+//        JSONObject obj = (JSONObject) ((JSONObject) json.get("content")).get("address_detail");
+//        String province = obj.getString("province");
+//        System.out.println(province);
+//
+//        JSONObject obj2 = (JSONObject) json.get("content");
+//        String address = obj2.getString("address");
+//        System.out.println(address);
+    }
+
+    public static HttpServletRequest getHttpServletRequest() {
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    }
+    /**
+     * 创建链接
+     *
+     * @param url
+     * @return
+     * @throws IOException
+     * @throws JSONException
+     */
+    private JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
+        InputStream is = new URL(url).openStream();
+        try {
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+            String jsonText = readAll(rd);
+            JSONObject json = JSONObject.parseObject(jsonText);
+            return json;
+        } finally {
+            is.close();
+        }
+    }
+
+    /**
+     * 读取
+     *
+     * @param rd
+     * @return
+     * @throws IOException
+     */
+    private static String readAll(Reader rd) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        int cp;
+        while ((cp = rd.read()) != -1) {
+            sb.append((char) cp);
+        }
+        return sb.toString();
+    }
+
 }

@@ -17,6 +17,15 @@
         <if test="params.memberId != null and params.memberId.trim() != ''">
             AND EXISTS (SELECT 1 from qkjvip_member_signupmember b where b.activity_id=T.id and b.member_id=#{params.memberId})
         </if>
+        <if test="params.memberIdSign != null and params.memberIdSign.trim() != ''">
+            AND EXISTS (SELECT 1 from qkjvip_member_signup b where b.acitvity_id=T.id and b.memberid=#{params.memberIdSign})
+        </if>
+        <if test="params.memberIdSignAddress != null and params.memberIdSignAddress.trim() != ''">
+            OR (not EXISTS (SELECT 1 from qkjvip_member_signup b where b.acitvity_id=T.id and b.memberid=#{params.memberIdSign})
+            and  EXISTS (SELECT 1 from qkjvip_member_signupaddress adres
+            where adres.activityid=t.id and adres.address like '%${params.memberIdSignAddress}%')
+            )
+        </if>
     </sql>
 
     <sql id="selectSqlCount">

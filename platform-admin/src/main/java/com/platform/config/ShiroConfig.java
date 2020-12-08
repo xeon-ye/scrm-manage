@@ -69,6 +69,8 @@ public class ShiroConfig {
         filterMap.put("/druid/**", "anon");
         filterMap.put("/sys/login", "anon");
         filterMap.put("/qkjvip/memberactivity/infohtml", "anon");
+        filterMap.put("/qkjvip/memberactivity/queryAllhtml", "anon");
+        filterMap.put("/qkjvip/member/selectMemByOpenid", "anon");
         filterMap.put("/qkjvip/membersignup/save", "anon");
         filterMap.put("/sys/login2", "anon");
         filterMap.put("/sys/userreg", "anon");
