@@ -60,5 +60,5 @@ public interface SysRoleOrgDao extends BaseMapper<SysRoleOrgEntity> {
      */
     int deleteBatch(String[] roleIds);
 
-    List<String> queryOrgNoListByUserIdAndPerm(@Param("params") Map<String, Object> params);
+    List<String> queryOrgNoListByUserIdAndPerm(@Param("userId") String userId, @Param("userPerm") String userPerm);
 }

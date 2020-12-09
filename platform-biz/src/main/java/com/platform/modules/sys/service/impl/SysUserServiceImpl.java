@@ -20,6 +20,7 @@ import com.platform.common.utils.Query;
 import com.platform.modules.sys.dao.SysUserDao;
 import com.platform.modules.sys.entity.SysUserEntity;
 import com.platform.modules.sys.service.SysRoleService;
+import com.platform.modules.sys.service.SysUserChannelService;
 import com.platform.modules.sys.service.SysUserRoleService;
 import com.platform.modules.sys.service.SysUserService;
 import org.apache.commons.lang.RandomStringUtils;
@@ -43,6 +44,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
     private SysUserRoleService sysUserRoleService;
     @Autowired
     private SysRoleService sysRoleService;
+    @Autowired
+    private SysUserChannelService sysUserChannelService;
 
     @Override
     public List<SysUserEntity> queryAll(Map<String, Object> params) {
@@ -83,6 +86,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 
         //保存用户与角色关系
         sysUserRoleService.saveOrUpdate(user.getUserId(), user.getRoleIdList());
+        //保存用户与渠道的关系
+        sysUserChannelService.saveOrUpdate(user.getUserId(), user.getChannelIdList());
     }
 
     @Override
@@ -96,6 +101,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
         this.save(user);
         //保存用户与角色关系
         sysUserRoleService.saveOrUpdate(user.getUserId(), user.getRoleIdList());
+        //保存用户与渠道的关系
+        sysUserChannelService.saveOrUpdate(user.getUserId(), user.getChannelIdList());
     }
 
     @Override
@@ -113,6 +120,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 
         //保存用户与角色关系
         sysUserRoleService.saveOrUpdate(user.getUserId(), user.getRoleIdList());
+        //保存用户与渠道的关系
+        sysUserChannelService.saveOrUpdate(user.getUserId(), user.getChannelIdList());
     }
 
     @Override

@@ -29,8 +29,10 @@ import com.platform.modules.qkjvip.service.QkjvipMemberImportService;
 import com.platform.modules.qkjvip.service.QkjvipTaglibsService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysDictEntity;
+import com.platform.modules.sys.entity.SysUserChannelEntity;
 import com.platform.modules.sys.service.SysDictService;
 import com.platform.modules.sys.service.SysRoleOrgService;
+import com.platform.modules.sys.service.SysUserChannelService;
 import com.platform.modules.util.ExcelSelectListUtil;
 import com.platform.modules.util.ExportExcelUtils;
 import com.platform.modules.util.HttpClient;
@@ -70,6 +72,8 @@ public class MemberController extends AbstractController {
     private QkjvipMemberImportService qkjvipMemberImportService;
     @Autowired
     private SysRoleOrgService sysRoleOrgService;
+    @Autowired
+    private SysUserChannelService sysUserChannelService;
 
     /**
      * 查看所有列表
@@ -105,9 +109,11 @@ public class MemberController extends AbstractController {
         if (getUser().getUserName().contains("admin")) {
             memberQuery.setCurrentmemberid("");
             memberQuery.setListorgno("");
+            memberQuery.setListmemberchannel("");
         } else {
             memberQuery.setCurrentmemberid(getUserId());
-            memberQuery.setListorgno(sysRoleOrgService.queryOrgNoListByUserId(getUserId()));
+            memberQuery.setListorgno(sysRoleOrgService.queryOrgNoListByUserIdAndPerm(getUserId(), "qkjvip:member:list"));
+            memberQuery.setListmemberchannel(sysUserChannelService.queryChannelIdByUserId(getUserId()));
         }
         Object obj = JSONArray.toJSON(memberQuery);
         String queryJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");

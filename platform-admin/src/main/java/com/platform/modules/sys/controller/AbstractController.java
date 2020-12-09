@@ -97,11 +97,8 @@ public abstract class AbstractController {
         dataScope.setOrgAlias(orgAlias);
         dataScope.setUserId(userId);
 
-        Map param = new HashMap<>();
-        param.put("userId", getUserId());
-        param.put("userPerm", userPerm);
         // 根据权限和用户id取出角色对应的部门id
-        dataScope.setOrgNos(sysRoleOrgService.queryOrgNoListByUserIdAndPerm(param));
+        dataScope.setOrgNos(sysRoleOrgService.queryOrgNoListByUserIdAndPerm(getUserId(), userPerm));
         return dataScope;
     }
 }

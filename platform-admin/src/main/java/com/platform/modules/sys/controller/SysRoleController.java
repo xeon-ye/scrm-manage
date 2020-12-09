@@ -15,6 +15,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.validator.ValidatorUtils;
+import com.platform.modules.qkjvip.entity.QkjvipMemberChannelEntity;
+import com.platform.modules.qkjvip.service.QkjvipMemberChannelService;
 import com.platform.modules.sys.entity.SysRoleEntity;
 import com.platform.modules.sys.service.SysRoleMenuService;
 import com.platform.modules.sys.service.SysRoleOrgService;
@@ -41,6 +43,8 @@ public class SysRoleController extends AbstractController {
     private SysRoleMenuService sysRoleMenuService;
     @Autowired
     private SysRoleOrgService sysRoleOrgService;
+    @Autowired
+    private QkjvipMemberChannelService qkjvipMemberChannelService;
 
     /**
      * 角色列表
@@ -71,9 +75,14 @@ public class SysRoleController extends AbstractController {
         Map<String, Object> params = new HashMap<>(2);
         params.put("dataScope", getDataScope());
 
+        // 取出角色列表
         List<SysRoleEntity> list = sysRoleService.selectListByMap(params);
+        // 取出渠道列表
+        List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.selectListByMap(params);
 
-        return RestResponse.success().put("list", list);
+        params.put("roleList", list);
+        params.put("channelList", channelList);
+        return RestResponse.success().put("list", params);
     }
 
     /**

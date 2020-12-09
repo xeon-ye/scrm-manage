@@ -65,8 +65,8 @@ public class SysRoleOrgServiceImpl extends ServiceImpl<SysRoleOrgDao, SysRoleOrg
     }
 
     @Override
-    public String queryOrgNoListByUserIdAndPerm(Map<String, Object> params) {
-        List<String> roleOrglist = baseMapper.queryOrgNoListByUserIdAndPerm(params);
+    public String queryOrgNoListByUserIdAndPerm(String userId, String userPerm) {
+        List<String> roleOrglist = baseMapper.queryOrgNoListByUserIdAndPerm(userId, userPerm);
         StringBuilder roleStr = new StringBuilder();
         String alias = "";
         if (roleOrglist != null && !roleOrglist.isEmpty()) {

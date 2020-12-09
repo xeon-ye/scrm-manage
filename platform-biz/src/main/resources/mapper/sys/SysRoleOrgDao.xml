@@ -26,11 +26,11 @@
         LEFT JOIN SYS_ROLE_MENU RM ON UR.ROLE_ID = RM.ROLE_ID
         LEFT JOIN SYS_MENU M ON RM.MENU_ID = M.MENU_ID
         WHERE 1=1
-        <if test="params.userId != null and params.userId.trim() != ''">
-            AND UR.USER_ID = #{params.userId}
+        <if test="userId != null and userId.trim() != ''">
+            AND UR.USER_ID = #{userId}
         </if>
-        <if test="params.userPerm != null and params.userPerm.trim() != ''">
-            AND M.PERMS LIKE '%${params.userPerm}%'
+        <if test="userPerm != null and userPerm.trim() != ''">
+            AND M.PERMS LIKE '%${userPerm}%'
         </if>
         )
 	</select>

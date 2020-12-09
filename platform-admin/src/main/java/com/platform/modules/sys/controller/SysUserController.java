@@ -15,15 +15,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.Constant;
 import com.platform.common.utils.RestResponse;
-import com.platform.common.utils.StringUtils;
 import com.platform.common.validator.AbstractAssert;
 import com.platform.common.validator.ValidatorUtils;
 import com.platform.common.validator.group.AddGroup;
 import com.platform.common.validator.group.UpdateGroup;
-import com.platform.modules.sys.dao.SysOrgDao;
-import com.platform.modules.sys.entity.SysOrgEntity;
 import com.platform.modules.sys.entity.SysUserEntity;
 import com.platform.modules.sys.form.PasswordForm;
+import com.platform.modules.sys.service.SysUserChannelService;
 import com.platform.modules.sys.service.SysUserRoleService;
 import com.platform.modules.sys.service.SysUserService;
 import com.platform.modules.webservices.*;
@@ -49,6 +47,8 @@ public class SysUserController extends AbstractController {
     private SysUserService sysUserService;
     @Autowired
     private SysUserRoleService sysUserRoleService;
+    @Autowired
+    private SysUserChannelService sysUserChannelService;
 
     /**
      * 查看所有列表
@@ -131,6 +131,10 @@ public class SysUserController extends AbstractController {
         //获取用户所属的角色列表
         List<String> roleIdList = sysUserRoleService.queryRoleIdList(userId);
         user.setRoleIdList(roleIdList);
+
+        //获取用户所属的渠道列表
+        List<String> channelIdlList = sysUserChannelService.queryChannelIdList(userId);
+        user.setChannelIdList(channelIdlList);
 
         return RestResponse.success().put("user", user);
     }

@@ -108,6 +108,12 @@ public class SysUserEntity implements Serializable {
     private List<String> roleIdList;
 
     /**
+     * 渠道ID列表
+     */
+    @TableField(exist = false)
+    private List<String> channelIdList;
+
+    /**
      * 创建者ID
      */
     private String createUserId;

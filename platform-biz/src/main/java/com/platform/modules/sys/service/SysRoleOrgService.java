@@ -42,10 +42,11 @@ public interface SysRoleOrgService extends IService<SysRoleOrgEntity> {
     /**
      * 根据用户ID和权限获取权限机构列表
      *
-     * @param params 用户Id和权限
+     * @param userId 用户Id
+     * @param userPerm 用户权限
      * @return String
      */
-    String queryOrgNoListByUserIdAndPerm(Map<String, Object> params);
+    String queryOrgNoListByUserIdAndPerm(String userId, String userPerm);
 
     /**
      * 根据角色ID数组，批量删除
