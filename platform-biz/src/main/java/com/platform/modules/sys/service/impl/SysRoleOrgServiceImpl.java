@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 角色与机构对应关系
@@ -49,6 +50,23 @@ public class SysRoleOrgServiceImpl extends ServiceImpl<SysRoleOrgDao, SysRoleOrg
     @Override
     public String queryOrgNoListByUserId(String userId) {
         List<String> roleOrglist = baseMapper.queryOrgNoListByUserId(userId);
+        StringBuilder roleStr = new StringBuilder();
+        String alias = "";
+        if (roleOrglist != null && !roleOrglist.isEmpty()) {
+            for (String roleId : roleOrglist) {
+                roleStr.append(",");
+                roleStr.append("'");
+                roleStr.append(roleId);
+                roleStr.append("'");
+            }
+            alias = roleStr.toString().substring(1, roleStr.length());
+        }
+        return alias;
+    }
+
+    @Override
+    public String queryOrgNoListByUserIdAndPerm(Map<String, Object> params) {
+        List<String> roleOrglist = baseMapper.queryOrgNoListByUserIdAndPerm(params);
         StringBuilder roleStr = new StringBuilder();
         String alias = "";
         if (roleOrglist != null && !roleOrglist.isEmpty()) {

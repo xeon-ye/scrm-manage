@@ -70,6 +70,7 @@ public class ShiroConfig {
         filterMap.put("/sys/login", "anon");
         filterMap.put("/qkjvip/memberactivity/infohtml", "anon");
         filterMap.put("/qkjvip/membersignup/save", "anon");
+        filterMap.put("/qkjvip/membervisit/list", "anon");  //liuqianru add 2020/12/09
         filterMap.put("/sys/login2", "anon");
         filterMap.put("/sys/userreg", "anon");
         filterMap.put("/sys/oss/upload", "anon");

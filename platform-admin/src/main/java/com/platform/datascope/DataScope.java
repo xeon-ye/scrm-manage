@@ -36,11 +36,16 @@ public class DataScope extends HashMap {
     private String orgAlias = "T.CREATE_USER_ORG_NO";
 
     /**
+     * 用户的权限
+     */
+    private String userPerm;
+
+    /**
      * 具体的数据范围
      */
     private String orgNos;
     /**
-     * 用户id  liuqianru add 会员用
+     * 所属人id  liuqianru add 会员用
      */
     private String userId;
 

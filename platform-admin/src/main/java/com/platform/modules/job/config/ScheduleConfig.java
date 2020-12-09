@@ -13,6 +13,7 @@ package com.platform.modules.job.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import javax.sql.DataSource;
@@ -24,6 +25,7 @@ import java.util.Properties;
  * @author 李鹏军
  */
 @Configuration
+@EnableAsync
 public class ScheduleConfig {
 
     @Bean

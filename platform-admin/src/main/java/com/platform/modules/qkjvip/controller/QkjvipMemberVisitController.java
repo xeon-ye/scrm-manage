@@ -19,6 +19,7 @@ import com.platform.modules.qkjvip.service.QkjvipMemberVisitMaterialService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipMemberVisitEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberVisitService;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -67,8 +68,8 @@ public class QkjvipMemberVisitController extends AbstractController {
     @GetMapping("/list")
     @RequiresPermissions("qkjvip:membervisit:list")
     public RestResponse list(@RequestParam Map<String, Object> params) {
-        // 每个人只可查看自己添加的数据
-        params.put("dataScope", getDataScope("T.add_user"));
+        // 每个人只可查看自己添加的数据和对应部门的数据
+        params.put("dataScope", getDataScope("qkjvip:membervisit:list", "T.add_user", "T.add_dept", null));
         Page page = qkjvipMemberVisitService.queryPage(params);
 
         return RestResponse.success().put("page", page);
