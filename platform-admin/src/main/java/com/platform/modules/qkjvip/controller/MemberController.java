@@ -35,6 +35,7 @@ import com.platform.modules.util.ExportExcelUtils;
 import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.Vars;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -291,7 +292,7 @@ public class MemberController extends AbstractController {
             for (int i = 0; i < memberChannelList.size(); i++) {
                 dictAttr[i] = memberChannelList.get(i).getServicename().trim();
             }
-            ExcelSelectListUtil.selectList(workbook, 7, 7, dictAttr);
+            ExcelSelectListUtil.ExcelTo255(workbook, "hidden", 1, dictAttr, 2, 65535, 7, 7);
 
             //会员类型
             params.clear();

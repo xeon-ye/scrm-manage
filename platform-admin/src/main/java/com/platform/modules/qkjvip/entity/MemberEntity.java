@@ -286,7 +286,7 @@ public class MemberEntity implements Serializable {
     /**
      * 新增或导入时备注
      */
-    @Excel(name = "备注", orderNum = "23", width = 15)
+    @Excel(name = "备注", orderNum = "24", width = 15)
     private String remark2;
 
     /**
