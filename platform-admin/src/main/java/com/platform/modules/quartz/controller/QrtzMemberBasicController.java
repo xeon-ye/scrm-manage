@@ -103,14 +103,14 @@ public class QrtzMemberBasicController extends AbstractController {
                     + "&app_key=" + Vars.APP_KEY
                     + "&sign=" + sign;
             System.out.println("key:sign" + " vlaue:" + sign);
-//            resultPost = HttpClient.doPost(url + urlParam);
-//            if (resultPost != null && !"[]".equals(resultPost)) {
-//                this.saveOrUpdateMember(resultPost, i + "");
-//            }
-//            //将最后更新时间存入数据库
-//            if (!StringUtils.isEmpty(updateTimeEntity.getId())) {
-//                qrtzLastUpdateTimeService.updateMemberLastDatetime(updateTimeEntity);
-//            }
+            resultPost = HttpClient.doPost(url + urlParam);
+            if (resultPost != null && !"[]".equals(resultPost)) {
+                this.saveOrUpdateMember(resultPost, i + "");
+            }
+            //将最后更新时间存入数据库
+            if (!StringUtils.isEmpty(updateTimeEntity.getId())) {
+                qrtzLastUpdateTimeService.updateMemberLastDatetime(updateTimeEntity);
+            }
         }
     }
 
