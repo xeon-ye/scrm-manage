@@ -78,11 +78,11 @@ public class SysRoleController extends AbstractController {
         // 取出角色列表
         List<SysRoleEntity> list = sysRoleService.selectListByMap(params);
         // 取出渠道列表
-        List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.selectListByMap(params);
+//        List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.selectListByMap(params);
 
-        params.put("roleList", list);
-        params.put("channelList", channelList);
-        return RestResponse.success().put("list", params);
+//        params.put("roleList", list);
+//        params.put("channelList", channelList);
+        return RestResponse.success().put("list", list);
     }
 
     /**

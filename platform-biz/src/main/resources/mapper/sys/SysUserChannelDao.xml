@@ -23,7 +23,7 @@
         <include refid="selectSql"/>
     </select>
 
-    <select id="queryChannelIdList" resultType="string">
+    <select id="queryChannelIdList" resultType="int">
 		SELECT CHANNEL_ID FROM SYS_USER_CHANNEL WHERE USER_ID = #{value}
 	</select>
 </mapper>

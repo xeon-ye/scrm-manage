@@ -58,6 +58,14 @@ public interface SysUserService extends IService<SysUserEntity> {
     SysUserEntity queryByUserName(String userName);
 
     /**
+     * 根据unionid，查询系统用户
+     *
+     * @param unionid unionid
+     * @return SysUserEntity
+     */
+    SysUserEntity queryByUnionid(String unionid);
+
+    /**
      * 保存用户
      *
      * @param user 用户
@@ -72,6 +80,12 @@ public interface SysUserService extends IService<SysUserEntity> {
      * @param params 查询参数
      */
     void update(SysUserEntity user, Map<String, Object> params);
+    /**
+     * 修改用户
+     *
+     * @param user 用户
+     */
+    void update(SysUserEntity user);
 
     /**
      * 删除用户

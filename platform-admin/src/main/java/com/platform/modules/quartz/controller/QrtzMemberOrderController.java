@@ -85,13 +85,13 @@ public class QrtzMemberOrderController extends AbstractController {
             }
             updateTimeEntity.setOrderLastDatetime(nowDate);
         }
-        Integer listsize=getMemberBasicEntities(url,timeStamp,startime,endtime);//订单生成修改
-        end2 = System.currentTimeMillis();
-        //将最后更新数据存入数据库
-        if (!StringUtils.isEmpty(updateTimeEntity.getId())) {
-            qrtzLastUpdateTimeService.updateOrderLastDatetime(updateTimeEntity);
-        }
-        System.out.println("批量处理"+listsize+"条数据，耗费了" + (end2 - start) + "ms");
+//        Integer listsize=getMemberBasicEntities(url,timeStamp,startime,endtime);//订单生成修改
+//        end2 = System.currentTimeMillis();
+//        //将最后更新数据存入数据库
+//        if (!StringUtils.isEmpty(updateTimeEntity.getId())) {
+//            qrtzLastUpdateTimeService.updateOrderLastDatetime(updateTimeEntity);
+//        }
+//        System.out.println("批量处理"+listsize+"条数据，耗费了" + (end2 - start) + "ms");
     }
 
     private Integer getMemberBasicEntities(String url, String timeStamp, String starttime, String endtime) throws IOException {

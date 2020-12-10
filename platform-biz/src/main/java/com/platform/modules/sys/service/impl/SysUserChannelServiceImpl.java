@@ -56,7 +56,7 @@ public class SysUserChannelServiceImpl extends ServiceImpl<SysUserChannelDao, Sy
     }
 
     @Override
-    public void saveOrUpdate(String userId, List<String> channelIdList) {
+    public void saveOrUpdate(String userId, List<Integer> channelIdList) {
         Map<String, Object> map = new HashMap<>(2);
         map.put("user_id", userId);
         //先删除用户与渠道关系
@@ -68,7 +68,7 @@ public class SysUserChannelServiceImpl extends ServiceImpl<SysUserChannelDao, Sy
 
         //保存用户与渠道关系
         List<SysUserChannelEntity> list = new ArrayList<>(channelIdList.size());
-        for (String channelId : channelIdList) {
+        for (Integer channelId : channelIdList) {
             SysUserChannelEntity sysUserChannelEntity = new SysUserChannelEntity();
             sysUserChannelEntity.setUserId(userId);
             sysUserChannelEntity.setChannelId(channelId);
@@ -90,17 +90,17 @@ public class SysUserChannelServiceImpl extends ServiceImpl<SysUserChannelDao, Sy
     }
 
     @Override
-    public List<String> queryChannelIdList(String userId) {
+    public List<Integer> queryChannelIdList(String userId) {
         return baseMapper.queryChannelIdList(userId);
     }
 
     @Override
     public String queryChannelIdByUserId(String userId) {
-        List<String> channelIdlist = baseMapper.queryChannelIdList(userId);
+        List<Integer> channelIdlist = baseMapper.queryChannelIdList(userId);
         StringBuilder channelIdStr = new StringBuilder();
         String alias = "";
         if (channelIdlist != null && !channelIdlist.isEmpty()) {
-            for (String channelId : channelIdlist) {
+            for (Integer channelId : channelIdlist) {
                 channelIdStr.append(",");
                 channelIdStr.append("'");
                 channelIdStr.append(channelId);

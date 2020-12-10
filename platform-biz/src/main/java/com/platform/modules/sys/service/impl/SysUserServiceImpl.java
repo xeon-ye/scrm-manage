@@ -72,6 +72,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
     }
 
     @Override
+    public SysUserEntity queryByUnionid(String unionid) {
+        return this.getOne(new QueryWrapper<SysUserEntity>().eq("UnionId", unionid));
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(SysUserEntity user, Map<String, Object> params) {
         user.setCreateTime(new Date());
@@ -122,6 +127,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
         sysUserRoleService.saveOrUpdate(user.getUserId(), user.getRoleIdList());
         //保存用户与渠道的关系
         sysUserChannelService.saveOrUpdate(user.getUserId(), user.getChannelIdList());
+    }
+
+    @Override
+    public void update(SysUserEntity user) {
+        this.updateById(user);
     }
 
     @Override

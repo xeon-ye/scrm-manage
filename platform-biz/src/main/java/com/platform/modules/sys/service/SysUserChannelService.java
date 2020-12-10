@@ -64,7 +64,7 @@ public interface SysUserChannelService extends IService<SysUserChannelEntity> {
      * @param userId 用户Id
      * @param channelIdList channelIdList
      */
-    void saveOrUpdate(String userId, List<String> channelIdList);
+    void saveOrUpdate(String userId, List<Integer> channelIdList);
 
     /**
      * 根据主键删除
@@ -88,7 +88,7 @@ public interface SysUserChannelService extends IService<SysUserChannelEntity> {
      * @param userId 用户Id
      * @return List
      */
-    List<String> queryChannelIdList(String userId);
+    List<Integer> queryChannelIdList(String userId);
 
     String queryChannelIdByUserId(String userId);
 }

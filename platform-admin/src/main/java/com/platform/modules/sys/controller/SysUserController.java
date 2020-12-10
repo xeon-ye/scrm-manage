@@ -133,7 +133,7 @@ public class SysUserController extends AbstractController {
         user.setRoleIdList(roleIdList);
 
         //获取用户所属的渠道列表
-        List<String> channelIdlList = sysUserChannelService.queryChannelIdList(userId);
+        List<Integer> channelIdlList = sysUserChannelService.queryChannelIdList(userId);
         user.setChannelIdList(channelIdlList);
 
         return RestResponse.success().put("user", user);
