@@ -17,6 +17,8 @@ import com.platform.modules.pageCont.pageCount;
 import com.platform.modules.qkjvip.dao.MemberDao;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.service.MemberService;
+import com.platform.modules.reflex.ModifiedPropertyInfo;
+import com.platform.modules.util.CompareObjectPropertyUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,7 +87,8 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteBatch(String[] memberIds) {
-        this.removeByIds(Arrays.asList(memberIds));
+//        this.removeByIds(Arrays.asList(memberIds));
+        baseMapper.removeByIds(memberIds);  //逻辑删除
     }
 
 

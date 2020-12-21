@@ -228,6 +228,10 @@ public class MemberController extends AbstractController {
 
         Map<String, Object> params = new HashMap<>(2);
         params.put("dataScope", getDataScope());
+        MemberEntity oldStaff = memberService.getById(member.getMemberId());
+        if (!member.equals(oldStaff)) {
+            member.setStatusflag(2);
+        }
         memberService.update(member, params);
         //修改会员标签
         memberTagsService.saveOrUpdate(member);

@@ -11,6 +11,7 @@
 package com.platform.modules.qkjvip.entity;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.emay.util.DateUtil;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -18,6 +19,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.platform.common.validator.group.AddGroup;
 import com.platform.common.validator.group.UpdateGroup;
+import com.platform.modules.quartz.entity.QrtzMemberBasicEntity;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -288,6 +290,14 @@ public class MemberEntity implements Serializable {
      */
     @Excel(name = "备注", orderNum = "24", width = 15)
     private String remark2;
+    /**
+     * 标识（0：正常 1：删除 2：锁住）
+     */
+    private Integer statusflag;
+    /**
+     * 合并过来的会员id
+     */
+    private String memberidto;
 
     /**
      * 所属人姓名
@@ -365,4 +375,176 @@ public class MemberEntity implements Serializable {
     @TableField(exist = false)
     private List<MemberTagsQueryEntity> membertags;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (this.getClass() != o.getClass()) {
+            return false;
+        }
+
+        MemberEntity other = (MemberEntity) o;
+        if (this.memberName == null) {
+            if (other.memberName != null) {
+                return false;
+            }
+        } else if (!this.memberName.equals(other.memberName)) {
+            return false;
+        }
+
+        if (this.realName == null) {
+            if (other.realName != null) {
+                return false;
+            }
+        } else if (!this.realName.equals(other.realName)) {
+            return false;
+        }
+
+        if (this.mobile == null) {
+            if (other.mobile != null) {
+                return  false;
+            }
+        } else if (!this.mobile.equals(other.mobile)) {
+            return false;
+        }
+
+        if (this.email == null) {
+            if (other.email != null) {
+                return false;
+            }
+        } else if (!this.email.equals(other.email)) {
+            return false;
+        }
+
+        if (this.sex != other.sex) {
+            return false;
+        }
+
+        if (this.birthday == null) {
+            if (other.birthday != null) {
+                return false;
+            }
+        } else if (!DateUtil.toString(this.birthday, "yyyy-MM-dd").equals(DateUtil.toString(other.birthday, "yyyy-MM-dd"))) {
+            return false;
+        }
+
+        if (this.memberType == null) {
+            if (other.memberType != null) {
+                return false;
+            }
+        } else if (!this.memberType.equals(other.memberType)) {
+            return false;
+        }
+
+        if (this.memberNature == null) {
+            if (other.memberNature != null) {
+                return false;
+            }
+        } else if (!this.memberNature.equals(other.memberNature)) {
+            return false;
+        }
+
+        if (this.memberLevel == null) {
+            if (other.memberLevel != null) {
+                return false;
+            }
+        } else if (!this.memberLevel.equals(other.memberLevel)) {
+            return false;
+        }
+
+        if (this.memberSource == null) {
+            if (other.memberSource != null) {
+                return false;
+            }
+        } else if (!this.memberSource.equals(other.memberSource)) {
+            return false;
+        }
+
+        if (this.industryType == null) {
+            if (other.industryType != null) {
+                return false;
+            }
+        } else if (!this.industryType.equals(other.industryType)) {
+            return false;
+        }
+
+        if (this.unitProperty == null) {
+            if (other.unitProperty != null) {
+                return false;
+            }
+        } else if (!this.unitProperty.equals(other.unitProperty)) {
+            return false;
+        }
+
+        if (this.companyName == null) {
+            if (other.companyName != null) {
+                return false;
+            }
+        } else if (!this.companyName.equals(other.companyName)) {
+            return false;
+        }
+
+        if (this.jobTitle == null) {
+            if (other.jobTitle != null) {
+                return false;
+            }
+        } else if (!this.jobTitle.equals(other.jobTitle)) {
+            return false;
+        }
+
+        if (this.regTime == null) {
+            if (other.regTime != null) {
+                return false;
+            }
+        } else if (!DateUtil.toString(this.regTime, "yyyy-MM-dd").equals(DateUtil.toString(other.regTime, "yyyy-MM-dd"))) {
+            return false;
+        }
+
+        if (this.referrerDept == null) {
+            if (other.referrerDept != null) {
+                return false;
+            }
+        } else if (!this.referrerDept.equals(other.referrerDept)) {
+            return false;
+        }
+
+        if (this.referrer == null) {
+            if (other.referrer != null) {
+                return false;
+            }
+        } else if (!this.referrer.equals(other.referrer)) {
+            return false;
+        }
+
+        if (this.orgNo == null) {
+            if (other.orgNo != null) {
+                return false;
+            }
+        } else if (!this.orgNo.equals(other.orgNo)) {
+            return false;
+        }
+
+        if (this.orgUserid == null) {
+            if (other.orgUserid != null) {
+                return false;
+            }
+        } else if (!this.orgUserid.equals(other.orgUserid)) {
+            return false;
+        }
+
+        if (this.remark2 == null) {
+            if (other.remark2 != null) {
+                return false;
+            }
+        } else if (!this.remark2.equals(other.remark2)) {
+            return false;
+        }
+
+
+        return true;
+    }
 }
