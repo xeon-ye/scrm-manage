@@ -72,8 +72,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
     }
 
     @Override
-    public SysUserEntity queryByUnionid(String unionid) {
-        return this.getOne(new QueryWrapper<SysUserEntity>().eq("UnionId", unionid));
+    public SysUserEntity queryByOpenid(String openid) {
+        return this.getOne(new QueryWrapper<SysUserEntity>().eq("OpenId", openid));
     }
 
     @Override

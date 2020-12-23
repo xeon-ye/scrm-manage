@@ -58,12 +58,12 @@ public interface SysUserService extends IService<SysUserEntity> {
     SysUserEntity queryByUserName(String userName);
 
     /**
-     * 根据unionid，查询系统用户
+     * 根据openid，查询系统用户
      *
-     * @param unionid unionid
+     * @param openid openid
      * @return SysUserEntity
      */
-    SysUserEntity queryByUnionid(String unionid);
+    SysUserEntity queryByOpenid(String openid);
 
     /**
      * 保存用户

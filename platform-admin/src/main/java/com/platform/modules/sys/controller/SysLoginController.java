@@ -112,9 +112,7 @@ public class SysLoginController extends AbstractController {
     @PostMapping("/sys/checkuser")
     public RestResponse checkuser(@RequestBody SysLoginBindForm form) {
         //用户信息
-        // TODO 用unionid查询用户是否存在
-//        SysUserEntity user = sysUserService.queryByUnionid(form.getUnionid());
-        SysUserEntity user = sysUserService.queryByUserName(form.getUserName());
+        SysUserEntity user = sysUserService.queryByOpenid(form.getOpenid());
 
         //账号不存在
         if (user == null) {
@@ -138,7 +136,7 @@ public class SysLoginController extends AbstractController {
      * @param form 登录表单
      * @return RestResponse
      */
-    @SysLog("绑定unionid")
+    @SysLog("绑定openid")
     @PostMapping("/sys/loginbind")
     public RestResponse loginbind(@RequestBody SysLoginBindForm form) {
         //用户信息
