@@ -41,6 +41,11 @@ public class QrtzMemberFansServiceImpl extends ServiceImpl<QrtzMemberFansDao, Qr
     }
 
     @Override
+    public List<QrtzMemberFansEntity> queryByMemberIdStr(String userStr) {
+        return baseMapper.queryByMemberIdStr(userStr);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void addBatch(List<QrtzMemberFansEntity> fanList) {
         this.saveBatch(fanList);

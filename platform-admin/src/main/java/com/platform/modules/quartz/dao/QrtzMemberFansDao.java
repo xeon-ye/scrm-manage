@@ -41,4 +41,6 @@ public interface QrtzMemberFansDao extends BaseMapper<QrtzMemberFansEntity> {
      * @return List
      */
     List<QrtzMemberFansEntity> queryList();
+
+    List<QrtzMemberFansEntity> queryByMemberIdStr(String userStr);
 }
