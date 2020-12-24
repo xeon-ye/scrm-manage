@@ -2,8 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.platform.modules.quartz.dao.QrtzMemberFansDao">
+	<select id="queryAll" resultType="com.platform.modules.quartz.entity.QrtzMemberFansEntity">
+		SELECT * FROM qkjvip_member_fans
+		WHERE 1=1
+		<if test="params.appidstr != null and params.appidstr.trim() != ''">
+			AND appid IN ${params.appidstr}
+		</if>
+		<if test="params.memberidstr != null and params.memberidstr.trim() != ''">
+			AND crm_memberid IN ${params.memberidstr}
+		</if>
+	</select>
+
     <select id="queryList" resultType="com.platform.modules.quartz.entity.QrtzMemberFansEntity">
 		SELECT mf.id,tmpmf.* FROM qkjvip_member_fans mf
 		INNER JOIN tmp_qkjvip_member_fans tmpmf ON (mf.OpenId=tmpmf.OpenId AND mf.AppId=tmpmf.AppId)
+	</select>
+
+	<select id="queryByMemberIdStr" resultType="com.platform.modules.quartz.entity.QrtzMemberFansEntity">
+		SELECT COUNT(*) membernum, ServiceName, AppId FROM qkjvip_member_fans
+		WHERE crm_memberid IN ${value}
+		GROUP BY ServiceName, AppId
 	</select>
 </mapper>

@@ -68,10 +68,13 @@ public class ShiroConfig {
         Map<String, String> filterMap = new LinkedHashMap<>();
         filterMap.put("/druid/**", "anon");
         filterMap.put("/sys/login", "anon");
+        filterMap.put("/sys/checkuser", "anon");
+        filterMap.put("/sys/loginbind", "anon");  //liuqianru add 2020/12/10
         filterMap.put("/qkjvip/memberactivity/infohtml", "anon");
         filterMap.put("/qkjvip/memberactivity/queryAllhtml", "anon");
         filterMap.put("/qkjvip/member/selectMemByOpenid", "anon");
         filterMap.put("/qkjvip/membersignup/save", "anon");
+//        filterMap.put("/qkjvip/membervisit/**", "anon");  //liuqianru add 2020/12/09
         filterMap.put("/sys/login2", "anon");
         filterMap.put("/sys/userreg", "anon");
         filterMap.put("/sys/oss/upload", "anon");

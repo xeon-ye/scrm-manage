@@ -11,6 +11,7 @@
  */
 package com.platform.modules.quartz.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -99,6 +100,32 @@ public class QrtzMemberFansEntity implements Serializable {
      * Appid
      */
     private String appid;
+
+    /**
+     * crmMemberid
+     */
+    private String crmMemberid;
+
+    /**
+     * userid
+     */
+    private String userid;
+
+    /**
+     * 公众号包含的人数（群发信息用）
+     */
+    @TableField(exist = false)
+    private Integer membernum;
+    /**
+     * appidstr（群发信息用）
+     */
+    @TableField(exist = false)
+    private String appidstr;
+    /**
+     * memberstr（群发信息用）
+     */
+    @TableField(exist = false)
+    private String memberidstr;
 
     @Override
     public boolean equals(Object o) {

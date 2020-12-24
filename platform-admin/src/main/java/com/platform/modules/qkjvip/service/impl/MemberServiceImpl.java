@@ -85,7 +85,8 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteBatch(String[] memberIds) {
-        this.removeByIds(Arrays.asList(memberIds));
+//        this.removeByIds(Arrays.asList(memberIds));
+        baseMapper.removeByIds(memberIds);  //逻辑删除
     }
 
 

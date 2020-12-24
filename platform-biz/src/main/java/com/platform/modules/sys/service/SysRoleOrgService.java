@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.platform.modules.sys.entity.SysRoleOrgEntity;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -37,6 +38,15 @@ public interface SysRoleOrgService extends IService<SysRoleOrgEntity> {
      * @return String
      */
     String queryOrgNoListByUserId(String userId);
+
+    /**
+     * 根据用户ID和权限获取权限机构列表
+     *
+     * @param userId 用户Id
+     * @param userPerm 用户权限
+     * @return String
+     */
+    String queryOrgNoListByUserIdAndPerm(String userId, String userPerm);
 
     /**
      * 根据角色ID数组，批量删除

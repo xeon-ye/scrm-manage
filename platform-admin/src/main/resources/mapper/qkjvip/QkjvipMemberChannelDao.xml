@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.modules.qkjvip.dao.QkjvipMemberChannelDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.ID,
+        T.MEMBERCHANNEL,
+        T.SERVICENAME,
+        T.DISABLED,
+        T.REMARK,
+        T.CREATEON
+        FROM QKJVIP_MEMBER_CHANNEL T
+        WHERE 1=1
+        <if test="params.serviceName != null and params.serviceName.trim() != ''">
+            AND T.SERVICENAME LIKE '%${params.name}%'
+        </if>
+    </sql>
+
+    <select id="selectQkjvipMemberChannelPage" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberChannelEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberChannelEntity">
+        <include refid="selectSql"/>
+    </select>
+
+</mapper>

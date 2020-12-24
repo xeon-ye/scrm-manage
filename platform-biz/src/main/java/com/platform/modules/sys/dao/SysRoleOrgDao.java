@@ -14,8 +14,10 @@ package com.platform.modules.sys.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.platform.modules.sys.entity.SysRoleOrgEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 角色与机构对应关系Dao
@@ -57,4 +59,6 @@ public interface SysRoleOrgDao extends BaseMapper<SysRoleOrgEntity> {
      * @return int
      */
     int deleteBatch(String[] roleIds);
+
+    List<String> queryOrgNoListByUserIdAndPerm(@Param("userId") String userId, @Param("userPerm") String userPerm);
 }

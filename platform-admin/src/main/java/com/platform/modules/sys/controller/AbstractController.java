@@ -19,6 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Controller公共组件
  *
@@ -74,17 +77,6 @@ public abstract class AbstractController {
      *
      * @return DataScope
      */
-    protected DataScope getDataScope(String userAlias) {
-        DataScope dataScope = new DataScope();
-        dataScope.setUserAlias(userAlias);
-        return dataScope;
-    }
-
-    /**
-     * 数据权限构造
-     *
-     * @return DataScope
-     */
     protected DataScope getDataScope(String userAlias, String orgAlias) {
         DataScope dataScope = new DataScope();
         dataScope.setUserAlias(userAlias);
@@ -94,16 +86,19 @@ public abstract class AbstractController {
     }
 
     /**
-     * 数据权限构造  liuqianru add 会员用
-     *
+     * 数据权限构造
+     * userPerm 权限字符串 userAlias 添加人表字段名 orgAlias添加人部门名 userId 会员所属人
      * @return DataScope
      */
-    protected DataScope getDataScope(String userAlias, String orgAlias, String userId) {
+    protected DataScope getDataScope(String userPerm, String userAlias, String orgAlias, String userId) {
         DataScope dataScope = new DataScope();
+        dataScope.setUserPerm(userPerm);
         dataScope.setUserAlias(userAlias);
         dataScope.setOrgAlias(orgAlias);
         dataScope.setUserId(userId);
-        dataScope.setOrgNos(sysRoleOrgService.queryOrgNoListByUserId(getUserId()));
+
+        // 根据权限和用户id取出角色对应的部门id
+        dataScope.setOrgNos(sysRoleOrgService.queryOrgNoListByUserIdAndPerm(getUserId(), userPerm));
         return dataScope;
     }
 }

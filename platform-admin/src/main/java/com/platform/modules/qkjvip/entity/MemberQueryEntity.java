@@ -89,8 +89,10 @@ public class MemberQueryEntity implements Serializable {
     private String activitytype;
     private String startlastactivitydate;
     private String endlastactivitydate;
-    private String listorgno;
-    private String currentmemberid;
+    private String listorgno;  // 用户的权限部门
+    private String currentmemberid;  // 当前登录用户id
+    private String listmemberchannel;  // 用户的渠道权限
+    private String searchmemberchannel; // 检索条件的渠道
     private List<MemberTagsQueryEntity> membertags;
     private Integer pageindex;
     private Integer pagesize;

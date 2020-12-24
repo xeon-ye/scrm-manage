@@ -102,10 +102,26 @@ public class SysUserEntity implements Serializable {
     private Integer status;
 
     /**
+     * 微信unionid
+     */
+    private String unionid;
+
+    /**
+     * 微信openid
+     */
+    private String openid;
+
+    /**
      * 角色ID列表
      */
     @TableField(exist = false)
     private List<String> roleIdList;
+
+    /**
+     * 渠道ID列表
+     */
+    @TableField(exist = false)
+    private List<Integer> channelIdList;
 
     /**
      * 创建者ID

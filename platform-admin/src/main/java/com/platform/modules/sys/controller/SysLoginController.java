@@ -15,6 +15,7 @@ import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.Constant;
 import com.platform.common.utils.RestResponse;
 import com.platform.modules.sys.entity.SysUserEntity;
+import com.platform.modules.sys.form.SysLoginBindForm;
 import com.platform.modules.sys.form.SysLoginForm;
 import com.platform.modules.sys.service.SysCaptchaService;
 import com.platform.modules.sys.service.SysUserService;
@@ -99,6 +100,67 @@ public class SysLoginController extends AbstractController {
         String token = sysUserTokenService.createToken(user.getUserId());
 
         return RestResponse.success().put("token", token).put("expire", Constant.EXPIRE);
+    }
+
+    /**
+     * 登录
+     *
+     * @param form 登录表单
+     * @return RestResponse
+     */
+    @SysLog("公众号登录")
+    @PostMapping("/sys/checkuser")
+    public RestResponse checkuser(@RequestBody SysLoginBindForm form) {
+        //用户信息
+        SysUserEntity user = sysUserService.queryByOpenid(form.getOpenid());
+
+        //账号不存在
+        if (user == null) {
+            return RestResponse.error("账号不存在");
+        }
+
+        //账号锁定
+        if (user.getStatus() == 0) {
+            return RestResponse.error("账号已被锁定,请联系管理员");
+        }
+
+        //生成token，并保存到数据库
+        String token = sysUserTokenService.createToken(user.getUserId());
+
+        return RestResponse.success().put("token", token).put("expire", Constant.EXPIRE);
+    }
+
+    /**
+     * 登录
+     *
+     * @param form 登录表单
+     * @return RestResponse
+     */
+    @SysLog("绑定openid")
+    @PostMapping("/sys/loginbind")
+    public RestResponse loginbind(@RequestBody SysLoginBindForm form) {
+        //用户信息
+        SysUserEntity user = sysUserService.queryByUserName(form.getUserName());
+
+        //账号不存在、密码错误
+        if (user == null || !user.getPassword().equals(new Sha256Hash(form.getPassword(), user.getSalt()).toHex())) {
+            return RestResponse.error("账号或密码不正确");
+        }
+
+        //账号锁定
+        if (user.getStatus() == 0) {
+            return RestResponse.error("账号已被锁定,请联系管理员");
+        }
+
+        //保存业务员的unionid和openid
+        user.setUnionid(form.getUnionid());
+        user.setOpenid(form.getOpenid());
+        sysUserService.update(user);
+
+        //生成token，并保存到数据库
+//        String token = sysUserTokenService.createToken(user.getUserId());
+
+        return RestResponse.success();
     }
 
 

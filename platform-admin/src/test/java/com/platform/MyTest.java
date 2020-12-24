@@ -10,6 +10,9 @@
  */
 package com.platform;
 
+import cn.afterturn.easypoi.entity.ImageEntity;
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import com.platform.common.utils.JwtUtils;
 import com.platform.modules.util.HttpClient;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -18,6 +21,7 @@ import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,11 +29,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * MyTest
@@ -103,5 +110,36 @@ public class MyTest {
         wb.write(out);
         // 关闭流对象
         out.close();
+    }
+
+    @Test
+    public void one() throws Exception {
+        TemplateExportParams params = new TemplateExportParams(
+                "doc/exportTemp_image.xls", true);
+        Map<String, Object> map = new HashMap<String, Object>();
+        // sheet 2
+        map.put("month", 10);
+        Map<String, Object> temp;
+        for (int i = 1; i < 8; i++) {
+            temp = new HashMap<String, Object>();
+            temp.put("per", i * 10);
+            temp.put("mon", i * 1000);
+            temp.put("summon", i * 10000);
+            ImageEntity image = new ImageEntity();
+            image.setHeight(200);
+            image.setWidth(500);
+            image.setUrl("imgs/company/baidu.png");
+            temp.put("image", image);
+            map.put("i" + i, temp);
+        }
+        Workbook book = ExcelExportUtil.exportExcel(params, map);
+        File savefile = new File("D:/excel/");
+        if (!savefile.exists()) {
+            savefile.mkdirs();
+        }
+        FileOutputStream fos = new FileOutputStream("D:/excel/exportTemp_image.xls");
+        book.write(fos);
+        fos.close();
+
     }
 }

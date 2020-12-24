@@ -144,4 +144,11 @@
             AND ma.member_id = #{params.memberId}
         </if>
     </select>
+
+    <delete id="removeByIds">
+        UPDATE qkjvip_member SET statusflag = 1 WHERE member_id IN
+        <foreach item="memberId" collection="array" open="(" separator="," close=")">
+            #{memberId}
+        </foreach>
+    </delete>
 </mapper>

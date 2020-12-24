@@ -41,6 +41,13 @@ public interface QrtzMemberFansService extends IService<QrtzMemberFansEntity> {
     List<QrtzMemberFansEntity> queryList();
 
     /**
+     * 查询所有
+     *
+     * @return List
+     */
+    List<QrtzMemberFansEntity> queryByMemberIdStr(String userStr);
+
+    /**
      * 插入会员信息
      *
      * @param fanList 用户
