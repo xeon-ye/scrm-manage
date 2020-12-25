@@ -12,6 +12,10 @@
 package com.platform.modules.qkjvip.controller;
 
 import cn.emay.util.DateUtil;
+import cn.emay.util.JsonHelper;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
@@ -20,14 +24,14 @@ import com.platform.modules.qkjvip.service.QkjvipMemberCponsonService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipMemberCponEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberCponService;
+import com.platform.modules.util.HttpClient;
+import com.platform.modules.util.Vars;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Controller
@@ -81,7 +85,9 @@ public class QkjvipMemberCponController extends AbstractController {
     @RequiresPermissions("qkjvip:membercpon:info")
     public RestResponse info(@PathVariable("id") String id) {
         QkjvipMemberCponEntity qkjvipMemberCpon = qkjvipMemberCponService.getById(id);
-
+        Map<String, Object> map=new HashMap<String,Object>();
+        map.put("mainId",qkjvipMemberCpon.getId());
+        qkjvipMemberCpon.setSonlists(qkjvipMemberCponsonService.queryAll(map));
         return RestResponse.success().put("membercpon", qkjvipMemberCpon);
     }
 
@@ -98,13 +104,18 @@ public class QkjvipMemberCponController extends AbstractController {
         qkjvipMemberCpon.setAddUser(getUserId());
         qkjvipMemberCpon.setAddDept(getOrgNo());
         qkjvipMemberCpon.setAddTime(DateUtil.toString(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        qkjvipMemberCpon.setStatus(0);//未发放优惠券
+        qkjvipMemberCponService.add(qkjvipMemberCpon);
         List<QkjvipMemberCponsonEntity> sonlists=new ArrayList<>();
         sonlists=qkjvipMemberCpon.getSonlists();
         if(sonlists.size()>0){
-            qkjvipMemberCponsonService.batchAdd(sonlists);
+            List<QkjvipMemberCponsonEntity> newsonlists=new ArrayList<>();
+            for(QkjvipMemberCponsonEntity m:sonlists){
+                m.setMainId(qkjvipMemberCpon.getId());
+                newsonlists.add(m);
+            }
+            qkjvipMemberCponsonService.batchAdd(newsonlists);
         }
-        qkjvipMemberCponService.add(qkjvipMemberCpon);
-
         return RestResponse.success();
     }
 
@@ -125,7 +136,13 @@ public class QkjvipMemberCponController extends AbstractController {
         if(sonlists.size()>0){
             //删除
             qkjvipMemberCponsonService.deleteBatchByOrder(qkjvipMemberCpon.getId());
-            qkjvipMemberCponsonService.batchAdd(sonlists);
+
+            List<QkjvipMemberCponsonEntity> newsonlists=new ArrayList<>();
+            for(QkjvipMemberCponsonEntity m:sonlists){
+                m.setMainId(qkjvipMemberCpon.getId());
+                newsonlists.add(m);
+            }
+            qkjvipMemberCponsonService.batchAdd(newsonlists);
         }
 
 
@@ -145,5 +162,57 @@ public class QkjvipMemberCponController extends AbstractController {
         qkjvipMemberCponService.deleteBatch(ids);
 
         return RestResponse.success();
+    }
+
+    /**
+     * 获取优惠券
+     *
+     * @param "
+     * @return RestResponse
+     */
+    @SysLog("获取优惠券")
+    @RequestMapping("/getCpons")
+    public RestResponse getCpons() throws IOException {
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_CPON_LIST_URl,null);
+        List<QkjvipMemberCponEntity> ms=new ArrayList<>();
+        ms=JSON.parseArray(resultPost,QkjvipMemberCponEntity.class);
+        return RestResponse.success().put("cponlist", ms);
+    }
+
+    /**
+     * 根据主键发优惠券
+     *
+     * @param id 主键
+     * @return RestResponse
+     */
+    @RequestMapping("/sendCpon/{id}")
+    public RestResponse sendCpon(@PathVariable("id") String id)throws IOException  {
+        QkjvipMemberCponEntity qkjvipMemberCpon = qkjvipMemberCponService.getById(id);
+        Map<String, Object> map=new HashMap<String,Object>();
+        map.put("mainId",qkjvipMemberCpon.getId());
+        List<QkjvipMemberCponsonEntity> sonlists=new ArrayList<>();
+        sonlists = qkjvipMemberCponsonService.queryAll(map);
+        String[] cols_title = new String[sonlists.size()];
+        if(sonlists.size()>0){
+            for(int i=0;i<sonlists.size();i++){
+                cols_title[i] = new String(sonlists.get(i).getMemberId());
+            }
+        }
+
+        map.clear();
+        map.put("couponid", qkjvipMemberCpon.getCponid());
+        map.put("listmemberid", cols_title);
+        map.put("remark", "");
+        Object obj = JSONArray.toJSON(map);
+
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_CPON_SEND_URl, JsonHelper.toJsonString(obj));
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+            qkjvipMemberCpon.setStatus(1);//修改为已发放
+            qkjvipMemberCponService.update(qkjvipMemberCpon);
+            return RestResponse.success();
+        } else {
+            return RestResponse.error(resultObject.get("descr").toString());
+        }
     }
 }
