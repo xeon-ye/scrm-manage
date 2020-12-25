@@ -34,4 +34,8 @@ public class Vars {
 	//积分发放url start
 	public static String MEMBER_INTEGRAL_SEND_URL = "http://api.scrm.qkj.com.cn/api/Integral/SetBatchMemberIntegral";
 	//积分发放url end
+	//优惠券查询
+	public static String MEMBER_CPON_LIST_URl = "http://api.mall.qkj.com.cn/MobileAPI/Coupon/GetCouponList";
+	//优惠券发送
+	public static String MEMBER_CPON_SEND_URl = "http://api.scrm.qkj.com.cn/api/Coupon/SendMemberCoupon";
 }

@@ -5,11 +5,7 @@
 
     <sql id="selectSql">
         SELECT
-        T.ID,
-        T.TITLE,
-        T.ADD_USER,
-        T.ADD_DEPT,
-        T.ADD_TIME
+        T.*
         FROM QKJVIP_MEMBER_CPON T
         WHERE 1=1
         <if test="params.name != null and params.name.trim() != ''">

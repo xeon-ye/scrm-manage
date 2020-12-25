@@ -39,6 +39,8 @@ public class QkjvipMemberCponEntity implements Serializable {
      * title
      */
     private String title;
+
+    private Integer status;
     /**
      * add_user
      */
@@ -52,6 +54,34 @@ public class QkjvipMemberCponEntity implements Serializable {
      */
     private String addTime;
 
+    private String cponid;
+
     @TableField(exist = false)
     private List<QkjvipMemberCponsonEntity> sonlists;
+    @TableField(exist = false)
+    private List<QkjvipMemberCponEntity> ms;
+
+    /**
+     * 优惠券
+     */
+    @TableField(exist = false)
+    private Integer CouponTypeId;
+    @TableField(exist = false)
+    private Integer StoreId;
+    @TableField(exist = false)
+    private String StoreName;
+    @TableField(exist = false)
+    private Double Discount;
+    @TableField(exist = false)
+    private Double ReduceMoney;
+    @TableField(exist = false)
+    private Double LimitOrderAmount;
+    @TableField(exist = false)
+    private String LimitProduct;
+    @TableField(exist = false)
+    private String UseEndTime;
+    @TableField(exist = false)
+    private Integer SendNum;
+    @TableField(exist = false)
+    private String Desc;
 }
