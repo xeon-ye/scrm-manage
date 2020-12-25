@@ -34,4 +34,8 @@ public class Vars {
 	//积分发放url start
 	public static String MEMBER_INTEGRAL_SEND_URL = "http://api.scrm.qkj.com.cn/api/Integral/SetBatchMemberIntegral";
 	//积分发放url end
+	//公众号url start
+	public static String APPID_GETLIST_URL = "http://scrm-wxcb.ym.qkj.com.cn/WeiXinPublish/GetPublishList";
+	public static String MESSAGE_SEND = "http://scrm-wxcb.ym.qkj.com.cn/WeiXinMsg/MassTextToOpenId";
+	//公众号url end
 }

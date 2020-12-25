@@ -55,6 +55,10 @@ public class QkjvipMemberMessageEntity implements Serializable {
      */
     private String content;
     /**
+     * url
+     */
+    private String url;
+    /**
      * add_user
      */
     private String addUser;

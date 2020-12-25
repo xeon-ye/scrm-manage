@@ -14,8 +14,11 @@ package com.platform.modules.qkjvip.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.platform.common.validator.group.AddGroup;
+import com.platform.common.validator.group.UpdateGroup;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +46,7 @@ public class QkjvipMemberIntegralEntity implements Serializable {
     /**
      * 要发放的积分
      */
+    @NotBlank(message = "积分不可为空", groups = {AddGroup.class, UpdateGroup.class})
     private Integer integral;
     /**
      * add_user
