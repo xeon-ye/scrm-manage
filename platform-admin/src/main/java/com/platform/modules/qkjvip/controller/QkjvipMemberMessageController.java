@@ -156,6 +156,7 @@ public class QkjvipMemberMessageController extends AbstractController {
     @PostMapping("/init")
     public RestResponse init(@RequestBody QkjvipMemberMessageEntity qkjvipMemberMessage) {
         List<QkjvipOptionsEntity> options = new ArrayList<>();
+        String userStr = "";
         //获取公众号列表
         String resultPost = HttpClient.sendGet(Vars.APPID_GETLIST_URL);
         JSONObject resultObject = JSON.parseObject(resultPost);
@@ -169,12 +170,12 @@ public class QkjvipMemberMessageController extends AbstractController {
                 } else if ("2".equals(qkjvipMemberMessage.getCategoryType())) {  //积分
                     List<String> integralusers = new ArrayList<>();
                     integralusers = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
-                    String userStr = ListToStringUtil.listToString(integralusers);
-                    if (!"".equals(userStr)) {
-                        fansList = qrtzMemberFansService.queryByMemberIdStr(userStr);
-                    }
+                    userStr = ListToStringUtil.listToString(integralusers);
                 } else if ("3".equals(qkjvipMemberMessage.getCategoryType())) {  //优惠券
                     //TODO
+                }
+                if (!"".equals(userStr)) {
+                    fansList = qrtzMemberFansService.queryByMemberIdStr(userStr);
                 }
             }
 
@@ -208,12 +209,20 @@ public class QkjvipMemberMessageController extends AbstractController {
         if (qkjvipMemberMessage.getCategoryType() != null) {
             String[] appidAttr = qkjvipMemberMessage.getChannels().split(",");
             String appidstr = ListToStringUtil.listToString(Arrays.asList(appidAttr));
-            List<String> users = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
-            String memberidstr = ListToStringUtil.listToString(users);
+            List<String> users = new ArrayList<>();
+            String memberidstr = "";
 
             if ("1".equals(qkjvipMemberMessage.getCategoryType())) {  //活动
                 //TODO
             } else if ("2".equals(qkjvipMemberMessage.getCategoryType())) {  //积分
+                QkjvipMemberIntegralEntity qkjvipMemberIntegral = new QkjvipMemberIntegralEntity();
+                qkjvipMemberIntegral.setSendStatus(2); //状态修改为通知已发送
+                qkjvipMemberIntegral.setId(qkjvipMemberMessage.getCategoryId());
+                qkjvipMemberIntegralService.updateStatus(qkjvipMemberIntegral);
+
+                users = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
+                memberidstr = ListToStringUtil.listToString(users);
+
                 if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信
                     map.clear();
                     map.put("integralId", qkjvipMemberMessage.getCategoryId());
@@ -227,10 +236,6 @@ public class QkjvipMemberMessageController extends AbstractController {
                         }
                     }
                 }
-                QkjvipMemberIntegralEntity qkjvipMemberIntegral = new QkjvipMemberIntegralEntity();
-                qkjvipMemberIntegral.setSendStatus(2); //状态修改为通知已发送
-                qkjvipMemberIntegral.setId(qkjvipMemberMessage.getCategoryId());
-                qkjvipMemberIntegralService.updateStatus(qkjvipMemberIntegral);
             } else if ("3".equals(qkjvipMemberMessage.getCategoryType())) {  //优惠券
                 //TODO
             }
