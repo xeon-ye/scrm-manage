@@ -170,7 +170,6 @@ public class QkjvipMemberMessageController extends AbstractController {
             List<QrtzMemberFansEntity> fansList = new ArrayList<>();
             if (qkjvipMemberMessage.getCategoryType() != null) {
                 if ("1".equals(qkjvipMemberMessage.getCategoryType())) {  //活动
-                    //TODO
                     List<String> integralusers = new ArrayList<>();
                     integralusers = qkjvipMemberActivitymbsService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
                     userStr = ListToStringUtil.listToString(integralusers);
@@ -179,7 +178,6 @@ public class QkjvipMemberMessageController extends AbstractController {
                     integralusers = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
                     userStr = ListToStringUtil.listToString(integralusers);
                 } else if ("3".equals(qkjvipMemberMessage.getCategoryType())) {  //优惠券
-                    //TODO
                     List<String> integralusers = new ArrayList<>();
                     integralusers = qkjvipMemberCponsonService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
                     userStr = ListToStringUtil.listToString(integralusers);
@@ -223,7 +221,6 @@ public class QkjvipMemberMessageController extends AbstractController {
             String memberidstr = "";
 
             if ("1".equals(qkjvipMemberMessage.getCategoryType())) {  //活动
-                //TODO
                 users = qkjvipMemberActivitymbsService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
                 memberidstr = ListToStringUtil.listToString(users);
                 if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信
@@ -264,7 +261,6 @@ public class QkjvipMemberMessageController extends AbstractController {
                     }
                 }
             } else if ("3".equals(qkjvipMemberMessage.getCategoryType())) {  //优惠券
-                //TODO
                 QkjvipMemberCponEntity qkjvipMemberCpon=new QkjvipMemberCponEntity();
                 qkjvipMemberCpon = qkjvipMemberCponService.getById(qkjvipMemberMessage.getCategoryId());
                 qkjvipMemberCpon.setStatus(2);
@@ -289,6 +285,9 @@ public class QkjvipMemberMessageController extends AbstractController {
 
             }
 
+            qkjvipMemberMessage.setAddUser(getUserId());
+            qkjvipMemberMessage.setAddDept(getOrgNo());
+            qkjvipMemberMessage.setAddTime(new Date());
             qkjvipMemberMessageService.add(qkjvipMemberMessage);  //保存发放记录
             map.clear();
             map.put("appidstr", appidstr);
