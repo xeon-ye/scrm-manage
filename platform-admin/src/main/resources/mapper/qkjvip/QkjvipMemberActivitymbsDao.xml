@@ -61,4 +61,9 @@
     <delete id="deleteBatchByOrder">
         DELETE FROM QKJVIP_MEMBER_ACTIVITYMBS WHERE ACTIVITY_ID = #{activityId}
     </delete>
+
+    <select id="queryByIntegralId" resultType="string">
+        SELECT MEMBER_ID FROM QKJVIP_MEMBER_ACTIVITYMBS
+        WHERE ACTIVITY_ID = #{value}
+    </select>
 </mapper>

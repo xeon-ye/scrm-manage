@@ -173,59 +173,25 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
      */
     @SysLog("新增")
     @RequestMapping("/savesign")
-    public RestResponse savesign(@RequestBody QkjvipMemberSignupmemberEntity qkjvipMemberSignupmember) {
+    public RestResponse savesign(@RequestBody QkjvipMemberSignupmemberEntity qkjvipMemberSignupmember) throws IOException {
         // 清洗会员(微信id有则不清洗,无清洗)
-        MemberEntity member = new MemberEntity();
+
         Map<String, Object> params=new HashMap<>();
-        String openid="ojipzwPJcEk0DG2Hn6CAjW2pDGYA";//模拟的微信id
-        String mobile="18810242427";//模拟的手机号
-        List<MemberEntity> ms=new ArrayList<>();
-        params.put("openid",openid);
-        ms=memberService.queryAll(params);
-        if(ms.size()>0){//有此会员
-            if(ms.get(0).getMobile()==null){//补充手机号
-                MemberEntity newM=new MemberEntity();
-                newM=ms.get(0);
-                newM.setMobile(mobile);
-                params.clear();
-                memberService.update(newM,params);
-            }
-            member=ms.get(0);
-        }else{
-            //查询活动
-            params.clear();
-            params.put("id",qkjvipMemberSignupmember.getActivityId());
-            List<QkjvipMemberActivityEntity> list =qkjvipMemberActivityService.queryAll(params);
-            if(list.size()>0){
-                QkjvipMemberActivityEntity newa=new QkjvipMemberActivityEntity();
-                //清洗会员
-                newa=list.get(0);
-                QkjvipMemberImportEntity memberImport=new QkjvipMemberImportEntity();
-                memberImport.setAddUser(newa.getAdduser());
-                memberImport.setAddDept(newa.getAdddept());
-                memberImport.setOrgUserid(newa.getAdduser());
-                memberImport.setOrgNo(newa.getAdddept());
-                memberImport.setAddTime(new Date());
-                memberImport.setOfflineflag(2);
-                memberImport.setMemberName("微信昵称");
-                memberImport.setMobile("手机号");
-                qkjvipMemberImportService.add(memberImport);  //将数据保存到中间表
+        String openid=qkjvipMemberSignupmember.getOpenId();//模拟的微信id
+        String mobile=qkjvipMemberSignupmember.getMobile();//模拟的手机号
 
-                //调用数据清洗接口
-                try {
-                    Object obj = JSONArray.toJSON(memberImport);
-                    String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
-                    String resultPost = HttpClient.sendPost(Vars.MEMBER_ADD_URL, memberJsonStr);
-                    //插入会员标签
-                    JSONObject resultObject = JSON.parseObject(resultPost);
-                    member.setMemberId(resultObject.get("memberid").toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        MemberEntity member = new MemberEntity();
+        member.setMobile(mobile);
+        member.setMemberId(qkjvipMemberSignupmember.getMemberId());
+        //修改此会员手机号
+        if(qkjvipMemberSignupmember!=null&&qkjvipMemberSignupmember.getIsphone()!=null&&qkjvipMemberSignupmember.getIsphone()==1){
+            Object obj = JSONArray.toJSON(member);
+            String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+            String resultPost = HttpClient.sendPost(Vars.MEMBER_UPDATE_URL, memberJsonStr);
+            JSONObject resultObject = JSON.parseObject(resultPost);
+            if (!"200".equals(resultObject.get("resultcode").toString())) {  //修改手机号成功
             }
-
         }
-
         //是否已签到
         params.clear();
         params.put("memberId",member.getMemberId());

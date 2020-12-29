@@ -111,4 +111,9 @@ public class QkjvipMemberActivitymbsServiceImpl extends ServiceImpl<QkjvipMember
             this.add(m);
         }
     }
+
+    @Override
+    public List<String> queryByIntegralId(String integralId) {
+        return baseMapper.queryByIntegralId(integralId);
+    }
 }

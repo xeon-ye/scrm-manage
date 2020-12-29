@@ -59,6 +59,8 @@ public class QkjvipMemberMessageController extends AbstractController {
     private QkjvipMemberCponsonService qkjvipMemberCponsonService;
     @Autowired
     private QkjvipMemberCponService qkjvipMemberCponService;
+    @Autowired
+    private QkjvipMemberActivitymbsService qkjvipMemberActivitymbsService;
 
     /**
      * 查看所有列表
@@ -169,6 +171,9 @@ public class QkjvipMemberMessageController extends AbstractController {
             if (qkjvipMemberMessage.getCategoryType() != null) {
                 if ("1".equals(qkjvipMemberMessage.getCategoryType())) {  //活动
                     //TODO
+                    List<String> integralusers = new ArrayList<>();
+                    integralusers = qkjvipMemberActivitymbsService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
+                    userStr = ListToStringUtil.listToString(integralusers);
                 } else if ("2".equals(qkjvipMemberMessage.getCategoryType())) {  //积分
                     List<String> integralusers = new ArrayList<>();
                     integralusers = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
@@ -219,6 +224,23 @@ public class QkjvipMemberMessageController extends AbstractController {
 
             if ("1".equals(qkjvipMemberMessage.getCategoryType())) {  //活动
                 //TODO
+                users = qkjvipMemberActivitymbsService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
+                memberidstr = ListToStringUtil.listToString(users);
+                if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信
+                    //查询所有邀约人员
+                    List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
+                    map.clear();
+                    map.put("activityId",qkjvipMemberMessage.getCategoryId());
+                    mbs=qkjvipMemberActivitymbsService.queryAll(map);
+                    if(mbs.size()>0){
+                        for(QkjvipMemberActivitymbsEntity a:mbs){
+                            if(a!=null&&a.getMobile()!=null&&!a.getMobile().equals("")){
+                                //发短信
+                                this.sendMobileMsg(qkjvipMemberMessage.getContent(), a.getMobile());
+                            }
+                        }
+                    }
+                }
             } else if ("2".equals(qkjvipMemberMessage.getCategoryType())) {  //积分
                 QkjvipMemberIntegralEntity qkjvipMemberIntegral = new QkjvipMemberIntegralEntity();
                 qkjvipMemberIntegral.setSendStatus(2); //状态修改为通知已发送

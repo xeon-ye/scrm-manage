@@ -93,4 +93,12 @@ public interface QkjvipMemberActivitymbsService extends IService<QkjvipMemberAct
     int deleteBatchByOrder(String activityId);
 
     void supadd(String activity,String member_id);
+    /**
+     * 查询所有列表
+     *
+     * @param integralId 查询参数
+     * @return List
+     */
+    List<String> queryByIntegralId(String integralId);
+
 }

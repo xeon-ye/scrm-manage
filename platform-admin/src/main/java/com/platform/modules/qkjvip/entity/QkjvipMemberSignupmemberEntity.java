@@ -52,4 +52,11 @@ public class QkjvipMemberSignupmemberEntity implements Serializable {
 
     @TableField(exist = false)
     private List<QkjvipMemberActivitymbsEntity> memlist;
+    @TableField(exist = false)
+    private String openId;
+    @TableField(exist = false)
+    private String mobile;
+    @TableField(exist = false)
+    private Integer isphone;//是否修改手机号1修改
+
 }

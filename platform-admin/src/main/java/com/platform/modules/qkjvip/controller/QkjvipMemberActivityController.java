@@ -191,7 +191,7 @@ public class QkjvipMemberActivityController extends AbstractController {
         if(qkjvipMemberActivity.getIssign()!=null&&qkjvipMemberActivity.getIssign().equals(1)&&qkjvipMemberActivity.getHtmlurl()!=null){
             try{
                 String htmlur=qkjvipMemberActivity.getHtmlurl().substring(0,qkjvipMemberActivity.getHtmlurl().indexOf("#"));
-                String url= QRCodeUtil.createQrCode(htmlur+"#/signmember?activityid="+qkjvipMemberActivity.getId(),90,".jpg");
+                String url= QRCodeUtil.createQrCode(htmlur+"#/signmember?activityid="+qkjvipMemberActivity.getId(),120,".jpg");
                 qkjvipMemberActivity.setIssignimg(url);
             }catch (IOException e){
 
@@ -239,11 +239,11 @@ public class QkjvipMemberActivityController extends AbstractController {
             //String erweima=QRCodeUtil.getBase64QRCode("https://www.baidu.com/");
             try{
                 String htmlur=qkjvipMemberActivity.getHtmlurl().substring(0,qkjvipMemberActivity.getHtmlurl().indexOf("#"));
-                String redirect_uri = URLEncoder.encode("http://www.baidu.com", "GBK");
-                String wxurl="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7d6749694e2f73b7&redirect_uri=http://zzjx.qkj.com.cn&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
-
-                String url= QRCodeUtil.createQrCode(wxurl,90,".jpg");
-                //String url= QRCodeUtil.createQrCode(htmlur+"#/signmember?activityid="+qkjvipMemberActivity.getId(),90,".jpg");
+//                String redirect_uri = URLEncoder.encode("http://www.baidu.com", "GBK");
+//                String wxurl="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7d6749694e2f73b7&redirect_uri=http://zzjx.qkj.com.cn&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
+//
+//                String url= QRCodeUtil.createQrCode(wxurl,90,".jpg");
+                String url= QRCodeUtil.createQrCode(htmlur+"#/signmember?activityid="+qkjvipMemberActivity.getId(),120,".jpg");
                 qkjvipMemberActivity.setIssignimg(url);
             }catch (IOException e){
 
