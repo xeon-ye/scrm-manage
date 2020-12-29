@@ -22,6 +22,8 @@ import com.platform.modules.qkjvip.entity.MemberTagsQueryEntity;
 import com.platform.modules.qkjvip.entity.QkjvipTaglibsEntity;
 import com.platform.modules.qkjvip.service.MemberTagsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.*;
 
 /**
@@ -39,6 +41,7 @@ public class MemberTagsServiceImpl extends ServiceImpl<MemberTagsDao, MemberTags
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void saveOrUpdate(MemberEntity member) {
         Map<String, Object> map = new HashMap<>(2);
         map.put("memberId", member.getMemberId());
@@ -160,6 +163,7 @@ public class MemberTagsServiceImpl extends ServiceImpl<MemberTagsDao, MemberTags
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteBatch(String[] memberIds) {
         return baseMapper.deleteBatch(memberIds);
     }

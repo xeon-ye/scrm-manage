@@ -302,12 +302,9 @@ public class QkjvipMemberMessageController extends AbstractController {
     public void sendWxMsg(QkjvipMemberMessageEntity qkjvipMemberMessage, List<QrtzMemberFansEntity> fansList) throws IOException {
         QkjvipMemberIntegralEntity qkjvipMemberIntegral = new QkjvipMemberIntegralEntity();
         Map map = new HashMap();
-        StringBuilder param = new StringBuilder();
-        param.append("<a href='{site}?appid={appid}&callback=");
-        param.append(URLEncoder.encode(qkjvipMemberMessage.getUrl(), "UTF-8"));
-        param.append("'></a>");
-        String content = qkjvipMemberMessage.getContent().replace("<Link>", param.toString());
-        map.put("content", content);
+        map.put("title", qkjvipMemberMessage.getTitle());
+        map.put("url", qkjvipMemberMessage.getUrl());
+        map.put("content", qkjvipMemberMessage.getContent());
         String[] appidAttr = qkjvipMemberMessage.getChannels().split(",");
         Map sonMap = new HashMap();
         List<String> Openids = new ArrayList<>();

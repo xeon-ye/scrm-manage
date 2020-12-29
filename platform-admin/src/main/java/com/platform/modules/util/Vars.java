@@ -26,6 +26,8 @@ public class Vars {
 	//数据清洗url start
 	public static String MEMBER_ADD_URL = "http://api.scrm.qkj.com.cn/api/Member/AddMember";
 	public static String MEMBER_IMPORT_URL = "http://api.scrm.qkj.com.cn/api/Member/BatchImportMember";
+	public static String MEMBER_UPDATE_URL = "http://api.scrm.qkj.com.cn/api/Member/UpdateMember";
+	public static String MEMBER_DELETE_URL = "http://api.scrm.qkj.com.cn/api/Member/DeleteMemberList";
 	//数据清洗url end
 	//会员检索url start
 	public static String MEMBER_GETLIST_URL = "http://api.scrm.qkj.com.cn/api/Member/GetMemberList";

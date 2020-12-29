@@ -26,16 +26,11 @@ import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.qkjvip.service.*;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysDictEntity;
-import com.platform.modules.sys.entity.SysUserChannelEntity;
 import com.platform.modules.sys.service.SysDictService;
 import com.platform.modules.sys.service.SysRoleOrgService;
 import com.platform.modules.sys.service.SysUserChannelService;
-import com.platform.modules.util.ExcelSelectListUtil;
-import com.platform.modules.util.ExportExcelUtils;
-import com.platform.modules.util.HttpClient;
-import com.platform.modules.util.Vars;
+import com.platform.modules.util.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -223,19 +218,11 @@ public class MemberController extends AbstractController {
     @SysLog("修改用户")
     @PostMapping("/update")
     @RequiresPermissions("qkjvip:member:update")
-    public RestResponse update(@RequestBody MemberEntity member) {
+    public RestResponse update(@RequestBody MemberEntity member) throws IOException {
         ValidatorUtils.validateEntity(member);
-
         Map<String, Object> params = new HashMap<>(2);
         params.put("dataScope", getDataScope());
-        MemberEntity oldStaff = memberService.getById(member.getMemberId());
-        if (!member.equals(oldStaff)) {
-            member.setStatusflag(2);
-        }
         memberService.update(member, params);
-        //修改会员标签
-        memberTagsService.saveOrUpdate(member);
-
         return RestResponse.success().put("member", member);
     }
 
@@ -248,10 +235,8 @@ public class MemberController extends AbstractController {
     @SysLog("删除用户")
     @PostMapping("/delete")
     @RequiresPermissions("qkjvip:member:delete")
-    public RestResponse delete(@RequestBody String[] memberIds) {
+    public RestResponse delete(@RequestBody String[] memberIds) throws IOException {
         memberService.deleteBatch(memberIds);
-        //同时删除会员对应的标签
-        memberTagsService.deleteBatch(memberIds);
         return RestResponse.success();
     }
 

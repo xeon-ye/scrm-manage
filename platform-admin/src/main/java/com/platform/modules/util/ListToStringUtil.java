@@ -34,4 +34,17 @@ public class ListToStringUtil {
         }
         return resultStr;
     }
+
+    public static String attrToString(String[] attrStr) {
+        StringBuffer sb = new StringBuffer();
+        String resultStr = "";
+        if (attrStr.length > 0) {
+            for (int i = 0; i < attrStr.length; i++) {
+                sb.append(attrStr[i] + ",");
+            }
+            resultStr = sb.toString();
+            resultStr = resultStr.substring(0, resultStr.length() - 1);
+        }
+        return resultStr;
+    }
 }

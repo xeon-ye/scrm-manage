@@ -11,6 +11,7 @@
         T.CHANNELS,
         T.CONTENT,
         T.URL,
+        T.TITLE,
         T.ADD_USER,
         T.ADD_DEPT,
         T.ADD_TIME

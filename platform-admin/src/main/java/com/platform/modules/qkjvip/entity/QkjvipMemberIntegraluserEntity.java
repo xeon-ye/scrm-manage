@@ -44,7 +44,7 @@ public class QkjvipMemberIntegraluserEntity implements Serializable {
     private String memberId;
 
     @TableField(exist = false)
-    private String memberNname;
+    private String memberName;
     @TableField(exist = false)
     private String realName;
     @TableField(exist = false)

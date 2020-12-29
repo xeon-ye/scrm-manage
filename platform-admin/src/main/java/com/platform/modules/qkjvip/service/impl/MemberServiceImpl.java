@@ -10,6 +10,10 @@
  */
 package com.platform.modules.qkjvip.service.impl;
 
+import cn.emay.util.JsonHelper;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.platform.common.utils.Query;
@@ -17,10 +21,18 @@ import com.platform.modules.pageCont.pageCount;
 import com.platform.modules.qkjvip.dao.MemberDao;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.service.MemberService;
+import com.platform.modules.qkjvip.service.MemberTagsService;
+import com.platform.modules.util.HttpClient;
+import com.platform.modules.util.ListToStringUtil;
+import com.platform.modules.util.Vars;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +43,9 @@ import java.util.Map;
 
 @Service("memberService")
 public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> implements MemberService {
+
+    @Autowired
+    private MemberTagsService memberTagsService;
 
     @Override
     public List<MemberEntity> queryAll(Map<String, Object> params) {
@@ -73,20 +88,57 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void addBatch(List<MemberEntity> mList) {
         this.saveBatch(mList);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void update(MemberEntity member, Map<String, Object> params) {
-        this.updateById(member);
+        try {
+            //修改会员标签
+            memberTagsService.saveOrUpdate(member);  //先调用修改标签逻辑是避免调接口成功我这边失败时无法回滚接口那边的数据的问题
+            MemberEntity oldStaff = this.getById(member.getMemberId());
+            if (!member.equals(oldStaff)) {  // 不相等证明有修改
+                member.setStatusflag(2);   // 锁住
+                Object obj = JSONArray.toJSON(member);
+                String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+                String resultPost = HttpClient.sendPost(Vars.MEMBER_UPDATE_URL, memberJsonStr);
+                JSONObject resultObject = JSON.parseObject(resultPost);
+                if (!"200".equals(resultObject.get("resultcode").toString())) {  //修改成功
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+//        this.updateById(member);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteBatch(String[] memberIds) {
 //        this.removeByIds(Arrays.asList(memberIds));
-        baseMapper.removeByIds(memberIds);  //逻辑删除
+//        baseMapper.removeByIds(memberIds);  //逻辑删除
+        try {
+            //同时删除会员对应的标签
+            memberTagsService.deleteBatch(memberIds);
+            Map map = new HashMap();
+            map.put("listmemberid", ListToStringUtil.attrToString(memberIds));
+            map.put("remark", "删除会员");
+            Object obj = JSONArray.toJSON(map);
+            String memberJsonStr = JsonHelper.toJsonString(obj);
+            String resultPost = HttpClient.sendPost(Vars.MEMBER_DELETE_URL, memberJsonStr);
+            JSONObject resultObject = JSON.parseObject(resultPost);
+            if (!"200".equals(resultObject.get("resultcode").toString())) {  //删除成功
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
     }
 
 
