@@ -46,4 +46,5 @@ public interface QkjvipMemberCponsonDao extends BaseMapper<QkjvipMemberCponsonEn
      */
     List<QkjvipMemberCponsonEntity> selectQkjvipMemberCponsonPage(IPage page, @Param("params") Map<String, Object> params);
     int deleteBatchByOrder(String mainid);
+    List<String> queryByIntegralId(String integralId);
 }

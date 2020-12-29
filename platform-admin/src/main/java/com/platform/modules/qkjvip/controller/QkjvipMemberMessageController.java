@@ -19,12 +19,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
 import com.platform.modules.qkjvip.entity.*;
-import com.platform.modules.qkjvip.service.QkjvipMemberIntegralService;
-import com.platform.modules.qkjvip.service.QkjvipMemberIntegraluserService;
+import com.platform.modules.qkjvip.service.*;
 import com.platform.modules.quartz.entity.QrtzMemberFansEntity;
 import com.platform.modules.quartz.service.QrtzMemberFansService;
 import com.platform.modules.sys.controller.AbstractController;
-import com.platform.modules.qkjvip.service.QkjvipMemberMessageService;
 import com.platform.modules.sys.entity.SysSmsLogEntity;
 import com.platform.modules.sys.service.SysSmsLogService;
 import com.platform.modules.util.HttpClient;
@@ -57,6 +55,10 @@ public class QkjvipMemberMessageController extends AbstractController {
     private SysSmsLogService sysSmsLogService;
     @Autowired
     private QkjvipMemberIntegralService qkjvipMemberIntegralService;
+    @Autowired
+    private QkjvipMemberCponsonService qkjvipMemberCponsonService;
+    @Autowired
+    private QkjvipMemberCponService qkjvipMemberCponService;
 
     /**
      * 查看所有列表
@@ -173,6 +175,9 @@ public class QkjvipMemberMessageController extends AbstractController {
                     userStr = ListToStringUtil.listToString(integralusers);
                 } else if ("3".equals(qkjvipMemberMessage.getCategoryType())) {  //优惠券
                     //TODO
+                    List<String> integralusers = new ArrayList<>();
+                    integralusers = qkjvipMemberCponsonService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
+                    userStr = ListToStringUtil.listToString(integralusers);
                 }
                 if (!"".equals(userStr)) {
                     fansList = qrtzMemberFansService.queryByMemberIdStr(userStr);
@@ -238,6 +243,28 @@ public class QkjvipMemberMessageController extends AbstractController {
                 }
             } else if ("3".equals(qkjvipMemberMessage.getCategoryType())) {  //优惠券
                 //TODO
+                QkjvipMemberCponEntity qkjvipMemberCpon=new QkjvipMemberCponEntity();
+                qkjvipMemberCpon = qkjvipMemberCponService.getById(qkjvipMemberMessage.getCategoryId());
+                qkjvipMemberCpon.setStatus(2);
+                qkjvipMemberCponService.update(qkjvipMemberCpon);
+
+                users = qkjvipMemberCponsonService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
+                memberidstr = ListToStringUtil.listToString(users);
+
+                if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信
+                    map.clear();
+                    map.put("mainId", qkjvipMemberMessage.getCategoryId());
+                    List<QkjvipMemberCponsonEntity> integralusers = new ArrayList<>();
+                    integralusers = qkjvipMemberCponsonService.queryAll(map);
+
+                    //群发发短信
+                    for(QkjvipMemberCponsonEntity integraluser : integralusers){
+                        if(integraluser != null && integraluser.getMobile() != null && !integraluser.getMobile().equals("")){
+                            this.sendMobileMsg(qkjvipMemberMessage.getContent(), integraluser.getMobile());
+                        }
+                    }
+                }
+
             }
 
             qkjvipMemberMessageService.add(qkjvipMemberMessage);  //保存发放记录

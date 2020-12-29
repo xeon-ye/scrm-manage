@@ -90,4 +90,12 @@ public interface QkjvipMemberCponsonService extends IService<QkjvipMemberCponson
     boolean deleteBatch(String[] ids);
 
     int deleteBatchByOrder(String mainid);
+
+    /**
+     * 查询所有列表
+     *
+     * @param integralId 查询参数
+     * @return List
+     */
+    List<String> queryByIntegralId(String integralId);
 }

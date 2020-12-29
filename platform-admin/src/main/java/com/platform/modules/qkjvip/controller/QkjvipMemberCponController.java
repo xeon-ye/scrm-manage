@@ -14,7 +14,6 @@ package com.platform.modules.qkjvip.controller;
 import cn.emay.util.DateUtil;
 import cn.emay.util.JsonHelper;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
@@ -198,16 +197,15 @@ public class QkjvipMemberCponController extends AbstractController {
                 cols_title[i] = new String(sonlists.get(i).getMemberId());
             }
         }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("couponid", Integer.parseInt(qkjvipMemberCpon.getCponid()));
+        jsonObject.put("listmemberid", cols_title);
+        jsonObject.put("remark", "");
+        String memberJsonStr = JsonHelper.toJsonString(jsonObject);
 
-        map.clear();
-        map.put("couponid", qkjvipMemberCpon.getCponid());
-        map.put("listmemberid", cols_title);
-        map.put("remark", "");
-        Object obj = JSONArray.toJSON(map);
-
-        String resultPost = HttpClient.sendPost(Vars.MEMBER_CPON_SEND_URl, JsonHelper.toJsonString(obj));
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_CPON_SEND_URl,memberJsonStr);
         JSONObject resultObject = JSON.parseObject(resultPost);
-        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //成功
             qkjvipMemberCpon.setStatus(1);//修改为已发放
             qkjvipMemberCponService.update(qkjvipMemberCpon);
             return RestResponse.success();

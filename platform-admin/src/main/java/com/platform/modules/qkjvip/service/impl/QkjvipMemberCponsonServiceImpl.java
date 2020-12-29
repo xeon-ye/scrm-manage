@@ -84,4 +84,10 @@ public class QkjvipMemberCponsonServiceImpl extends ServiceImpl<QkjvipMemberCpon
     public int deleteBatchByOrder(String mainid) {
         return baseMapper.deleteBatchByOrder(mainid);
     }
+    @Override
+    public List<String> queryByIntegralId(String integralId) {
+        return baseMapper.queryByIntegralId(integralId);
+    }
+
+
 }

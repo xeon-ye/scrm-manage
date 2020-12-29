@@ -34,4 +34,8 @@
     <delete id="deleteBatchByOrder">
         DELETE FROM QKJVIP_MEMBER_CPONSON WHERE main_id = #{mainid}
     </delete>
+    <select id="queryByIntegralId" resultType="string">
+        SELECT MEMBER_ID FROM QKJVIP_MEMBER_CPONSON
+        WHERE MAIN_ID = #{value}
+    </select>
 </mapper>
