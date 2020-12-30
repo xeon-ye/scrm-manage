@@ -117,6 +117,7 @@ public class QkjvipMemberSignupController extends AbstractController {
             memberImport.setAddDept(qkjvipMemberSignup.getMemadddept());
             memberImport.setOrgUserid(qkjvipMemberSignup.getMemadduser());
             memberImport.setOrgNo(qkjvipMemberSignup.getMemadddept());
+            memberImport.setOpenid(qkjvipMemberSignup.getOpenid());
             memberImport.setAddTime(new Date());
             memberImport.setOfflineflag(2);
             memberImport.setMemberName(qkjvipMemberSignup.getUserName());

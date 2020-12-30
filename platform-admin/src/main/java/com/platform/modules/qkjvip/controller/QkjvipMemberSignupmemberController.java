@@ -213,6 +213,7 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
             qkjvipMemberSignupmember.setTime(date2);
             qkjvipMemberSignupmember.setSignupId(bmid);
             qkjvipMemberSignupmemberService.add(qkjvipMemberSignupmember);
+            System.out.println("签到成功活动id："+qkjvipMemberSignupmember.getActivityId());
         }
 
         return RestResponse.success();
