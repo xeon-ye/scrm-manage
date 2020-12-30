@@ -53,6 +53,7 @@ public class QkjvipMemberMessageEntity implements Serializable {
     /**
      * 内容
      */
+    @NotBlank(message = "内容不可为空", groups = {AddGroup.class, UpdateGroup.class})
     private String content;
     /**
      * url
@@ -61,6 +62,7 @@ public class QkjvipMemberMessageEntity implements Serializable {
     /**
      * title
      */
+    @NotBlank(message = "标题不可为空", groups = {AddGroup.class, UpdateGroup.class})
     private String title;
     /**
      * add_user
