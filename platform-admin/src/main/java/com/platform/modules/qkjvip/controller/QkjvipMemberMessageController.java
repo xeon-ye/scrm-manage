@@ -30,6 +30,7 @@ import com.platform.modules.util.ListToStringUtil;
 import com.platform.modules.util.Vars;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -211,6 +212,7 @@ public class QkjvipMemberMessageController extends AbstractController {
      * @return RestResponse
      */
     @PostMapping("/sendMsg")
+    @Transactional(rollbackFor = Exception.class)
     public RestResponse sendMsg(@RequestBody QkjvipMemberMessageEntity qkjvipMemberMessage) throws IOException {
         Map map = new HashMap();
         List<QrtzMemberFansEntity> fansList = new ArrayList<>();
@@ -294,7 +296,7 @@ public class QkjvipMemberMessageController extends AbstractController {
             map.put("memberidstr", memberidstr);
             fansList = qrtzMemberFansService.queryAll(map);
             //调用赵月辉接口
-            this.sendWxMsg(qkjvipMemberMessage, fansList);
+//            this.sendWxMsg(qkjvipMemberMessage, fansList);
         }
 
         return RestResponse.success();
@@ -320,6 +322,7 @@ public class QkjvipMemberMessageController extends AbstractController {
      * @param qkjvipMemberMessage
      * @param fansList 微信用户列表
      */
+    @Transactional(rollbackFor = Exception.class)
     public void sendWxMsg(QkjvipMemberMessageEntity qkjvipMemberMessage, List<QrtzMemberFansEntity> fansList) throws IOException {
         QkjvipMemberIntegralEntity qkjvipMemberIntegral = new QkjvipMemberIntegralEntity();
         Map map = new HashMap();

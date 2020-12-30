@@ -95,48 +95,38 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(MemberEntity member, Map<String, Object> params) {
-        try {
-            //修改会员标签
-            memberTagsService.saveOrUpdate(member);  //先调用修改标签逻辑是避免调接口成功我这边失败时无法回滚接口那边的数据的问题
-            MemberEntity oldStaff = this.getById(member.getMemberId());
-            if (!member.equals(oldStaff)) {  // 不相等证明有修改
-                member.setStatusflag(2);   // 锁住
-                Object obj = JSONArray.toJSON(member);
-                String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
-                String resultPost = HttpClient.sendPost(Vars.MEMBER_UPDATE_URL, memberJsonStr);
-                JSONObject resultObject = JSON.parseObject(resultPost);
-                if (!"200".equals(resultObject.get("resultcode").toString())) {  //修改成功
-                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                }
+    public void update(MemberEntity member, Map<String, Object> params) throws IOException {
+        //修改会员标签
+        memberTagsService.saveOrUpdate(member);  //先调用修改标签逻辑是避免调接口成功我这边失败时无法回滚接口那边的数据的问题
+        MemberEntity oldStaff = this.getById(member.getMemberId());
+        if (!member.equals(oldStaff)) {  // 不相等证明有修改
+            member.setStatusflag(2);   // 锁住
+            Object obj = JSONArray.toJSON(member);
+            String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+            String resultPost = HttpClient.sendPost(Vars.MEMBER_UPDATE_URL, memberJsonStr);
+            JSONObject resultObject = JSON.parseObject(resultPost);
+            if (!"200".equals(resultObject.get("resultcode").toString())) {  //修改不成功
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
 //        this.updateById(member);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteBatch(String[] memberIds) {
+    public void deleteBatch(String[] memberIds) throws IOException {
 //        this.removeByIds(Arrays.asList(memberIds));
 //        baseMapper.removeByIds(memberIds);  //逻辑删除
-        try {
-            //同时删除会员对应的标签
-            memberTagsService.deleteBatch(memberIds);
-            Map map = new HashMap();
-            map.put("listmemberid", ListToStringUtil.attrToString(memberIds));
-            map.put("remark", "删除会员");
-            Object obj = JSONArray.toJSON(map);
-            String memberJsonStr = JsonHelper.toJsonString(obj);
-            String resultPost = HttpClient.sendPost(Vars.MEMBER_DELETE_URL, memberJsonStr);
-            JSONObject resultObject = JSON.parseObject(resultPost);
-            if (!"200".equals(resultObject.get("resultcode").toString())) {  //删除成功
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        //同时删除会员对应的标签
+        memberTagsService.deleteBatch(memberIds);
+        Map map = new HashMap();
+        map.put("listmemberid", ListToStringUtil.attrToString(memberIds, ","));
+        map.put("remark", "删除会员");
+        Object obj = JSONArray.toJSON(map);
+        String memberJsonStr = JsonHelper.toJsonString(obj);
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_DELETE_URL, memberJsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if (!"200".equals(resultObject.get("resultcode").toString())) {  //删除不成功
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
     }

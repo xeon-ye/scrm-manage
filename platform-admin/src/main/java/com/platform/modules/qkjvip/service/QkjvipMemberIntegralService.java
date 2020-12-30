@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.platform.modules.qkjvip.entity.QkjvipMemberIntegralEntity;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +49,7 @@ public interface QkjvipMemberIntegralService extends IService<QkjvipMemberIntegr
      * @param qkjvipMemberIntegral 
      * @return 新增结果
      */
-    boolean add(QkjvipMemberIntegralEntity qkjvipMemberIntegral);
+    void add(QkjvipMemberIntegralEntity qkjvipMemberIntegral);
 
     /**
      * 根据主键更新
@@ -56,9 +57,11 @@ public interface QkjvipMemberIntegralService extends IService<QkjvipMemberIntegr
      * @param qkjvipMemberIntegral 
      * @return 更新结果
      */
-    boolean update(QkjvipMemberIntegralEntity qkjvipMemberIntegral);
+    void update(QkjvipMemberIntegralEntity qkjvipMemberIntegral);
 
     void updateStatus(QkjvipMemberIntegralEntity qkjvipMemberIntegral);
+
+    void sendIntegral(QkjvipMemberIntegralEntity qkjvipMemberIntegral, List<String> memberids) throws IOException;
 
     /**
      * 根据主键删除
@@ -74,5 +77,5 @@ public interface QkjvipMemberIntegralService extends IService<QkjvipMemberIntegr
      * @param ids ids
      * @return 删除结果
      */
-    boolean deleteBatch(String[] ids);
+    void deleteBatch(String[] ids);
 }
