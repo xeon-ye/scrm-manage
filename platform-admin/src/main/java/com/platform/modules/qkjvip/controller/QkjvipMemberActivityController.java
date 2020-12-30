@@ -109,7 +109,7 @@ public class QkjvipMemberActivityController extends AbstractController {
                 System.out.println(province);
                 params.put("memberIdSignAddress",city);
             }
-            list = qkjvipMemberActivityService.queryAll(params);
+            list = qkjvipMemberActivityService.queryAllSignAddress(params);
         }catch (IOException e){
 
         }

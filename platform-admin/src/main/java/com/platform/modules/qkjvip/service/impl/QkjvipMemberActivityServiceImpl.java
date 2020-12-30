@@ -39,6 +39,11 @@ public class QkjvipMemberActivityServiceImpl extends ServiceImpl<QkjvipMemberAct
     }
 
     @Override
+    public List<QkjvipMemberActivityEntity> queryAllSignAddress(Map<String, Object> params) {
+        return baseMapper.queryAllSignAddress(params);
+    }
+
+    @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
         params.put("sidx", "T.id");

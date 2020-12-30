@@ -36,6 +36,7 @@ public interface QkjvipMemberActivityDao extends BaseMapper<QkjvipMemberActivity
      * @return List
      */
     List<QkjvipMemberActivityEntity> queryAll(@Param("params") Map<String, Object> params);
+    List<QkjvipMemberActivityEntity> queryAllSignAddress(@Param("params") Map<String, Object> params);
 
     /**
      * 自定义分页查询
