@@ -81,4 +81,6 @@ public class QkjvipMemberActivityEntity implements Serializable {
     private String url;
     @TableField(exist = false)
     private String msgcontent;
+    @TableField(exist = false)
+    private Integer istake;
 }

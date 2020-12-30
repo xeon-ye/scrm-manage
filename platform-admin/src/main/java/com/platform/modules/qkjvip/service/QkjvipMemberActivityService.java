@@ -34,6 +34,8 @@ public interface QkjvipMemberActivityService extends IService<QkjvipMemberActivi
      */
     List<QkjvipMemberActivityEntity> queryAll(Map<String, Object> params);
 
+    List<QkjvipMemberActivityEntity> queryAllSignAddress(Map<String, Object> params);
+
     /**
      * 分页查询
      *
