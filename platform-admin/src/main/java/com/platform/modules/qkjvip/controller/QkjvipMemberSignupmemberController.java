@@ -133,7 +133,7 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
                     //添加签到
                     if(bmid!=""){
                         Date date=new Date();
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String date2=sdf.format(date);
                         qkjvipMemberSignupmember.setMemberId(mems.getMemberId());
                         qkjvipMemberSignupmember.setTime(date2);
@@ -207,7 +207,7 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
             String bmid=qkjvipMemberSignupService.supadd(qkjvipMemberSignupmember.getActivityId(),member.getMemberId());
             //添加签到
             Date date=new Date();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String date2=sdf.format(date);
             qkjvipMemberSignupmember.setMemberId(member.getMemberId());
             qkjvipMemberSignupmember.setTime(date2);

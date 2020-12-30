@@ -12,8 +12,11 @@
         <if test="params.phone != null and params.phone.trim() != ''">
             AND T.phone LIKE '${params.phone}'
         </if>
-        <if test="params.acitvityid != null and params.acitvityid.trim() != ''">
-            AND T.acitvity_id LIKE '${params.acitvityid}'
+        <if test="params.acitvityId != null and params.acitvityId.trim() != ''">
+            AND T.acitvity_id = '${params.acitvityId}'
+        </if>
+        <if test="params.memberid != null and params.memberid.trim() != ''">
+            AND t.memberid = '${params.memberid}'
         </if>
         <if test="params.userName != null and params.userName.trim() != ''">
             AND T.user_name LIKE '%${params.userName}%'

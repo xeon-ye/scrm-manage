@@ -80,7 +80,7 @@ public class QkjvipMemberSignupServiceImpl extends ServiceImpl<QkjvipMemberSignu
         //是否存在记录
         Map<String, Object> map=new HashMap<String,Object>();
         map.put("activityId",activity);
-        map.put("memberId",member_id);
+        map.put("memberid",member_id);
         List<QkjvipMemberSignupEntity> mbslist = new ArrayList<>();
         mbslist=this.queryAll(map);
         if(mbslist.size()<=0){//无报名
