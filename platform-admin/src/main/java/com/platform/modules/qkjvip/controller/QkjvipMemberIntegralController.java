@@ -108,9 +108,6 @@ public class QkjvipMemberIntegralController extends AbstractController {
         qkjvipMemberIntegral.setSendStatus(0);  //默认0
         qkjvipMemberIntegralService.add(qkjvipMemberIntegral);
 
-        //批量保存会员
-        this.saveIntegralUser(qkjvipMemberIntegral.getId(), qkjvipMemberIntegral.getMemberlist());
-
         return RestResponse.success();
     }
 
@@ -128,10 +125,6 @@ public class QkjvipMemberIntegralController extends AbstractController {
         qkjvipMemberIntegral.setLmDept(getOrgNo());
         qkjvipMemberIntegral.setLmTime(new Date());
         qkjvipMemberIntegralService.update(qkjvipMemberIntegral);
-        // 会员列表删除
-        qkjvipMemberIntegraluserService.deleteByIntegralId(qkjvipMemberIntegral.getId());
-        // 会员列表重新插入
-        this.saveIntegralUser(qkjvipMemberIntegral.getId(), qkjvipMemberIntegral.getMemberlist());
 
         return RestResponse.success();
     }
@@ -148,61 +141,31 @@ public class QkjvipMemberIntegralController extends AbstractController {
     public RestResponse delete(@RequestBody String[] ids) {
         qkjvipMemberIntegralService.deleteBatch(ids);
 
-        // 同时批量删除会员列表数据
-        qkjvipMemberIntegraluserService.deleteBatchByIntegralId(ids);
         return RestResponse.success();
     }
 
     /**
      * 积分发放
      *
-     * @param qkjvipMemberIntegral qkjvipMemberIntegral
+     * @param id id
      * @return RestResponse
      */
     @SysLog("发放积分")
-    @RequestMapping("/sendIntegral")
+    @RequestMapping("/sendIntegral/{id}")
     @RequiresPermissions("qkjvip:memberintegral:send")
-    public RestResponse sendIntegral(@RequestBody QkjvipMemberIntegralEntity qkjvipMemberIntegral) throws IOException {
-        Map map = new HashMap();
-        String[] memberids = new String[qkjvipMemberIntegral.getMemberlist().size()];
-        int cnt = 0;
-        for (QkjvipMemberIntegraluserEntity integraluser : qkjvipMemberIntegral.getMemberlist()) {
-            memberids[cnt] = integraluser.getMemberId();
-            cnt++;
+    public RestResponse sendIntegral(@PathVariable("id") String id) throws IOException {
+        List<String> memberids = new ArrayList<>();
+        memberids = qkjvipMemberIntegraluserService.queryByIntegralId(id);
+        if (memberids.size() == 0) {
+            return RestResponse.error(1, "没有发送对象，请添加！");
         }
+
+        QkjvipMemberIntegralEntity qkjvipMemberIntegral = qkjvipMemberIntegralService.getById(id);
+        qkjvipMemberIntegral.setId(id);
         qkjvipMemberIntegral.setSendStatus(1);  //改为积分已发状态
-        qkjvipMemberIntegralService.updateStatus(qkjvipMemberIntegral);
+        qkjvipMemberIntegralService.sendIntegral(qkjvipMemberIntegral, memberids);
 
-        map.put("integral", qkjvipMemberIntegral.getIntegral());
-        map.put("listmemberid", memberids);
-        map.put("remark", "群发积分");
-        Object obj = JSONArray.toJSON(map);
-
-        String resultPost = HttpClient.sendPost(Vars.MEMBER_INTEGRAL_SEND_URL, JsonHelper.toJsonString(obj));
-        JSONObject resultObject = JSON.parseObject(resultPost);
-        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
-            return RestResponse.success();
-        }
-        qkjvipMemberIntegral.setSendStatus(0);  //恢复积分发放状态
-        qkjvipMemberIntegralService.updateStatus(qkjvipMemberIntegral);
-        return RestResponse.error(resultObject.get("descr").toString());
+        return RestResponse.success();
     }
 
-    /**
-     * 批量保存会员
-     *
-     * @param integralId integralId
-     * @param memberlist memberlist
-     * @return RestResponse
-     */
-    public void saveIntegralUser(String integralId, List<QkjvipMemberIntegraluserEntity> memberlist) {
-        if (memberlist != null && memberlist.size() > 0) {
-            List<QkjvipMemberIntegraluserEntity> integralusers = new ArrayList<>();
-            for (QkjvipMemberIntegraluserEntity integraluser : memberlist) {
-                integraluser.setIntegralId(integralId);
-                integralusers.add(integraluser);
-            }
-            qkjvipMemberIntegraluserService.addBatch(integralusers);
-        }
-    }
 }
