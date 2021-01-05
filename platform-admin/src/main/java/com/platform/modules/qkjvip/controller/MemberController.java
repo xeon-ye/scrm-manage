@@ -183,6 +183,12 @@ public class MemberController extends AbstractController {
     @PostMapping("/save")
     @RequiresPermissions("qkjvip:member:save")
     public RestResponse save(@RequestBody QkjvipMemberImportEntity memberImport) {
+        Map params = new HashMap();
+        params.put("memberchannel", memberImport.getMemberchannel());
+        List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.queryAll(params);
+        if (channelList.size() > 0) {
+            memberImport.setServicename(channelList.get(0).getServicename());
+        }
         memberImport.setAddUser(getUserId());
         memberImport.setAddDept(getOrgNo());
         memberImport.setAddTime(new Date());
@@ -221,7 +227,12 @@ public class MemberController extends AbstractController {
     public RestResponse update(@RequestBody MemberEntity member) throws IOException {
         ValidatorUtils.validateEntity(member);
         Map<String, Object> params = new HashMap<>(2);
-        params.put("dataScope", getDataScope());
+//        params.put("dataScope", getDataScope());
+        params.put("memberchannel", member.getMemberchannel());
+        List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.queryAll(params);
+        if (channelList.size() > 0) {
+            member.setServicename(channelList.get(0).getServicename());
+        }
         memberService.update(member, params);
         return RestResponse.success().put("member", member);
     }
@@ -269,7 +280,7 @@ public class MemberController extends AbstractController {
         List<QkjvipMemberChannelEntity> memberChannelList = new ArrayList<>();
         String[] dictAttr = null;
         try {
-            Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("会员信息表","会员信息"), MemberEntity .class, list);
+            Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("会员信息表","会员信息"), MemberEntity.class, list);
             //这里是自己加的 带下拉框的代码
             ExcelSelectListUtil.selectList(workbook, 4, 4, new String[]{"男","女","未知"});
             ExcelSelectListUtil.selectList(workbook, 19, 19, new String[]{"是","否"});
@@ -279,7 +290,7 @@ public class MemberController extends AbstractController {
             memberChannelList = qkjvipMemberChannelService.queryAll(params);
             dictAttr = new String[memberChannelList.size()];
             for (int i = 0; i < memberChannelList.size(); i++) {
-                dictAttr[i] = memberChannelList.get(i).getServicename().trim();
+                dictAttr[i] = memberChannelList.get(i).getServicename().trim() + "-" + memberChannelList.get(i).getMemberchannel();
             }
             ExcelSelectListUtil.ExcelTo255(workbook, "hidden", 1, dictAttr, 2, 65535, 7, 7);
 
@@ -346,6 +357,14 @@ public class MemberController extends AbstractController {
             try {
                 List<QkjvipMemberImportEntity> list = ExportExcelUtils.importExcel(file, 1, 1,QkjvipMemberImportEntity.class);
                 for (int i = 0; i < list.size(); i++) {
+                    String[] channel = null;
+                    if (StringUtils.isNotBlank(list.get(i).getServicename())) {
+                        channel = new String[list.get(i).getServicename().split("-").length];
+                        list.get(i).setServicename(channel[0]);
+                        if (channel.length >= 2) {
+                            list.get(i).setMemberchannel(Integer.parseInt(channel[channel.length - 1]));
+                        }
+                    }
                     list.get(i).setOrgUserid(getUserId());  // 导入默认所属人
                     list.get(i).setOrgNo(getOrgNo()); //导入默认所属人部门
                     list.get(i).setAddUser(getUserId());

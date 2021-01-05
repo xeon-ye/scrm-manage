@@ -291,6 +291,30 @@ public class MemberEntity implements Serializable {
     @Excel(name = "备注", orderNum = "24", width = 15)
     private String remark2;
     /**
+     * ismerge
+     */
+    private Integer ismerge;
+    /**
+     * 觉如积分
+     */
+    private Integer jueruintegral;
+    /**
+     * 中酒积分
+     */
+    private Integer zhongjiuintegral;
+    /**
+     * 行为积分
+     */
+    private Integer behaviorintegral;
+    /**
+     * 奖励积分
+     */
+     private Integer rewardintegral;
+    /**
+     * 是否从import表导入标识
+     */
+    private Integer isimport;
+    /**
      * 标识（0：正常 1：删除 2：锁住）
      */
     private Integer statusflag;
@@ -298,6 +322,10 @@ public class MemberEntity implements Serializable {
      * 合并过来的会员id
      */
     private String memberidto;
+    /**
+     * 会员渠道号
+     */
+    private Integer memberchannel;
 
     /**
      * 所属人姓名
