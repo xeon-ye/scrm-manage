@@ -297,7 +297,7 @@ public class QkjvipMemberMessageController extends AbstractController {
             map.put("memberidstr", memberidstr);
             fansList = qrtzMemberFansService.queryAll(map);
             //调用赵月辉接口
-            this.sendWxMsg(qkjvipMemberMessage, fansList);
+//            this.sendWxMsg(qkjvipMemberMessage, fansList);
         }
 
         return RestResponse.success();
