@@ -76,8 +76,9 @@ public class QrtzMemberOrderController extends AbstractController {
             endtime=paramArr[1].trim();
         }else{//半小时同步一次
             Date nowDate = new Date();
-            endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
-            startime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -2), "yyyy-MM-dd HH:mm:ss"); //前半小时时间
+            String nowday = DateUtils.format(nowDate, "yyyy-MM-dd");  //当天日期
+            endtime = nowday+" 23:59:59";  //现在时间
+            startime = nowday + " 00:00:00"; //前半小时时间
             List<QrtzLastUpdateTimeEntity> updateTimeList = qrtzLastUpdateTimeService.queryAll(null);
             updateTimeEntity = updateTimeList.get(0);
             if (updateTimeList.get(0).getOrderLastDatetime() != null) {
