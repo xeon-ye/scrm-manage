@@ -13,8 +13,11 @@
         T.CREATEON
         FROM QKJVIP_MEMBER_CHANNEL T
         WHERE 1=1
-        <if test="params.serviceName != null and params.serviceName.trim() != ''">
-            AND T.SERVICENAME LIKE '%${params.name}%'
+        <if test="params.servicename != null and params.servicename.trim() != ''">
+            AND T.SERVICENAME LIKE '%${params.servicename}%'
+        </if>
+        <if test="params.memberchannel != null and params.memberchannel != ''">
+            AND T.MEMBERCHANNEL = #{params.memberchannel}
         </if>
     </sql>
 

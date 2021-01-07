@@ -292,6 +292,14 @@ public class QkjvipMemberImportEntity implements Serializable {
      */
     private Integer isfail;
     /**
+     * 会员清洗id
+     */
+    private String crmMemberid;
+    /**
+     * 会员渠道号
+     */
+    private Integer memberchannel;
+    /**
      * 标签数组
      */
     @TableField(exist = false)

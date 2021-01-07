@@ -134,16 +134,6 @@
     <select id="selectMemberByOpenid" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
         SELECT member_id,mobile from qkjvip_member where openid=#{params.openid} and IsUnSubscribe=0
     </select>
-    <select id="selectMemberAddrList" resultType="com.platform.modules.qkjvip.entity.MemberAddressEntity">
-        SELECT ma.* FROM qkjvip_member_address ma
-        WHERE 1=1
-        <if test="params.uuid != null and params.uuid != ''">
-            AND ma.uuid = #{params.uuid}
-        </if>
-        <if test="params.memberId != null and params.memberId != ''">
-            AND ma.member_id = #{params.memberId}
-        </if>
-    </select>
 
     <delete id="removeByIds">
         UPDATE qkjvip_member SET statusflag = 1 WHERE member_id IN

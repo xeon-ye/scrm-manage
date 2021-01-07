@@ -3,10 +3,19 @@
 
 <mapper namespace="com.platform.modules.quartz.dao.QrtzMemberFansDao">
 	<select id="queryAll" resultType="com.platform.modules.quartz.entity.QrtzMemberFansEntity">
-		SELECT * FROM qkjvip_member_fans
-		WHERE 1=1
+		SELECT AppId, OpenId, UnionId FROM qkjvip_member_fans
+		WHERE IsUnSubscribe = 0
 		<if test="params.appidstr != null and params.appidstr.trim() != ''">
 			AND appid IN ${params.appidstr}
+		</if>
+		<if test="params.memberidstr != null and params.memberidstr.trim() != ''">
+			AND crm_memberid IN ${params.memberidstr}
+		</if>
+		UNION
+		SELECT WechatAppId AppId, AppOpenId OpenId, UnionId FROM qkjvip_member_jueru
+		WHERE memberchannel = 19 and disabled=0 and IsSubscribe = 1
+		<if test="params.appidstr != null and params.appidstr.trim() != ''">
+			AND WechatAppId IN ${params.appidstr}
 		</if>
 		<if test="params.memberidstr != null and params.memberidstr.trim() != ''">
 			AND crm_memberid IN ${params.memberidstr}
@@ -20,7 +29,11 @@
 
 	<select id="queryByMemberIdStr" resultType="com.platform.modules.quartz.entity.QrtzMemberFansEntity">
 		SELECT COUNT(*) membernum, ServiceName, AppId FROM qkjvip_member_fans
-		WHERE crm_memberid IN ${value}
+		WHERE IsUnSubscribe = 0 and crm_memberid IN ${value}
 		GROUP BY ServiceName, AppId
+		UNION
+		SELECT COUNT(*) membernum, '天佑德青稞酒' as ServiceName, WechatAppId AppId FROM qkjvip_member_jueru
+		WHERE memberchannel=19 and disabled=0 and IsSubscribe = 1
+		GROUP BY ServiceName, WechatAppId
 	</select>
 </mapper>

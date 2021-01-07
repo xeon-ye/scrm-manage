@@ -31,6 +31,7 @@ import com.platform.modules.util.Vars;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -350,14 +351,7 @@ public class QkjvipMemberMessageController extends AbstractController {
         String resultPost = HttpClient.sendPost(Vars.MESSAGE_SEND, queryJsonStr);
         JSONObject resultObject = JSON.parseObject(resultPost);
         if (!"0".equals(resultObject.get("code").toString())) {  //调用失败
-            if ("2".equals(qkjvipMemberMessage.getCategoryType())) {
-                qkjvipMemberIntegral.setSendStatus(1); //状态修改为积分已发放
-                qkjvipMemberIntegral.setId(qkjvipMemberMessage.getCategoryId());
-                qkjvipMemberIntegralService.updateStatus(qkjvipMemberIntegral);
-            }
-            //失败同时删除发放记录
-            String[] ids = new String[]{qkjvipMemberMessage.getId()};
-            qkjvipMemberMessageService.deleteBatch(ids);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
     }
 }
