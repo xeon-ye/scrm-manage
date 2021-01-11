@@ -222,6 +222,7 @@ public class QkjvipMemberMessageController extends AbstractController {
             String appidstr = ListToStringUtil.listToString(Arrays.asList(appidAttr));
             List<String> users = new ArrayList<>();
             String memberidstr = "";
+            String msg = "";
 
             if ("1".equals(qkjvipMemberMessage.getCategoryType())) {  //活动
                 users = qkjvipMemberActivitymbsService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
@@ -236,7 +237,8 @@ public class QkjvipMemberMessageController extends AbstractController {
                         for(QkjvipMemberActivitymbsEntity a:mbs){
                             if(a!=null&&a.getMobile()!=null&&!a.getMobile().equals("")){
                                 //发短信
-                                this.sendMobileMsg(qkjvipMemberMessage.getContent(), a.getMobile());
+                                msg = qkjvipMemberMessage.getDxContent() + "请在微信里打开以下链接：" + qkjvipMemberMessage.getUrl();
+                                this.sendMobileMsg(msg, a.getMobile());
                             }
                         }
                     }
@@ -259,7 +261,8 @@ public class QkjvipMemberMessageController extends AbstractController {
                     //群发发短信
                     for(QkjvipMemberIntegraluserEntity integraluser : integralusers){
                         if(integraluser != null && integraluser.getMobile() != null && !integraluser.getMobile().equals("")){
-                            this.sendMobileMsg(qkjvipMemberMessage.getContent(), integraluser.getMobile());
+                            msg = qkjvipMemberMessage.getDxContent() + "请在微信里打开以下链接：" + qkjvipMemberMessage.getUrl();
+                            this.sendMobileMsg(msg, integraluser.getMobile());
                         }
                     }
                 }
@@ -281,7 +284,8 @@ public class QkjvipMemberMessageController extends AbstractController {
                     //群发发短信
                     for(QkjvipMemberCponsonEntity integraluser : integralusers){
                         if(integraluser != null && integraluser.getMobile() != null && !integraluser.getMobile().equals("")){
-                            this.sendMobileMsg(qkjvipMemberMessage.getContent(), integraluser.getMobile());
+                            msg = qkjvipMemberMessage.getDxContent() + "请在微信里打开以下链接：" + qkjvipMemberMessage.getUrl();
+                            this.sendMobileMsg(msg, integraluser.getMobile());
                         }
                     }
                 }
@@ -297,7 +301,7 @@ public class QkjvipMemberMessageController extends AbstractController {
             map.put("memberidstr", memberidstr);
             fansList = qrtzMemberFansService.queryAll(map);
             //调用赵月辉接口
-//            this.sendWxMsg(qkjvipMemberMessage, fansList);
+            this.sendWxMsg(qkjvipMemberMessage, fansList);
         }
 
         return RestResponse.success();
@@ -329,10 +333,22 @@ public class QkjvipMemberMessageController extends AbstractController {
         Map map = new HashMap();
         map.put("title", qkjvipMemberMessage.getTitle());
         map.put("url", qkjvipMemberMessage.getUrl());
-        map.put("content", qkjvipMemberMessage.getContent());
+        map.put("content", qkjvipMemberMessage.getWxContent());
         String[] appidAttr = qkjvipMemberMessage.getChannels().split(",");
         Map sonMap = new HashMap();
+        // 测试start
+//        sonMap.put("appId", "wx2d52554e706d23ad");
+//        List<String> Openids = new ArrayList<>();
+//        List<Object> list = new ArrayList<>();
+//        Openids.add("ozmFr1S-kFJIlTSIrpj-OnK907jE");
+//        Openids.add("ozmFr1S-kFJIlTSIrpj-OnK907jE");
+//        sonMap.put("openIds", Openids);
+//        list.add(sonMap);
+//        map.put("list", list);
+        // 测试end
+        // 正式start
         List<String> Openids = new ArrayList<>();
+        List<Object> list = new ArrayList<>();
         for (int i = 0; i < appidAttr.length; i++) {
             sonMap.clear();
             sonMap.put("appId", appidAttr[i]);
@@ -344,8 +360,10 @@ public class QkjvipMemberMessageController extends AbstractController {
                 }
             }
             sonMap.put("openIds", Openids);
-            map.put("list", sonMap);
+            list.add(sonMap);
+            map.put("list", list);
         }
+        // 正式end
 
         String queryJsonStr = JsonHelper.toJsonString(map);
         String resultPost = HttpClient.sendPost(Vars.MESSAGE_SEND, queryJsonStr);
