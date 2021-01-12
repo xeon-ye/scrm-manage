@@ -118,4 +118,17 @@ public class QkjvipMemberCponsonController extends AbstractController {
 
         return RestResponse.success();
     }
+
+    /**
+     * 根据会员及优惠券id查看所有列表
+     *
+     * @param params 查询参数
+     * @return RestResponse
+     */
+    @RequestMapping("/queryCponByMandId")
+    public RestResponse queryCponByMandId(@RequestParam Map<String, Object> params) {
+        List<QkjvipMemberCponsonEntity> list = qkjvipMemberCponsonService.queryAll(params);
+
+        return RestResponse.success().put("list", list);
+    }
 }
