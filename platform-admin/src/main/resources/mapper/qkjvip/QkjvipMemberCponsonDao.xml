@@ -21,6 +21,9 @@
         <if test="params.mainId != null and params.mainId.trim() != ''">
             AND T.MAIN_ID = '${params.mainId}'
         </if>
+        <if test="params.memberId != null and params.memberId.trim() != ''">
+            AND T.member_id = '${params.memberId}'
+        </if>
 
     </sql>
 

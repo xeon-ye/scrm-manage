@@ -47,6 +47,8 @@ public class QkjvipMemberCponsonEntity implements Serializable {
      */
     private String cponId;
 
+    private Integer status;
+
     /**
      * 会员名称
      */
