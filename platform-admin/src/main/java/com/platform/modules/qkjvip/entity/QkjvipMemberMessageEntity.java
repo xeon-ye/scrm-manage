@@ -51,10 +51,15 @@ public class QkjvipMemberMessageEntity implements Serializable {
     @NotBlank(message = "渠道不可为空", groups = {AddGroup.class, UpdateGroup.class})
     private String channels;
     /**
-     * 内容
+     * 短信内容
      */
-    @NotBlank(message = "内容不可为空", groups = {AddGroup.class, UpdateGroup.class})
-    private String content;
+//    @NotBlank(message = "短信内容不可为空", groups = {AddGroup.class, UpdateGroup.class})
+    private String dxContent;
+    /**
+     * 微信内容
+     */
+//    @NotBlank(message = "微信内容不可为空", groups = {AddGroup.class, UpdateGroup.class})
+    private String wxContent;
     /**
      * url
      */

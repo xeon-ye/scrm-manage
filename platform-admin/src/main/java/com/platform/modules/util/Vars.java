@@ -38,7 +38,8 @@ public class Vars {
 	//积分发放url end
 	//公众号url start
 	public static String APPID_GETLIST_URL = "http://scrm-wxcb.ym.qkj.com.cn/WeiXinPublish/GetPublishList";
-	public static String MESSAGE_SEND = "http://scrm-wxcb.ym.qkj.com.cn/WeiXinMsg/MassTextToOpenId";
+	//群发图文消息接口
+	public static String MESSAGE_SEND = "http://scrm-wxcb.ym.qkj.com.cn/WeiXinMsg/MassNewsMessage";
 	//公众号url end
 	//优惠券查询
 	public static String MEMBER_CPON_LIST_URl = "http://api.mall.qkj.com.cn/MobileAPI/Coupon/GetCouponList";

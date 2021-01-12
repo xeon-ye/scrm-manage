@@ -102,6 +102,11 @@ public class QrtzMemberFansEntity implements Serializable {
     private String appid;
 
     /**
+     * isfail
+     */
+    private Integer isfail;
+
+    /**
      * crmMemberid
      */
     private String crmMemberid;

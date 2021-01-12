@@ -69,6 +69,31 @@ public class QrtzMemberBasicEntity implements Serializable {
      */
     private String shopname;
 
+    /**
+     * isfail
+     */
+    private Integer isfail;
+
+    /**
+     * crm_memberid
+     */
+    private String crmMemberid;
+
+    /**
+     * userid
+     */
+    private String userid;
+
+    /**
+     * province
+     */
+    private String province;
+
+    /**
+     * city
+     */
+    private String city;
+
     @Override
     public boolean equals(Object o) {
         return o instanceof QrtzMemberBasicEntity

@@ -32,8 +32,8 @@
 		WHERE IsUnSubscribe = 0 and crm_memberid IN ${value}
 		GROUP BY ServiceName, AppId
 		UNION
-		SELECT COUNT(*) membernum, '天佑德青稞酒' as ServiceName, WechatAppId AppId FROM qkjvip_member_jueru
-		WHERE memberchannel=19 and disabled=0 and IsSubscribe = 1
+		SELECT COUNT(*) membernum, ServiceName, WechatAppId AppId FROM qkjvip_member_jueru
+		WHERE memberchannel=19 and disabled=0 and IsSubscribe = 1 and crm_memberid IN ${value}
 		GROUP BY ServiceName, WechatAppId
 	</select>
 </mapper>
