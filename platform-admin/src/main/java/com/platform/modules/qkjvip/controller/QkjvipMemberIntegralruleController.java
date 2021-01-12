@@ -21,6 +21,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -88,7 +89,7 @@ public class QkjvipMemberIntegralruleController extends AbstractController {
     @RequestMapping("/save")
     @RequiresPermissions("qkjvip:memberintegralrule:save")
     public RestResponse save(@RequestBody QkjvipMemberIntegralruleEntity qkjvipMemberIntegralrule) {
-
+        qkjvipMemberIntegralrule.setAddTime(new Date());
         qkjvipMemberIntegralruleService.add(qkjvipMemberIntegralrule);
 
         return RestResponse.success();
