@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 实体
@@ -57,4 +58,8 @@ public class QkjvipMemberIntegralruleEntity implements Serializable {
      * 状态
      */
     private Integer status;
+    /**
+     * 添加时间
+     */
+    private Date addTime;
 }

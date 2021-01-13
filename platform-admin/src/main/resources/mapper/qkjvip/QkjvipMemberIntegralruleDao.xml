@@ -11,7 +11,8 @@
         T.DAILYLIMIT,
         T.MONTHLYLIMIT,
         T.CONTENT,
-        T.STATUS
+        T.STATUS,
+        T.ADD_TIME
         FROM QKJVIP_MEMBER_INTEGRALRULE T
         WHERE 1=1
         <if test="params.ruleid != null and params.ruleid.trim() != ''">
