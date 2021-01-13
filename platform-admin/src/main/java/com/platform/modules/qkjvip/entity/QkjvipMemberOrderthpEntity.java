@@ -81,4 +81,6 @@ public class QkjvipMemberOrderthpEntity implements Serializable {
      * refundStatus
      */
     private String refundstatus;
+
+    private String returnquantity;
 }
