@@ -23,6 +23,7 @@
         <if test="params.visitId != null and params.visitId.trim() != ''">
             AND T.VISIT_ID = #{params.visitId}
         </if>
+        ORDER BY T.ADD_TIME DESC
     </sql>
 
     <select id="selectQkjvipMemberVisitMaterialPage" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberVisitMaterialEntity">

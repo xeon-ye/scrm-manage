@@ -74,7 +74,7 @@ public class QkjvipMemberImportEntity implements Serializable {
      * 生日
      */
     @Excel(name = "生日", orderNum = "6", width = 15)
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date birthday;
     /**
      * 会员类型
@@ -120,7 +120,7 @@ public class QkjvipMemberImportEntity implements Serializable {
      * 加入时间/注册时间
      */
     @Excel(name = "注册时间", orderNum = "16", width = 15)
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date regTime;
     /**
      * 推荐人部门
