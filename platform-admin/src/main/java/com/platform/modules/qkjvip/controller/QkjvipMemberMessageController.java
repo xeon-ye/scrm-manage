@@ -331,6 +331,7 @@ public class QkjvipMemberMessageController extends AbstractController {
     public void sendWxMsg(QkjvipMemberMessageEntity qkjvipMemberMessage, List<QrtzMemberFansEntity> fansList) throws IOException {
         QkjvipMemberIntegralEntity qkjvipMemberIntegral = new QkjvipMemberIntegralEntity();
         Map map = new HashMap();
+        map.put("type", qkjvipMemberMessage.getCategoryType());
         map.put("title", qkjvipMemberMessage.getTitle());
         map.put("url", qkjvipMemberMessage.getUrl());
         map.put("content", qkjvipMemberMessage.getWxContent());
