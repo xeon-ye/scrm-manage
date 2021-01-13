@@ -36,7 +36,8 @@ public interface QkjvipMemberCponDao extends BaseMapper<QkjvipMemberCponEntity> 
      * @return List
      */
     List<QkjvipMemberCponEntity> queryAll(@Param("params") Map<String, Object> params);
-
+    List<QkjvipMemberCponEntity> selectQkjvipMemberCount (@Param("params") Map<String, Object> params);
+    List<QkjvipMemberCponEntity> selectQkjvipMemberCountPage(IPage page, @Param("params") Map<String, Object> params);
     /**
      * 自定义分页查询
      *

@@ -60,6 +60,10 @@ public class QkjvipMemberCponEntity implements Serializable {
     private List<QkjvipMemberCponsonEntity> sonlists;
     @TableField(exist = false)
     private List<QkjvipMemberCponEntity> ms;
+    @TableField(exist = false)
+    private Double totalnum;
+    @TableField(exist = false)
+    private Double usenum;
 
     /**
      * 优惠券

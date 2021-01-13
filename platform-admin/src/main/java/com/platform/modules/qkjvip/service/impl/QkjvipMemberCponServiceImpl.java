@@ -48,6 +48,15 @@ public class QkjvipMemberCponServiceImpl extends ServiceImpl<QkjvipMemberCponDao
     }
 
     @Override
+    public Page queryPageCount(Map<String, Object> params) {
+        //排序
+        params.put("sidx", "z.id");
+        params.put("asc", false);
+        Page<QkjvipMemberCponEntity> page = new Query<QkjvipMemberCponEntity>(params).getPage();
+        return page.setRecords(baseMapper.selectQkjvipMemberCountPage(page, params));
+    }
+
+    @Override
     public boolean add(QkjvipMemberCponEntity qkjvipMemberCpon) {
         return this.save(qkjvipMemberCpon);
     }

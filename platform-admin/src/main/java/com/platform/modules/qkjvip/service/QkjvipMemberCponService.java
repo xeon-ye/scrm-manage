@@ -42,6 +42,8 @@ public interface QkjvipMemberCponService extends IService<QkjvipMemberCponEntity
      */
     Page queryPage(Map<String, Object> params);
 
+    Page queryPageCount(Map<String, Object> params);
+
     /**
      * 新增
      *

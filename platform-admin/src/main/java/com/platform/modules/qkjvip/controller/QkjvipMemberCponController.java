@@ -75,6 +75,20 @@ public class QkjvipMemberCponController extends AbstractController {
     }
 
     /**
+     * 分页查询
+     *
+     * @param params 查询参数
+     * @return RestResponse
+     */
+    @GetMapping("/membercponlist")
+    @RequiresPermissions("qkjvip:membercpon:list")
+    public RestResponse membercponlist(@RequestParam Map<String, Object> params) {
+        Page page = qkjvipMemberCponService.queryPageCount(params);
+
+        return RestResponse.success().put("page", page);
+    }
+
+    /**
      * 根据主键查询详情
      *
      * @param id 主键
