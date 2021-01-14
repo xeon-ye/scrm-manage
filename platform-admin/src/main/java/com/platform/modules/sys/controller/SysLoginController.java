@@ -99,7 +99,7 @@ public class SysLoginController extends AbstractController {
         //生成token，并保存到数据库
         String token = sysUserTokenService.createToken(user.getUserId());
 
-        return RestResponse.success().put("token", token).put("expire", Constant.EXPIRE);
+        return RestResponse.success().put("token", token).put("expire", Constant.EXPIRE).put("userMsg",user);
     }
 
     /**
