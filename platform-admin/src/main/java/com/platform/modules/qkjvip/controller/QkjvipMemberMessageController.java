@@ -305,7 +305,7 @@ public class QkjvipMemberMessageController extends AbstractController {
                 map.put("memberidstr", memberidstr);
                 fansList = qrtzMemberFansService.queryAll(map);
                 //调用赵月辉接口
-                if (fansList.size() > 1) {  //微信图文消息要求群发对象必须大于等于2
+                if (fansList.size() > 0) {
                     this.sendWxMsg(qkjvipMemberMessage, fansList);
                 }
             }
@@ -336,14 +336,9 @@ public class QkjvipMemberMessageController extends AbstractController {
      */
     @Transactional(rollbackFor = Exception.class)
     public void sendWxMsg(QkjvipMemberMessageEntity qkjvipMemberMessage, List<QrtzMemberFansEntity> fansList) throws IOException {
-        QkjvipMemberIntegralEntity qkjvipMemberIntegral = new QkjvipMemberIntegralEntity();
         Map map = new HashMap();
-        map.put("type", Integer.parseInt(qkjvipMemberMessage.getCategoryType().trim()));
-        map.put("title", qkjvipMemberMessage.getTitle());
-        map.put("url", qkjvipMemberMessage.getUrl());
-        map.put("content", qkjvipMemberMessage.getWxContent());
         List<String> appidList = qkjvipMemberMessage.getAppidList();
-        Map sonMap = new HashMap();
+        List<Object> list = new ArrayList<>();
         // 测试start
 //        sonMap.put("appId", "wx2d52554e706d23ad");
 //        List<String> Openids = new ArrayList<>();
@@ -355,29 +350,37 @@ public class QkjvipMemberMessageController extends AbstractController {
 //        map.put("list", list);
         // 测试end
         // 正式start
-        List<String> Openids = new ArrayList<>();
-        List<Object> list = new ArrayList<>();
         for (int i = 0; i < appidList.size(); i++) {
+            List<String> openIds = new ArrayList<>();
+            Map sonMap = new HashMap();
             sonMap.clear();
             sonMap.put("appId", appidList.get(i));
             for (int j = 0; j < fansList.size(); j++) {
                 if (appidList.get(i) != null && appidList.get(i).equals(fansList.get(j).getAppid())) {
                     if (fansList.get(j).getOpenid() != null && !"".equals(fansList.get(j).getOpenid())) {
-                        Openids.add(fansList.get(j).getOpenid());
+                        openIds.add(fansList.get(j).getOpenid());
                     }
                 }
             }
-            sonMap.put("openIds", Openids);
-            list.add(sonMap);
+            if (openIds != null && openIds.size() > 1) {  //一个appid下至少有2个人才可以发送图文消息
+                sonMap.put("openIds", openIds);
+                list.add(sonMap);
+            }
+        }
+        if (list != null && list.size() > 0) {
+            map.put("type", Integer.parseInt(qkjvipMemberMessage.getCategoryType().trim()));
+            map.put("title", qkjvipMemberMessage.getTitle());
+            map.put("url", qkjvipMemberMessage.getUrl());
+            map.put("content", qkjvipMemberMessage.getWxContent());
             map.put("list", list);
+
+            String queryJsonStr = JsonHelper.toJsonString(map);
+            String resultPost = HttpClient.sendPost(Vars.MESSAGE_SEND, queryJsonStr);
+            JSONObject resultObject = JSON.parseObject(resultPost);
+            if (!"0".equals(resultObject.get("code").toString())) {  //调用失败
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            }
         }
         // 正式end
-
-        String queryJsonStr = JsonHelper.toJsonString(map);
-        String resultPost = HttpClient.sendPost(Vars.MESSAGE_SEND, queryJsonStr);
-        JSONObject resultObject = JSON.parseObject(resultPost);
-        if (!"0".equals(resultObject.get("code").toString())) {  //调用失败
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
     }
 }
