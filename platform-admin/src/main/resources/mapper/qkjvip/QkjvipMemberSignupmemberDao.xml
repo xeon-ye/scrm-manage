@@ -5,14 +5,16 @@
 
     <sql id="selectSql">
         SELECT
-        T.*
+        T.*,o.title,m.member_name,m.real_name,m.mobile
         FROM QKJVIP_MEMBER_SIGNUPMEMBER T
+        join qkjvip_member_activity o on (t.activity_id=o.id)
+        join qkjvip_member m on (t.member_id=m.member_id)
         WHERE 1=1
-        <if test="params.name != null and params.name.trim() != ''">
-            AND T.NAME LIKE '%${params.name}%'
+        <if test="params.title != null and params.title.trim() != ''">
+            AND o.title LIKE '%${params.title}%'
         </if>
-        <if test="params.activityId != null and params.activityId.trim() != ''">
-            AND T.ACTIVITY_ID = '${params.activityId}'
+        <if test="params.mobile != null and params.mobile.trim() != ''">
+            AND m.mobile = '${params.mobile}'
         </if>
         <if test="params.memberId != null and params.memberId.trim() != ''">
             AND T.member_id LIKE '${params.memberId}'

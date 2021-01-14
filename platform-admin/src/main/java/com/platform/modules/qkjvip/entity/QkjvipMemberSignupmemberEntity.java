@@ -59,4 +59,15 @@ public class QkjvipMemberSignupmemberEntity implements Serializable {
     @TableField(exist = false)
     private Integer isphone;//是否修改手机号1修改
 
+
+    @TableField(exist = false)
+    private String memberName;
+    /*
+     * 会员真实姓名
+     */
+    @TableField(exist = false)
+    private String realName;
+    @TableField(exist = false)
+    private String title;
+
 }
