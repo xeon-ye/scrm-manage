@@ -219,7 +219,10 @@ public class QkjvipMemberMessageController extends AbstractController {
         List<QrtzMemberFansEntity> fansList = new ArrayList<>();
         if (qkjvipMemberMessage.getCategoryType() != null) {
             String[] appidAttr = qkjvipMemberMessage.getChannels().split(",");
-            String appidstr = ListToStringUtil.listToString(Arrays.asList(appidAttr));
+            List<String> appidList = Arrays.asList(appidAttr);
+            appidList.remove("012345678987654321");
+            qkjvipMemberMessage.setAppidList(appidList);
+            String appidstr = ListToStringUtil.listToString(appidList);
             List<String> users = new ArrayList<>();
             String memberidstr = "";
             String msg = "";
@@ -296,12 +299,16 @@ public class QkjvipMemberMessageController extends AbstractController {
             qkjvipMemberMessage.setAddDept(getOrgNo());
             qkjvipMemberMessage.setAddTime(new Date());
             qkjvipMemberMessageService.add(qkjvipMemberMessage);  //保存发放记录
-            map.clear();
-            map.put("appidstr", appidstr);
-            map.put("memberidstr", memberidstr);
-            fansList = qrtzMemberFansService.queryAll(map);
-            //调用赵月辉接口
-            this.sendWxMsg(qkjvipMemberMessage, fansList);
+            if (appidstr != "" && memberidstr != "") {
+                map.clear();
+                map.put("appidstr", appidstr);
+                map.put("memberidstr", memberidstr);
+                fansList = qrtzMemberFansService.queryAll(map);
+                //调用赵月辉接口
+                if (fansList.size() > 1) {  //微信图文消息要求群发对象必须大于等于2
+                    this.sendWxMsg(qkjvipMemberMessage, fansList);
+                }
+            }
         }
 
         return RestResponse.success();
@@ -331,11 +338,11 @@ public class QkjvipMemberMessageController extends AbstractController {
     public void sendWxMsg(QkjvipMemberMessageEntity qkjvipMemberMessage, List<QrtzMemberFansEntity> fansList) throws IOException {
         QkjvipMemberIntegralEntity qkjvipMemberIntegral = new QkjvipMemberIntegralEntity();
         Map map = new HashMap();
-        map.put("type", qkjvipMemberMessage.getCategoryType());
+        map.put("type", Integer.parseInt(qkjvipMemberMessage.getCategoryType().trim()));
         map.put("title", qkjvipMemberMessage.getTitle());
         map.put("url", qkjvipMemberMessage.getUrl());
         map.put("content", qkjvipMemberMessage.getWxContent());
-        String[] appidAttr = qkjvipMemberMessage.getChannels().split(",");
+        List<String> appidList = qkjvipMemberMessage.getAppidList();
         Map sonMap = new HashMap();
         // 测试start
 //        sonMap.put("appId", "wx2d52554e706d23ad");
@@ -350,11 +357,11 @@ public class QkjvipMemberMessageController extends AbstractController {
         // 正式start
         List<String> Openids = new ArrayList<>();
         List<Object> list = new ArrayList<>();
-        for (int i = 0; i < appidAttr.length; i++) {
+        for (int i = 0; i < appidList.size(); i++) {
             sonMap.clear();
-            sonMap.put("appId", appidAttr[i]);
+            sonMap.put("appId", appidList.get(i));
             for (int j = 0; j < fansList.size(); j++) {
-                if (appidAttr[i] != null && appidAttr[i].equals(fansList.get(j).getAppid())) {
+                if (appidList.get(i) != null && appidList.get(i).equals(fansList.get(j).getAppid())) {
                     if (fansList.get(j).getOpenid() != null && !"".equals(fansList.get(j).getOpenid())) {
                         Openids.add(fansList.get(j).getOpenid());
                     }

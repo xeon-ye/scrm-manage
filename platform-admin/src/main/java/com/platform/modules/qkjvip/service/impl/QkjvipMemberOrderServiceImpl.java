@@ -96,17 +96,6 @@ public class QkjvipMemberOrderServiceImpl extends ServiceImpl<QkjvipMemberOrderD
     }
 
     @Override
-    public int deleteByVisitId(String visitId) {
-        return baseMapper.removeByVisitId(visitId);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public boolean deleteByVisitIds(String[] visitIds) {
-        return baseMapper.removeByVisitIds(visitIds);
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveBatch(List<QkjvipMemberOrderEntity> mbList) {
         this.saveBatch(mbList, 1000);

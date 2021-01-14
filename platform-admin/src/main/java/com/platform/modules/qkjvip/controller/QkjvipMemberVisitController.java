@@ -14,7 +14,10 @@ package com.platform.modules.qkjvip.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
-import com.platform.modules.qkjvip.service.QkjvipMemberOrderService;
+import com.platform.modules.qkjvip.entity.QkjvipMemberIntentionorderEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberSignupaddressEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberVisitMaterialEntity;
+import com.platform.modules.qkjvip.service.QkjvipMemberIntentionorderService;
 import com.platform.modules.qkjvip.service.QkjvipMemberVisitMaterialService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipMemberVisitEntity;
@@ -43,7 +46,7 @@ public class QkjvipMemberVisitController extends AbstractController {
     @Autowired
     private QkjvipMemberVisitMaterialService qkjvipMemberVisitMaterialService;
     @Autowired
-    private QkjvipMemberOrderService qkjvipMemberOrderService;
+    private QkjvipMemberIntentionorderService qkjvipMemberIntentionorderService;
 
     /**
      * 查看所有列表
@@ -90,7 +93,7 @@ public class QkjvipMemberVisitController extends AbstractController {
         params.put("visitId", id);
         qkjvipMemberVisit.setMaterialList(qkjvipMemberVisitMaterialService.queryAll(params));
         //查询订单
-        qkjvipMemberVisit.setOrderList(qkjvipMemberOrderService.queryAll(params));
+        qkjvipMemberVisit.setOrderList(qkjvipMemberIntentionorderService.queryAll(params));
         return RestResponse.success().put("membervisit", qkjvipMemberVisit);
     }
 
@@ -111,21 +114,25 @@ public class QkjvipMemberVisitController extends AbstractController {
 
         // 新增物料
         if (qkjvipMemberVisit.getMaterialList().size() > 0) {
-            for (int i = 0; i < qkjvipMemberVisit.getMaterialList().size(); i++) {
-                qkjvipMemberVisit.getMaterialList().get(i).setVisitId(qkjvipMemberVisit.getId());
-                qkjvipMemberVisit.getMaterialList().get(i).setAddUser(getUserId());
-                qkjvipMemberVisit.getMaterialList().get(i).setAddDept(getOrgNo());
-                qkjvipMemberVisit.getMaterialList().get(i).setAddTime(new Date());
+            for(QkjvipMemberVisitMaterialEntity mvm : qkjvipMemberVisit.getMaterialList()){
+                mvm.setVisitId(qkjvipMemberVisit.getId());
+                mvm.setAddUser(getUserId());
+                mvm.setAddDept(getOrgNo());
+                mvm.setAddTime(new Date());
             }
             qkjvipMemberVisitMaterialService.addBatch(qkjvipMemberVisit.getMaterialList());
         }
 
         // 新增订单
         if (qkjvipMemberVisit.getOrderList().size() > 0) {
-            for(int j = 0; j < qkjvipMemberVisit.getOrderList().size(); j++) {
-                qkjvipMemberVisit.getOrderList().get(j).setVisitId(qkjvipMemberVisit.getId());
+            for(QkjvipMemberIntentionorderEntity mio : qkjvipMemberVisit.getOrderList()){
+                mio.setVisitId(qkjvipMemberVisit.getId());
+                mio.setMemberId(qkjvipMemberVisit.getMemberId());
+                mio.setAddUser(getUserId());
+                mio.setAddDept(getOrgNo());
+                mio.setAddTime(new Date());
             }
-            qkjvipMemberOrderService.addBatch(qkjvipMemberVisit.getOrderList());
+            qkjvipMemberIntentionorderService.addBatch(qkjvipMemberVisit.getOrderList());
         }
 
         return RestResponse.success();
@@ -150,23 +157,27 @@ public class QkjvipMemberVisitController extends AbstractController {
         qkjvipMemberVisitMaterialService.deleteByVisitId(qkjvipMemberVisit.getId());
         // 2.再插入物料
         if (qkjvipMemberVisit.getMaterialList().size() > 0) {
-            for (int i = 0; i < qkjvipMemberVisit.getMaterialList().size(); i++) {
-                qkjvipMemberVisit.getMaterialList().get(i).setVisitId(qkjvipMemberVisit.getId());
-                qkjvipMemberVisit.getMaterialList().get(i).setAddUser(getUserId());
-                qkjvipMemberVisit.getMaterialList().get(i).setAddDept(getOrgNo());
-                qkjvipMemberVisit.getMaterialList().get(i).setAddTime(new Date());
+            for(QkjvipMemberVisitMaterialEntity mvm : qkjvipMemberVisit.getMaterialList()){
+                mvm.setVisitId(qkjvipMemberVisit.getId());
+                mvm.setAddUser(getUserId());
+                mvm.setAddDept(getOrgNo());
+                mvm.setAddTime(new Date());
             }
             qkjvipMemberVisitMaterialService.addBatch(qkjvipMemberVisit.getMaterialList());
         }
 
         // 1.先删除订单表对应的数据
-        qkjvipMemberOrderService.deleteByVisitId(qkjvipMemberVisit.getId());
+        qkjvipMemberIntentionorderService.deleteByVisitId(qkjvipMemberVisit.getId());
         // 2.再插入订单
         if (qkjvipMemberVisit.getOrderList().size() > 0) {
-            for(int j = 0; j < qkjvipMemberVisit.getOrderList().size(); j++) {
-                qkjvipMemberVisit.getOrderList().get(j).setVisitId(qkjvipMemberVisit.getId());
+            for(QkjvipMemberIntentionorderEntity mio : qkjvipMemberVisit.getOrderList()){
+                mio.setVisitId(qkjvipMemberVisit.getId());
+                mio.setMemberId(qkjvipMemberVisit.getMemberId());
+                mio.setAddUser(getUserId());
+                mio.setAddDept(getOrgNo());
+                mio.setAddTime(new Date());
             }
-            qkjvipMemberOrderService.addBatch(qkjvipMemberVisit.getOrderList());
+            qkjvipMemberIntentionorderService.addBatch(qkjvipMemberVisit.getOrderList());
         }
 
         return RestResponse.success();
@@ -186,7 +197,7 @@ public class QkjvipMemberVisitController extends AbstractController {
         // 删除物料
         qkjvipMemberVisitMaterialService.deleteByVisitIds(ids);
         // 删除订单
-        qkjvipMemberOrderService.deleteByVisitIds(ids);
+        qkjvipMemberIntentionorderService.deleteByVisitIds(ids);
         return RestResponse.success();
     }
 

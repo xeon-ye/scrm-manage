@@ -18,8 +18,7 @@
         T.SHOPPROVINCENAME,
         T.SHOPCITYNAME,
         T.ORDERSTATUS,
-        T.GIVEAWAY,
-        T.VISIT_ID
+        T.GIVEAWAY
         FROM QKJVIP_MEMBER_ORDER T
         WHERE 1=1
         <if test="params.productname != null and params.productname.trim() != ''">
@@ -30,9 +29,6 @@
         </if>
         <if test="params.shopname != null and params.shopname.trim() != ''">
             AND T.SHOPNAME LIKE '%${params.shopname}%'
-        </if>
-        <if test="params.visitId != null and params.visitId.trim() != ''">
-            AND T.VISIT_ID = #{params.visitId}
         </if>
     </sql>
 
@@ -85,17 +81,6 @@
         DELETE FROM qkjvip_member_order WHERE OrderId IN
         <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
             #{item.orderid}
-        </foreach>
-    </delete>
-
-    <delete id="removeByVisitId">
-        DELETE FROM qkjvip_member_order WHERE visit_id = #{value}
-    </delete>
-
-    <delete id="removeByVisitIds">
-        DELETE FROM qkjvip_member_order WHERE visit_id IN
-        <foreach item="visitId" collection="array" open="(" separator="," close=")">
-            #{visitId}
         </foreach>
     </delete>
 </mapper>

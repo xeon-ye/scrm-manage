@@ -107,17 +107,9 @@ public interface QkjvipMemberOrderService extends IService<QkjvipMemberOrderEnti
     /**
      * 根据角色ID数组，批量删除
      *
-     * @param roleIds roleIds
+     * @param mbList mbList
      * @return int
      */
     int deleteBatchByOrder(List<QkjvipMemberOrderEntity> mbList);
 
-    /**
-     * 根据拜访id删除
-     *
-     * @param visitId visitId
-     * @return 删除结果
-     */
-    int deleteByVisitId(String visitId);
-    boolean deleteByVisitIds(String[] visitIds);
 }

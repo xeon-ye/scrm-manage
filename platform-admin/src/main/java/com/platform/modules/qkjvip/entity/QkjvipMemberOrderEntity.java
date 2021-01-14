@@ -104,8 +104,4 @@ public class QkjvipMemberOrderEntity implements Serializable {
 
     private String skucode;
 
-    /**
-     * 拜访id
-     */
-    private String visitId;
 }
