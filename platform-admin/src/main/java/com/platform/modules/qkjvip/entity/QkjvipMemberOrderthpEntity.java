@@ -64,7 +64,7 @@ public class QkjvipMemberOrderthpEntity implements Serializable {
     /**
      * refundMoney
      */
-    private String refundmoney;
+    private Double refundmoney;
     /**
      * SellerAuditStatus
      */
@@ -82,5 +82,5 @@ public class QkjvipMemberOrderthpEntity implements Serializable {
      */
     private String refundstatus;
 
-    private String returnquantity;
+    private Double returnquantity;
 }
