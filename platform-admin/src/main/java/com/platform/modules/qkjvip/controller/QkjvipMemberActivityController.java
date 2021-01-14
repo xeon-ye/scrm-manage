@@ -186,7 +186,6 @@ public class QkjvipMemberActivityController extends AbstractController {
         qkjvipMemberActivity.setAdddept(getOrgNo());
         List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
         mbs=qkjvipMemberActivity.getMbs();
-        qkjvipMemberActivityService.add(qkjvipMemberActivity);
         //如果签到生成二维码
         try{
             String htmlur=qkjvipMemberActivity.getHtmlurl().substring(0,qkjvipMemberActivity.getHtmlurl().indexOf("#"));
@@ -197,6 +196,7 @@ public class QkjvipMemberActivityController extends AbstractController {
         }catch (WriterException e1){
 
         }
+        qkjvipMemberActivityService.add(qkjvipMemberActivity);
         if(mbs!=null&&mbs.size()>0){
             List<QkjvipMemberActivitymbsEntity> newmemList=new ArrayList<>();
             for(QkjvipMemberActivitymbsEntity m:mbs){
@@ -430,7 +430,7 @@ public class QkjvipMemberActivityController extends AbstractController {
     /**
      * 百度获取城市信息
      *
-     * @param ip
+     * @param
      * @return
      * @throws JSONException
      * @throws IOException
