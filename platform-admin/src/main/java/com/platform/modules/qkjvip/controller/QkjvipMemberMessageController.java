@@ -63,6 +63,8 @@ public class QkjvipMemberMessageController extends AbstractController {
     private QkjvipMemberCponService qkjvipMemberCponService;
     @Autowired
     private QkjvipMemberActivitymbsService qkjvipMemberActivitymbsService;
+    @Autowired
+    private QkjvipMemberActivityService qkjvipMemberActivityService;
 
     /**
      * 查看所有列表
@@ -228,6 +230,11 @@ public class QkjvipMemberMessageController extends AbstractController {
             String msg = "";
 
             if ("1".equals(qkjvipMemberMessage.getCategoryType())) {  //活动
+                QkjvipMemberActivityEntity qkjvipMemberCpon=new QkjvipMemberActivityEntity();
+                qkjvipMemberCpon = qkjvipMemberActivityService.getById(qkjvipMemberMessage.getCategoryId());
+                qkjvipMemberCpon.setStatus(2);
+                qkjvipMemberActivityService.update(qkjvipMemberCpon);
+
                 users = qkjvipMemberActivitymbsService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
                 memberidstr = ListToStringUtil.listToString(users);
                 if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信

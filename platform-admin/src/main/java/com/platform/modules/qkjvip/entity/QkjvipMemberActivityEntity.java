@@ -64,6 +64,7 @@ public class QkjvipMemberActivityEntity implements Serializable {
     private String bgimg;
     private String issignimg;
     private String atype;
+    private Integer status;
 
     @TableField(exist = false)
     private String htmlurl;
