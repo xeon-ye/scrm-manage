@@ -117,11 +117,12 @@ public class QkjvipMemberSignupController extends AbstractController {
             memberImport.setAddDept(qkjvipMemberSignup.getMemadddept());
             memberImport.setOrgUserid(qkjvipMemberSignup.getMemadduser());
             memberImport.setOrgNo(qkjvipMemberSignup.getMemadddept());
-            memberImport.setServicename("天佑德青稞酒");
+            memberImport.setServicename("天佑德青青稞酒");
             memberImport.setAddTime(new Date());
             memberImport.setOfflineflag(2);
             memberImport.setMemberName(qkjvipMemberSignup.getUserName());
             memberImport.setMobile(qkjvipMemberSignup.getPhone());
+            memberImport.setOpenid(qkjvipMemberSignup.getOpenid());
             qkjvipMemberImportService.add(memberImport);  //将数据保存到中间表
 
             //调用数据清洗接口
@@ -129,6 +130,7 @@ public class QkjvipMemberSignupController extends AbstractController {
             try {
                 Object obj = JSONArray.toJSON(memberImport);
                 String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+                System.out.println("报名清洗会员："+memberJsonStr);
                 String resultPost = HttpClient.sendPost(Vars.MEMBER_ADD_URL, memberJsonStr);
                 //插入会员标签
                 JSONObject resultObject = JSON.parseObject(resultPost);

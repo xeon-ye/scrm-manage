@@ -132,7 +132,7 @@
     </select>
     <!--根据openid判断是否关注公众号：孙珊珊-->
     <select id="selectMemberByOpenid" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
-        SELECT member_id,mobile from qkjvip_member where openid=#{params.openid} and IsUnSubscribe=0
+        SELECT member_id,mobile from qkjvip_member where openid=#{params.openid} and IsUnSubscribe=0 and statusflag!=1
     </select>
 
     <delete id="removeByIds">

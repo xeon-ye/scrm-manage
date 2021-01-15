@@ -186,17 +186,20 @@ public class QkjvipMemberActivityController extends AbstractController {
         qkjvipMemberActivity.setAdddept(getOrgNo());
         List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
         mbs=qkjvipMemberActivity.getMbs();
+        qkjvipMemberActivityService.add(qkjvipMemberActivity);
         //如果签到生成二维码
         try{
             String htmlur=qkjvipMemberActivity.getHtmlurl().substring(0,qkjvipMemberActivity.getHtmlurl().indexOf("#"));
             String url= QRCodeUtil.createQrCode(htmlur+"#/signmember?activityid="+qkjvipMemberActivity.getId(),300,".jpg");
             qkjvipMemberActivity.setIssignimg(url);
+            //修改二维码
+            qkjvipMemberActivityService.update(qkjvipMemberActivity);
         }catch (IOException e){
 
         }catch (WriterException e1){
 
         }
-        qkjvipMemberActivityService.add(qkjvipMemberActivity);
+
         if(mbs!=null&&mbs.size()>0){
             List<QkjvipMemberActivitymbsEntity> newmemList=new ArrayList<>();
             for(QkjvipMemberActivitymbsEntity m:mbs){
