@@ -97,10 +97,14 @@ public class ListToStringUtil {
             userStr = sb.toString();
             if (!"".equals(userStr)) {
                 userStr = "(" + userStr.substring(0, userStr.length() - 1) + ")";
+            } else {
+                userStr = "('')";
             }
             openidStr = sb2.toString();
             if (!"".equals(openidStr)) {
                 openidStr = "(" + openidStr.substring(0, openidStr.length() - 1) + ")";
+            } else {
+                userStr = "('')";
             }
         }
         Map map = new HashMap();
