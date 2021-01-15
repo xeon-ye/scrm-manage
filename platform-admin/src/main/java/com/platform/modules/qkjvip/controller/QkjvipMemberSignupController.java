@@ -117,7 +117,7 @@ public class QkjvipMemberSignupController extends AbstractController {
             memberImport.setAddDept(qkjvipMemberSignup.getMemadddept());
             memberImport.setOrgUserid(qkjvipMemberSignup.getMemadduser());
             memberImport.setOrgNo(qkjvipMemberSignup.getMemadddept());
-            memberImport.setServicename("天佑德青稞酒");
+            memberImport.setServicename("天佑德青青稞酒");
             memberImport.setAddTime(new Date());
             memberImport.setOfflineflag(2);
             memberImport.setMemberName(qkjvipMemberSignup.getUserName());
@@ -129,6 +129,7 @@ public class QkjvipMemberSignupController extends AbstractController {
             try {
                 Object obj = JSONArray.toJSON(memberImport);
                 String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+                System.out.println(memberJsonStr);
                 String resultPost = HttpClient.sendPost(Vars.MEMBER_ADD_URL, memberJsonStr);
                 //插入会员标签
                 JSONObject resultObject = JSON.parseObject(resultPost);

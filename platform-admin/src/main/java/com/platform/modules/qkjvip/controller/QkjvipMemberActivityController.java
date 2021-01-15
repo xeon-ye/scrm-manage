@@ -191,6 +191,7 @@ public class QkjvipMemberActivityController extends AbstractController {
             String htmlur=qkjvipMemberActivity.getHtmlurl().substring(0,qkjvipMemberActivity.getHtmlurl().indexOf("#"));
             String url= QRCodeUtil.createQrCode(htmlur+"#/signmember?activityid="+qkjvipMemberActivity.getId(),300,".jpg");
             qkjvipMemberActivity.setIssignimg(url);
+
         }catch (IOException e){
 
         }catch (WriterException e1){
