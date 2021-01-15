@@ -104,7 +104,7 @@ public class ListToStringUtil {
             if (!"".equals(openidStr)) {
                 openidStr = "(" + openidStr.substring(0, openidStr.length() - 1) + ")";
             } else {
-                userStr = "('')";
+                openidStr = "('')";
             }
         }
         Map map = new HashMap();
