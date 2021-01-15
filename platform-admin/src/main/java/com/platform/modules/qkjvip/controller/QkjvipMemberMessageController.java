@@ -305,8 +305,11 @@ public class QkjvipMemberMessageController extends AbstractController {
             memberidstr = queryMap.get("userStr").toString();
             openidStr = queryMap.get("openidStr").toString();
             if (!"".equals(appidstr) && (!"('')".equals(memberidstr) || !"('')".equals(openidStr))) {
-                queryMap.put("appidstr", appidstr);
-                fansList = qrtzMemberFansService.queryAll(queryMap);
+                map.clear();
+                map.put("appidstr", appidstr);
+                map.put("memberidstr", memberidstr);
+                map.put("openidStr", openidStr);
+                fansList = qrtzMemberFansService.queryAll(map);
                 //调用赵月辉接口
                 if (fansList.size() > 0) {
                     this.sendWxMsg(qkjvipMemberMessage, fansList);
