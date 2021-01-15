@@ -95,9 +95,13 @@ public class ListToStringUtil {
                 }
             }
             userStr = sb.toString();
-            userStr = "(" + userStr.substring(0, userStr.length() - 1) + ")";
+            if (!"".equals(userStr)) {
+                userStr = "(" + userStr.substring(0, userStr.length() - 1) + ")";
+            }
             openidStr = sb2.toString();
-            openidStr = "(" + openidStr.substring(0, openidStr.length() - 1) + ")";
+            if (!"".equals(openidStr)) {
+                openidStr = "(" + openidStr.substring(0, openidStr.length() - 1) + ")";
+            }
         }
         Map map = new HashMap();
         map.put("userStr", userStr);
