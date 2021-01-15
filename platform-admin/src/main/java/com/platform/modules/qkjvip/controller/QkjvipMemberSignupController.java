@@ -122,6 +122,7 @@ public class QkjvipMemberSignupController extends AbstractController {
             memberImport.setOfflineflag(2);
             memberImport.setMemberName(qkjvipMemberSignup.getUserName());
             memberImport.setMobile(qkjvipMemberSignup.getPhone());
+            memberImport.setOpenid(qkjvipMemberSignup.getOpenid());
             qkjvipMemberImportService.add(memberImport);  //将数据保存到中间表
 
             //调用数据清洗接口
