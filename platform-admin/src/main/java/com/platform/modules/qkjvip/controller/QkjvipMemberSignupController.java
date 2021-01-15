@@ -130,7 +130,7 @@ public class QkjvipMemberSignupController extends AbstractController {
             try {
                 Object obj = JSONArray.toJSON(memberImport);
                 String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
-                System.out.println(memberJsonStr);
+                System.out.println("报名清洗会员："+memberJsonStr);
                 String resultPost = HttpClient.sendPost(Vars.MEMBER_ADD_URL, memberJsonStr);
                 //插入会员标签
                 JSONObject resultObject = JSON.parseObject(resultPost);
