@@ -216,7 +216,7 @@ public class QkjvipMemberMessageController extends AbstractController {
         List<QrtzMemberFansEntity> fansList = new ArrayList<>();
         if (qkjvipMemberMessage.getCategoryType() != null) {
             String[] appidAttr = qkjvipMemberMessage.getChannels().split(",");
-            List<String> appidList = Arrays.asList(appidAttr);
+            List<String> appidList = new ArrayList<String>(Arrays.asList(appidAttr));
             appidList.remove("012345678987654321");
             qkjvipMemberMessage.setAppidList(appidList);
             String appidstr = ListToStringUtil.listToString(appidList);

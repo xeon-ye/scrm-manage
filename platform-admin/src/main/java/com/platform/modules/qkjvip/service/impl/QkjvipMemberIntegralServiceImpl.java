@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjvip.service.impl;
 
+import cn.emay.util.DateUtil;
 import cn.emay.util.JsonHelper;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -94,7 +95,7 @@ public class QkjvipMemberIntegralServiceImpl extends ServiceImpl<QkjvipMemberInt
         Map map = new HashMap();
         map.put("integral", qkjvipMemberIntegral.getIntegral());
         map.put("listmemberid", memberids);
-        map.put("remark", "群发积分");
+        map.put("remark", "群发积分" + DateUtil.toString(new Date(), "yyyy-MM-dd"));
         Object obj = JSONArray.toJSON(map);
 
         String resultPost = HttpClient.sendPost(Vars.MEMBER_INTEGRAL_SEND_URL, JsonHelper.toJsonString(obj));

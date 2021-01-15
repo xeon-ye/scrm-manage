@@ -94,6 +94,10 @@ public class MemberController extends AbstractController {
     @RequiresPermissions("qkjvip:member:list")
     public RestResponse list(@RequestBody MemberQueryEntity memberQuery) throws IOException {
 
+        Map params = new HashMap();
+        params.put("openid", "o0lxnw_hgDUmYmFs4g-1oWL8fFxM");
+        List<Integer> list = memberService.selectMemberByOpenid(params);
+
 //        Page page = memberService.queryPage(params);
 //        return RestResponse.success().put("page", page);
         if (memberQuery.getMembertags() != null && memberQuery.getMembertags().size() > 0) {
@@ -400,7 +404,7 @@ public class MemberController extends AbstractController {
      */
     @RequestMapping("/selectMemByOpenid")
     public RestResponse selectMemByOpenid(@RequestParam Map<String, Object> params) {
-        List<MemberEntity> list = memberService.selectMemberByOpenid(params);
+        List<Integer> list = memberService.selectMemberByOpenid(params);
         return RestResponse.success().put("list", list);
     }
 }
