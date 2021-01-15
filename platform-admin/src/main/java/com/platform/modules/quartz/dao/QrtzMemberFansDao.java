@@ -42,5 +42,5 @@ public interface QrtzMemberFansDao extends BaseMapper<QrtzMemberFansEntity> {
      */
     List<QrtzMemberFansEntity> queryList();
 
-    List<QrtzMemberFansEntity> queryByMemberIdStr(String userStr);
+    List<QrtzMemberFansEntity> queryByMemberMessageQuery(@Param("params") Map<String, Object> params);
 }

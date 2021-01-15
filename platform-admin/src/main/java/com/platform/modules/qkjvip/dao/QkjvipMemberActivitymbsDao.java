@@ -14,6 +14,7 @@ package com.platform.modules.qkjvip.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.platform.modules.qkjvip.entity.QkjvipMemberActivitymbsEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberMessageUserQueryEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -48,5 +49,5 @@ public interface QkjvipMemberActivitymbsDao extends BaseMapper<QkjvipMemberActiv
     List<QkjvipMemberActivitymbsEntity> selectQkjvipMemberActivitymbsPageCount(IPage page, @Param("params") Map<String, Object> params);
     List<QkjvipMemberActivitymbsEntity> queryAllCount(@Param("params") Map<String, Object> params);
     int deleteBatchByOrder(String activityId);
-    List<String> queryByIntegralId(String integralId);
+    List<QkjvipMemberMessageUserQueryEntity> queryByActivityId(String activityId);
 }

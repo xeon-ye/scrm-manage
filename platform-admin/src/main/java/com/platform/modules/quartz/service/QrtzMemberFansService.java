@@ -45,7 +45,7 @@ public interface QrtzMemberFansService extends IService<QrtzMemberFansEntity> {
      *
      * @return List
      */
-    List<QrtzMemberFansEntity> queryByMemberIdStr(String userStr);
+    List<QrtzMemberFansEntity> queryByMemberMessageQuery(Map<String, Object> params);
 
     /**
      * 插入会员信息

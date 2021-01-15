@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.platform.common.utils.Query;
 import com.platform.modules.qkjvip.dao.QkjvipMemberCponsonDao;
 import com.platform.modules.qkjvip.entity.QkjvipMemberCponsonEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberMessageUserQueryEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberCponsonService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,8 +86,8 @@ public class QkjvipMemberCponsonServiceImpl extends ServiceImpl<QkjvipMemberCpon
         return baseMapper.deleteBatchByOrder(mainid);
     }
     @Override
-    public List<String> queryByIntegralId(String integralId) {
-        return baseMapper.queryByIntegralId(integralId);
+    public List<QkjvipMemberMessageUserQueryEntity> queryByCponId(String cponId) {
+        return baseMapper.queryByCponId(cponId);
     }
 
 

@@ -11,9 +11,12 @@
 package com.platform.modules.util;
 
 import com.platform.common.utils.StringUtils;
+import com.platform.modules.qkjvip.entity.QkjvipMemberMessageUserQueryEntity;
 import org.apache.poi.ss.formula.functions.T;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ListToStringUtil
@@ -75,5 +78,31 @@ public class ListToStringUtil {
             resultStr = resultStr.substring(0, resultStr.length() - separator.length());
         }
         return resultStr;
+    }
+
+    public static Map<String, String> entityToMap(List<QkjvipMemberMessageUserQueryEntity> userList) {
+        StringBuffer sb = new StringBuffer();
+        StringBuffer sb2 = new StringBuffer();
+        String userStr = "('')";
+        String openidStr = "('')";
+        if (userList.size() > 0) {
+            for (QkjvipMemberMessageUserQueryEntity user : userList) {
+                if (StringUtils.isNotBlank(user.getMemberId())) {
+                    sb.append("'" + user.getMemberId() + "',");
+                }
+                if (StringUtils.isNotBlank(user.getOpenid())) {
+                    sb2.append("'" + user.getOpenid() + "',");
+                }
+            }
+            userStr = sb.toString();
+            userStr = "(" + userStr.substring(0, userStr.length() - 1) + ")";
+            openidStr = sb2.toString();
+            openidStr = "(" + openidStr.substring(0, openidStr.length() - 1) + ")";
+        }
+        Map map = new HashMap();
+        map.put("userStr", userStr);
+        map.put("openidStr", openidStr);
+
+        return map;
     }
 }

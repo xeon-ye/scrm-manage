@@ -41,8 +41,8 @@ public class QrtzMemberFansServiceImpl extends ServiceImpl<QrtzMemberFansDao, Qr
     }
 
     @Override
-    public List<QrtzMemberFansEntity> queryByMemberIdStr(String userStr) {
-        return baseMapper.queryByMemberIdStr(userStr);
+    public List<QrtzMemberFansEntity> queryByMemberMessageQuery(Map<String, Object> params) {
+        return baseMapper.queryByMemberMessageQuery(params);
     }
 
     @Override

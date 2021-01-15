@@ -14,6 +14,7 @@ package com.platform.modules.qkjvip.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.platform.modules.qkjvip.entity.QkjvipMemberActivitymbsEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberMessageUserQueryEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -96,9 +97,9 @@ public interface QkjvipMemberActivitymbsService extends IService<QkjvipMemberAct
     /**
      * 查询所有列表
      *
-     * @param integralId 查询参数
+     * @param activityId 查询参数
      * @return List
      */
-    List<String> queryByIntegralId(String integralId);
+    List<QkjvipMemberMessageUserQueryEntity> queryByActivityId(String activityId);
 
 }

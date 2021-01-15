@@ -14,6 +14,7 @@ package com.platform.modules.qkjvip.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.platform.modules.qkjvip.entity.QkjvipMemberCponsonEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberMessageUserQueryEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -46,5 +47,5 @@ public interface QkjvipMemberCponsonDao extends BaseMapper<QkjvipMemberCponsonEn
      */
     List<QkjvipMemberCponsonEntity> selectQkjvipMemberCponsonPage(IPage page, @Param("params") Map<String, Object> params);
     int deleteBatchByOrder(String mainid);
-    List<String> queryByIntegralId(String integralId);
+    List<QkjvipMemberMessageUserQueryEntity> queryByCponId(String cponId);
 }

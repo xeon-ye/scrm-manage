@@ -4,21 +4,15 @@
 <mapper namespace="com.platform.modules.quartz.dao.QrtzMemberFansDao">
 	<select id="queryAll" resultType="com.platform.modules.quartz.entity.QrtzMemberFansEntity">
 		SELECT AppId, OpenId, UnionId FROM qkjvip_member_fans
-		WHERE IsUnSubscribe = 0
+		WHERE IsUnSubscribe = 0 AND (crm_memberid IN ${params.memberidstr} or OpenId IN ${params.openidStr})
 		<if test="params.appidstr != null and params.appidstr.trim() != ''">
 			AND appid IN ${params.appidstr}
 		</if>
-		<if test="params.memberidstr != null and params.memberidstr.trim() != ''">
-			AND crm_memberid IN ${params.memberidstr}
-		</if>
 		UNION
 		SELECT WechatAppId AppId, AppOpenId OpenId, UnionId FROM qkjvip_member_jueru
-		WHERE memberchannel = 19 and disabled=0 and IsSubscribe = 1
+		WHERE memberchannel = 19 and disabled=0 and IsSubscribe = 1 and (crm_memberid IN ${params.memberidstr} or AppOpenId IN ${params.openidStr})
 		<if test="params.appidstr != null and params.appidstr.trim() != ''">
 			AND WechatAppId IN ${params.appidstr}
-		</if>
-		<if test="params.memberidstr != null and params.memberidstr.trim() != ''">
-			AND crm_memberid IN ${params.memberidstr}
 		</if>
 	</select>
 
@@ -27,13 +21,13 @@
 		INNER JOIN tmp_qkjvip_member_fans tmpmf ON (mf.OpenId=tmpmf.OpenId AND mf.AppId=tmpmf.AppId)
 	</select>
 
-	<select id="queryByMemberIdStr" resultType="com.platform.modules.quartz.entity.QrtzMemberFansEntity">
+	<select id="queryByMemberMessageQuery" resultType="com.platform.modules.quartz.entity.QrtzMemberFansEntity">
 		SELECT COUNT(*) membernum, ServiceName, AppId FROM qkjvip_member_fans
-		WHERE IsUnSubscribe = 0 and crm_memberid IN ${value}
+		WHERE IsUnSubscribe = 0 AND (crm_memberid IN ${params.userStr} or OpenId IN ${params.openidStr})
 		GROUP BY ServiceName, AppId
 		UNION
 		SELECT COUNT(*) membernum, ServiceName, WechatAppId AppId FROM qkjvip_member_jueru
-		WHERE memberchannel=19 and disabled=0 and IsSubscribe = 1 and crm_memberid IN ${value}
+		WHERE memberchannel=19 and disabled=0 and IsSubscribe = 1 and (crm_memberid IN ${params.userStr} or AppOpenId IN ${params.openidStr})
 		GROUP BY ServiceName, WechatAppId
 	</select>
 </mapper>

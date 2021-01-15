@@ -62,8 +62,9 @@
         DELETE FROM QKJVIP_MEMBER_ACTIVITYMBS WHERE ACTIVITY_ID = #{activityId}
     </delete>
 
-    <select id="queryByIntegralId" resultType="string">
-        SELECT MEMBER_ID FROM QKJVIP_MEMBER_ACTIVITYMBS
-        WHERE ACTIVITY_ID = #{value}
+    <select id="queryByActivityId" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberMessageUserQueryEntity">
+        SELECT a.MEMBER_ID, m.openid FROM QKJVIP_MEMBER_ACTIVITYMBS a
+        INNER JOIN qkjvip_member m ON (a.MEMBER_ID = m.member_id)
+        WHERE (m.statusflag = 0 OR m.statusflag = 2) and a.ACTIVITY_ID = #{value}
     </select>
 </mapper>

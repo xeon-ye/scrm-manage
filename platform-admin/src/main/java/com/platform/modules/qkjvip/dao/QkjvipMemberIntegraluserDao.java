@@ -14,6 +14,7 @@ package com.platform.modules.qkjvip.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.platform.modules.qkjvip.entity.QkjvipMemberIntegraluserEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberMessageUserQueryEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -50,5 +51,7 @@ public interface QkjvipMemberIntegraluserDao extends BaseMapper<QkjvipMemberInte
 
     void deleteBatchByIntegralId(String[] integralIds);
 
-    List<String> queryByIntegralId(String integralId);
+    List<QkjvipMemberMessageUserQueryEntity> queryByIntegralId(String integralId);
+
+    List<String> queryByIntegralId2(String integralId);
 }

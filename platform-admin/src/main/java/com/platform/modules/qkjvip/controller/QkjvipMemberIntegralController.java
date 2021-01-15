@@ -155,7 +155,7 @@ public class QkjvipMemberIntegralController extends AbstractController {
     @RequiresPermissions("qkjvip:memberintegral:send")
     public RestResponse sendIntegral(@PathVariable("id") String id) throws IOException {
         List<String> memberids = new ArrayList<>();
-        memberids = qkjvipMemberIntegraluserService.queryByIntegralId(id);
+        memberids = qkjvipMemberIntegraluserService.queryByIntegralId2(id);
         if (memberids.size() == 0) {
             return RestResponse.error(1, "没有发送对象，请添加！");
         }

@@ -164,7 +164,9 @@ public class QkjvipMemberMessageController extends AbstractController {
     @PostMapping("/init")
     public RestResponse init(@RequestBody QkjvipMemberMessageEntity qkjvipMemberMessage) {
         List<QkjvipOptionsEntity> options = new ArrayList<>();
+        List<QkjvipMemberMessageUserQueryEntity> selectedUser = new ArrayList<>();
         String userStr = "";
+        String openidStr = "";
         //获取公众号列表
         String resultPost = HttpClient.sendGet(Vars.APPID_GETLIST_URL);
         JSONObject resultObject = JSON.parseObject(resultPost);
@@ -174,21 +176,14 @@ public class QkjvipMemberMessageController extends AbstractController {
             List<QrtzMemberFansEntity> fansList = new ArrayList<>();
             if (qkjvipMemberMessage.getCategoryType() != null) {
                 if ("1".equals(qkjvipMemberMessage.getCategoryType())) {  //活动
-                    List<String> integralusers = new ArrayList<>();
-                    integralusers = qkjvipMemberActivitymbsService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
-                    userStr = ListToStringUtil.listToString(integralusers);
+                    selectedUser = qkjvipMemberActivitymbsService.queryByActivityId(qkjvipMemberMessage.getCategoryId());
                 } else if ("2".equals(qkjvipMemberMessage.getCategoryType())) {  //积分
-                    List<String> integralusers = new ArrayList<>();
-                    integralusers = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
-                    userStr = ListToStringUtil.listToString(integralusers);
+                    selectedUser = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
                 } else if ("3".equals(qkjvipMemberMessage.getCategoryType())) {  //优惠券
-                    List<String> integralusers = new ArrayList<>();
-                    integralusers = qkjvipMemberCponsonService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
-                    userStr = ListToStringUtil.listToString(integralusers);
+                    selectedUser = qkjvipMemberCponsonService.queryByCponId(qkjvipMemberMessage.getCategoryId());
                 }
-                if (!"".equals(userStr)) {
-                    fansList = qrtzMemberFansService.queryByMemberIdStr(userStr);
-                }
+                Map map = ListToStringUtil.entityToMap(selectedUser);
+                fansList = qrtzMemberFansService.queryByMemberMessageQuery(map);
             }
 
             for (QkjvipOptionsEntity option : options) {
@@ -225,8 +220,9 @@ public class QkjvipMemberMessageController extends AbstractController {
             appidList.remove("012345678987654321");
             qkjvipMemberMessage.setAppidList(appidList);
             String appidstr = ListToStringUtil.listToString(appidList);
-            List<String> users = new ArrayList<>();
+            List<QkjvipMemberMessageUserQueryEntity> selectedUser = new ArrayList<>();
             String memberidstr = "";
+            String openidStr = "";
             String msg = "";
 
             if ("1".equals(qkjvipMemberMessage.getCategoryType())) {  //活动
@@ -235,8 +231,8 @@ public class QkjvipMemberMessageController extends AbstractController {
                 qkjvipMemberCpon.setStatus(2);
                 qkjvipMemberActivityService.update(qkjvipMemberCpon);
 
-                users = qkjvipMemberActivitymbsService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
-                memberidstr = ListToStringUtil.listToString(users);
+                selectedUser = qkjvipMemberActivitymbsService.queryByActivityId(qkjvipMemberMessage.getCategoryId());
+
                 if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信
                     //查询所有邀约人员
                     List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
@@ -259,8 +255,7 @@ public class QkjvipMemberMessageController extends AbstractController {
                 qkjvipMemberIntegral.setId(qkjvipMemberMessage.getCategoryId());
                 qkjvipMemberIntegralService.updateStatus(qkjvipMemberIntegral);
 
-                users = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
-                memberidstr = ListToStringUtil.listToString(users);
+                selectedUser = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
 
                 if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信
                     map.clear();
@@ -282,8 +277,7 @@ public class QkjvipMemberMessageController extends AbstractController {
                 qkjvipMemberCpon.setStatus(2);
                 qkjvipMemberCponService.update(qkjvipMemberCpon);
 
-                users = qkjvipMemberCponsonService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
-                memberidstr = ListToStringUtil.listToString(users);
+                selectedUser = qkjvipMemberCponsonService.queryByCponId(qkjvipMemberMessage.getCategoryId());
 
                 if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信
                     map.clear();
@@ -306,11 +300,13 @@ public class QkjvipMemberMessageController extends AbstractController {
             qkjvipMemberMessage.setAddDept(getOrgNo());
             qkjvipMemberMessage.setAddTime(new Date());
             qkjvipMemberMessageService.add(qkjvipMemberMessage);  //保存发放记录
-            if (appidstr != "" && memberidstr != "") {
-                map.clear();
-                map.put("appidstr", appidstr);
-                map.put("memberidstr", memberidstr);
-                fansList = qrtzMemberFansService.queryAll(map);
+
+            Map queryMap = ListToStringUtil.entityToMap(selectedUser);
+            memberidstr = queryMap.get("userStr").toString();
+            openidStr = queryMap.get("openidStr").toString();
+            if (!"".equals(appidstr) && (!"('')".equals(memberidstr) || !"('')".equals(openidStr))) {
+                queryMap.put("appidstr", appidstr);
+                fansList = qrtzMemberFansService.queryAll(queryMap);
                 //调用赵月辉接口
                 if (fansList.size() > 0) {
                     this.sendWxMsg(qkjvipMemberMessage, fansList);
@@ -331,8 +327,8 @@ public class QkjvipMemberMessageController extends AbstractController {
         //发短信
         SysSmsLogEntity smsLog = new SysSmsLogEntity();
         smsLog.setContent(content);
-//        smsLog.setMobile(mobile);
-        smsLog.setMobile("13621255469");
+        smsLog.setMobile(mobile);
+//        smsLog.setMobile("13621255469");
         SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSms(smsLog);
     }
 
