@@ -22,7 +22,10 @@
         <if test="params.name != null and params.name.trim() != ''">
             AND T.NAME LIKE '%${params.name}%'
         </if>
-        order by T.ADD_TIME desc
+        <if test="params.visitId != null and params.visitId.trim() != ''">
+            AND T.VISIT_ID = #{params.visitId}
+        </if>
+        ORDER BY T.ADD_TIME DESC
     </sql>
 
     <select id="selectQkjvipMemberIntentionorderPage" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberIntentionorderEntity">
