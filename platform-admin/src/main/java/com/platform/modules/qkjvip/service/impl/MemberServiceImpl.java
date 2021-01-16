@@ -52,7 +52,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
         return baseMapper.queryAll(params);
     }
     @Override
-    public List<Integer> selectMemberByOpenid(Map<String, Object> params) {
+    public List<MemberEntity> selectMemberByOpenid(Map<String, Object> params) {
         return baseMapper.selectMemberByOpenid(params);
     }
 

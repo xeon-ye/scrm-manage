@@ -111,6 +111,7 @@ public class QkjvipMemberSignupController extends AbstractController {
             //return RestResponse.error("已报名成功，谢谢");
             qkjvipMemberSignup = list.get(0);
         }else{
+            //查询中间表是否有此手机号
             //清洗会员
             QkjvipMemberImportEntity memberImport=new QkjvipMemberImportEntity();
             memberImport.setAddUser(qkjvipMemberSignup.getMemadduser());

@@ -145,6 +145,11 @@
 <!--        WHERE AppOpenId = #{params.openid} AND IsSubscribe = 1) a-->
 <!--    </select>-->
 
+    <!--根据手机号查询判断是否有数据：孙珊珊-->
+    <select id="selectMemberByMoboil" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
+        SELECT TOP 1 member_id from qkjvip_member_import where mobile=#{params.mobile}
+    </select>
+
     <delete id="removeByIds">
         UPDATE qkjvip_member SET statusflag = 1 WHERE member_id IN
         <foreach item="memberId" collection="array" open="(" separator="," close=")">
