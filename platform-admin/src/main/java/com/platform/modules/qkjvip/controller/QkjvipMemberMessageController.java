@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
+import com.platform.common.utils.StringUtils;
 import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.qkjvip.service.*;
 import com.platform.modules.quartz.entity.QrtzMemberFansEntity;
@@ -220,7 +221,7 @@ public class QkjvipMemberMessageController extends AbstractController {
             appidList.remove("012345678987654321");
             qkjvipMemberMessage.setAppidList(appidList);
             String appidstr = ListToStringUtil.listToString(appidList);
-            List<QkjvipMemberMessageUserQueryEntity> selectedUser = new ArrayList<>();
+            List<QkjvipMemberMessageUserQueryEntity> selectedUserList = new ArrayList<>();
             String memberidstr = "";
             String openidStr = "";
             String msg = "";
@@ -230,78 +231,32 @@ public class QkjvipMemberMessageController extends AbstractController {
                 qkjvipMemberCpon = qkjvipMemberActivityService.getById(qkjvipMemberMessage.getCategoryId());
                 qkjvipMemberCpon.setStatus(2);
                 qkjvipMemberActivityService.update(qkjvipMemberCpon);
-
-                selectedUser = qkjvipMemberActivitymbsService.queryByActivityId(qkjvipMemberMessage.getCategoryId());
-
-                if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信
-                    //查询所有邀约人员
-                    List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
-                    map.clear();
-                    map.put("activityId",qkjvipMemberMessage.getCategoryId());
-                    mbs=qkjvipMemberActivitymbsService.queryAll(map);
-                    if(mbs.size()>0){
-                        for(QkjvipMemberActivitymbsEntity a:mbs){
-                            if(a!=null&&a.getMobile()!=null&&!a.getMobile().equals("")){
-                                //发短信
-                                msg = qkjvipMemberMessage.getDxContent() + "请在微信里打开以下链接：" + qkjvipMemberMessage.getUrl();
-                                this.sendMobileMsg(msg, a.getMobile());
-                            }
-                        }
-                    }
-                }
+                selectedUserList = qkjvipMemberActivitymbsService.queryByActivityId(qkjvipMemberMessage.getCategoryId());
             } else if ("2".equals(qkjvipMemberMessage.getCategoryType())) {  //积分
                 QkjvipMemberIntegralEntity qkjvipMemberIntegral = new QkjvipMemberIntegralEntity();
                 qkjvipMemberIntegral.setSendStatus(2); //状态修改为通知已发送
                 qkjvipMemberIntegral.setId(qkjvipMemberMessage.getCategoryId());
                 qkjvipMemberIntegralService.updateStatus(qkjvipMemberIntegral);
-
-                selectedUser = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
-
-                if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信
-                    map.clear();
-                    map.put("integralId", qkjvipMemberMessage.getCategoryId());
-                    List<QkjvipMemberIntegraluserEntity> integralusers = new ArrayList<>();
-                    integralusers = qkjvipMemberIntegraluserService.queryAll(map);
-
-                    //群发发短信
-                    for(QkjvipMemberIntegraluserEntity integraluser : integralusers){
-                        if(integraluser != null && integraluser.getMobile() != null && !integraluser.getMobile().equals("")){
-                            msg = qkjvipMemberMessage.getDxContent() + "请在微信里打开以下链接：" + qkjvipMemberMessage.getUrl();
-                            this.sendMobileMsg(msg, integraluser.getMobile());
-                        }
-                    }
-                }
+                selectedUserList = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
             } else if ("3".equals(qkjvipMemberMessage.getCategoryType())) {  //优惠券
                 QkjvipMemberCponEntity qkjvipMemberCpon=new QkjvipMemberCponEntity();
                 qkjvipMemberCpon = qkjvipMemberCponService.getById(qkjvipMemberMessage.getCategoryId());
                 qkjvipMemberCpon.setStatus(2);
                 qkjvipMemberCponService.update(qkjvipMemberCpon);
-
-                selectedUser = qkjvipMemberCponsonService.queryByCponId(qkjvipMemberMessage.getCategoryId());
-
-                if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信
-                    map.clear();
-                    map.put("mainId", qkjvipMemberMessage.getCategoryId());
-                    List<QkjvipMemberCponsonEntity> integralusers = new ArrayList<>();
-                    integralusers = qkjvipMemberCponsonService.queryAll(map);
-
-                    //群发发短信
-                    for(QkjvipMemberCponsonEntity integraluser : integralusers){
-                        if(integraluser != null && integraluser.getMobile() != null && !integraluser.getMobile().equals("")){
-                            msg = qkjvipMemberMessage.getDxContent() + "请在微信里打开以下链接：" + qkjvipMemberMessage.getUrl();
-                            this.sendMobileMsg(msg, integraluser.getMobile());
-                        }
-                    }
-                }
-
+                selectedUserList = qkjvipMemberCponsonService.queryByCponId(qkjvipMemberMessage.getCategoryId());
             }
 
-            qkjvipMemberMessage.setAddUser(getUserId());
-            qkjvipMemberMessage.setAddDept(getOrgNo());
-            qkjvipMemberMessage.setAddTime(new Date());
-            qkjvipMemberMessageService.add(qkjvipMemberMessage);  //保存发放记录
-
-            Map queryMap = ListToStringUtil.entityToMap(selectedUser);
+            //群发发短信
+            if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信
+                for(QkjvipMemberMessageUserQueryEntity selectedUser : selectedUserList){
+                    if (selectedUser != null && StringUtils.isNotBlank(selectedUser.getMobile())) {
+                        msg = qkjvipMemberMessage.getDxContent() + "请在微信里打开以下链接：" + qkjvipMemberMessage.getUrl();
+                        this.sendMobileMsg(msg, selectedUser.getMobile());
+                    }
+                }
+            }
+            //群发微信
+            Map queryMap = ListToStringUtil.entityToMap(selectedUserList);
             memberidstr = queryMap.get("userStr").toString();
             openidStr = queryMap.get("openidStr").toString();
             if (!"".equals(appidstr) && (!"('')".equals(memberidstr) || !"('')".equals(openidStr))) {
@@ -315,6 +270,11 @@ public class QkjvipMemberMessageController extends AbstractController {
                     this.sendWxMsg(qkjvipMemberMessage, fansList);
                 }
             }
+            //保存发放记录
+            qkjvipMemberMessage.setAddUser(getUserId());
+            qkjvipMemberMessage.setAddDept(getOrgNo());
+            qkjvipMemberMessage.setAddTime(new Date());
+            qkjvipMemberMessageService.add(qkjvipMemberMessage);
         }
 
         return RestResponse.success();
