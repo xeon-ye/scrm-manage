@@ -59,7 +59,6 @@ public class QkjvipMemberSignupController extends AbstractController {
      * @return RestResponse
      */
     @RequestMapping("/queryAll")
-    @RequiresPermissions("qkjvip:membersignup:list")
     public RestResponse queryAll(@RequestParam Map<String, Object> params) {
         List<QkjvipMemberSignupEntity> list = qkjvipMemberSignupService.queryAll(params);
 
