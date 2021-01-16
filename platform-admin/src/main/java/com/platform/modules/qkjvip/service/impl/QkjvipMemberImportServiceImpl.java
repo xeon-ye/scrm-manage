@@ -47,6 +47,12 @@ public class QkjvipMemberImportServiceImpl extends ServiceImpl<QkjvipMemberImpor
         return page.setRecords(baseMapper.selectQkjvipMemberImportPage(page, params));
     }
 
+
+    @Override
+    public List<QkjvipMemberImportEntity> selectMemberByMobile(Map<String, Object> params) {
+        return baseMapper.selectMemberByMobile(params);
+    }
+
     @Override
     public boolean add(QkjvipMemberImportEntity qkjvipMemberImport) {
         return this.save(qkjvipMemberImport);

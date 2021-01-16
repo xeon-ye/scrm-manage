@@ -404,7 +404,7 @@ public class MemberController extends AbstractController {
      */
     @RequestMapping("/selectMemByOpenid")
     public RestResponse selectMemByOpenid(@RequestParam Map<String, Object> params) {
-        List<Integer> list = memberService.selectMemberByOpenid(params);
+        List<MemberEntity> list = memberService.selectMemberByOpenid(params);
         return RestResponse.success().put("list", list);
     }
 }

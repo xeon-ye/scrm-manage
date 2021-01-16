@@ -37,7 +37,7 @@ public interface MemberDao extends BaseMapper<MemberEntity> {
      */
     List<MemberEntity> queryAll(@Param("params") Map<String, Object> params);
 
-    List<Integer> selectMemberByOpenid(@Param("params") Map<String, Object> params);
+    List<MemberEntity> selectMemberByOpenid(@Param("params") Map<String, Object> params);
 
     /**
      * 自定义分页查询

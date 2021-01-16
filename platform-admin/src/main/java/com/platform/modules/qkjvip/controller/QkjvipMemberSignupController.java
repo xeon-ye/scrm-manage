@@ -111,7 +111,11 @@ public class QkjvipMemberSignupController extends AbstractController {
             //return RestResponse.error("已报名成功，谢谢");
             qkjvipMemberSignup = list.get(0);
         }else{
-            //清洗会员
+            List<QkjvipMemberImportEntity> mbs=new ArrayList<>();
+            //查询中间表是否有此手机号
+            Map<String, Object> map=new HashMap<>();
+            map.put("mobile",qkjvipMemberSignup.getPhone());
+            mbs=qkjvipMemberImportService.selectMemberByMobile(map);
             QkjvipMemberImportEntity memberImport=new QkjvipMemberImportEntity();
             memberImport.setAddUser(qkjvipMemberSignup.getMemadduser());
             memberImport.setAddDept(qkjvipMemberSignup.getMemadddept());
@@ -123,7 +127,10 @@ public class QkjvipMemberSignupController extends AbstractController {
             memberImport.setMemberName(qkjvipMemberSignup.getUserName());
             memberImport.setMobile(qkjvipMemberSignup.getPhone());
             memberImport.setOpenid(qkjvipMemberSignup.getOpenid());
-            qkjvipMemberImportService.add(memberImport);  //将数据保存到中间表
+            if(mbs==null||mbs.size()<=0){
+                //清洗会员
+                qkjvipMemberImportService.add(memberImport);  //将数据保存到中间表
+            }
 
             //调用数据清洗接口
             MemberEntity member = new MemberEntity();

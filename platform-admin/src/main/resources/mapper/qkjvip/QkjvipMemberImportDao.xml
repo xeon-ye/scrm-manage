@@ -78,4 +78,9 @@
     <select id="queryAll" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberImportEntity">
         <include refid="selectSql"/>
     </select>
+
+    <!--根据手机号查询判断是否有数据：孙珊珊-->
+    <select id="selectMemberByMoboil" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberImportEntity">
+        SELECT TOP 1 member_id from qkjvip_member_import where mobile=#{params.mobile}
+    </select>
 </mapper>

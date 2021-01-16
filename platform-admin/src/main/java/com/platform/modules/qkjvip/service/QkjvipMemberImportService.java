@@ -34,6 +34,8 @@ public interface QkjvipMemberImportService extends IService<QkjvipMemberImportEn
      */
     List<QkjvipMemberImportEntity> queryAll(Map<String, Object> params);
 
+    List<QkjvipMemberImportEntity> selectMemberByMobile(Map<String, Object> params);
+
     /**
      * 分页查询
      *
