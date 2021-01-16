@@ -14,7 +14,7 @@
         m.mobile
         FROM QKJVIP_MEMBER_CPONSON T
         join qkjvip_member m on (T.member_id=m.member_id)
-        WHERE (m.statusflag = 0 OR m.statusflag = 2)
+        WHERE 1=1  --(m.statusflag = 0 OR m.statusflag = 2)
         <if test="params.name != null and params.name.trim() != ''">
             AND T.NAME LIKE '%${params.name}%'
         </if>
