@@ -246,6 +246,11 @@ public class QkjvipMemberMessageController extends AbstractController {
                 selectedUserList = qkjvipMemberCponsonService.queryByCponId(qkjvipMemberMessage.getCategoryId());
             }
 
+            //保存发放记录
+            qkjvipMemberMessage.setAddUser(getUserId());
+            qkjvipMemberMessage.setAddDept(getOrgNo());
+            qkjvipMemberMessage.setAddTime(new Date());
+            qkjvipMemberMessageService.add(qkjvipMemberMessage);
             //群发发短信
             if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信
                 for(QkjvipMemberMessageUserQueryEntity selectedUser : selectedUserList){
@@ -270,11 +275,6 @@ public class QkjvipMemberMessageController extends AbstractController {
                     this.sendWxMsg(qkjvipMemberMessage, fansList);
                 }
             }
-            //保存发放记录
-            qkjvipMemberMessage.setAddUser(getUserId());
-            qkjvipMemberMessage.setAddDept(getOrgNo());
-            qkjvipMemberMessage.setAddTime(new Date());
-            qkjvipMemberMessageService.add(qkjvipMemberMessage);
         }
 
         return RestResponse.success();
