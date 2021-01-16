@@ -14,7 +14,7 @@
         m.mobile
         FROM QKJVIP_MEMBER_CPONSON T
         join qkjvip_member m on (T.member_id=m.member_id)
-        WHERE 1=1
+        WHERE (m.statusflag = 0 OR m.statusflag = 2)
         <if test="params.name != null and params.name.trim() != ''">
             AND T.NAME LIKE '%${params.name}%'
         </if>
@@ -38,7 +38,7 @@
         DELETE FROM QKJVIP_MEMBER_CPONSON WHERE main_id = #{mainid}
     </delete>
     <select id="queryByCponId" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberMessageUserQueryEntity">
-        SELECT c.MEMBER_ID, m.openid FROM QKJVIP_MEMBER_CPONSON c
+        SELECT c.MEMBER_ID, m.openid, m.mobile FROM QKJVIP_MEMBER_CPONSON c
         INNER JOIN qkjvip_member m ON (c.MEMBER_ID = m.member_id)
         WHERE (m.statusflag = 0 OR m.statusflag = 2) and c.MAIN_ID = #{value}
     </select>

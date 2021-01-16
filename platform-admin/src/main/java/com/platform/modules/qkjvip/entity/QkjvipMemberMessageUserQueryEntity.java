@@ -37,4 +37,9 @@ public class QkjvipMemberMessageUserQueryEntity implements Serializable {
      * openid
      */
     private String openid;
+
+    /**
+     * mobile
+     */
+    private String mobile;
 }

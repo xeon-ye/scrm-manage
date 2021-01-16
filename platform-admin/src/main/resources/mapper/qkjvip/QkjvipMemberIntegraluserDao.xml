@@ -13,7 +13,7 @@
         a.mobile
         FROM QKJVIP_MEMBER_INTEGRALUSER T
         join qkjvip_member a on (T.MEMBER_ID=a.member_id)
-        WHERE 1=1
+        WHERE (a.statusflag = 0 OR a.statusflag = 2)
         <if test="params.integralId != null and params.integralId.trim() != ''">
             AND T.INTEGRAL_ID = #{params.integralId}
         </if>
@@ -31,7 +31,7 @@
     </select>
 
     <select id="queryByIntegralId" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberMessageUserQueryEntity">
-        SELECT i.MEMBER_ID, m.openid FROM QKJVIP_MEMBER_INTEGRALUSER i
+        SELECT i.MEMBER_ID, m.openid, m.mobile FROM QKJVIP_MEMBER_INTEGRALUSER i
         INNER JOIN qkjvip_member m ON (i.MEMBER_ID = m.member_id)
         WHERE (m.statusflag = 0 OR m.statusflag = 2) and i.INTEGRAL_ID = #{value}
     </select>
