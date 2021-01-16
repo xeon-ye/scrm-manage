@@ -131,17 +131,19 @@
         <include refid="selectSql"/>
     </select>
     <!--根据openid判断是否关注公众号：孙珊珊-->
-    <!--<select id="selectMemberByOpenid" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
-        SELECT member_id,mobile from qkjvip_member where openid=#{params.openid} and IsUnSubscribe=0 and statusflag!=1 ORDER BY SubscribeTime desc
-    </select>-->
-    <select id="selectMemberByOpenid" resultType="int">
-        SELECT SUM(cnt) cnt FROM (
-        SELECT COUNT(*) cnt FROM qkjvip_member_fans
-        WHERE OpenId = #{params.openid} AND IsUnSubscribe = 0
-        UNION ALL
-        SELECT COUNT(*) cnt FROM qkjvip_member_jueru
-        WHERE AppOpenId = #{params.openid} AND IsSubscribe = 1) a
+    <select id="selectMemberByOpenid" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
+        select top 1 a.crm_memberid as memberId,b.mobile from [dbo].[qkjvip_member_jueru] a
+        inner join qkjvip_member b on a.AppOpenId=b.openid
+        where a.AppOpenId=#{params.openid} AND a.IsSubscribe = 1
     </select>
+<!--    <select id="selectMemberByOpenid" resultType="int">-->
+<!--        SELECT SUM(cnt) cnt FROM (-->
+<!--        SELECT COUNT(*) cnt FROM qkjvip_member_fans-->
+<!--        WHERE OpenId = #{params.openid} AND IsUnSubscribe = 0-->
+<!--        UNION ALL-->
+<!--        SELECT COUNT(*) cnt FROM qkjvip_member_jueru-->
+<!--        WHERE AppOpenId = #{params.openid} AND IsSubscribe = 1) a-->
+<!--    </select>-->
 
     <delete id="removeByIds">
         UPDATE qkjvip_member SET statusflag = 1 WHERE member_id IN
