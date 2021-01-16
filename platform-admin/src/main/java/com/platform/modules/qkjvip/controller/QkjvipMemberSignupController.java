@@ -131,7 +131,7 @@ public class QkjvipMemberSignupController extends AbstractController {
                 //清洗会员
                 qkjvipMemberImportService.add(memberImport);  //将数据保存到中间表
             }
-            
+
             //调用数据清洗接口
             MemberEntity member = new MemberEntity();
             try {
