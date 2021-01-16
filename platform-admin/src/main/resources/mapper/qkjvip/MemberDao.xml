@@ -132,7 +132,13 @@
     </select>
     <!--根据openid判断是否关注公众号：孙珊珊-->
     <select id="selectMemberByOpenid" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
-        select top 1 a.crm_memberid as memberId,b.mobile from [dbo].[qkjvip_member_jueru] a
+        select top 1 a.crm_memberid as memberId,
+        (
+        select  top 1 b.mobile from [dbo].[qkjvip_member_jueru] a
+        inner join qkjvip_member b on a.AppOpenId=b.openid
+        where a.AppOpenId=#{params.openid} AND a.IsSubscribe = 1 and ISNULL(b.mobile, 'tt')!='tt')
+        as mobile
+        from [dbo].[qkjvip_member_jueru] a
         inner join qkjvip_member b on a.AppOpenId=b.openid
         where a.AppOpenId=#{params.openid} AND a.IsSubscribe = 1
     </select>
