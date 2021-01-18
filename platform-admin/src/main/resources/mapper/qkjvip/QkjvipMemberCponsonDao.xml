@@ -38,8 +38,10 @@
         DELETE FROM QKJVIP_MEMBER_CPONSON WHERE main_id = #{mainid}
     </delete>
     <select id="queryByCponId" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberMessageUserQueryEntity">
-        SELECT c.MEMBER_ID, m.openid, m.mobile FROM QKJVIP_MEMBER_CPONSON c
-        INNER JOIN qkjvip_member m ON (c.MEMBER_ID = m.member_id)
-        WHERE (m.statusflag = 0 OR m.statusflag = 2) and c.MAIN_ID = #{value}
+        SELECT DISTINCT ISNULL(m1.memberidto, m1.member_id) as member_id, ISNULL(m2.openid, m1.openid) as openid, ISNULL(m2.mobile, m1.mobile) as mobile
+        FROM QKJVIP_MEMBER_CPONSON c  WITH(NOLOCK)
+        inner join qkjvip_member m1 WITH(NOLOCK) on c.member_id=m1.member_id
+        left join  qkjvip_member m2 WITH(NOLOCK) on m1.memberidto=m2.member_id
+        where c.MAIN_ID = #{value}
     </select>
 </mapper>
