@@ -83,4 +83,6 @@ public class QkjvipMemberOrderthpEntity implements Serializable {
     private String refundstatus;
 
     private Double returnquantity;
+
+    private String managerconfirmdate;
 }
