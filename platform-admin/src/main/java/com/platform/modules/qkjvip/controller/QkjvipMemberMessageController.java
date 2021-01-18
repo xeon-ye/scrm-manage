@@ -165,9 +165,11 @@ public class QkjvipMemberMessageController extends AbstractController {
     @PostMapping("/init")
     public RestResponse init(@RequestBody QkjvipMemberMessageEntity qkjvipMemberMessage) {
         List<QkjvipOptionsEntity> options = new ArrayList<>();
-        List<QkjvipMemberMessageUserQueryEntity> selectedUser = new ArrayList<>();
+        List<QkjvipMemberMessageUserQueryEntity> selectedUserList = new ArrayList<>();
+        List<String> appids = new ArrayList<>();
         String userStr = "";
         String openidStr = "";
+        int cnt = 0;
         //获取公众号列表
         String resultPost = HttpClient.sendGet(Vars.APPID_GETLIST_URL);
         JSONObject resultObject = JSON.parseObject(resultPost);
@@ -177,31 +179,43 @@ public class QkjvipMemberMessageController extends AbstractController {
             List<QrtzMemberFansEntity> fansList = new ArrayList<>();
             if (qkjvipMemberMessage.getCategoryType() != null) {
                 if ("1".equals(qkjvipMemberMessage.getCategoryType())) {  //活动
-                    selectedUser = qkjvipMemberActivitymbsService.queryByActivityId(qkjvipMemberMessage.getCategoryId());
+                    selectedUserList = qkjvipMemberActivitymbsService.queryByActivityId(qkjvipMemberMessage.getCategoryId());
                 } else if ("2".equals(qkjvipMemberMessage.getCategoryType())) {  //积分
-                    selectedUser = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
+                    selectedUserList = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
                 } else if ("3".equals(qkjvipMemberMessage.getCategoryType())) {  //优惠券
-                    selectedUser = qkjvipMemberCponsonService.queryByCponId(qkjvipMemberMessage.getCategoryId());
+                    selectedUserList = qkjvipMemberCponsonService.queryByCponId(qkjvipMemberMessage.getCategoryId());
                 }
-                Map map = ListToStringUtil.entityToMap(selectedUser);
+                Map map = ListToStringUtil.entityToMap(selectedUserList);
                 fansList = qrtzMemberFansService.queryByMemberMessageQuery(map);
             }
 
+            // 查询有手机号的人数
+            for (QkjvipMemberMessageUserQueryEntity selectedUser : selectedUserList) {
+                if (StringUtils.isNotBlank(selectedUser.getMobile())) {
+                    cnt++;
+                }
+            }
             for (QkjvipOptionsEntity option : options) {
                 for(QrtzMemberFansEntity fans : fansList){
                     if (option.getAppid() != null && option.getAppid().equals(fans.getAppid())) {
                         option.setName(option.getName() + "(" + fans.getMembernum() + "个人)");
+                        appids.add(option.getAppid());
                         break;
                     }
                 }
             }
-            QkjvipOptionsEntity option = new QkjvipOptionsEntity();
-            option.setAppid("012345678987654321");
-            option.setName("短信");
-            options.add(option);
+            if (cnt > 0) {
+                QkjvipOptionsEntity option = new QkjvipOptionsEntity();
+                option.setAppid("012345678987654321");
+                option.setName("短信" + "(" + cnt + "个人)");
+                options.add(option);
+                appids.add(option.getAppid());
+            }
         }
-
-        return RestResponse.success().put("options", options);
+        Map map = new HashMap();
+        map.put("appids", appids);
+        map.put("options", options);
+        return RestResponse.success().put("selectedMap", map);
     }
 
     /**
@@ -233,11 +247,23 @@ public class QkjvipMemberMessageController extends AbstractController {
                 qkjvipMemberActivityService.update(qkjvipMemberCpon);
                 selectedUserList = qkjvipMemberActivitymbsService.queryByActivityId(qkjvipMemberMessage.getCategoryId());
             } else if ("2".equals(qkjvipMemberMessage.getCategoryType())) {  //积分
-                QkjvipMemberIntegralEntity qkjvipMemberIntegral = new QkjvipMemberIntegralEntity();
+                selectedUserList = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
+                if (selectedUserList.size() == 0) {
+                    return RestResponse.error(1, "没有有效的发送对象，请确认！");
+                }
+                List<String> memberids = new ArrayList<>();
+                for(QkjvipMemberMessageUserQueryEntity selectedUser : selectedUserList){
+                    if (StringUtils.isNotBlank(selectedUser.getMemberId())) {
+                        memberids.add(selectedUser.getMemberId());
+                    }
+                }
+                QkjvipMemberIntegralEntity qkjvipMemberIntegral = qkjvipMemberIntegralService.getById(qkjvipMemberMessage.getCategoryId());
+                qkjvipMemberIntegral.setSendStatus(1); //状态修改为积分已发送
+                qkjvipMemberIntegral.setId(qkjvipMemberMessage.getCategoryId());
+                qkjvipMemberIntegralService.sendIntegral(qkjvipMemberIntegral, memberids);  //发放积分
                 qkjvipMemberIntegral.setSendStatus(2); //状态修改为通知已发送
                 qkjvipMemberIntegral.setId(qkjvipMemberMessage.getCategoryId());
                 qkjvipMemberIntegralService.updateStatus(qkjvipMemberIntegral);
-                selectedUserList = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
             } else if ("3".equals(qkjvipMemberMessage.getCategoryType())) {  //优惠券
                 QkjvipMemberCponEntity qkjvipMemberCpon=new QkjvipMemberCponEntity();
                 qkjvipMemberCpon = qkjvipMemberCponService.getById(qkjvipMemberMessage.getCategoryId());
