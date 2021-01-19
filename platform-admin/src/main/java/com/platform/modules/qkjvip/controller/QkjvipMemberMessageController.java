@@ -247,23 +247,11 @@ public class QkjvipMemberMessageController extends AbstractController {
                 qkjvipMemberActivityService.update(qkjvipMemberCpon);
                 selectedUserList = qkjvipMemberActivitymbsService.queryByActivityId(qkjvipMemberMessage.getCategoryId());
             } else if ("2".equals(qkjvipMemberMessage.getCategoryType())) {  //积分
-                selectedUserList = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
-                if (selectedUserList.size() == 0) {
-                    return RestResponse.error(1, "没有有效的发送对象，请确认！");
-                }
-                List<String> memberids = new ArrayList<>();
-                for(QkjvipMemberMessageUserQueryEntity selectedUser : selectedUserList){
-                    if (StringUtils.isNotBlank(selectedUser.getMemberId())) {
-                        memberids.add(selectedUser.getMemberId());
-                    }
-                }
-                QkjvipMemberIntegralEntity qkjvipMemberIntegral = qkjvipMemberIntegralService.getById(qkjvipMemberMessage.getCategoryId());
-                qkjvipMemberIntegral.setSendStatus(1); //状态修改为积分已发送
-                qkjvipMemberIntegral.setId(qkjvipMemberMessage.getCategoryId());
-                qkjvipMemberIntegralService.sendIntegral(qkjvipMemberIntegral, memberids);  //发放积分
+                QkjvipMemberIntegralEntity qkjvipMemberIntegral = new QkjvipMemberIntegralEntity();
                 qkjvipMemberIntegral.setSendStatus(2); //状态修改为通知已发送
                 qkjvipMemberIntegral.setId(qkjvipMemberMessage.getCategoryId());
                 qkjvipMemberIntegralService.updateStatus(qkjvipMemberIntegral);
+                selectedUserList = qkjvipMemberIntegraluserService.queryByIntegralId(qkjvipMemberMessage.getCategoryId());
             } else if ("3".equals(qkjvipMemberMessage.getCategoryType())) {  //优惠券
                 QkjvipMemberCponEntity qkjvipMemberCpon=new QkjvipMemberCponEntity();
                 qkjvipMemberCpon = qkjvipMemberCponService.getById(qkjvipMemberMessage.getCategoryId());
