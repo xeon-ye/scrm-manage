@@ -33,7 +33,7 @@ public class RabbitMQUtil {
             //定义一个连接工厂
             ConnectionFactory factory = new ConnectionFactory();
             //设置服务端地址（域名地址/ip）
-            factory.setHost("10.1.1.50");   //内网 172.17.9.22
+            factory.setHost("123.56.178.176");   //内网 172.17.9.22
             //设置服务器端口号
             factory.setPort(5672);
             //设置虚拟主机(相当于数据库中的库)
