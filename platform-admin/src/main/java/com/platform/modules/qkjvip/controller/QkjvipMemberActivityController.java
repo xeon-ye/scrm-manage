@@ -184,6 +184,7 @@ public class QkjvipMemberActivityController extends AbstractController {
     public RestResponse save(@RequestBody QkjvipMemberActivityEntity qkjvipMemberActivity) {
         qkjvipMemberActivity.setAdduser(getUserId());
         qkjvipMemberActivity.setAdddept(getOrgNo());
+        qkjvipMemberActivity.setAddtime(new Date());
         List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
         mbs=qkjvipMemberActivity.getMbs();
         qkjvipMemberActivityService.add(qkjvipMemberActivity);

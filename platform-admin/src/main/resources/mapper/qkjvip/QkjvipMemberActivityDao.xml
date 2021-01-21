@@ -29,21 +29,24 @@
     </sql>
 
     <sql id="selectSqlSignAddress">
-        SELECT *,1 istake from QKJVIP_MEMBER_ACTIVITY t
+        select * from (SELECT *,1 istake from QKJVIP_MEMBER_ACTIVITY t
         where 1=1
         <if test="params.memberIdSign != null and params.memberIdSign.trim() != ''">
-            AND EXISTS (SELECT 1 from qkjvip_member_signup s where s.acitvity_id=t.id and s.memberid=#{params.memberIdSign})
+            AND EXISTS (SELECT 1 from qkjvip_member_signup s where s.acitvity_id=t.id and
+            s.memberid=#{params.memberIdSign})
         </if>
         union all
         SELECT *,2 istake from QKJVIP_MEMBER_ACTIVITY t
         where 1=1
         <if test="params.memberIdSign != null and params.memberIdSign.trim() != ''">
-            AND not EXISTS (SELECT 1 from qkjvip_member_signup s where s.acitvity_id=t.id and s.memberid=#{params.memberIdSign})
+            AND not EXISTS (SELECT 1 from qkjvip_member_signup s where s.acitvity_id=t.id and
+            s.memberid=#{params.memberIdSign})
         </if>
         <if test="params.memberIdSignAddress != null and params.memberIdSignAddress.trim() != ''">
-            and  EXISTS (SELECT 1 from qkjvip_member_signupaddress adres
+            and EXISTS (SELECT 1 from qkjvip_member_signupaddress adres
             where adres.activityid=t.id and adres.address like '%${params.memberIdSignAddress}%')
         </if>
+        ) act order by act.istake asc,act.addtime desc
     </sql>
 
     <sql id="selectSqlCount">

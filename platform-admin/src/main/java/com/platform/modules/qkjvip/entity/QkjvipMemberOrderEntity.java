@@ -104,4 +104,11 @@ public class QkjvipMemberOrderEntity implements Serializable {
 
     private String skucode;
 
+    private String paydate;
+    private String finishdate;
+    private String paymenttypename;
+    private String shopid;
+    private String productid;
+    private String orderchannel;
+
 }

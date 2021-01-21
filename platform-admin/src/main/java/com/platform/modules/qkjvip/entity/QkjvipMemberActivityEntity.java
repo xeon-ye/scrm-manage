@@ -17,6 +17,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -65,6 +66,9 @@ public class QkjvipMemberActivityEntity implements Serializable {
     private String issignimg;
     private String atype;
     private Integer status;
+    private String triplog;
+    private String activilog;
+    private Date addtime;
 
     @TableField(exist = false)
     private String htmlurl;
