@@ -29,7 +29,12 @@
     </sql>
 
     <sql id="selectSqlSignAddress">
-        select * from (SELECT *,1 istake from QKJVIP_MEMBER_ACTIVITY t
+        select * ,
+        (SELECT top 1 address from qkjvip_member_signupaddress a where a.activityid=act.id) as addressstr
+
+        from (SELECT *,1 istake
+
+        from QKJVIP_MEMBER_ACTIVITY t
         where 1=1
         <if test="params.memberIdSign != null and params.memberIdSign.trim() != ''">
             AND EXISTS (SELECT 1 from qkjvip_member_signup s where s.acitvity_id=t.id and
