@@ -1,5 +1,6 @@
 package cn.emay;
 
+import cn.emay.eucp.inter.http.v1.dto.request.SmsBatchOnlyRequest;
 import cn.emay.eucp.inter.http.v1.dto.request.SmsSingleRequest;
 import cn.emay.eucp.inter.http.v1.dto.response.SmsResponse;
 import cn.emay.util.AES;
@@ -58,6 +59,35 @@ public class Example {
 		}else{
 		    return "ERROR";
         }
+
+	}
+
+	/**
+	 * 发送批次短信
+	 *
+	 * @param isGzip
+	 *            是否压缩
+	 */
+	public static String setBatchOnlySms(String appId, String secretKey, String host, String algorithm, String content, String extendCode, String[] mobiles, boolean isGzip, String encode) {
+		System.out.println("=============begin setBatchOnlySms==================");
+		SmsBatchOnlyRequest pamars = new SmsBatchOnlyRequest();
+		pamars.setMobiles(mobiles);
+		pamars.setExtendedCode(extendCode);
+		pamars.setContent(content);
+		ResultModel result = request(appId, secretKey, algorithm, pamars, host + "/inter/sendBatchOnlySMS", isGzip, encode);
+		System.out.println("result code :" + result.getCode());
+		if ("SUCCESS".equals(result.getCode())) {
+			SmsResponse[] response = JsonHelper.fromJson(SmsResponse[].class, result.getResult());
+			if (response != null) {
+				for (SmsResponse d : response) {
+					System.out.println("data:" + d.getMobile() + "," + d.getSmsId() + "," + d.getCustomSmsId());
+				}
+			}
+			System.out.println("=============end setBatchOnlySms==================");
+			return "SUCCESS";
+		}else {
+			return "ERROR";
+		}
 
 	}
 

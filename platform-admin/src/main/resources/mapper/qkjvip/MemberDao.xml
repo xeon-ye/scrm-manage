@@ -161,4 +161,11 @@
             #{memberId}
         </foreach>
     </delete>
+
+    <select id="queryMemByList" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
+        SELECT m.* FROM qkjvip_member m WHERE 1=1 and m.mobile IN
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item.mobile}
+        </foreach>
+    </select>
 </mapper>

@@ -14,20 +14,28 @@ package com.platform.modules.qkjvip.controller;
 import cn.emay.util.DateUtil;
 import cn.emay.util.JsonHelper;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
+import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.RestResponse;
+import com.platform.common.utils.StringUtils;
+import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.entity.QkjvipMemberCponsonEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberImportEntity;
+import com.platform.modules.qkjvip.service.MemberService;
 import com.platform.modules.qkjvip.service.QkjvipMemberCponsonService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipMemberCponEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberCponService;
+import com.platform.modules.util.ExportExcelUtils;
 import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.Vars;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
@@ -45,6 +53,8 @@ public class QkjvipMemberCponController extends AbstractController {
     private QkjvipMemberCponService qkjvipMemberCponService;
     @Autowired
     private QkjvipMemberCponsonService qkjvipMemberCponsonService;
+    @Autowired
+    private MemberService memberService;
 
     /**
      * 查看所有列表
@@ -241,5 +251,63 @@ public class QkjvipMemberCponController extends AbstractController {
     public RestResponse sendCponDetail(@PathVariable("id") String id)throws IOException  {
         QkjvipMemberCponEntity qkjvipMemberCpon = qkjvipMemberCponService.getById(id);
         return RestResponse.success().put("membercpon", qkjvipMemberCpon);
+    }
+
+    /**
+     * 导入会员数据
+     */
+    @SysLog("导入会员")
+    @RequestMapping("/import")
+    public RestResponse importExcel(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        List<MemberEntity> mees=new ArrayList<>();
+        if (StringUtils.isBlank(fileName)) {
+            throw new BusinessException("请选择要导入的文件");
+        } else {
+            //插入impont 表
+            try {
+                List<MemberEntity> list = ExportExcelUtils.importExcel(file, 1, 1,MemberEntity.class);
+                if (list.size() > 0) {
+                    //根据手机号查询会员
+                    mees=memberService.queryMemByList(list);
+                }
+                System.out.println("导入优惠券会员条数："+list.size()+";实际查询到会员条数："+mees.size());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return RestResponse.success().put("memberlist", mees);
+    }
+
+
+    /**
+     * 导入会员数据
+     */
+    @SysLog("导入会员")
+    @RequestMapping("/importphone")
+    public RestResponse importExcelphone(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        StringBuffer str=new StringBuffer();
+        List<MemberEntity> mees=new ArrayList<>();
+        if (StringUtils.isBlank(fileName)) {
+            throw new BusinessException("请选择要导入的文件");
+        } else {
+            //插入impont 表
+            try {
+                List<MemberEntity> list = ExportExcelUtils.importExcel(file, 1, 1,MemberEntity.class);
+                for (int i = 0; i < list.size(); i++) {
+                    if(i == (list.size()-1)){
+                        str.append(list.get(i).getMobile());
+                    }else{
+                        str.append(list.get(i).getMobile()+",");
+                    }
+
+                }
+                System.out.println("导入优惠券会员条数："+list.size()+";实际查询到会员条数："+mees.size());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return RestResponse.success().put("memberlist", str);
     }
 }

@@ -131,5 +131,9 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
         }
     }
 
+    @Override
+    public List<MemberEntity> queryMemByList(List<MemberEntity> mbList) {
+        return baseMapper.queryMemByList(mbList);
+    }
 
 }

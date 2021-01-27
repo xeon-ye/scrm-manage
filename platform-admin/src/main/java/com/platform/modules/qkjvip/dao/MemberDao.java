@@ -14,7 +14,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.platform.modules.pageCont.pageCount;
 import com.platform.modules.qkjvip.entity.MemberEntity;
-import com.platform.modules.qkjvip.entity.QkjvipMemberOrderEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -72,4 +71,6 @@ public interface MemberDao extends BaseMapper<MemberEntity> {
      * @return int
      */
     void removeByIds(String[] memberIds);
+
+    List<MemberEntity> queryMemByList(List<MemberEntity> mbList);
 }

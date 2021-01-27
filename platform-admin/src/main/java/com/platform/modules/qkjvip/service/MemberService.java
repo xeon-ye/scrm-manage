@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.platform.modules.pageCont.pageCount;
 import com.platform.modules.qkjvip.entity.MemberEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberImportEntity;
 
 import java.io.IOException;
 import java.util.List;
@@ -73,4 +74,11 @@ public interface MemberService extends IService<MemberEntity> {
      * @param userIds 会员Ids
      */
     void deleteBatch(String[] userIds) throws IOException;
+
+    /**
+     * 根据list查询会员孙珊珊
+     * @param mbList
+     * @return
+     */
+    List<MemberEntity> queryMemByList(List<MemberEntity> mbList);
 }

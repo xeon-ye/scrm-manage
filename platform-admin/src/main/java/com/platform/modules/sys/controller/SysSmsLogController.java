@@ -168,7 +168,25 @@ public class SysSmsLogController extends AbstractController {
     @RequestMapping("/sendSms")
     @ResponseBody
     public RestResponse sendSms(@RequestBody SysSmsLogEntity smsLog) {
-        SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSms(smsLog);
-        return RestResponse.success().put("result", sysSmsLogEntity);
+        String[] mobel=smsLog.getMobile().split(",");
+        this.sendMobileMsgBact(smsLog.getContent(),smsLog.getMobile());
+
+//        SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSms(smsLog);
+        return RestResponse.success();
+    }
+
+    /**
+     * 群发短信
+     *
+     * @param content 内容
+     * @param mobile 手机
+     */
+    public void sendMobileMsgBact(String content, String mobile) {
+        //发短信
+        SysSmsLogEntity smsLog = new SysSmsLogEntity();
+        smsLog.setContent(content);
+        smsLog.setMobile(mobile);
+//        smsLog.setMobile("13621255469");
+        SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSmsBach(smsLog);
     }
 }

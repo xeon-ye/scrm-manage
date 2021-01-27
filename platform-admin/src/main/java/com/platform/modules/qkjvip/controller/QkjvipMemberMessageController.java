@@ -266,13 +266,16 @@ public class QkjvipMemberMessageController extends AbstractController {
             qkjvipMemberMessage.setAddTime(new Date());
             qkjvipMemberMessageService.add(qkjvipMemberMessage);
             //群发发短信
-            if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信
+            if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信修改为群发孙珊
+                StringBuffer mobils=new StringBuffer();
+                msg = qkjvipMemberMessage.getDxContent() + "请在微信里打开以下链接：" + qkjvipMemberMessage.getUrl();
                 for(QkjvipMemberMessageUserQueryEntity selectedUser : selectedUserList){
                     if (selectedUser != null && StringUtils.isNotBlank(selectedUser.getMobile())) {
-                        msg = qkjvipMemberMessage.getDxContent() + "请在微信里打开以下链接：" + qkjvipMemberMessage.getUrl();
-                        this.sendMobileMsg(msg, selectedUser.getMobile());
+                        //this.sendMobileMsg(msg, selectedUser.getMobile());
+                        mobils.append(selectedUser.getMobile()+",");
                     }
                 }
+                this.sendMobileMsgBact(msg,mobils+"");
             }
             //群发微信
             Map queryMap = ListToStringUtil.entityToMap(selectedUserList);
@@ -307,6 +310,21 @@ public class QkjvipMemberMessageController extends AbstractController {
         smsLog.setMobile(mobile);
 //        smsLog.setMobile("13621255469");
         SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSms(smsLog);
+    }
+
+    /**
+     * 群发短信
+     *
+     * @param content 内容
+     * @param mobile 手机
+     */
+    public void sendMobileMsgBact(String content, String mobile) {
+        //发短信
+        SysSmsLogEntity smsLog = new SysSmsLogEntity();
+        smsLog.setContent(content);
+        smsLog.setMobile(mobile);
+//        smsLog.setMobile("13621255469");
+        SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSmsBach(smsLog);
     }
 
     /**
