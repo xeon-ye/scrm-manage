@@ -239,7 +239,7 @@ public class QkjvipMemberMessageController extends AbstractController {
             String memberidstr = "";
             String openidStr = "";
             String msg = "";
-
+            Object savePoint = TransactionAspectSupport.currentTransactionStatus().createSavepoint();  //设置回滚点
             if ("1".equals(qkjvipMemberMessage.getCategoryType())) {  //活动
                 QkjvipMemberActivityEntity qkjvipMemberCpon=new QkjvipMemberActivityEntity();
                 qkjvipMemberCpon = qkjvipMemberActivityService.getById(qkjvipMemberMessage.getCategoryId());
@@ -267,15 +267,21 @@ public class QkjvipMemberMessageController extends AbstractController {
             qkjvipMemberMessageService.add(qkjvipMemberMessage);
             //群发发短信
             if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信修改为群发孙珊
-                StringBuffer mobils=new StringBuffer();
+                StringBuffer mobiles=new StringBuffer();
                 msg = qkjvipMemberMessage.getDxContent() + "请在微信里打开以下链接：" + qkjvipMemberMessage.getUrl();
                 for(QkjvipMemberMessageUserQueryEntity selectedUser : selectedUserList){
                     if (selectedUser != null && StringUtils.isNotBlank(selectedUser.getMobile())) {
-                        //this.sendMobileMsg(msg, selectedUser.getMobile());
-                        mobils.append(selectedUser.getMobile()+",");
+                        mobiles.append(selectedUser.getMobile()+",");
                     }
                 }
-                this.sendMobileMsgBact(msg,mobils+"");
+                SysSmsLogEntity smsLog = new SysSmsLogEntity();
+                smsLog.setContent(msg);
+                smsLog.setMobile(mobiles.toString());
+                SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSmsBach(smsLog);
+                if (sysSmsLogEntity.getSendStatus() == 1) {
+                    TransactionAspectSupport.currentTransactionStatus().rollbackToSavepoint(savePoint);
+                    return RestResponse.error("短信通知发送失败！");
+                }
             }
             //群发微信
             Map queryMap = ListToStringUtil.entityToMap(selectedUserList);
@@ -289,7 +295,11 @@ public class QkjvipMemberMessageController extends AbstractController {
                 fansList = qrtzMemberFansService.queryAll(map);
                 //调用赵月辉接口
                 if (fansList.size() > 0) {
-                    this.sendWxMsg(qkjvipMemberMessage, fansList);
+                    String result = this.sendWxMsg(qkjvipMemberMessage, fansList);
+                    if (!"0".equals(result)) {
+                        TransactionAspectSupport.currentTransactionStatus().rollbackToSavepoint(savePoint);
+                        return RestResponse.error("微信通知发送失败！");
+                    }
                 }
             }
         }
@@ -298,56 +308,14 @@ public class QkjvipMemberMessageController extends AbstractController {
     }
 
     /**
-     * 群发短信
-     *
-     * @param content 内容
-     * @param mobile 手机
-     */
-    public void sendMobileMsg(String content, String mobile) {
-        //发短信
-        SysSmsLogEntity smsLog = new SysSmsLogEntity();
-        smsLog.setContent(content);
-        smsLog.setMobile(mobile);
-//        smsLog.setMobile("13621255469");
-        SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSms(smsLog);
-    }
-
-    /**
-     * 群发短信
-     *
-     * @param content 内容
-     * @param mobile 手机
-     */
-    public void sendMobileMsgBact(String content, String mobile) {
-        //发短信
-        SysSmsLogEntity smsLog = new SysSmsLogEntity();
-        smsLog.setContent(content);
-        smsLog.setMobile(mobile);
-//        smsLog.setMobile("13621255469");
-        SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSmsBach(smsLog);
-    }
-
-    /**
      * 群发微信
      * @param qkjvipMemberMessage
      * @param fansList 微信用户列表
      */
-    @Transactional(rollbackFor = Exception.class)
-    public void sendWxMsg(QkjvipMemberMessageEntity qkjvipMemberMessage, List<QrtzMemberFansEntity> fansList) throws IOException {
+    public String sendWxMsg(QkjvipMemberMessageEntity qkjvipMemberMessage, List<QrtzMemberFansEntity> fansList) throws IOException {
         Map map = new HashMap();
         List<String> appidList = qkjvipMemberMessage.getAppidList();
         List<Object> list = new ArrayList<>();
-        // 测试start
-//        sonMap.put("appId", "wx2d52554e706d23ad");
-//        List<String> Openids = new ArrayList<>();
-//        List<Object> list = new ArrayList<>();
-//        Openids.add("ozmFr1S-kFJIlTSIrpj-OnK907jE");
-//        Openids.add("ozmFr1S-kFJIlTSIrpj-OnK907jE");
-//        sonMap.put("openIds", Openids);
-//        list.add(sonMap);
-//        map.put("list", list);
-        // 测试end
-        // 正式start
         for (int i = 0; i < appidList.size(); i++) {
             List<String> openIds = new ArrayList<>();
             Map sonMap = new HashMap();
@@ -375,10 +343,8 @@ public class QkjvipMemberMessageController extends AbstractController {
             String queryJsonStr = JsonHelper.toJsonString(map);
             String resultPost = HttpClient.sendPost(Vars.MESSAGE_SEND, queryJsonStr);
             JSONObject resultObject = JSON.parseObject(resultPost);
-            if (!"0".equals(resultObject.get("code").toString())) {  //调用失败
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            }
+            return resultObject.get("code").toString();
         }
-        // 正式end
+        return "0";
     }
 }
