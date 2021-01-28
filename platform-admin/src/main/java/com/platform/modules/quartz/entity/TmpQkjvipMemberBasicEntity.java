@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 实体aa
+ * 实体
  *
  * @author liuqianru
  * @date 2020-08-20 14:33:13
