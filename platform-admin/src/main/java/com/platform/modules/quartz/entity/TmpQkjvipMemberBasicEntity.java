@@ -43,6 +43,10 @@ public class TmpQkjvipMemberBasicEntity implements Serializable {
      */
     private String realname;
     /**
+     * 生日
+     */
+    private String birthday;
+    /**
      * 类型
      */
     private String typename;
