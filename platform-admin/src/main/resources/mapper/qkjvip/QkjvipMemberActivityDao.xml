@@ -51,7 +51,7 @@
             and EXISTS (SELECT 1 from qkjvip_member_signupaddress adres
             where adres.activityid=t.id and adres.address like '%${params.memberIdSignAddress}%')
         </if>
-        ) act order by act.istake asc,act.addtime desc
+        ) act order by act.istake asc,act.end_date desc
     </sql>
 
     <sql id="selectSqlCount">
