@@ -81,6 +81,7 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
     @Override
     public SysSmsLogEntity sendSms(SysSmsLogEntity smsLog) {
         smsLog.setType(SmsUtil.TYPE);
+        smsLog.setUserId(ShiroUtils.getUserId());
         String result = Constant.BLANK;
         //获取云存储配置信息
         SmsConfig config = sysConfigService.getConfigObject(Constant.SMS_CONFIG_KEY, SmsConfig.class);
@@ -169,6 +170,7 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
     @Override
     public SysSmsLogEntity sendSmsBach(SysSmsLogEntity smsLog) {
         smsLog.setType(SmsUtil.TYPE);
+        smsLog.setUserId(ShiroUtils.getUserId());
         String result = Constant.BLANK;
         //获取云存储配置信息
         SmsConfig config = sysConfigService.getConfigObject(Constant.SMS_CONFIG_KEY, SmsConfig.class);
