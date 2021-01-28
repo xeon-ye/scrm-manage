@@ -40,6 +40,10 @@ public class QrtzMemberBasicEntity implements Serializable {
     * 会员真实姓名
      */
     private String realname;
+    /**
+     * 生日
+     */
+    private String birthday;
     /*
      * 类型
      */
