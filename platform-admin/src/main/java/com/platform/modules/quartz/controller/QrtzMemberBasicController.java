@@ -115,35 +115,35 @@ public class QrtzMemberBasicController extends AbstractController {
     }
 
     public void saveOrUpdateMember(String resultPost, String timeType) {
-//        List<QrtzMemberBasicEntity> mbList = JSON.parseArray(resultPost, QrtzMemberBasicEntity.class);
-//        List<TmpQkjvipMemberBasicEntity> tmpList = JSON.parseArray(resultPost, TmpQkjvipMemberBasicEntity.class);
-//        Map map = new HashMap();
-//        map.put("QueueData", mbList);
-//        String jsonData = JsonHelper.toJsonString(map, "yyyy-MM-dd HH:mm:ss");
-//        List<QrtzMemberBasicEntity> fromDbList = new ArrayList<QrtzMemberBasicEntity>();
-//        if (tmpList.size() > 0) {
-//            tmpQkjvipMemberBasicService.addBatch(tmpList);  //批量插入会员临时表
-//            fromDbList = memberBasicService.queryList();  //取出会员表与临时表的交集(插入是为重复数据，更新时即为要更新的数据)
-//        }
-//        if ("0".equals(timeType)) {  //注册
-//            addList = new ArrayList<QrtzMemberBasicEntity>();
-//            if (mbList.size() > 0) {
-//                mbList.removeAll(fromDbList); //将中酒取出的数据去除表中已存在的数据
-//                addList = mbList;
-//                if (addList.size() > 0) {
-//                    memberBasicService.addBatch(addList);  //会员批量插入
-//                }
-//            }
-//        } else if ("1".equals(timeType)) {
-//            if (fromDbList.size() > 0) {
-//                fromDbList.removeAll(addList);
-//                if (fromDbList.size() > 0) {
-//                    memberBasicService.updateBatch(fromDbList);
-//                }
-//            }
-//        }
-//        //将数据存入队列
-//        RabbitMQUtil.getConnection("qkjvip_member_basic", jsonData);
+        List<QrtzMemberBasicEntity> mbList = JSON.parseArray(resultPost, QrtzMemberBasicEntity.class);
+        List<TmpQkjvipMemberBasicEntity> tmpList = JSON.parseArray(resultPost, TmpQkjvipMemberBasicEntity.class);
+        Map map = new HashMap();
+        map.put("QueueData", mbList);
+        String jsonData = JsonHelper.toJsonString(map, "yyyy-MM-dd HH:mm:ss");
+        List<QrtzMemberBasicEntity> fromDbList = new ArrayList<QrtzMemberBasicEntity>();
+        if (tmpList.size() > 0) {
+            tmpQkjvipMemberBasicService.addBatch(tmpList);  //批量插入会员临时表
+            fromDbList = memberBasicService.queryList();  //取出会员表与临时表的交集(插入是为重复数据，更新时即为要更新的数据)
+        }
+        if ("0".equals(timeType)) {  //注册
+            addList = new ArrayList<QrtzMemberBasicEntity>();
+            if (mbList.size() > 0) {
+                mbList.removeAll(fromDbList); //将中酒取出的数据去除表中已存在的数据
+                addList = mbList;
+                if (addList.size() > 0) {
+                    memberBasicService.addBatch(addList);  //会员批量插入
+                }
+            }
+        } else if ("1".equals(timeType)) {
+            if (fromDbList.size() > 0) {
+                fromDbList.removeAll(addList);
+                if (fromDbList.size() > 0) {
+                    memberBasicService.updateBatch(fromDbList);
+                }
+            }
+        }
+        //将数据存入队列
+        RabbitMQUtil.getConnection("qkjvip_member_basic", jsonData);
     }
 
     /**
