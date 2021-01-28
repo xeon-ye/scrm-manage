@@ -63,58 +63,58 @@ public class QrtzMemberOrderController extends AbstractController {
     @SysLog("会员订单读取定时任务")
     @RequestMapping("/getMembersOrder")
     public void getMembersOrder(String params) throws IOException, NoSuchAlgorithmException {
-        QrtzLastUpdateTimeEntity updateTimeEntity = new QrtzLastUpdateTimeEntity();
-        long start, end2;
-        start = System.currentTimeMillis();
-        String url = "http://open.api.zhongjiu.cn/DashboardOpenAPI/ShopOrderDataSync";
-        String thurl = "http://open.api.zhongjiu.cn/DashboardOpenAPI/ShopOrderRefundSync";
-        String timeStamp = DateUtils.getTimeStamp();  //时间戳
-        SortedMap<String, String> map = new TreeMap<>();
-        String urlParam = "";
-        String sign = "";
-        String resultPost = "";  //返回结果
-        map.clear();
-        String startime="";
-        String endtime="";
-        if (!StringUtils.isEmpty(params) && params.split(",").length == 2) {//同步指定时间
-            String[] paramArr = new String[params.split(",").length];
-            paramArr = params.split(",");
-            startime=paramArr[0].trim().substring(0,10);
-            endtime=paramArr[1].trim().substring(0,10);
-            List<String> days = new ArrayList<String>();
-            days = getDays(startime, endtime);
-            for(int i=0;i<days.size();i++){
-                String myd=days.get(i);
-                startime = myd + " 00:00:00";
-                endtime = myd +" 23:59:59";
-                Integer listsize=getMemberBasicEntities(url,timeStamp,startime,endtime);//订单生成修改
-                Integer listsize2=getMemberThEntities(thurl,timeStamp,startime,endtime);
-            }
-            end2 = System.currentTimeMillis();
-            System.out.println("会员订单批量处理手动数据完成条数据耗费了" + (end2 - start) + "ms");
-        }else{//半小时同步一次
-            Date nowDate = new Date();
-            String nowday = DateUtils.format(nowDate, "yyyy-MM-dd");  //当天日期
-            endtime = nowday+" 23:59:59";  //现在时间
-            startime = nowday + " 00:00:00"; //前半小时时间
-//            endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
-//            startime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -30), "yyyy-MM-dd HH:mm:ss"); //前半小时时间
-
-            List<QrtzLastUpdateTimeEntity> updateTimeList = qrtzLastUpdateTimeService.queryAll(null);
-            updateTimeEntity = updateTimeList.get(0);
-            if (updateTimeList.get(0).getOrderLastDatetime() != null) {
-                startime = DateUtils.format(updateTimeList.get(0).getOrderLastDatetime(), "yyyy-MM-dd HH:mm:ss");
-            }
-            updateTimeEntity.setOrderLastDatetime(nowDate);
-            Integer listsize=getMemberBasicEntities(url,timeStamp,startime,endtime);//订单生成修改
-            Integer listsize2=getMemberThEntities(thurl,timeStamp,startime,endtime);
-            end2 = System.currentTimeMillis();
-            //将最后更新数据存入数据库
-            if (!StringUtils.isEmpty(updateTimeEntity.getId())) {
-                qrtzLastUpdateTimeService.updateOrderLastDatetime(updateTimeEntity);
-            }
-            System.out.println("会员订单批量处理"+(listsize+listsize2)+"条数据，耗费了" + (end2 - start) + "ms");
-        }
+//        QrtzLastUpdateTimeEntity updateTimeEntity = new QrtzLastUpdateTimeEntity();
+//        long start, end2;
+//        start = System.currentTimeMillis();
+//        String url = "http://open.api.zhongjiu.cn/DashboardOpenAPI/ShopOrderDataSync";
+//        String thurl = "http://open.api.zhongjiu.cn/DashboardOpenAPI/ShopOrderRefundSync";
+//        String timeStamp = DateUtils.getTimeStamp();  //时间戳
+//        SortedMap<String, String> map = new TreeMap<>();
+//        String urlParam = "";
+//        String sign = "";
+//        String resultPost = "";  //返回结果
+//        map.clear();
+//        String startime="";
+//        String endtime="";
+//        if (!StringUtils.isEmpty(params) && params.split(",").length == 2) {//同步指定时间
+//            String[] paramArr = new String[params.split(",").length];
+//            paramArr = params.split(",");
+//            startime=paramArr[0].trim().substring(0,10);
+//            endtime=paramArr[1].trim().substring(0,10);
+//            List<String> days = new ArrayList<String>();
+//            days = getDays(startime, endtime);
+//            for(int i=0;i<days.size();i++){
+//                String myd=days.get(i);
+//                startime = myd + " 00:00:00";
+//                endtime = myd +" 23:59:59";
+//                Integer listsize=getMemberBasicEntities(url,timeStamp,startime,endtime);//订单生成修改
+//                Integer listsize2=getMemberThEntities(thurl,timeStamp,startime,endtime);
+//            }
+//            end2 = System.currentTimeMillis();
+//            System.out.println("会员订单批量处理手动数据完成条数据耗费了" + (end2 - start) + "ms");
+//        }else{//半小时同步一次
+//            Date nowDate = new Date();
+//            String nowday = DateUtils.format(nowDate, "yyyy-MM-dd");  //当天日期
+//            endtime = nowday+" 23:59:59";  //现在时间
+//            startime = nowday + " 00:00:00"; //前半小时时间
+////            endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
+////            startime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -30), "yyyy-MM-dd HH:mm:ss"); //前半小时时间
+//
+//            List<QrtzLastUpdateTimeEntity> updateTimeList = qrtzLastUpdateTimeService.queryAll(null);
+//            updateTimeEntity = updateTimeList.get(0);
+//            if (updateTimeList.get(0).getOrderLastDatetime() != null) {
+//                startime = DateUtils.format(updateTimeList.get(0).getOrderLastDatetime(), "yyyy-MM-dd HH:mm:ss");
+//            }
+//            updateTimeEntity.setOrderLastDatetime(nowDate);
+//            Integer listsize=getMemberBasicEntities(url,timeStamp,startime,endtime);//订单生成修改
+//            Integer listsize2=getMemberThEntities(thurl,timeStamp,startime,endtime);
+//            end2 = System.currentTimeMillis();
+//            //将最后更新数据存入数据库
+//            if (!StringUtils.isEmpty(updateTimeEntity.getId())) {
+//                qrtzLastUpdateTimeService.updateOrderLastDatetime(updateTimeEntity);
+//            }
+//            System.out.println("会员订单批量处理"+(listsize+listsize2)+"条数据，耗费了" + (end2 - start) + "ms");
+//        }
     }
 
     private Integer getMemberBasicEntities(String url, String timeStamp, String starttime, String endtime) throws IOException {
