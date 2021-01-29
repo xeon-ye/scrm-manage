@@ -158,7 +158,12 @@ public class QrtzMemberBasicController extends AbstractController {
         if (!StringUtils.isEmpty(params)) {
             Date fromtime = DateUtils.stringToDate(params, DateUtils.DATE_TIME_PATTERN);
             Date totime = DateUtils.addDateMonths(fromtime, 1); //一个月后的日期
-            for (int i = 0; i < 12; i++) {
+            Calendar cal = Calendar.getInstance();
+            int yearto = cal.get(Calendar.YEAR);
+            cal.setTime(fromtime);
+            int yearfrom = cal.get(Calendar.YEAR);
+            int num = ((yearto - yearfrom) + 1) * 12;
+            for (int i = 0; i < num; i++) {
                 if (i > 0) { //第一个月
                     fromtime = totime;
                     totime = DateUtils.addDateMonths(fromtime, 1); //一个月后的日期
