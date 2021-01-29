@@ -103,7 +103,7 @@ public class QrtzMemberOrderController extends AbstractController {
             List<QrtzLastUpdateTimeEntity> updateTimeList = qrtzLastUpdateTimeService.queryAll(null);
             updateTimeEntity = updateTimeList.get(0);
             if (updateTimeList.get(0).getOrderLastDatetime() != null) {
-                startime = DateUtils.format(updateTimeList.get(0).getOrderLastDatetime(), "yyyy-MM-dd HH:mm:ss");
+                //startime = DateUtils.format(updateTimeList.get(0).getOrderLastDatetime(), "yyyy-MM-dd HH:mm:ss");
             }
             updateTimeEntity.setOrderLastDatetime(nowDate);
             Integer listsize=getMemberBasicEntities(url,timeStamp,startime,endtime);//订单生成修改
