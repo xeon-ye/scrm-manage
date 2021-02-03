@@ -94,12 +94,6 @@ public class MemberController extends AbstractController {
     @RequiresPermissions("qkjvip:member:list")
     public RestResponse list(@RequestBody MemberQueryEntity memberQuery) throws IOException {
 
-        Map params = new HashMap();
-        params.put("openid", "o0lxnw_hgDUmYmFs4g-1oWL8fFxM");
-        List<Integer> list = memberService.selectMemberByOpenid(params);
-
-//        Page page = memberService.queryPage(params);
-//        return RestResponse.success().put("page", page);
         if (memberQuery.getMembertags() != null && memberQuery.getMembertags().size() > 0) {
             for (int i = 0; i < memberQuery.getMembertags().size(); i++) {
                 memberQuery.getMembertags().get(i).setTagList(null);

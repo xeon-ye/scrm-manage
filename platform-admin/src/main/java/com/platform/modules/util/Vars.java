@@ -45,4 +45,12 @@ public class Vars {
 	public static String MEMBER_CPON_LIST_URl = "http://api.mall.qkj.com.cn/MobileAPI/Coupon/GetCouponList";
 	//优惠券发送
 	public static String MEMBER_CPON_SEND_URl = "http://api.scrm.qkj.com.cn/api/Coupon/SendMemberCoupon";
+	/*会员画像start*/
+	//性别统计
+	public static String MEMBER_PORTRAIT_SEX_URl = "http://api.scrm.qkj.com.cn/api/Report/GetMemberSexReport";
+	//年龄统计
+	public static String MEMBER_PORTRAIT_AGE_URl = "http://api.scrm.qkj.com.cn/api/Report/GetMemberAgeReport";
+	//地区统计
+	public static String MEMBER_PORTRAIT_AREA_URl = "http://api.scrm.qkj.com.cn/api/Report/GetMemberCityReport";
+	/*会员画像end*/
 }
