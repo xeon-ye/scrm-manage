@@ -11,6 +11,8 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.platform.modules.util.Double2Serializer;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -32,8 +34,10 @@ public class MemberPortraitAgeEntity implements Serializable {
 
     /*返回值start*/
     private String membergeneration;
+    private Integer membergenerationenum;
     private Integer count;
-    private Integer percent;
+    @JsonSerialize(using = Double2Serializer.class)
+    private Double percent;
     /*返回值end*/
 
 }

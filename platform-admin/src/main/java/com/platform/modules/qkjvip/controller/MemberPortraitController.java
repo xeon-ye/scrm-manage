@@ -95,12 +95,12 @@ public class MemberPortraitController extends AbstractController {
         JSONObject resultObject = JSON.parseObject(resultPost);
         if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
             list = JSON.parseArray(resultObject.getString("list"),MemberPortraitAreaEntity.class);
-            if (memberPortraitAreaEntity.getIsall()) {  //true:分页查询
+            if (!memberPortraitAreaEntity.getIsall()) {  //true:分页查询
                 Page page = new Page();
                 page.setRecords(list);
                 page.setTotal(Long.parseLong(resultObject.get("totalcount").toString()));
-                page.setSize(memberPortraitAreaEntity.getLimit() == null? 0 : memberPortraitAreaEntity.getLimit());
-                page.setCurrent(memberPortraitAreaEntity.getPage() == null? 0 : memberPortraitAreaEntity.getPage());
+                page.setSize(memberPortraitAreaEntity.getPagesize() == null? 0 : memberPortraitAreaEntity.getPagesize());
+                page.setCurrent(memberPortraitAreaEntity.getPageindex() == null? 0 : memberPortraitAreaEntity.getPageindex());
                 return RestResponse.success().put("page", page);
             }
         }

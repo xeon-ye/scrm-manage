@@ -11,6 +11,8 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.platform.modules.util.Double2Serializer;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -34,11 +36,12 @@ public class MemberPortraitAreaEntity implements Serializable {
     /*返回值start*/
     private String city;
     private Integer count;
-    private Integer percent;
+    @JsonSerialize(using = Double2Serializer.class)
+    private Double percent;
     /*返回值end*/
 
     // 分页
-    private Integer page;
-    private Integer limit;
+    private Integer pageindex;
+    private Integer pagesize;
 
 }
