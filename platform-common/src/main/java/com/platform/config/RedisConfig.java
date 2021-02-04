@@ -11,8 +11,10 @@
  */
 package com.platform.config;
 
+import ch.qos.logback.classic.LoggerContext;
 import com.platform.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -73,6 +75,8 @@ public class RedisConfig {
 
         log.info("------------------------------------------------JedisPool注入成功！------------------------------------------------");
         log.info("redis地址：" + host + ":" + port);
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        log.info("我的测试"+lc);
         return jedisPool;
     }
 }
