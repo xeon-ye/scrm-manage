@@ -17,8 +17,10 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.platform.modules.util.Double2Serializer;
 import lombok.Data;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 实体
@@ -43,4 +45,8 @@ public class MemberPortraitSexEntity implements Serializable {
     private Double percent;
     /*返回值end*/
 
+    /*透视start*/
+    private Integer selectValue;
+    private List<T> selectOptions;
+    /*透视end*/
 }
