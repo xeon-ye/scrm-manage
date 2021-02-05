@@ -290,10 +290,7 @@ public class MemberEntity implements Serializable {
      */
     @Excel(name = "备注", orderNum = "24", width = 15)
     private String remark2;
-    /**
-     * ismerge
-     */
-    private Integer ismerge;
+
     /**
      * 觉如积分
      */

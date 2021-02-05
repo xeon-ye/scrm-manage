@@ -52,7 +52,9 @@ public class MemberPortraitController extends AbstractController {
         System.out.println("性别统计检索条件：" + queryJsonStr);
         JSONObject resultObject = JSON.parseObject(resultPost);
         if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
-            list = JSON.parseArray(resultObject.getString("list"),MemberPortraitSexEntity.class);
+            if (resultObject.get("list") != null) {
+                list = JSON.parseArray(resultObject.getString("list"),MemberPortraitSexEntity.class);
+            }
         }
         return RestResponse.success().put("list", list);
     }
@@ -73,7 +75,9 @@ public class MemberPortraitController extends AbstractController {
         System.out.println("年龄统计检索条件：" + queryJsonStr);
         JSONObject resultObject = JSON.parseObject(resultPost);
         if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
-            list = JSON.parseArray(resultObject.getString("list"),MemberPortraitAgeEntity.class);
+            if (resultObject.get("list") != null) {
+                list = JSON.parseArray(resultObject.getString("list"),MemberPortraitAgeEntity.class);
+            }
         }
         return RestResponse.success().put("list", list);
     }
@@ -94,7 +98,9 @@ public class MemberPortraitController extends AbstractController {
         System.out.println("地区统计检索条件：" + queryJsonStr);
         JSONObject resultObject = JSON.parseObject(resultPost);
         if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
-            list = JSON.parseArray(resultObject.getString("list"),MemberPortraitAreaEntity.class);
+            if (resultObject.get("list") != null) {
+                list = JSON.parseArray(resultObject.getString("list"),MemberPortraitAreaEntity.class);
+            }
             if (!memberPortraitAreaEntity.getIsall()) {  //true:分页查询
                 Page page = new Page();
                 page.setRecords(list);
