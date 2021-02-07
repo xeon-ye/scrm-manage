@@ -19,6 +19,10 @@ import com.platform.common.utils.RestResponse;
 import com.platform.common.validator.ValidatorUtils;
 import com.platform.common.validator.group.AddGroup;
 import com.platform.common.validator.group.UpdateGroup;
+import com.platform.modules.qkjvip.entity.QkjvipMemberChannelEntity;
+import com.platform.modules.qkjvip.entity.QkjvipTaglibsEntity;
+import com.platform.modules.qkjvip.service.QkjvipMemberChannelService;
+import com.platform.modules.qkjvip.service.QkjvipTaglibsService;
 import com.platform.modules.sys.entity.*;
 import com.platform.modules.sys.service.*;
 import org.apache.commons.lang.StringUtils;
@@ -49,6 +53,10 @@ public class SysMenuController extends AbstractController {
     private SysOrgService orgService;
     @Autowired
     private SysUserService userService;
+    @Autowired
+    private QkjvipTaglibsService qkjvipTaglibsService;
+    @Autowired
+    private QkjvipMemberChannelService qkjvipMemberChannelService;
 
     /**
      * 导航菜单
@@ -65,12 +73,16 @@ public class SysMenuController extends AbstractController {
         List<SysDictEntity> dictList = sysDictService.queryAll(map);
         List<SysOrgEntity> orgList = orgService.list(new QueryWrapper<SysOrgEntity>().eq("STATUS", 1)); //liuqianru mod
         List<SysUserEntity> userList = userService.list(new QueryWrapper<SysUserEntity>().select("USER_ID,REAL_NAME"));
+        List<QkjvipTaglibsEntity> areaList = qkjvipTaglibsService.list(new QueryWrapper<QkjvipTaglibsEntity>().eq("TAG_GROUP_ID", "9af1533bea3d4c89b856ad80e9d0e457")); //liuqianru add
+        List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.queryAll(map);
         return RestResponse.success()
                 .put("menuList", menuList)
                 .put("permissions", permissions)
                 .put("dictList", dictList)
                 .put("orgList", orgList)
-                .put("userList", userList);
+                .put("userList", userList)
+                .put("areaList", areaList)
+                .put("channelList", channelList);
     }
 
     /**
