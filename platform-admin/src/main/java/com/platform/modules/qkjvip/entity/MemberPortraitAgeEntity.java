@@ -17,6 +17,7 @@ import lombok.Data;
 import org.apache.poi.ss.formula.functions.T;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,6 +33,9 @@ public class MemberPortraitAgeEntity implements Serializable {
     /*检索条件start*/
     private String city;
     private Integer sex;
+    private String servicename;
+    private Date startregtime;
+    private Date endregtime;
     /*检索条件end*/
 
     /*返回值start*/
@@ -41,10 +45,4 @@ public class MemberPortraitAgeEntity implements Serializable {
     @JsonSerialize(using = Double2Serializer.class)
     private Double percent;
     /*返回值end*/
-
-    /*透视start*/
-    private Integer selectValue;
-    private List<T> selectOptions;
-    /*透视end*/
-
 }
