@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.modules.qkjvip.dao.QkjvipOrderOrderdetailDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.ID,
+        T.MORDERID,
+        T.PRODUCTID,
+        T.PRODUCTNAME,
+        T.PRODUCTTYPE,
+        T.SALEPRICE,
+        T.QUANTITY,
+        T.REALTOTALPRICE,
+        T.SALEUNIT,
+        T.PACKSIZE,
+        T.ISGIFT,
+        T.SKUCODE,
+        T.DISABLED,
+        T.CREATETIME,
+        T.REMARK,
+        T.BOTTLETYPEID,
+        T.BOTTLETYPENAME
+        FROM QKJVIP_ORDER_ORDERDETAIL T
+        WHERE 1=1
+        <if test="params.name != null and params.name.trim() != ''">
+            AND T.NAME LIKE '%${params.name}%'
+        </if>
+    </sql>
+
+    <select id="selectQkjvipOrderOrderdetailPage" resultType="com.platform.modules.qkjvip.entity.QkjvipOrderOrderdetailEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.platform.modules.qkjvip.entity.QkjvipOrderOrderdetailEntity">
+        <include refid="selectSql"/>
+    </select>
+</mapper>
