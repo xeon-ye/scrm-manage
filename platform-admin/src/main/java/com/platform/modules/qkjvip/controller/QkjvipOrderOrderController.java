@@ -75,7 +75,7 @@ public class QkjvipOrderOrderController extends AbstractController {
         JSONObject resultObject = JSON.parseObject(resultPost);
         if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
             List<QkjvipOrderOrderEntity> orderList = new ArrayList<>();
-            orderList = JSON.parseArray(resultObject.getString("listmember"),QkjvipOrderOrderEntity.class);
+            orderList = JSON.parseArray(resultObject.getString("listorder"),QkjvipOrderOrderEntity.class);
             Page page = new Page();
             page.setRecords(orderList);
             page.setTotal(Long.parseLong(resultObject.get("totalcount").toString()));
