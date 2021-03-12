@@ -11,16 +11,26 @@
  */
 package com.platform.modules.qkjvip.controller;
 
+import cn.emay.util.JsonHelper;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
+import com.platform.modules.qkjvip.entity.MemberEntity;
+import com.platform.modules.qkjvip.entity.QkjvipOrderOrderQuaryEntity;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipOrderOrderEntity;
 import com.platform.modules.qkjvip.service.QkjvipOrderOrderService;
+import com.platform.modules.util.HttpClient;
+import com.platform.modules.util.Vars;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,14 +62,29 @@ public class QkjvipOrderOrderController extends AbstractController {
     /**
      * 分页查询
      *
-     * @param params 查询参数
+     * @param  查询参数
      * @return RestResponse
      */
-    @GetMapping("/list")
-    public RestResponse list(@RequestParam Map<String, Object> params) {
-        Page page = qkjvipOrderOrderService.queryPage(params);
-
-        return RestResponse.success().put("page", page);
+    @PostMapping("/list")
+    public RestResponse list(@RequestBody QkjvipOrderOrderQuaryEntity order) throws IOException {
+        //Page page = qkjvipOrderOrderService.queryPage(params);
+        Object obj = JSONArray.toJSON(order);
+        String queryJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_ORDER_ORDER_LIST, queryJsonStr);
+        System.out.println("订单检索条件：" + queryJsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+            List<QkjvipOrderOrderEntity> orderList = new ArrayList<>();
+            orderList = JSON.parseArray(resultObject.getString("listmember"),QkjvipOrderOrderEntity.class);
+            Page page = new Page();
+            page.setRecords(orderList);
+            page.setTotal(Long.parseLong(resultObject.get("totalcount").toString()));
+            page.setSize(order.getPagesize() == null? 0 : order.getPagesize());
+            page.setCurrent(order.getPageindex() == null? 0 : order.getPageindex());
+            return RestResponse.success().put("page", page);
+        } else {
+            return RestResponse.error(resultObject.get("descr").toString());
+        }
     }
 
     /**
@@ -83,11 +108,13 @@ public class QkjvipOrderOrderController extends AbstractController {
      */
     @SysLog("新增")
     @RequestMapping("/save")
-    @RequiresPermissions("qkjvip:orderorder:save")
-    public RestResponse save(@RequestBody QkjvipOrderOrderEntity qkjvipOrderOrder) {
-
-        qkjvipOrderOrderService.add(qkjvipOrderOrder);
-
+    public RestResponse save(@RequestBody QkjvipOrderOrderEntity qkjvipOrderOrder) throws IOException {
+        qkjvipOrderOrder.setCreatoradminid(getUserId());
+        qkjvipOrderOrder.setCreatoradmin(getUser().getUserName());
+        Object obj = JSONArray.toJSON(qkjvipOrderOrder);
+        String JsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_ORDER_ORDER_ADD, JsonStr);
+        //qkjvipOrderOrderService.add(qkjvipOrderOrder);
         return RestResponse.success();
     }
 

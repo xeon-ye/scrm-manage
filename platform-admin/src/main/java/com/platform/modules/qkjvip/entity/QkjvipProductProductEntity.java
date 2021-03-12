@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -71,4 +72,9 @@ public class QkjvipProductProductEntity implements Serializable {
      * Remark
      */
     private String remark;
+
+
+    private String productid;
+
+    private BigDecimal quantity;
 }

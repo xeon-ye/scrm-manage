@@ -187,5 +187,6 @@ public class QkjvipOrderOrderEntity implements Serializable {
     private String ordercode;
 
     @TableField(exist = false)
-    private List<QkjvipProductProductEntity> prolist;
+    private List<QkjvipProductProductEntity> listproduct;
+
 }
