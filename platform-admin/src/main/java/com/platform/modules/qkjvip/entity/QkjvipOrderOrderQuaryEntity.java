@@ -41,8 +41,8 @@ public class QkjvipOrderOrderQuaryEntity implements Serializable {
     private String  shopname;
     private String  membername;
     private String  cellphone;
-    private String  startorderamount;
-    private String  endorderamount;
+    private BigDecimal  startorderamount;
+    private BigDecimal  endorderamount;
     private Integer  pageindex;
     private Integer  pagesize;
 
