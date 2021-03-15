@@ -96,6 +96,21 @@ public class QkjvipMemberVisitEntity implements Serializable {
      * lm_time
      */
     private Date lmTime;
+    /**
+     * 日期类型（1：近一个月 2：近3个月 3： 近半年 4：近一年）
+     */
+    @TableField(exist = false)
+    private String dateType;
+    /**
+     * 会员名称
+     */
+    @TableField(exist = false)
+    private String memberName;
+    /**
+     * 添加人姓名
+     */
+    @TableField(exist = false)
+    private String addUserName;
 
     @TableField(exist = false)
     private List<QkjvipMemberVisitMaterialEntity> materialList;

@@ -55,4 +55,13 @@ public class Vars {
 	/*会员画像end*/
 	// 消费者首页新闻
 	public static String NEWS_LIST_URl = "http://api.scrm.qkj.com.cn/api/News/GetNewsList";
+	/**
+	 * 订单
+	 */
+	//订单添加
+	public static String MEMBER_ORDER_ORDER_ADD = "http://api.scrm.qkj.com.cn/api/Order/SubmitOrder";
+	//订单列表
+	public static String MEMBER_ORDER_ORDER_LIST = "http://api.scrm.qkj.com.cn/api/Order/GetOrderList";
+	//订单详情
+	public static String MEMBER_ORDER_ORDER_LISTDETILE = "http://api.scrm.qkj.com.cn/api/Order/GetOrderDetail";
 }

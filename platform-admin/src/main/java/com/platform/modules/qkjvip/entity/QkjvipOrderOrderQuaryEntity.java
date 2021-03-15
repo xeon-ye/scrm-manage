@@ -1,0 +1,52 @@
+/*
+ * 项目名称:platform-plus
+ * 类名称:QkjvipOrderOrderEntity.java
+ * 包名称:com.platform.modules.qkjvip.entity
+ *
+ * 修改履历:
+ *     日期                       修正者        主要内容
+ *     2021-03-10 11:37:08        孙珊珊     初版做成
+ *
+ * Copyright (c) 2019-2019 微同软件
+ */
+package com.platform.modules.qkjvip.entity;
+
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * 实体
+ *
+ * @author 孙珊珊
+ * @date 2021-03-10 11:37:08
+ */
+@Data
+@TableName("QKJVIP_ORDER_ORDER")
+public class QkjvipOrderOrderQuaryEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private String  productname;
+    private String  ordercode;
+    private String  ordertype;
+    private String  orderstatus;
+    private String  startorderdate;
+    private String  endorderdate;
+    private String  shopname;
+    private String  membername;
+    private String  cellphone;
+    private BigDecimal  startorderamount;
+    private BigDecimal  endorderamount;
+    private Integer  pageindex;
+    private Integer  pagesize;
+    private String orderid;
+    private String morderid;
+    private String id;
+
+}

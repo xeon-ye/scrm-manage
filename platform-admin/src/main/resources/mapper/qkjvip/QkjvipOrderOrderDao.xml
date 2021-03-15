@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.modules.qkjvip.dao.QkjvipOrderOrderDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.ID,
+        T.ORDERDATE,
+        T.ORDERSTATUS,
+        T.PAYSTATUS,
+        T.DELIVERYSTATUS,
+        T.PAYAMOUNT,
+        T.CELLPHONE,
+        T.BUYERTYPE,
+        T.SHOPNAME,
+        T.SHOPPROVINCENAME,
+        T.SHOPCITYNAME,
+        T.PAYTIME,
+        T.COMPLETEDTIME,
+        T.PAYMENTTYPENAME,
+        T.ORDERAMOUNT,
+        T.DISCOUNTAMOUNT,
+        T.ORDERTYPE,
+        T.RECEIVEPROVINCE,
+        T.RECEIVECITY,
+        T.RECEIVECOUNTY,
+        T.RECEIVEADDRESS,
+        T.RECEIVER,
+        T.RECEIVEPHONE,
+        T.OWNEDUSERID,
+        T.OWNEDUSERNAME,
+        T.CREATETIME,
+        T.DISABLED,
+        T.REMARK,
+        T.USERREMARK,
+        T.ERPORDERCODE,
+        T.JUERUORDERID,
+        T.CREATORADMIN,
+        T.CRM_MEMBERID,
+        T.CREATORADMINID,
+        T.UPDATEBYNAME,
+        T.UPDATETIME,
+        T.MEMBERNAME,
+        T.ORDERCODE
+        FROM QKJVIP_ORDER_ORDER T
+        WHERE 1=1
+        <if test="params.name != null and params.name.trim() != ''">
+            AND T.NAME LIKE '%${params.name}%'
+        </if>
+    </sql>
+
+    <select id="selectQkjvipOrderOrderPage" resultType="com.platform.modules.qkjvip.entity.QkjvipOrderOrderEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.platform.modules.qkjvip.entity.QkjvipOrderOrderEntity">
+        <include refid="selectSql"/>
+    </select>
+</mapper>
