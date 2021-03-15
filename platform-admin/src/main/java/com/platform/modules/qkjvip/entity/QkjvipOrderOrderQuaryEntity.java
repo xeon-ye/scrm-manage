@@ -45,6 +45,8 @@ public class QkjvipOrderOrderQuaryEntity implements Serializable {
     private BigDecimal  endorderamount;
     private Integer  pageindex;
     private Integer  pagesize;
-
+    private String orderid;
+    private String morderid;
+    private String id;
 
 }

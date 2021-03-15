@@ -94,10 +94,18 @@ public class QkjvipOrderOrderController extends AbstractController {
      * @return RestResponse
      */
     @RequestMapping("/info/{id}")
-    public RestResponse info(@PathVariable("id") String id) {
-        QkjvipOrderOrderEntity qkjvipOrderOrder = qkjvipOrderOrderService.getById(id);
-
-        return RestResponse.success().put("orderorder", qkjvipOrderOrder);
+    public RestResponse info(@PathVariable("id") String id) throws IOException {
+        //QkjvipOrderOrderEntity qkjvipOrderOrder = qkjvipOrderOrderService.getById(id);
+        QkjvipOrderOrderQuaryEntity order=new QkjvipOrderOrderQuaryEntity();
+        order.setMorderid(id);
+        Object obj = JSONArray.toJSON(order);
+        String queryJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_ORDER_ORDER_LISTDETILE, queryJsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        QkjvipOrderOrderEntity qkjvipOrderOrder = JSON.toJavaObject(resultObject,QkjvipOrderOrderEntity.class);
+        qkjvipOrderOrder.setId(qkjvipOrderOrder.getMorderid());
+        qkjvipOrderOrder.setOrderid(qkjvipOrderOrder.getMorderid());
+        return RestResponse.success().put("qkjvipOrderOrder", qkjvipOrderOrder);
     }
 
     /**
@@ -106,7 +114,7 @@ public class QkjvipOrderOrderController extends AbstractController {
      * @param qkjvipOrderOrder qkjvipOrderOrder
      * @return RestResponse
      */
-    @SysLog("新增")
+    @SysLog("新增&修改")
     @RequestMapping("/save")
     public RestResponse save(@RequestBody QkjvipOrderOrderEntity qkjvipOrderOrder) throws IOException {
         qkjvipOrderOrder.setCreatoradminid(getUserId());

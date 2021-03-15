@@ -60,5 +60,7 @@ public class Vars {
 	public static String MEMBER_ORDER_ORDER_ADD = "http://api.scrm.qkj.com.cn/api/Order/SubmitOrder";
 	//订单列表
 	public static String MEMBER_ORDER_ORDER_LIST = "http://api.scrm.qkj.com.cn/api/Order/GetOrderList";
+	//订单详情
+	public static String MEMBER_ORDER_ORDER_LISTDETILE = "http://api.scrm.qkj.com.cn/api/Order/GetOrderDetail";
 
 }

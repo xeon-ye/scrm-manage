@@ -32,7 +32,7 @@ import java.util.List;
 public class QkjvipOrderOrderEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /**
+    /**H
      * Id
      */
     @TableId
@@ -188,5 +188,9 @@ public class QkjvipOrderOrderEntity implements Serializable {
 
     @TableField(exist = false)
     private List<QkjvipProductProductEntity> listproduct;
+    @TableField(exist = false)
+    private String orderid;
+    @TableField(exist = false)
+    private String morderid;
 
 }
