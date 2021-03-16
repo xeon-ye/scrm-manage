@@ -4,23 +4,9 @@
 <mapper namespace="com.platform.modules.qkjvip.dao.QkjvipMemberVisitDao">
 
     <sql id="selectSql">
-        SELECT
-        T.ID,
-        T.MEMBER_ID,
-        T.MOBILE,
-        T.VISIT_START_DATE,
-        T.VISIT_END_DATE,
-        T.VISIT_TYPE,
-        T.VISIT_STATUS,
-        T.IMAGES,
-        T.CONTENT,
-        T.ADD_USER,
-        T.ADD_DEPT,
-        T.ADD_TIME,
-        T.LM_USER,
-        T.LM_DEPT,
-        T.LM_TIME
-        FROM QKJVIP_MEMBER_VISIT T
+        SELECT T.*, m.member_name,u.USER_NAME add_user_name FROM QKJVIP_MEMBER_VISIT T
+        LEFT JOIN sys_user u ON (T.add_user = u.USER_ID)
+        LEFT JOIN qkjvip_member m ON (m.member_id = T.member_id)
         WHERE 1=1
         <if test="params.memberId != null and params.memberId.trim() != ''">
             AND T.MEMBER_ID = #{params.memberId}
@@ -28,8 +14,26 @@
         <if test="params.mobile != null and params.mobile.trim() != ''">
             AND T.MOBILE = #{params.mobile}
         </if>
+        <if test="params.memberName != null and params.memberName.trim() != ''">
+            AND m.member_name like '%${params.memberName}%'
+        </if>
+        <if test="params.visitType != null and params.visitType.trim() != ''">
+            AND T.visit_type = #{params.visitType}
+        </if>
         <if test="params.visitStatus != null and params.visitStatus.trim() != ''">
             AND T.VISIT_STATUS = #{params.visitStatus}
+        </if>
+        <if test="params.dateType != null and params.dateType.trim() != '' and params.dateType.trim() == 1">
+            AND T.visit_start_date >= dateadd(MONTH ,- 1, GETDATE())
+        </if>
+        <if test="params.dateType != null and params.dateType.trim() != '' and params.dateType.trim() == 2">
+            AND T.visit_start_date >= dateadd(MONTH ,- 3, GETDATE())
+        </if>
+        <if test="params.dateType != null and params.dateType.trim() != '' and params.dateType.trim() == 3">
+            AND T.visit_start_date >= dateadd(MONTH ,- 6, GETDATE())
+        </if>
+        <if test="params.dateType != null and params.dateType.trim() != '' and params.dateType.trim() == 4">
+            AND T.visit_start_date >= dateadd(MONTH ,- 12, GETDATE())
         </if>
     </sql>
 

@@ -100,4 +100,14 @@ public class TmpQkjvipMemberBasicEntity implements Serializable {
      */
     private String city;
 
+    /**
+     * 注册平台类型ID
+     */
+    private Integer registerplat;
+
+    /**
+     * 注册平台类型
+     */
+    private String registersource;
+
 }

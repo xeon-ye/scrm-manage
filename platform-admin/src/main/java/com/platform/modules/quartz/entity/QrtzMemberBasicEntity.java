@@ -98,6 +98,16 @@ public class QrtzMemberBasicEntity implements Serializable {
      */
     private String city;
 
+    /**
+     * 注册平台类型ID
+     */
+    private Integer registerplat;
+
+    /**
+     * 注册平台类型
+     */
+    private String registersource;
+
     @Override
     public boolean equals(Object o) {
         return o instanceof QrtzMemberBasicEntity
