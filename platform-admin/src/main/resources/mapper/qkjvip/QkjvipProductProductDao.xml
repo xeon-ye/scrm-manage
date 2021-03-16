@@ -20,6 +20,12 @@
         <if test="params.productname != null and params.productname.trim() != ''">
             AND T.productname LIKE '%${params.productname}%'
         </if>
+        <if test="params.producttype != null">
+            AND T.ProductType = '${params.producttype}'
+        </if>
+        <if test="params.iserp != null">
+            AND T.IsErp = '${params.iserp}'
+        </if>
     </sql>
 
     <select id="selectQkjvipProductProductPage" resultType="com.platform.modules.qkjvip.entity.QkjvipProductProductEntity">
