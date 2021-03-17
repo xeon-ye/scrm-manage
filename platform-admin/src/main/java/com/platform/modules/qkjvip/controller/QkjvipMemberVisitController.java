@@ -14,6 +14,7 @@ package com.platform.modules.qkjvip.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
+import com.platform.common.utils.StringUtils;
 import com.platform.modules.qkjvip.entity.QkjvipMemberIntentionorderEntity;
 import com.platform.modules.qkjvip.entity.QkjvipMemberSignupaddressEntity;
 import com.platform.modules.qkjvip.entity.QkjvipMemberVisitMaterialEntity;
@@ -87,9 +88,16 @@ public class QkjvipMemberVisitController extends AbstractController {
     @RequestMapping("/info/{id}")
     @RequiresPermissions("qkjvip:membervisit:info")
     public RestResponse info(@PathVariable("id") String id) {
-        QkjvipMemberVisitEntity qkjvipMemberVisit = qkjvipMemberVisitService.getById(id);
-        //查询物料
+//        QkjvipMemberVisitEntity qkjvipMemberVisit = qkjvipMemberVisitService.getById(id);
         Map params = new HashMap();
+        params.put("id", id);
+        List<QkjvipMemberVisitEntity> list = qkjvipMemberVisitService.queryAll(params);
+        QkjvipMemberVisitEntity qkjvipMemberVisit = new QkjvipMemberVisitEntity();
+        if (list.size() > 0) {
+            qkjvipMemberVisit = list.get(0);
+        }
+        //查询物料
+        params.clear();
         params.put("visitId", id);
         qkjvipMemberVisit.setMaterialList(qkjvipMemberVisitMaterialService.queryAll(params));
         //查询订单
@@ -107,6 +115,16 @@ public class QkjvipMemberVisitController extends AbstractController {
     @RequestMapping("/save")
     @RequiresPermissions("qkjvip:membervisit:save")
     public RestResponse save(@RequestBody QkjvipMemberVisitEntity qkjvipMemberVisit) {
+        Date nowDate = new Date();
+        if (qkjvipMemberVisit.getVisitStartDate().before(nowDate)) {
+            if (StringUtils.isNotBlank(qkjvipMemberVisit.getContent())) {  // 时间在今天之前并且总结已填为已完成
+                qkjvipMemberVisit.setVisitStatus(2);
+            } else {
+                qkjvipMemberVisit.setVisitStatus(3);  //总结未填为未拜访
+            }
+        } else {
+            qkjvipMemberVisit.setVisitStatus(1);  // 计划拜访
+        }
         qkjvipMemberVisit.setAddUser(getUserId());
         qkjvipMemberVisit.setAddDept(getOrgNo());
         qkjvipMemberVisit.setAddTime(new Date());
@@ -148,6 +166,16 @@ public class QkjvipMemberVisitController extends AbstractController {
     @RequestMapping("/update")
     @RequiresPermissions("qkjvip:membervisit:update")
     public RestResponse update(@RequestBody QkjvipMemberVisitEntity qkjvipMemberVisit) {
+        Date nowDate = new Date();
+        if (qkjvipMemberVisit.getVisitStartDate().before(nowDate)) {
+            if (StringUtils.isNotBlank(qkjvipMemberVisit.getContent())) {  // 时间在今天之前并且总结已填为已完成
+                qkjvipMemberVisit.setVisitStatus(2);
+            } else {
+                qkjvipMemberVisit.setVisitStatus(3);  //总结未填为未拜访
+            }
+        } else {
+            qkjvipMemberVisit.setVisitStatus(1);  // 计划拜访
+        }
         qkjvipMemberVisit.setLmUser(getUserId());
         qkjvipMemberVisit.setLmDept(getOrgNo());
         qkjvipMemberVisit.setLmTime(new Date());
