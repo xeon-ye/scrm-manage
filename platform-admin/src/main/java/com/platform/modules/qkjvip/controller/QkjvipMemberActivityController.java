@@ -166,7 +166,11 @@ public class QkjvipMemberActivityController extends AbstractController {
         QkjvipMemberActivityEntity qkjvipMemberActivity = qkjvipMemberActivityService.getById(params.get("id").toString());
         Map<String, Object> map=new HashMap<String,Object>();
         map.put("activityId",params.get("id").toString());
-        qkjvipMemberActivity.setMbs(qkjvipMemberActivitymbsService.queryAll(map));
+        List<QkjvipMemberActivitymbsEntity> mmbs=new ArrayList<>();
+        mmbs=qkjvipMemberActivitymbsService.queryAll(map);
+        if(mmbs!=null&&mmbs.size()>0){
+            qkjvipMemberActivity.setMbs(mmbs);
+        }
         //查询地址
         qkjvipMemberActivity.setAddresses(qkjvipMemberSignupaddressService.queryAll(map));
         return RestResponse.success().put("memberactivity", qkjvipMemberActivity);
