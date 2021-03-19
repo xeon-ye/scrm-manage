@@ -19,6 +19,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
 import com.platform.modules.qkjvip.entity.*;
+import com.platform.modules.qkjvip.service.QkjvipOrderDeliverlogService;
 import com.platform.modules.qkjvip.service.QkjvipOrderOrderdetailService;
 import com.platform.modules.qkjvip.service.QkjvipProductStockService;
 import com.platform.modules.sys.controller.AbstractController;
@@ -49,6 +50,8 @@ public class QkjvipOrderOrderController extends AbstractController {
     private QkjvipOrderOrderdetailService qkjvipOrderOrderdetailService;
     @Autowired
     private QkjvipProductStockService qkjvipProductStockService;
+    @Autowired
+    private QkjvipOrderDeliverlogService qkjvipOrderDeliverlogService;
 
     /**
      * 查看所有列表
@@ -134,6 +137,8 @@ public class QkjvipOrderOrderController extends AbstractController {
             Map<String, Object> params = new HashMap<>();
             params.put("orderid",qkjvipOrderOrder.getMorderid());
             liststocks=qkjvipProductStockService.queryAll(params);
+            List<QkjvipOrderDeliverlogEntity> listout=new ArrayList<>();
+            listout=qkjvipOrderDeliverlogService.queryAll(params);
 
             List<QkjvipProductProductEntity> newps=new ArrayList<>();
             for(QkjvipProductProductEntity es:qkjvipOrderOrder.getListproduct()){
@@ -150,6 +155,7 @@ public class QkjvipOrderOrderController extends AbstractController {
             }
             qkjvipOrderOrder.setListproduct(newps);
             qkjvipOrderOrder.setListstock(liststocks);
+            qkjvipOrderOrder.setListout(listout);
         }
         return RestResponse.success().put("qkjvipOrderOrder", qkjvipOrderOrder);
     }
@@ -210,6 +216,17 @@ public class QkjvipOrderOrderController extends AbstractController {
                     liststock.add(st);
                 }
                 qkjvipProductStockService.batchAdd(liststock);
+            }
+            //添加出库记录
+            if(qkjvipOrderOrder.getListout()!=null&&qkjvipOrderOrder.getListout().size()>0){
+                qkjvipOrderDeliverlogService.deleteBatchByOrder(orderid);
+                List<QkjvipOrderDeliverlogEntity> liststock=new ArrayList<>();
+                for(QkjvipOrderDeliverlogEntity st:qkjvipOrderOrder.getListout()){
+                    st.setCreateon(new Date());
+                    st.setOrderid(orderid);
+                    liststock.add(st);
+                }
+                qkjvipOrderDeliverlogService.batchAdd(liststock);
             }
         }
 

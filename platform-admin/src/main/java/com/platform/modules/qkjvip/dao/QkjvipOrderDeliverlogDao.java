@@ -45,4 +45,5 @@ public interface QkjvipOrderDeliverlogDao extends BaseMapper<QkjvipOrderDeliverl
      * @return List
      */
     List<QkjvipOrderDeliverlogEntity> selectQkjvipOrderDeliverlogPage(IPage page, @Param("params") Map<String, Object> params);
+    int deleteBatchByOrder(String morderid);
 }

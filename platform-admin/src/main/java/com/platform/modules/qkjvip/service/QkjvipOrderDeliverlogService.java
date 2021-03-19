@@ -73,4 +73,7 @@ public interface QkjvipOrderDeliverlogService extends IService<QkjvipOrderDelive
      * @return 删除结果
      */
     boolean deleteBatch(String[] ids);
+
+    void batchAdd(List<QkjvipOrderDeliverlogEntity> qkjviporderdetails);
+    int deleteBatchByOrder(String morderid);
 }

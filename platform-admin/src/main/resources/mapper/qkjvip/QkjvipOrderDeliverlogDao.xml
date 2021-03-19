@@ -33,4 +33,8 @@
     <select id="queryAll" resultType="com.platform.modules.qkjvip.entity.QkjvipOrderDeliverlogEntity">
         <include refid="selectSql"/>
     </select>
+
+    <delete id="deleteBatchByOrder">
+        DELETE FROM QKJVIP_ORDER_DELIVERLOG WHERE orderid = #{morderid}
+    </delete>
 </mapper>
