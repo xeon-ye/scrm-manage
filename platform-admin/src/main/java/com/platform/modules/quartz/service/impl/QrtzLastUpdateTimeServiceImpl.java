@@ -34,17 +34,7 @@ public class QrtzLastUpdateTimeServiceImpl extends ServiceImpl<QrtzLastUpdateTim
     }
 
     @Override
-    public void updateFansLastDatetime(QrtzLastUpdateTimeEntity updateTimeEntity) {
-        baseMapper.updateFansLastDatetime(updateTimeEntity);
-    }
-
-    @Override
-    public void updateMemberLastDatetime(QrtzLastUpdateTimeEntity updateTimeEntity) {
-        baseMapper.updateMemberLastDatetime(updateTimeEntity);
-    }
-
-    @Override
-    public void updateOrderLastDatetime(QrtzLastUpdateTimeEntity updateTimeEntity) {
-        baseMapper.updateOrderLastDatetime(updateTimeEntity);
+    public void updateLastDatetime(QrtzLastUpdateTimeEntity updateTimeEntity) {
+        baseMapper.updateLastDatetime(updateTimeEntity);
     }
 }

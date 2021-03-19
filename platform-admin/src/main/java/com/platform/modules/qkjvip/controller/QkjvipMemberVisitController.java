@@ -116,14 +116,15 @@ public class QkjvipMemberVisitController extends AbstractController {
     @RequiresPermissions("qkjvip:membervisit:save")
     public RestResponse save(@RequestBody QkjvipMemberVisitEntity qkjvipMemberVisit) {
         Date nowDate = new Date();
-        if (qkjvipMemberVisit.getVisitStartDate().before(nowDate)) {
+        if (qkjvipMemberVisit.getVisitStartDate().after(nowDate)) {
+            qkjvipMemberVisit.setVisitStatus(1);  // 计划拜访
+        }
+        if (qkjvipMemberVisit.getVisitEndDate().before(nowDate)) {
             if (StringUtils.isNotBlank(qkjvipMemberVisit.getContent())) {  // 时间在今天之前并且总结已填为已完成
                 qkjvipMemberVisit.setVisitStatus(2);
             } else {
                 qkjvipMemberVisit.setVisitStatus(3);  //总结未填为未拜访
             }
-        } else {
-            qkjvipMemberVisit.setVisitStatus(1);  // 计划拜访
         }
         qkjvipMemberVisit.setAddUser(getUserId());
         qkjvipMemberVisit.setAddDept(getOrgNo());
@@ -167,14 +168,15 @@ public class QkjvipMemberVisitController extends AbstractController {
     @RequiresPermissions("qkjvip:membervisit:update")
     public RestResponse update(@RequestBody QkjvipMemberVisitEntity qkjvipMemberVisit) {
         Date nowDate = new Date();
-        if (qkjvipMemberVisit.getVisitStartDate().before(nowDate)) {
+        if (qkjvipMemberVisit.getVisitStartDate().after(nowDate)) {
+            qkjvipMemberVisit.setVisitStatus(1);  // 计划拜访
+        }
+        if (qkjvipMemberVisit.getVisitEndDate().before(nowDate)) {
             if (StringUtils.isNotBlank(qkjvipMemberVisit.getContent())) {  // 时间在今天之前并且总结已填为已完成
                 qkjvipMemberVisit.setVisitStatus(2);
             } else {
                 qkjvipMemberVisit.setVisitStatus(3);  //总结未填为未拜访
             }
-        } else {
-            qkjvipMemberVisit.setVisitStatus(1);  // 计划拜访
         }
         qkjvipMemberVisit.setLmUser(getUserId());
         qkjvipMemberVisit.setLmDept(getOrgNo());

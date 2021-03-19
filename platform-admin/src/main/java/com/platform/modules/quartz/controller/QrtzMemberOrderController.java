@@ -100,18 +100,20 @@ public class QrtzMemberOrderController extends AbstractController {
 //            endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
 //            startime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -30), "yyyy-MM-dd HH:mm:ss"); //前半小时时间
 
-            List<QrtzLastUpdateTimeEntity> updateTimeList = qrtzLastUpdateTimeService.queryAll(null);
+            Map paramMap = new HashMap();
+            paramMap.put("type", 2);
+            List<QrtzLastUpdateTimeEntity> updateTimeList = qrtzLastUpdateTimeService.queryAll(paramMap);
             updateTimeEntity = updateTimeList.get(0);
-            if (updateTimeList.get(0).getOrderLastDatetime() != null) {
+            if (updateTimeList.get(0).getLastDatetime() != null) {
                 //startime = DateUtils.format(updateTimeList.get(0).getOrderLastDatetime(), "yyyy-MM-dd HH:mm:ss");
             }
-            updateTimeEntity.setOrderLastDatetime(nowDate);
+            updateTimeEntity.setLastDatetime(nowDate);
             Integer listsize=getMemberBasicEntities(url,timeStamp,startime,endtime);//订单生成修改
             Integer listsize2=getMemberThEntities(thurl,timeStamp,startime,endtime);
             end2 = System.currentTimeMillis();
             //将最后更新数据存入数据库
             if (!StringUtils.isEmpty(updateTimeEntity.getId())) {
-                qrtzLastUpdateTimeService.updateOrderLastDatetime(updateTimeEntity);
+                qrtzLastUpdateTimeService.updateLastDatetime(updateTimeEntity);
             }
             System.out.println("会员订单批量处理"+(listsize+listsize2)+"条数据，耗费了" + (end2 - start) + "ms");
         }

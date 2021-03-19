@@ -3,18 +3,10 @@
 
 <mapper namespace="com.platform.modules.quartz.dao.QrtzLastUpdateTimeDao">
     <select id="queryAll" resultType="com.platform.modules.quartz.entity.QrtzLastUpdateTimeEntity">
-		SELECT * FROM qkjvip_lastupdatetime
+		SELECT * FROM qrtz_lastupdatetime where type=#{params.type}
 	</select>
 
-	<update id="updateFansLastDatetime" parameterType="com.platform.modules.quartz.entity.QrtzLastUpdateTimeEntity">
-		UPDATE qkjvip_lastupdatetime SET fans_last_datetime = #{fansLastDatetime} WHERE id = #{id}
-	</update>
-
-	<update id="updateMemberLastDatetime" parameterType="com.platform.modules.quartz.entity.QrtzLastUpdateTimeEntity">
-		UPDATE qkjvip_lastupdatetime SET member_last_datetime = #{memberLastDatetime} WHERE id = #{id}
-	</update>
-
-	<update id="updateOrderLastDatetime" parameterType="com.platform.modules.quartz.entity.QrtzLastUpdateTimeEntity">
-		UPDATE qkjvip_lastupdatetime SET order_last_datetime = #{orderLastDatetime} WHERE id = #{id}
+	<update id="updateLastDatetime" parameterType="com.platform.modules.quartz.entity.QrtzLastUpdateTimeEntity">
+		UPDATE qrtz_lastupdatetime SET last_datetime = #{lastDatetime} WHERE id = #{id}
 	</update>
 </mapper>

@@ -25,7 +25,7 @@ import java.util.Date;
  * @date 2020-09-09 14:02:22
  */
 @Data
-@TableName("qkjvip_lastupdatetime")
+@TableName("qrtz_lastupdatetime")
 public class QrtzLastUpdateTimeEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -36,15 +36,11 @@ public class QrtzLastUpdateTimeEntity implements Serializable {
     private String id;
 
     /**
-     * 粉丝最后更新时间
+     * 最后更新时间
      */
-    private Date fansLastDatetime;
+    private Date lastDatetime;
     /**
-     * 会员最后更新时间
+     * 类型（1: 会员 2：订单 3：优惠券 4：粉丝）
      */
-    private Date memberLastDatetime;
-    /**
-     * 订单最后更新时间
-     */
-    private Date orderLastDatetime;
+    private Integer type;
 }
