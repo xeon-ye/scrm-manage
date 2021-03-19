@@ -189,8 +189,14 @@ public class QkjvipOrderOrderEntity implements Serializable {
     @TableField(exist = false)
     private List<QkjvipProductProductEntity> listproduct;
     @TableField(exist = false)
+    private List<QkjvipProductStockEntity> liststock;
+    @TableField(exist = false)
     private String orderid;
     @TableField(exist = false)
     private String morderid;
+    @TableField(exist = false)
+    private List<QkjvipProductStockEntity> liststocksumout;
+    @TableField(exist = false)
+    private String memberid;
 
 }

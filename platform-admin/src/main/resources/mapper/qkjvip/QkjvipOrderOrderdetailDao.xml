@@ -36,4 +36,7 @@
     <select id="queryAll" resultType="com.platform.modules.qkjvip.entity.QkjvipOrderOrderdetailEntity">
         <include refid="selectSql"/>
     </select>
+    <delete id="deleteBatchByOrder">
+        DELETE FROM QKJVIP_ORDER_ORDERDETAIL WHERE MOrderId = #{morderid}
+    </delete>
 </mapper>

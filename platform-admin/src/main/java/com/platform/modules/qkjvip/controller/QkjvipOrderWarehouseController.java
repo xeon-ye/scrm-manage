@@ -21,6 +21,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -88,7 +89,8 @@ public class QkjvipOrderWarehouseController extends AbstractController {
     @RequestMapping("/save")
     @RequiresPermissions("qkjvip:orderwarehouse:save")
     public RestResponse save(@RequestBody QkjvipOrderWarehouseEntity qkjvipOrderWarehouse) {
-
+        qkjvipOrderWarehouse.setCreator(getUserId());
+        qkjvipOrderWarehouse.setCreateon(new Date());
         qkjvipOrderWarehouseService.add(qkjvipOrderWarehouse);
 
         return RestResponse.success();

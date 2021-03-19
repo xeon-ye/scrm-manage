@@ -39,6 +39,11 @@ public class QkjvipOrderOrderServiceImpl extends ServiceImpl<QkjvipOrderOrderDao
     }
 
     @Override
+    public List<QkjvipOrderOrderEntity> queryorderbyMember(Map<String, Object> params) {
+        return baseMapper.queryorderbyMember(params);
+    }
+
+    @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
         params.put("sidx", "T.id");

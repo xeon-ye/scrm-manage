@@ -14,8 +14,8 @@
         T.CREATEON
         FROM QKJVIP_ORDER_WAREHOUSE T
         WHERE 1=1
-        <if test="params.name != null and params.name.trim() != ''">
-            AND T.NAME LIKE '%${params.name}%'
+        <if test="params.housename != null and params.housename.trim() != ''">
+            AND T.HOUSENAME LIKE '%${params.housename}%'
         </if>
     </sql>
 

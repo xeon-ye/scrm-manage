@@ -18,21 +18,21 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
-import com.platform.modules.qkjvip.entity.MemberEntity;
-import com.platform.modules.qkjvip.entity.QkjvipOrderOrderQuaryEntity;
+import com.platform.modules.qkjvip.entity.*;
+import com.platform.modules.qkjvip.service.QkjvipOrderOrderdetailService;
+import com.platform.modules.qkjvip.service.QkjvipProductStockService;
 import com.platform.modules.sys.controller.AbstractController;
-import com.platform.modules.qkjvip.entity.QkjvipOrderOrderEntity;
 import com.platform.modules.qkjvip.service.QkjvipOrderOrderService;
 import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.Vars;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * Controller
@@ -45,6 +45,10 @@ import java.util.Map;
 public class QkjvipOrderOrderController extends AbstractController {
     @Autowired
     private QkjvipOrderOrderService qkjvipOrderOrderService;
+    @Autowired
+    private QkjvipOrderOrderdetailService qkjvipOrderOrderdetailService;
+    @Autowired
+    private QkjvipProductStockService qkjvipProductStockService;
 
     /**
      * 查看所有列表
@@ -60,9 +64,25 @@ public class QkjvipOrderOrderController extends AbstractController {
     }
 
     /**
+     * 查看最近收货地址
+     *
+     * @param params 查询参数
+     * @return RestResponse
+     */
+    @RequestMapping("/queryorderbyMember")
+    public RestResponse queryorderbyMember(@RequestParam Map<String, Object> params) {
+        List<QkjvipOrderOrderEntity> list = qkjvipOrderOrderService.queryorderbyMember(params);
+        QkjvipOrderOrderEntity qkjvipo=new QkjvipOrderOrderEntity();
+        if(list!=null&&list.size()>0){
+            qkjvipo=list.get(0);
+        }
+        return RestResponse.success().put("qkjvipOrderAddress", qkjvipo);
+    }
+
+    /**
      * 分页查询
      *
-     * @param  查询参数
+     * @param
      * @return RestResponse
      */
     @PostMapping("/list")
@@ -105,6 +125,32 @@ public class QkjvipOrderOrderController extends AbstractController {
         QkjvipOrderOrderEntity qkjvipOrderOrder = JSON.toJavaObject(resultObject,QkjvipOrderOrderEntity.class);
         qkjvipOrderOrder.setId(qkjvipOrderOrder.getMorderid());
         qkjvipOrderOrder.setOrderid(qkjvipOrderOrder.getMorderid());
+        //查询库存分配
+        if(qkjvipOrderOrder.getOrdertype()==null){
+            qkjvipOrderOrder.setOrdertype(5);
+        }
+        if(qkjvipOrderOrder.getOrdertype()==5){
+            List<QkjvipProductStockEntity> liststocks=new ArrayList<>();
+            Map<String, Object> params = new HashMap<>();
+            params.put("orderid",qkjvipOrderOrder.getMorderid());
+            liststocks=qkjvipProductStockService.queryAll(params);
+
+            List<QkjvipProductProductEntity> newps=new ArrayList<>();
+            for(QkjvipProductProductEntity es:qkjvipOrderOrder.getListproduct()){
+                Double outsum=0.00;
+                for(QkjvipProductStockEntity e:liststocks){
+                    if(es.getProductid().equals(e.getProductid())){
+                        if(e.getOuttotalcount()!=null){
+                            outsum+=e.getOuttotalcount().doubleValue();
+                        }
+                    }
+                }
+                es.setOutcount(outsum);
+                newps.add(es);
+            }
+            qkjvipOrderOrder.setListproduct(newps);
+            qkjvipOrderOrder.setListstock(liststocks);
+        }
         return RestResponse.success().put("qkjvipOrderOrder", qkjvipOrderOrder);
     }
 
@@ -119,9 +165,54 @@ public class QkjvipOrderOrderController extends AbstractController {
     public RestResponse save(@RequestBody QkjvipOrderOrderEntity qkjvipOrderOrder) throws IOException {
         qkjvipOrderOrder.setCreatoradminid(getUserId());
         qkjvipOrderOrder.setCreatoradmin(getUser().getUserName());
+        if(qkjvipOrderOrder.getCrmMemberid()!=null){
+            qkjvipOrderOrder.setMemberid(qkjvipOrderOrder.getCrmMemberid());
+        }
         Object obj = JSONArray.toJSON(qkjvipOrderOrder);
         String JsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
         String resultPost = HttpClient.sendPost(Vars.MEMBER_ORDER_ORDER_ADD, JsonStr);
+        //qkjvipOrderOrderService.add(qkjvipOrderOrder);
+        return RestResponse.success();
+    }
+
+    /**
+     * 新增
+     *
+     * @param qkjvipOrderOrder qkjvipOrderOrder
+     * @return RestResponse
+     */
+    @SysLog("新增&修改封坛")
+    @RequestMapping("/saveft")
+    public RestResponse saveft(@RequestBody QkjvipOrderOrderEntity qkjvipOrderOrder) throws IOException {
+        qkjvipOrderOrder.setCreatoradminid(getUserId());
+        qkjvipOrderOrder.setCreatoradmin(getUser().getUserName());
+        if(qkjvipOrderOrder.getCrmMemberid()!=null){
+            qkjvipOrderOrder.setMemberid(qkjvipOrderOrder.getCrmMemberid());
+        }
+        Object obj = JSONArray.toJSON(qkjvipOrderOrder);
+        String JsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_ORDER_ORDER_ADD, JsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //修改成功
+            String orderid=resultObject.get("morderid").toString();
+            //添加入库分配
+            if(qkjvipOrderOrder.getListstock()!=null&&qkjvipOrderOrder.getListstock().size()>0){
+                qkjvipProductStockService.deleteBatchByOrder(orderid);
+                List<QkjvipProductStockEntity> liststock=new ArrayList<>();
+                for(QkjvipProductStockEntity st:qkjvipOrderOrder.getListstock()){
+                    if(st.getOuttotalcount()==null){
+                        st.setProductcount(st.getIntotalcount());
+                    }else{
+                        st.setProductcount(st.getIntotalcount().subtract(st.getOuttotalcount()));
+                    }
+                    st.setCreateon(new Date());
+                    st.setOrderid(orderid);
+                    liststock.add(st);
+                }
+                qkjvipProductStockService.batchAdd(liststock);
+            }
+        }
+
         //qkjvipOrderOrderService.add(qkjvipOrderOrder);
         return RestResponse.success();
     }
@@ -150,7 +241,6 @@ public class QkjvipOrderOrderController extends AbstractController {
      */
     @SysLog("删除")
     @RequestMapping("/delete")
-    @RequiresPermissions("qkjvip:orderorder:delete")
     public RestResponse delete(@RequestBody String[] ids) {
         qkjvipOrderOrderService.deleteBatch(ids);
 

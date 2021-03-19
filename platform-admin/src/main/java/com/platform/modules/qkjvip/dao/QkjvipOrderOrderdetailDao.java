@@ -45,4 +45,6 @@ public interface QkjvipOrderOrderdetailDao extends BaseMapper<QkjvipOrderOrderde
      * @return List
      */
     List<QkjvipOrderOrderdetailEntity> selectQkjvipOrderOrderdetailPage(IPage page, @Param("params") Map<String, Object> params);
+
+    int deleteBatchByOrder(String morderid);
 }

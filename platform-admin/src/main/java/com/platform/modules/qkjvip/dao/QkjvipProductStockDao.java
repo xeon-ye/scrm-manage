@@ -45,4 +45,6 @@ public interface QkjvipProductStockDao extends BaseMapper<QkjvipProductStockEnti
      * @return List
      */
     List<QkjvipProductStockEntity> selectQkjvipProductStockPage(IPage page, @Param("params") Map<String, Object> params);
+
+    int deleteBatchByOrder(String morderid);
 }

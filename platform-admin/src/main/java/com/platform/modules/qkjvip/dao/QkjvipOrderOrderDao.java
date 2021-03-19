@@ -45,4 +45,5 @@ public interface QkjvipOrderOrderDao extends BaseMapper<QkjvipOrderOrderEntity> 
      * @return List
      */
     List<QkjvipOrderOrderEntity> selectQkjvipOrderOrderPage(IPage page, @Param("params") Map<String, Object> params);
+    List<QkjvipOrderOrderEntity> queryorderbyMember(@Param("params") Map<String, Object> params);
 }

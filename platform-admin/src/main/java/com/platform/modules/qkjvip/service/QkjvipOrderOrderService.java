@@ -33,6 +33,7 @@ public interface QkjvipOrderOrderService extends IService<QkjvipOrderOrderEntity
      * @return List
      */
     List<QkjvipOrderOrderEntity> queryAll(Map<String, Object> params);
+    List<QkjvipOrderOrderEntity> queryorderbyMember(Map<String, Object> params);
 
     /**
      * 分页查询

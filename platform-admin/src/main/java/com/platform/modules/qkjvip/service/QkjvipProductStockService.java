@@ -73,4 +73,12 @@ public interface QkjvipProductStockService extends IService<QkjvipProductStockEn
      * @return 删除结果
      */
     boolean deleteBatch(String[] ids);
+
+    /**
+     * 批量添加
+     *
+     * @param qkjviporderdetails 用户
+     */
+    void batchAdd(List<QkjvipProductStockEntity> qkjviporderdetails);
+    int deleteBatchByOrder(String morderid);
 }

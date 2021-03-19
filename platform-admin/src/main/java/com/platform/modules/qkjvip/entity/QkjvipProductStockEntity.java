@@ -83,4 +83,5 @@ public class QkjvipProductStockEntity implements Serializable {
      * CreateOn
      */
     private Date createon;
+    private String orderid;
 }

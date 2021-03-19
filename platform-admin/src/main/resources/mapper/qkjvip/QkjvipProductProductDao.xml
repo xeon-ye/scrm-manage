@@ -26,6 +26,10 @@
         <if test="params.iserp != null">
             AND T.IsErp = '${params.iserp}'
         </if>
+        <if test="params.disabled != null">
+            AND T.disabled = '${params.disabled}'
+        </if>
+
     </sql>
 
     <select id="selectQkjvipProductProductPage" resultType="com.platform.modules.qkjvip.entity.QkjvipProductProductEntity">

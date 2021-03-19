@@ -67,4 +67,15 @@ public class QkjvipOrderOrderdetailServiceImpl extends ServiceImpl<QkjvipOrderOr
     public boolean deleteBatch(String[] ids) {
         return this.removeByIds(Arrays.asList(ids));
     }
+
+    @Override
+    public int deleteBatchByOrder(String morderid) {
+        return baseMapper.deleteBatchByOrder(morderid);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void batchAdd(List<QkjvipOrderOrderdetailEntity> qkjviporderdetails) {
+        this.saveBatch(qkjviporderdetails, 100);
+    }
 }

@@ -19,6 +19,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 实体
@@ -103,4 +104,9 @@ public class QkjvipOrderOrderdetailEntity implements Serializable {
      * BottleTypeName
      */
     private String bottletypename;
+    private BigDecimal totalbottlenum;
+    @TableField(exist = false)
+    private List<QkjvipProductStockEntity> liststock;
+    @TableField(exist = false)
+    private Double outcount;
 }

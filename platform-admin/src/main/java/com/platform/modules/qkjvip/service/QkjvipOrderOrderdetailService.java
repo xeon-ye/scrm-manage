@@ -67,10 +67,19 @@ public interface QkjvipOrderOrderdetailService extends IService<QkjvipOrderOrder
     boolean delete(String id);
 
     /**
+     * 批量添加
+     *
+     * @param qkjviporderdetails 用户
+     */
+    void batchAdd(List<QkjvipOrderOrderdetailEntity> qkjviporderdetails);
+
+    /**
      * 根据主键批量删除
      *
      * @param ids ids
      * @return 删除结果
      */
     boolean deleteBatch(String[] ids);
+
+    int deleteBatchByOrder(String morderid);
 }
