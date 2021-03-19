@@ -37,17 +37,5 @@ public interface QrtzLastUpdateTimeService extends IService<QrtzLastUpdateTimeEn
      *
      * @param updateTimeEntity 用户
      */
-    void updateFansLastDatetime(QrtzLastUpdateTimeEntity updateTimeEntity);
-    /**
-     * 修改最后更新时间
-     *
-     * @param updateTimeEntity 用户
-     */
-    void updateMemberLastDatetime(QrtzLastUpdateTimeEntity updateTimeEntity);
-    /**
-     * 修改最后更新时间
-     *
-     * @param updateTimeEntity 用户
-     */
-    void updateOrderLastDatetime(QrtzLastUpdateTimeEntity updateTimeEntity);
+    void updateLastDatetime(QrtzLastUpdateTimeEntity updateTimeEntity);
 }

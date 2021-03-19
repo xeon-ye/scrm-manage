@@ -8,6 +8,9 @@
         LEFT JOIN sys_user u ON (T.add_user = u.USER_ID)
         LEFT JOIN qkjvip_member m ON (m.member_id = T.member_id)
         WHERE 1=1
+        <if test="params.id != null and params.id.trim() != ''">
+            AND T.ID = #{params.id}
+        </if>
         <if test="params.memberId != null and params.memberId.trim() != ''">
             AND T.MEMBER_ID = #{params.memberId}
         </if>
@@ -23,16 +26,22 @@
         <if test="params.visitStatus != null and params.visitStatus.trim() != ''">
             AND T.VISIT_STATUS = #{params.visitStatus}
         </if>
-        <if test="params.dateType != null and params.dateType.trim() != '' and params.dateType.trim() == 1">
+        <if test="params.visitStartDate != null and params.visitStartDate != ''">
+            AND T.visit_start_date &gt;= #{params.visitStartDate}
+        </if>
+        <if test="params.visitEndDate != null and params.visitEndDate != ''">
+            AND T.visit_end_date &lt; #{params.visitEndDate}
+        </if>
+        <if test="params.dateType != null and params.dateType.trim() != '' and params.dateType == 1">
             AND T.visit_start_date >= dateadd(MONTH ,- 1, GETDATE())
         </if>
-        <if test="params.dateType != null and params.dateType.trim() != '' and params.dateType.trim() == 2">
+        <if test="params.dateType != null and params.dateType.trim() != '' and params.dateType == 2">
             AND T.visit_start_date >= dateadd(MONTH ,- 3, GETDATE())
         </if>
-        <if test="params.dateType != null and params.dateType.trim() != '' and params.dateType.trim() == 3">
+        <if test="params.dateType != null and params.dateType.trim() != '' and params.dateType == 3">
             AND T.visit_start_date >= dateadd(MONTH ,- 6, GETDATE())
         </if>
-        <if test="params.dateType != null and params.dateType.trim() != '' and params.dateType.trim() == 4">
+        <if test="params.dateType != null and params.dateType.trim() != '' and params.dateType == 4">
             AND T.visit_start_date >= dateadd(MONTH ,- 12, GETDATE())
         </if>
     </sql>
@@ -46,6 +55,6 @@
     </select>
 
     <update id="closeById">
-		UPDATE QKJVIP_MEMBER_VISIT SET VISIT_STATUS = 1 WHERE id = #{value}
+		UPDATE QKJVIP_MEMBER_VISIT SET VISIT_STATUS = 2 WHERE id = #{value}
 	</update>
 </mapper>

@@ -77,13 +77,15 @@ public class QrtzMemberFansController extends AbstractController {
         Map subMap = new HashMap();
         String updateTime = "";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        List<QrtzLastUpdateTimeEntity> updateTimeList = qrtzLastUpdateTimeService.queryAll(null);
+        Map params = new HashMap();
+        params.put("type", 4);
+        List<QrtzLastUpdateTimeEntity> updateTimeList = qrtzLastUpdateTimeService.queryAll(params);
         QrtzLastUpdateTimeEntity updateTimeEntity = new QrtzLastUpdateTimeEntity();
         updateTimeEntity = updateTimeList.get(0);
-        if (updateTimeList.get(0).getFansLastDatetime() == null) {
+        if (updateTimeList.get(0).getLastDatetime() == null) {
             updateTime = "2017-01-01";
         } else {
-            updateTime = sdf.format(updateTimeList.get(0).getFansLastDatetime());
+            updateTime = sdf.format(updateTimeList.get(0).getLastDatetime());
         }
         subMap.put("user", "");
         subMap.put("imei", "12312312312");
@@ -118,7 +120,7 @@ public class QrtzMemberFansController extends AbstractController {
             map.clear();
             map.put("QueueData", fanList);
             String jsonData = JsonHelper.toJsonString(map, "yyyy-MM-dd HH:mm:ss");
-            updateTimeEntity.setFansLastDatetime(fanList.get(fanList.size() -1).getUpdatetime());
+            updateTimeEntity.setLastDatetime(fanList.get(fanList.size() -1).getUpdatetime());
             if (fanList.size() > 0) {
                 tmpList = JSON.parseArray(fanObject.get("UserList").toString(), TmpQkjvipMemberFansEntity.class);
                 System.out.println("result:" + fanList);
@@ -133,7 +135,7 @@ public class QrtzMemberFansController extends AbstractController {
                     qrtzMemberFansService.addBatch(fanList);  //粉丝批量插入
                 }
                 //将最后更新时间存入数据库
-                qrtzLastUpdateTimeService.updateFansLastDatetime(updateTimeEntity);
+                qrtzLastUpdateTimeService.updateLastDatetime(updateTimeEntity);
                 //将数据存入队列
                 RabbitMQUtil.getConnection("qkjvip_member_fans", jsonData);
             }
