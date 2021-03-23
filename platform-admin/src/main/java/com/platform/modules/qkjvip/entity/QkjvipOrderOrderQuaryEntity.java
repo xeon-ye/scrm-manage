@@ -48,5 +48,6 @@ public class QkjvipOrderOrderQuaryEntity implements Serializable {
     private String orderid;
     private String morderid;
     private String id;
+    private String visitid;
 
 }

@@ -11,27 +11,28 @@
  */
 package com.platform.modules.qkjvip.controller;
 
+import cn.emay.util.JsonHelper;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.utils.StringUtils;
-import com.platform.modules.qkjvip.entity.QkjvipMemberIntentionorderEntity;
-import com.platform.modules.qkjvip.entity.QkjvipMemberSignupaddressEntity;
-import com.platform.modules.qkjvip.entity.QkjvipMemberVisitMaterialEntity;
+import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.qkjvip.service.QkjvipMemberIntentionorderService;
 import com.platform.modules.qkjvip.service.QkjvipMemberVisitMaterialService;
 import com.platform.modules.sys.controller.AbstractController;
-import com.platform.modules.qkjvip.entity.QkjvipMemberVisitEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberVisitService;
+import com.platform.modules.util.HttpClient;
+import com.platform.modules.util.Vars;
 import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Controller
@@ -87,8 +88,8 @@ public class QkjvipMemberVisitController extends AbstractController {
      */
     @RequestMapping("/info/{id}")
     @RequiresPermissions("qkjvip:membervisit:info")
-    public RestResponse info(@PathVariable("id") String id) {
-//        QkjvipMemberVisitEntity qkjvipMemberVisit = qkjvipMemberVisitService.getById(id);
+    public RestResponse info(@PathVariable("id") String id) throws IOException {
+//        QkjvipMemberVisitEntity qkjvipMemberVisit = qkjvipMemberVisitService.getById(id);  //因为要查询一些非此表的字段所以改为以下形式
         Map params = new HashMap();
         params.put("id", id);
         List<QkjvipMemberVisitEntity> list = qkjvipMemberVisitService.queryAll(params);
@@ -101,7 +102,18 @@ public class QkjvipMemberVisitController extends AbstractController {
         params.put("visitId", id);
         qkjvipMemberVisit.setMaterialList(qkjvipMemberVisitMaterialService.queryAll(params));
         //查询订单
-        qkjvipMemberVisit.setOrderList(qkjvipMemberIntentionorderService.queryAll(params));
+        QkjvipOrderOrderQuaryEntity order = new QkjvipOrderOrderQuaryEntity();
+        order.setVisitid(id);
+        Object obj = JSONArray.toJSON(order);
+        String queryJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_ORDER_ORDER_LIST, queryJsonStr);
+        System.out.println("订单检索条件：" + queryJsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        List<QkjvipOrderOrderEntity> orderList = new ArrayList<>();
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+            orderList = JSON.parseArray(resultObject.getString("listorder"),QkjvipOrderOrderEntity.class);
+        }
+        qkjvipMemberVisit.setOrderList(orderList);
         return RestResponse.success().put("membervisit", qkjvipMemberVisit);
     }
 
@@ -132,29 +144,30 @@ public class QkjvipMemberVisitController extends AbstractController {
         qkjvipMemberVisitService.add(qkjvipMemberVisit);
 
         // 新增物料
-        if (qkjvipMemberVisit.getMaterialList().size() > 0) {
-            for(QkjvipMemberVisitMaterialEntity mvm : qkjvipMemberVisit.getMaterialList()){
-                mvm.setVisitId(qkjvipMemberVisit.getId());
-                mvm.setAddUser(getUserId());
-                mvm.setAddDept(getOrgNo());
-                mvm.setAddTime(new Date());
-            }
-            qkjvipMemberVisitMaterialService.addBatch(qkjvipMemberVisit.getMaterialList());
-        }
+//        if (qkjvipMemberVisit.getMaterialList().size() > 0) {
+//            for(QkjvipMemberVisitMaterialEntity mvm : qkjvipMemberVisit.getMaterialList()){
+//                mvm.setVisitId(qkjvipMemberVisit.getId());
+//                mvm.setAddUser(getUserId());
+//                mvm.setAddDept(getOrgNo());
+//                mvm.setAddTime(new Date());
+//            }
+//            qkjvipMemberVisitMaterialService.addBatch(qkjvipMemberVisit.getMaterialList());
+//        }
 
         // 新增订单
-        if (qkjvipMemberVisit.getOrderList().size() > 0) {
-            for(QkjvipMemberIntentionorderEntity mio : qkjvipMemberVisit.getOrderList()){
-                mio.setVisitId(qkjvipMemberVisit.getId());
-                mio.setMemberId(qkjvipMemberVisit.getMemberId());
-                mio.setAddUser(getUserId());
-                mio.setAddDept(getOrgNo());
-                mio.setAddTime(new Date());
-            }
-            qkjvipMemberIntentionorderService.addBatch(qkjvipMemberVisit.getOrderList());
-        }
+//        if (qkjvipMemberVisit.getOrderList().size() > 0) {
+//            for(QkjvipMemberIntentionorderEntity mio : qkjvipMemberVisit.getOrderList()){
+//                mio.setVisitId(qkjvipMemberVisit.getId());
+//                mio.setMemberId(qkjvipMemberVisit.getMemberId());
+//                mio.setAddUser(getUserId());
+//                mio.setAddDept(getOrgNo());
+//                mio.setAddTime(new Date());
+//            }
+//            qkjvipMemberIntentionorderService.addBatch(qkjvipMemberVisit.getOrderList());
+//        }
 
-        return RestResponse.success();
+        return RestResponse.success().put("membervisit", qkjvipMemberVisit);
+//        return RestResponse.success();
     }
 
     /**
@@ -184,33 +197,34 @@ public class QkjvipMemberVisitController extends AbstractController {
         qkjvipMemberVisitService.update(qkjvipMemberVisit);
 
         // 1.先删除物料表对应的数据
-        qkjvipMemberVisitMaterialService.deleteByVisitId(qkjvipMemberVisit.getId());
+//        qkjvipMemberVisitMaterialService.deleteByVisitId(qkjvipMemberVisit.getId());
         // 2.再插入物料
-        if (qkjvipMemberVisit.getMaterialList().size() > 0) {
-            for(QkjvipMemberVisitMaterialEntity mvm : qkjvipMemberVisit.getMaterialList()){
-                mvm.setVisitId(qkjvipMemberVisit.getId());
-                mvm.setAddUser(getUserId());
-                mvm.setAddDept(getOrgNo());
-                mvm.setAddTime(new Date());
-            }
-            qkjvipMemberVisitMaterialService.addBatch(qkjvipMemberVisit.getMaterialList());
-        }
+//        if (qkjvipMemberVisit.getMaterialList().size() > 0) {
+//            for(QkjvipMemberVisitMaterialEntity mvm : qkjvipMemberVisit.getMaterialList()){
+//                mvm.setVisitId(qkjvipMemberVisit.getId());
+//                mvm.setAddUser(getUserId());
+//                mvm.setAddDept(getOrgNo());
+//                mvm.setAddTime(new Date());
+//            }
+//            qkjvipMemberVisitMaterialService.addBatch(qkjvipMemberVisit.getMaterialList());
+//        }
 
         // 1.先删除订单表对应的数据
-        qkjvipMemberIntentionorderService.deleteByVisitId(qkjvipMemberVisit.getId());
+//        qkjvipMemberIntentionorderService.deleteByVisitId(qkjvipMemberVisit.getId());
         // 2.再插入订单
-        if (qkjvipMemberVisit.getOrderList().size() > 0) {
-            for(QkjvipMemberIntentionorderEntity mio : qkjvipMemberVisit.getOrderList()){
-                mio.setVisitId(qkjvipMemberVisit.getId());
-                mio.setMemberId(qkjvipMemberVisit.getMemberId());
-                mio.setAddUser(getUserId());
-                mio.setAddDept(getOrgNo());
-                mio.setAddTime(new Date());
-            }
-            qkjvipMemberIntentionorderService.addBatch(qkjvipMemberVisit.getOrderList());
-        }
+//        if (qkjvipMemberVisit.getOrderList().size() > 0) {
+//            for(QkjvipMemberIntentionorderEntity mio : qkjvipMemberVisit.getOrderList()){
+//                mio.setVisitId(qkjvipMemberVisit.getId());
+//                mio.setMemberId(qkjvipMemberVisit.getMemberId());
+//                mio.setAddUser(getUserId());
+//                mio.setAddDept(getOrgNo());
+//                mio.setAddTime(new Date());
+//            }
+//            qkjvipMemberIntentionorderService.addBatch(qkjvipMemberVisit.getOrderList());
+//        }
 
-        return RestResponse.success();
+//        return RestResponse.success();
+        return RestResponse.success().put("membervisit", qkjvipMemberVisit);
     }
 
     /**
