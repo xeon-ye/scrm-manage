@@ -116,5 +116,5 @@ public class QkjvipMemberVisitEntity implements Serializable {
     private List<QkjvipMemberVisitMaterialEntity> materialList;
 
     @TableField(exist = false)
-    private List<QkjvipMemberIntentionorderEntity> orderList;
+    private List<QkjvipOrderOrderEntity> orderList;
 }
