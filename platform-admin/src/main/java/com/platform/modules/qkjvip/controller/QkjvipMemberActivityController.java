@@ -40,7 +40,9 @@ import com.platform.modules.util.ExportExcelUtils;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -163,7 +165,8 @@ public class QkjvipMemberActivityController extends AbstractController {
      */
     @RequestMapping("/infohtml")
     public RestResponse infohtml(@RequestParam Map<String, Object> params) {
-        QkjvipMemberActivityEntity qkjvipMemberActivity = qkjvipMemberActivityService.getById(params.get("id").toString());
+        QkjvipMemberActivityEntity qkjvipMemberActivity=new QkjvipMemberActivityEntity();
+        qkjvipMemberActivity = qkjvipMemberActivityService.getById(params.get("id").toString());
         Map<String, Object> map=new HashMap<String,Object>();
         map.put("activityId",params.get("id").toString());
         List<QkjvipMemberActivitymbsEntity> mmbs=new ArrayList<>();
@@ -172,8 +175,49 @@ public class QkjvipMemberActivityController extends AbstractController {
             qkjvipMemberActivity.setMbs(mmbs);
         }
         //查询地址
-        qkjvipMemberActivity.setAddresses(qkjvipMemberSignupaddressService.queryAll(map));
+        List<QkjvipMemberSignupaddressEntity> addresses=new ArrayList<>();
+        addresses = qkjvipMemberSignupaddressService.queryAll(map);
+        if(addresses!=null&&addresses.size()>0){
+            qkjvipMemberActivity.setAddresses(addresses);
+        }
         return RestResponse.success().put("memberactivity", qkjvipMemberActivity);
+    }
+
+    /**
+     * 读取文件流
+     */
+    /**
+     * 预览pdf文件
+     * @param fileName
+     */
+    @RequestMapping(value = "/preview")
+    public void pdfStreamHandler(String fileName, HttpServletRequest request, HttpServletResponse response) {
+
+        //File file = new File("D:/temp/test01/0/"+fileName);
+        if (1==1){
+            byte[] data = null;
+            String file = fileName;
+            try {
+                OutputStream sos = response.getOutputStream();
+                URL url = new URL(file);
+                HttpURLConnection httpUrl = (HttpURLConnection)url.openConnection();
+                // 连接指定的网络资源
+                httpUrl.connect();
+                BufferedInputStream input = new BufferedInputStream(httpUrl.getInputStream());
+                int b;
+                while ((b = input.read())!= -1){
+                    sos.write(b);
+                }
+                response.flushBuffer();
+                sos.close();
+                input.close();
+            } catch (Exception e) {
+                logger.error("pdf文件处理异常：" + e.getMessage());
+            }
+
+        }else{
+            return;
+        }
     }
 
     /**

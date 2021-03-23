@@ -69,6 +69,7 @@ public class QkjvipMemberActivityEntity implements Serializable {
     private String triplog;
     private String activilog;
     private Date addtime;
+    private Integer showtype;//活动详情展示形式
 
     @TableField(exist = false)
     private String htmlurl;

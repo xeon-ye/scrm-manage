@@ -140,7 +140,7 @@
         as mobile,
         case when (b.member_name=null or b.member_name='') then b.real_name
         else b.member_name end as member_name,
-        case when (b.sex!=0 and b.sex!=1) then 0
+        case when (b.sex=3) then 1
         else b.sex end as sex
         from [dbo].[qkjvip_member_jueru] a
         inner join qkjvip_member b on a.AppOpenId=b.openid

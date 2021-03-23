@@ -57,7 +57,8 @@ public class Oauth2Filter extends AuthenticatingFilter {
         if (StringUtils.isBlank(token)) {
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
-            httpResponse.setHeader("Access-Control-Allow-Origin", HttpContextUtils.getOrigin());
+            //httpResponse.setHeader("Access-Control-Allow-Origin", HttpContextUtils.getOrigin());
+            httpResponse.setHeader("Access-Control-Allow-Origin", "*");
 
             String json = new Gson().toJson(RestResponse.error(401, "invalid token"));
 
@@ -74,7 +75,8 @@ public class Oauth2Filter extends AuthenticatingFilter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpResponse.setContentType("application/json;charset=utf-8");
         httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
-        httpResponse.setHeader("Access-Control-Allow-Origin", HttpContextUtils.getOrigin());
+        //httpResponse.setHeader("Access-Control-Allow-Origin", HttpContextUtils.getOrigin());
+        httpResponse.setHeader("Access-Control-Allow-Origin", "*");
         try {
             //处理登录失败的异常
             Throwable throwable = e.getCause() == null ? e : e.getCause();
