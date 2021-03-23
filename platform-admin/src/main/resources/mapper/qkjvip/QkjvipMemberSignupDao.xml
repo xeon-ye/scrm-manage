@@ -16,7 +16,11 @@
             AND T.acitvity_id = '${params.acitvityId}'
         </if>
         <if test="params.memberid != null and params.memberid.trim() != ''">
-            AND t.memberid = '${params.memberid}'
+            AND ( t.memberid = '${params.memberid}'
+            or EXISTS(SELECT 1 from qkjvip_member m
+            where m.member_id=t.memberid and  ISNULL(m.memberidto, '88')!='88'
+            and m.memberidto='${params.memberid}')
+            )
         </if>
         <if test="params.userName != null and params.userName.trim() != ''">
             AND T.user_name LIKE '%${params.userName}%'

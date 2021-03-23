@@ -145,6 +145,7 @@
         from [dbo].[qkjvip_member_jueru] a
         inner join qkjvip_member b on a.AppOpenId=b.openid
         where a.AppOpenId=#{params.openid} AND a.IsSubscribe = 1
+        and b.statusflag!=1
     </select>
 <!--    <select id="selectMemberByOpenid" resultType="int">-->
 <!--        SELECT SUM(cnt) cnt FROM (-->
