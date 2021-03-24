@@ -69,6 +69,8 @@ public class QkjvipMemberActivityController extends AbstractController {
     private QkjvipMemberSignupaddressService qkjvipMemberSignupaddressService;
     @Autowired
     private SysSmsLogService sysSmsLogService;
+    @Autowired
+    private QkjvipMemberSignupService qkjvipMemberSignupService;
 
     /**
      * 查看所有列表
@@ -180,7 +182,18 @@ public class QkjvipMemberActivityController extends AbstractController {
         if(addresses!=null&&addresses.size()>0){
             qkjvipMemberActivity.setAddresses(addresses);
         }
-        return RestResponse.success().put("memberactivity", qkjvipMemberActivity);
+        int iscanjia=0;
+        if(params.get("myopenid")!=null && !params.get("myopenid").equals("")){//查询是否参加过本活动
+            Map<String, Object> mapt = new HashMap<>();
+            map.put("myopenid",params.get("myopenid")+"");
+            map.put("acitvityId",params.get("id").toString());
+            List<QkjvipMemberSignupEntity> sgs=new ArrayList<>();
+            sgs=qkjvipMemberSignupService.queryAll(map);
+            if(sgs.size()>0){
+                iscanjia=1;
+            }
+        }
+        return RestResponse.success().put("memberactivity", qkjvipMemberActivity).put("istake",iscanjia);
     }
 
     /**

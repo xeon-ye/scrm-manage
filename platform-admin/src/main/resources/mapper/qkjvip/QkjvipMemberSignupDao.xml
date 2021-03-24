@@ -22,6 +22,10 @@
             and m.memberidto='${params.memberid}')
             )
         </if>
+        <if test="params.myopenid != null and params.myopenid.trim() != ''">
+            AND EXISTS (SELECT 1 from qkjvip_member a
+            where a.member_id=t.memberid and a.openid='${params.myopenid}')
+        </if>
         <if test="params.userName != null and params.userName.trim() != ''">
             AND T.user_name LIKE '%${params.userName}%'
         </if>
