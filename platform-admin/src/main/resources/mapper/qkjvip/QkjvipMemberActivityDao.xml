@@ -5,8 +5,9 @@
 
     <sql id="selectSql">
         SELECT
-        T.*
+        T.*,u.REAL_NAME realname
         FROM QKJVIP_MEMBER_ACTIVITY T
+        join sys_user u on (u.USER_ID=t.adduser)
         WHERE 1=1
         <if test="params.title != null and params.title.trim() != ''">
             AND T.title LIKE '%${params.title}%'
