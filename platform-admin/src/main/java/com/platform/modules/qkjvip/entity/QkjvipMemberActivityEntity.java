@@ -91,4 +91,6 @@ public class QkjvipMemberActivityEntity implements Serializable {
     private Integer istake;
     @TableField(exist = false)
     private String addressstr;
+    @TableField(exist = false)
+    private String realname;
 }

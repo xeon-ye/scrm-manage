@@ -5,8 +5,9 @@
 
     <sql id="selectSql">
         SELECT
-        T.*
+        T.*,u.REAL_NAME realname
         FROM QKJVIP_MEMBER_ACTIVITY T
+        join sys_user u on (u.USER_ID=t.adduser)
         WHERE 1=1
         <if test="params.title != null and params.title.trim() != ''">
             AND T.title LIKE '%${params.title}%'
@@ -50,7 +51,13 @@
         where 1=1
         <if test="params.memberIdSign != null and params.memberIdSign.trim() != ''">
             AND not EXISTS (SELECT 1 from qkjvip_member_signup s where s.acitvity_id=t.id and
-            s.memberid=#{params.memberIdSign})
+            (s.memberid=#{params.memberIdSign}
+            or EXISTS(SELECT 1 from qkjvip_member m
+            where m.member_id=s.memberid and ISNULL(m.memberidto, '88')!='88'
+            and m.memberidto=#{params.memberIdSign})
+            )
+            )
+
         </if>
         <if test="params.memberIdSignAddress != null and params.memberIdSignAddress.trim() != ''">
             and EXISTS (SELECT 1 from qkjvip_member_signupaddress adres

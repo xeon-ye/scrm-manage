@@ -7,7 +7,7 @@
         SELECT
         T.*,a.address addressstr
         FROM QKJVIP_MEMBER_SIGNUP T
-        join qkjvip_member_signupaddress a on (a.id=t.address)
+        left join qkjvip_member_signupaddress a on (a.id=t.address)
         WHERE 1=1
         <if test="params.phone != null and params.phone.trim() != ''">
             AND T.phone LIKE '${params.phone}'
@@ -21,6 +21,10 @@
             where m.member_id=t.memberid and  ISNULL(m.memberidto, '88')!='88'
             and m.memberidto='${params.memberid}')
             )
+        </if>
+        <if test="params.myopenid != null and params.myopenid.trim() != ''">
+            AND EXISTS (SELECT 1 from qkjvip_member a
+            where a.member_id=t.memberid and a.openid='${params.myopenid}')
         </if>
         <if test="params.userName != null and params.userName.trim() != ''">
             AND T.user_name LIKE '%${params.userName}%'
