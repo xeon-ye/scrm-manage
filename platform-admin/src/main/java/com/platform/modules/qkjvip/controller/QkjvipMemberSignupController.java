@@ -108,6 +108,7 @@ public class QkjvipMemberSignupController extends AbstractController {
         List<QkjvipMemberSignupEntity> list = qkjvipMemberSignupService.queryAll(params);
         if(list.size()>0){
             //return RestResponse.error("已报名成功，谢谢");
+            logger.info("已报名成功，谢谢"+ qkjvipMemberSignup.getAcitvityId());
             qkjvipMemberSignup = list.get(0);
         }else{
             List<QkjvipMemberImportEntity> mbs=new ArrayList<>();
