@@ -1,11 +1,11 @@
 /*
  * 项目名称:platform-plus
- * 类名称:QkjvipMemberMessageService.java
+ * 类名称:QkjvipContentPushchannelService.java
  * 包名称:com.platform.modules.qkjvip.service
  *
  * 修改履历:
  *     日期                       修正者        主要内容
- *     2020-12-22 11:05:08        李鹏军     初版做成
+ *     2021-03-24 15:41:46        liuqianru     初版做成
  *
  * Copyright (c) 2019-2019 微同软件
  */
@@ -13,8 +13,8 @@ package com.platform.modules.qkjvip.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.platform.modules.qkjvip.entity.QkjvipMemberMessageEntity;
-import com.platform.modules.qkjvip.entity.QkjvipOptionsEntity;
+import com.platform.modules.qkjvip.entity.QkjvipContentGroupcontentEntity;
+import com.platform.modules.qkjvip.entity.QkjvipContentPushchannelEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -22,10 +22,10 @@ import java.util.Map;
 /**
  * Service接口
  *
- * @author 李鹏军
- * @date 2020-12-22 11:05:08
+ * @author liuqianru
+ * @date 2021-03-24 15:41:46
  */
-public interface QkjvipMemberMessageService extends IService<QkjvipMemberMessageEntity> {
+public interface QkjvipContentPushchannelService extends IService<QkjvipContentPushchannelEntity> {
 
     /**
      * 查询所有列表
@@ -33,7 +33,7 @@ public interface QkjvipMemberMessageService extends IService<QkjvipMemberMessage
      * @param params 查询参数
      * @return List
      */
-    List<QkjvipMemberMessageEntity> queryAll(Map<String, Object> params);
+    List<QkjvipContentPushchannelEntity> queryAll(Map<String, Object> params);
 
     /**
      * 分页查询
@@ -46,18 +46,26 @@ public interface QkjvipMemberMessageService extends IService<QkjvipMemberMessage
     /**
      * 新增
      *
-     * @param qkjvipMemberMessage 
+     * @param qkjvipContentPushchannel 
      * @return 新增结果
      */
-    boolean add(QkjvipMemberMessageEntity qkjvipMemberMessage);
+    boolean add(QkjvipContentPushchannelEntity qkjvipContentPushchannel);
+
+    /**
+     * 批量新增
+     *
+     * @param pushChannelList
+     * @return 新增结果
+     */
+    void addBatch(List<QkjvipContentPushchannelEntity> pushChannelList);
 
     /**
      * 根据主键更新
      *
-     * @param qkjvipMemberMessage 
+     * @param qkjvipContentPushchannel 
      * @return 更新结果
      */
-    boolean update(QkjvipMemberMessageEntity qkjvipMemberMessage);
+    boolean update(QkjvipContentPushchannelEntity qkjvipContentPushchannel);
 
     /**
      * 根据主键删除
@@ -75,10 +83,5 @@ public interface QkjvipMemberMessageService extends IService<QkjvipMemberMessage
      */
     boolean deleteBatch(String[] ids);
 
-    /**
-     * 查询渠道列表
-     *
-     * @return List
-     */
-    List<QkjvipOptionsEntity> queryChannels();
+    boolean deleteByGroupId(String groupId);
 }

@@ -157,6 +157,18 @@ public class QkjvipMemberMessageController extends AbstractController {
     }
 
     /**
+     * 取出所有公众号
+     *
+     * @return RestResponse
+     */
+    @PostMapping("/getChannels")
+    public RestResponse getChannels() {
+        List<QkjvipOptionsEntity> channelList = new ArrayList<>();
+        channelList = qkjvipMemberMessageService.queryChannels();
+        return RestResponse.success().put("channelList", channelList);
+    }
+
+    /**
      * 取出所选人分布在每个公众号的人数
      *
      * @param qkjvipMemberMessage 活动/积分/优惠券的

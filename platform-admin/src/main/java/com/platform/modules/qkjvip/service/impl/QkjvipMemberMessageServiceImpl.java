@@ -11,15 +11,21 @@
  */
 package com.platform.modules.qkjvip.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.platform.common.utils.Query;
 import com.platform.modules.qkjvip.dao.QkjvipMemberMessageDao;
 import com.platform.modules.qkjvip.entity.QkjvipMemberMessageEntity;
+import com.platform.modules.qkjvip.entity.QkjvipOptionsEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberMessageService;
+import com.platform.modules.util.HttpClient;
+import com.platform.modules.util.Vars;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -66,5 +72,17 @@ public class QkjvipMemberMessageServiceImpl extends ServiceImpl<QkjvipMemberMess
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteBatch(String[] ids) {
         return this.removeByIds(Arrays.asList(ids));
+    }
+
+    @Override
+    public List<QkjvipOptionsEntity> queryChannels() {
+        List<QkjvipOptionsEntity> channelList = new ArrayList<>();
+        //获取公众号列表
+        String resultPost = HttpClient.sendGet(Vars.APPID_GETLIST_URL);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("0".equals(resultObject.get("code").toString())) {  //调用成功
+            channelList = JSON.parseArray(resultObject.getString("data"), QkjvipOptionsEntity.class);
+        }
+        return channelList;
     }
 }
