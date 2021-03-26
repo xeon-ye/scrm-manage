@@ -104,7 +104,7 @@ public class QkjvipMemberSignupController extends AbstractController {
     public RestResponse save(@RequestBody QkjvipMemberSignupEntity qkjvipMemberSignup) {
         Map<String, Object> params=new HashMap<>();
         params.put("phone",qkjvipMemberSignup.getPhone());
-        params.put("acitvityid",qkjvipMemberSignup.getAcitvityId());
+        params.put("acitvityId",qkjvipMemberSignup.getAcitvityId());
         List<QkjvipMemberSignupEntity> list = qkjvipMemberSignupService.queryAll(params);
         if(list.size()>0){
             //return RestResponse.error("已报名成功，谢谢");
