@@ -120,28 +120,36 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
     @RequestMapping("/saveMems")
     public RestResponse saveMems(@RequestBody QkjvipMemberSignupmemberEntity qkjvipMemberSignupmember) {
         if(qkjvipMemberSignupmember.getMemlist().size()>0){
+            int tonum=0;
             for(QkjvipMemberActivitymbsEntity mems:qkjvipMemberSignupmember.getMemlist()){
-                String bmid="";
-                if(mems.getQdstatus()!=null&&mems.getQdstatus().equals(1)){//已签到
+                if(mems!=null){
+                    String bmid="";
+                    if(mems.getQdstatus()!=null&&mems.getQdstatus().equals(1)){//已签到
 
-                }else{//未签到
-                    if(mems.getBmstatus()!=null&&mems.getBmstatus().equals(1)){//已报名
-                        bmid=mems.getBmid();
-                    }else{//补充报名
-                        bmid=qkjvipMemberSignupService.supadd(qkjvipMemberSignupmember.getActivityId(),mems.getMemberId());
-                    }
-                    //添加签到
-                    if(bmid!=""){
-                        Date date=new Date();
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        String date2=sdf.format(date);
-                        qkjvipMemberSignupmember.setMemberId(mems.getMemberId());
-                        qkjvipMemberSignupmember.setTime(date2);
-                        qkjvipMemberSignupmember.setSignupId(bmid);
-                        qkjvipMemberSignupmemberService.add(qkjvipMemberSignupmember);
-                    }
+                    }else{//未签到
+                        if(mems.getBmstatus()!=null&&mems.getBmstatus().equals(1)){//已报名
+                            bmid=mems.getBmid();
+                        }else{//补充报名
+                            bmid=qkjvipMemberSignupService.supadd(qkjvipMemberSignupmember.getActivityId(),mems.getMemberId());
+                        }
+                        //添加签到
+                        if(bmid!=""){
+                            Date date=new Date();
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            String date2=sdf.format(date);
+                            QkjvipMemberSignupmemberEntity newsingup =new QkjvipMemberSignupmemberEntity();
+                            newsingup.setActivityId(qkjvipMemberSignupmember.getActivityId());
+                            newsingup.setMemberId(mems.getMemberId());
+                            newsingup.setTime(date2);
+                            newsingup.setSignupId(bmid);
+                            qkjvipMemberSignupmemberService.add(newsingup);
+                        }
 
+                    }
+                }else {
+                    tonum+=1;
                 }
+
             }
         }
         //qkjvipMemberSignupmemberService.add(qkjvipMemberSignupmember);
