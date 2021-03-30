@@ -23,9 +23,10 @@
     </sql>
 
     <sql id="selectSqlOther">
-        SELECT T.* FROM QKJVIP_CONTENT T
+        SELECT T.*,g.sortvalue FROM QKJVIP_CONTENT T
         INNER JOIN QKJVIP_CONTENT_GROUPCONTENT g ON (t.id=g.contentid)
         WHERE g.groupid = #{value}
+        ORDER BY g.sortvalue ASC
     </sql>
 
     <select id="selectQkjvipContentPage" resultType="com.platform.modules.qkjvip.entity.QkjvipContentEntity">
@@ -35,7 +36,7 @@
     <select id="queryAll" resultType="com.platform.modules.qkjvip.entity.QkjvipContentEntity">
         <include refid="selectSql"/>
     </select>
-    <select id="queryByCondition" resultType="com.platform.modules.qkjvip.entity.QkjvipContentEntity">
+    <select id="queryByGroupId" resultType="com.platform.modules.qkjvip.entity.QkjvipContentEntity">
         <include refid="selectSqlOther"/>
     </select>
 </mapper>

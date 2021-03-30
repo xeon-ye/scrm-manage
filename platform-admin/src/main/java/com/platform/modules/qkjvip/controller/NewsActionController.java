@@ -28,7 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * NewsActionController
@@ -55,10 +57,13 @@ public class NewsActionController extends AbstractController {
         System.out.println("新闻列表检索条件：" + queryJsonStr);
         JSONObject resultObject = JSON.parseObject(resultPost);
         if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
-            if (resultObject.get("newslist") != null) {
-                list = JSON.parseArray(resultObject.getString("newslist"), NewsEntity.class);
-            }
+            list = JSON.parseArray(resultObject.getString("newslist"), NewsEntity.class);
+            Map page = new HashMap<>();
+            page.put("newslist", list);
+            page.put("totalcount", Long.parseLong(resultObject.get("totalcount").toString()));
+            return RestResponse.success().put("page", page);
+        } else {
+            return RestResponse.error(resultObject.get("descr").toString());
         }
-        return RestResponse.success().put("newslist", list);
     }
 }

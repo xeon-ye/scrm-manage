@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -70,4 +71,10 @@ public class QkjvipContentEntity implements Serializable {
      * lm_time
      */
     private Date lmTime;
+
+    /**
+     * 排序
+     */
+    @TableField(exist = false)
+    private Integer sortvalue;
 }

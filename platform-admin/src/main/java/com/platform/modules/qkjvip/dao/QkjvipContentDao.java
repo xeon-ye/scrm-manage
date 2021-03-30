@@ -46,5 +46,5 @@ public interface QkjvipContentDao extends BaseMapper<QkjvipContentEntity> {
      */
     List<QkjvipContentEntity> selectQkjvipContentPage(IPage page, @Param("params") Map<String, Object> params);
 
-    List<QkjvipContentEntity> queryByCondition(String groupId);
+    List<QkjvipContentEntity> queryByGroupId(String groupId);
 }

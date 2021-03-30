@@ -41,7 +41,7 @@ public class QkjvipContentServiceImpl extends ServiceImpl<QkjvipContentDao, Qkjv
 
     @Override
     public List<QkjvipContentEntity> queryByGroupId(String groupId) {
-        return baseMapper.queryByCondition(groupId);
+        return baseMapper.queryByGroupId(groupId);
     }
 
     @Override
