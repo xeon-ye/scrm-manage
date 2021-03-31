@@ -4,17 +4,7 @@
 <mapper namespace="com.platform.modules.qkjvip.dao.QkjvipContentDao">
 
     <sql id="selectSql">
-        SELECT
-        T.ID,
-        T.TITLE,
-        T.COVERIMAGE,
-        T.CONTENT,
-        T.ADD_TIME,
-        T.ADD_DEPT,
-        T.LM_DEPT,
-        T.LM_USER,
-        T.ADD_USER,
-        T.LM_TIME
+        SELECT T.*
         FROM QKJVIP_CONTENT T
         WHERE 1=1
         <if test="params.title != null and params.title.trim() != ''">

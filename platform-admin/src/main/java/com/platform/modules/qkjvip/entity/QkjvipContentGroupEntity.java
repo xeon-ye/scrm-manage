@@ -13,6 +13,7 @@ package com.platform.modules.qkjvip.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -40,6 +41,14 @@ public class QkjvipContentGroupEntity implements Serializable {
      * 组名称
      */
     private String title;
+    /**
+     * 推送状态
+     */
+    private Integer pushstatus;
+    /**
+     * 推送目标标识
+     */
+    private Integer istoall;
     /**
      * lm_dept
      */
@@ -69,6 +78,8 @@ public class QkjvipContentGroupEntity implements Serializable {
     private List<QkjvipContentEntity> contentList;
     @TableField(exist = false)
     private List<QkjvipOptionsEntity> channelList;
+    @TableField(exist = false)
+    private List<QkjvipContentGroupuserEntity> memberList;
     @TableField(exist = false)
     private List<String> appids;
 }

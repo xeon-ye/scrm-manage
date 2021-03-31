@@ -16,9 +16,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.platform.common.utils.Query;
 import com.platform.modules.qkjvip.dao.QkjvipContentGroupDao;
 import com.platform.modules.qkjvip.entity.*;
-import com.platform.modules.qkjvip.service.QkjvipContentGroupService;
-import com.platform.modules.qkjvip.service.QkjvipContentGroupcontentService;
-import com.platform.modules.qkjvip.service.QkjvipContentPushchannelService;
+import com.platform.modules.qkjvip.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +39,8 @@ public class QkjvipContentGroupServiceImpl extends ServiceImpl<QkjvipContentGrou
     private QkjvipContentGroupcontentService qkjvipContentGroupcontentService;
     @Autowired
     private QkjvipContentPushchannelService qkjvipContentPushchannelService;
+    @Autowired
+    private QkjvipContentGroupuserService qkjvipContentGroupuserService;
 
     @Override
     public List<QkjvipContentGroupEntity> queryAll(Map<String, Object> params) {
@@ -63,7 +63,10 @@ public class QkjvipContentGroupServiceImpl extends ServiceImpl<QkjvipContentGrou
         saveGroupContent(qkjvipContentGroup);
         // 批量保存推送渠道
         savePushChannel(qkjvipContentGroup);
-
+        // 批量保存人员
+        if (qkjvipContentGroup.getIstoall() == 2) {  // 指定人员时保存
+            saveContentGroupUser(qkjvipContentGroup.getId(), qkjvipContentGroup.getMemberList());
+        }
     }
 
     @Override
@@ -74,6 +77,12 @@ public class QkjvipContentGroupServiceImpl extends ServiceImpl<QkjvipContentGrou
         saveGroupContent(qkjvipContentGroup);
         // 批量保存推送渠道
         qkjvipContentPushchannelService.deleteByGroupId(qkjvipContentGroup.getId());
+        // 人员列表删除
+        qkjvipContentGroupuserService.deleteByGroupId(qkjvipContentGroup.getId());
+        if (qkjvipContentGroup.getIstoall() == 2) {  // 指定人员时保存
+            saveContentGroupUser(qkjvipContentGroup.getId(), qkjvipContentGroup.getMemberList());
+        }
+
         savePushChannel(qkjvipContentGroup);
     }
 
@@ -131,6 +140,23 @@ public class QkjvipContentGroupServiceImpl extends ServiceImpl<QkjvipContentGrou
                 cnt++;
             }
             qkjvipContentGroupcontentService.addBatch(groupContentList);
+        }
+    }
+    /**
+     * 批量保存会员
+     *
+     * @param groupId groupId
+     * @param memberlist memberlist
+     * @return RestResponse
+     */
+    private void saveContentGroupUser(String groupId, List<QkjvipContentGroupuserEntity> memberlist) {
+        if (memberlist != null && memberlist.size() > 0) {
+            List<QkjvipContentGroupuserEntity> groupusers = new ArrayList<>();
+            for (QkjvipContentGroupuserEntity groupuser : memberlist) {
+                groupuser.setGroupid(groupId);
+                groupusers.add(groupuser);
+            }
+            qkjvipContentGroupuserService.addBatch(groupusers);
         }
     }
 }

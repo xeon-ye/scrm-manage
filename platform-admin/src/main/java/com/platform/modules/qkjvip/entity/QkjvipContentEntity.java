@@ -48,6 +48,10 @@ public class QkjvipContentEntity implements Serializable {
      */
     private String content;
     /**
+     * 推送状态
+     */
+    private Integer pushstatus;
+    /**
      * add_time
      */
     private Date addTime;

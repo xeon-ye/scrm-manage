@@ -39,7 +39,7 @@ public class Vars {
 	//公众号url start
 	public static String APPID_GETLIST_URL = "http://scrm-wxcb.ym.qkj.com.cn/WeiXinPublish/GetPublishList";
 	//群发图文消息接口
-	public static String MESSAGE_SEND = "http://scrm-wxcb.ym.qkj.com.cn/WeiXinMsg/MassNewsMessage";
+	public static String MESSAGE_SEND = "http://scrm-wxcb.ym.qkj.com.cn/WeiXinMsg/MassMultiNewsMessage";
 	//公众号url end
 	//优惠券查询
 	public static String MEMBER_CPON_LIST_URl = "http://api.mall.qkj.com.cn/MobileAPI/Coupon/GetCouponList";
@@ -55,6 +55,7 @@ public class Vars {
 	/*会员画像end*/
 	// 消费者首页新闻
 	public static String NEWS_LIST_URl = "http://api.scrm.qkj.com.cn/api/News/GetNewsList";
+	public static String NEWS_INFO_URl = "http://api.scrm.qkj.com.cn/api/News/GetNewsInfo";
 	/**
 	 * 订单
 	 */

@@ -37,7 +37,7 @@ public class QkjvipContentGroupController extends AbstractController {
     @Autowired
     private QkjvipContentPushchannelService qkjvipContentPushchannelService;
     @Autowired
-    private QkjvipMemberMessageService qkjvipMemberMessageService;
+    private QkjvipContentGroupuserService qkjvipContentGroupuserService;
     @Autowired
     private QkjvipContentService qkjvipContentService;
 
@@ -80,6 +80,7 @@ public class QkjvipContentGroupController extends AbstractController {
     public RestResponse info(@PathVariable("id") String id) {
         List<QkjvipContentEntity> contentList = new ArrayList<>();
         List<QkjvipContentPushchannelEntity> pushChannels = new ArrayList<>();
+        List<QkjvipContentGroupuserEntity> memberList = new ArrayList<>();
         List<String> appids = new ArrayList<>();
         QkjvipContentGroupEntity qkjvipContentGroup = qkjvipContentGroupService.getById(id);
 
@@ -93,6 +94,9 @@ public class QkjvipContentGroupController extends AbstractController {
             appids.add(pushchannelEntity.getAppid());
         }
         qkjvipContentGroup.setAppids(appids);
+
+        memberList = qkjvipContentGroupuserService.queryAll(param);
+        qkjvipContentGroup.setMemberList(memberList);
 
         return RestResponse.success().put("contentgroup", qkjvipContentGroup);
     }

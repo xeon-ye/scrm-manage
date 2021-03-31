@@ -80,6 +80,7 @@ public class SysMenuController extends AbstractController {
         List<QkjvipTaglibsEntity> areaList = qkjvipTaglibsService.list(new QueryWrapper<QkjvipTaglibsEntity>().eq("TAG_GROUP_ID", "9af1533bea3d4c89b856ad80e9d0e457")); //liuqianru add
         List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.queryAll(map);
         List<QkjvipOptionsEntity> appChannels = qkjvipMemberMessageService.queryChannels();
+        List<SysUserChannelEntity> permissionChannels = qkjvipMemberMessageService.queryPermissionChannels(appChannels, getUserId());
         return RestResponse.success()
                 .put("menuList", menuList)
                 .put("permissions", permissions)
@@ -88,7 +89,8 @@ public class SysMenuController extends AbstractController {
                 .put("userList", userList)
                 .put("areaList", areaList)
                 .put("channelList", channelList)
-                .put("appChannels", appChannels);
+                .put("appChannels", appChannels)
+                .put("permissionChannels", permissionChannels);
     }
 
     /**
