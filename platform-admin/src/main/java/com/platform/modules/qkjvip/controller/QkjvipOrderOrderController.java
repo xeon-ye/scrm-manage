@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -141,17 +142,20 @@ public class QkjvipOrderOrderController extends AbstractController {
             listout=qkjvipOrderDeliverlogService.queryAll(params);
 
             List<QkjvipProductProductEntity> newps=new ArrayList<>();
-            for(QkjvipProductProductEntity es:qkjvipOrderOrder.getListproduct()){
-                Double outsum=0.00;
-                for(QkjvipProductStockEntity e:liststocks){
-                    if(es.getProductid().equals(e.getProductid())){
-                        if(e.getOuttotalcount()!=null){
-                            outsum+=e.getOuttotalcount().doubleValue();
+            if(qkjvipOrderOrder!=null&&qkjvipOrderOrder.getListproduct()!=null){
+
+                for(QkjvipProductProductEntity es:qkjvipOrderOrder.getListproduct()){
+                    Double outsum=0.00;
+                    for(QkjvipProductStockEntity e:liststocks){
+                        if(es.getProductid().equals(e.getProductid())){
+                            if(e.getOuttotalcount()!=null){
+                                outsum+=e.getOuttotalcount().doubleValue();
+                            }
                         }
                     }
+                    es.setOutcount(outsum);
+                    newps.add(es);
                 }
-                es.setOutcount(outsum);
-                newps.add(es);
             }
             qkjvipOrderOrder.setListproduct(newps);
             qkjvipOrderOrder.setListstock(liststocks);
@@ -169,6 +173,8 @@ public class QkjvipOrderOrderController extends AbstractController {
     @SysLog("新增&修改")
     @RequestMapping("/save")
     public RestResponse save(@RequestBody QkjvipOrderOrderEntity qkjvipOrderOrder) throws IOException {
+        qkjvipOrderOrder.setListuserfile(null);
+        qkjvipOrderOrder.setListfinalfile(null);
         qkjvipOrderOrder.setCreatoradminid(getUserId());
         qkjvipOrderOrder.setCreatoradmin(getUser().getUserName());
         if(qkjvipOrderOrder.getCrmMemberid()!=null){
@@ -222,7 +228,10 @@ public class QkjvipOrderOrderController extends AbstractController {
                 qkjvipOrderDeliverlogService.deleteBatchByOrder(orderid);
                 List<QkjvipOrderDeliverlogEntity> liststock=new ArrayList<>();
                 for(QkjvipOrderDeliverlogEntity st:qkjvipOrderOrder.getListout()){
-                    st.setCreateon(new Date());
+                    Date date = new Date();//获取当前的日期
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+                    String str = df.format(date);//获取String类型的时间
+                    st.setCreateon(str);
                     st.setOrderid(orderid);
                     liststock.add(st);
                 }

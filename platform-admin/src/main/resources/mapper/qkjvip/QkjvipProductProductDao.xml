@@ -4,7 +4,7 @@
 <mapper namespace="com.platform.modules.qkjvip.dao.QkjvipProductProductDao">
 
     <sql id="selectSql">
-        SELECT top 10
+        SELECT top 30
         T.ID,
         T.PRODUCTNAME,
         T.PRODUCTTYPE,

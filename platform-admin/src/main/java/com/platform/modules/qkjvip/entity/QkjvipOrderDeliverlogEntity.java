@@ -86,7 +86,7 @@ public class QkjvipOrderDeliverlogEntity implements Serializable {
     /**
      * CreateOn
      */
-    private Date createon;
+    private String createon;
     private Double synum;
     private Float packsize;
 }

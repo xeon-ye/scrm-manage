@@ -12,13 +12,14 @@
         T.PRODUCTNAME,
         T.PRODUCTCOUNT,
         T.WARNINGCOUNT,
-        T.OUTTOTALCOUNT,
         T.INTOTALCOUNT,
         T.REMARK,
         T.DISABLED,
         T.CREATOR,
         T.CREATEON,
-        t.orderid
+        t.orderid,
+        (SELECT sum(isnull(d.ProductNum,0)) from qkjvip_order_deliverlog d where
+        d.OrderId=t.orderid and d.WareHouseId=t.warehouseid group by d.ProductId) as outtotalcount
         FROM QKJVIP_PRODUCT_STOCK T
         WHERE 1=1
         <if test="params.name != null and params.name.trim() != ''">
