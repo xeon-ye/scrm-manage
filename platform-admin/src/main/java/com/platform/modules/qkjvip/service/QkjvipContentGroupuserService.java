@@ -1,11 +1,11 @@
 /*
  * 项目名称:platform-plus
- * 类名称:QkjvipMemberMessageService.java
+ * 类名称:QkjvipContentGroupuserService.java
  * 包名称:com.platform.modules.qkjvip.service
  *
  * 修改履历:
  *     日期                       修正者        主要内容
- *     2020-12-22 11:05:08        李鹏军     初版做成
+ *     2021-03-31 17:47:01        liuqianru     初版做成
  *
  * Copyright (c) 2019-2019 微同软件
  */
@@ -13,9 +13,7 @@ package com.platform.modules.qkjvip.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.platform.modules.qkjvip.entity.QkjvipMemberMessageEntity;
-import com.platform.modules.qkjvip.entity.QkjvipOptionsEntity;
-import com.platform.modules.sys.entity.SysUserChannelEntity;
+import com.platform.modules.qkjvip.entity.QkjvipContentGroupuserEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -23,10 +21,10 @@ import java.util.Map;
 /**
  * Service接口
  *
- * @author 李鹏军
- * @date 2020-12-22 11:05:08
+ * @author liuqianru
+ * @date 2021-03-31 17:47:01
  */
-public interface QkjvipMemberMessageService extends IService<QkjvipMemberMessageEntity> {
+public interface QkjvipContentGroupuserService extends IService<QkjvipContentGroupuserEntity> {
 
     /**
      * 查询所有列表
@@ -34,7 +32,7 @@ public interface QkjvipMemberMessageService extends IService<QkjvipMemberMessage
      * @param params 查询参数
      * @return List
      */
-    List<QkjvipMemberMessageEntity> queryAll(Map<String, Object> params);
+    List<QkjvipContentGroupuserEntity> queryAll(Map<String, Object> params);
 
     /**
      * 分页查询
@@ -47,18 +45,19 @@ public interface QkjvipMemberMessageService extends IService<QkjvipMemberMessage
     /**
      * 新增
      *
-     * @param qkjvipMemberMessage 
+     * @param qkjvipContentGroupuser 
      * @return 新增结果
      */
-    boolean add(QkjvipMemberMessageEntity qkjvipMemberMessage);
+    boolean add(QkjvipContentGroupuserEntity qkjvipContentGroupuser);
+    boolean addBatch(List<QkjvipContentGroupuserEntity> qkjvipContentGroupusers);
 
     /**
      * 根据主键更新
      *
-     * @param qkjvipMemberMessage 
+     * @param qkjvipContentGroupuser 
      * @return 更新结果
      */
-    boolean update(QkjvipMemberMessageEntity qkjvipMemberMessage);
+    boolean update(QkjvipContentGroupuserEntity qkjvipContentGroupuser);
 
     /**
      * 根据主键删除
@@ -76,15 +75,5 @@ public interface QkjvipMemberMessageService extends IService<QkjvipMemberMessage
      */
     boolean deleteBatch(String[] ids);
 
-    /**
-     * 查询渠道列表
-     *
-     * @return List
-     */
-    List<QkjvipOptionsEntity> queryChannels();
-
-    /**
-     * 查询权限允许的渠道
-     */
-    List<SysUserChannelEntity> queryPermissionChannels(List<QkjvipOptionsEntity> appChannels, String userId);
+    boolean deleteByGroupId(String groupId);
 }

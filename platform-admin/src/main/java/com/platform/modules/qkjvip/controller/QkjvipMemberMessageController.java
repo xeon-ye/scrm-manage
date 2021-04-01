@@ -157,6 +157,18 @@ public class QkjvipMemberMessageController extends AbstractController {
     }
 
     /**
+     * 取出所有公众号
+     *
+     * @return RestResponse
+     */
+    @PostMapping("/getChannels")
+    public RestResponse getChannels() {
+        List<QkjvipOptionsEntity> channelList = new ArrayList<>();
+        channelList = qkjvipMemberMessageService.queryChannels();
+        return RestResponse.success().put("channelList", channelList);
+    }
+
+    /**
      * 取出所选人分布在每个公众号的人数
      *
      * @param qkjvipMemberMessage 活动/积分/优惠券的
@@ -314,12 +326,13 @@ public class QkjvipMemberMessageController extends AbstractController {
      */
     public String sendWxMsg(QkjvipMemberMessageEntity qkjvipMemberMessage, List<QrtzMemberFansEntity> fansList) throws IOException {
         Map map = new HashMap();
+        Map sonMap = new HashMap();
         List<String> appidList = qkjvipMemberMessage.getAppidList();
-        List<Object> list = new ArrayList<>();
+        List<Object> targetUsers = new ArrayList<>();
+        List<Object> articles = new ArrayList<>();
         for (int i = 0; i < appidList.size(); i++) {
             List<String> openIds = new ArrayList<>();
-            Map sonMap = new HashMap();
-            sonMap.clear();
+            sonMap = new HashMap();
             sonMap.put("appId", appidList.get(i));
             for (int j = 0; j < fansList.size(); j++) {
                 if (appidList.get(i) != null && appidList.get(i).equals(fansList.get(j).getAppid())) {
@@ -330,16 +343,24 @@ public class QkjvipMemberMessageController extends AbstractController {
             }
             if (openIds != null && openIds.size() > 1) {  //一个appid下至少有2个人才可以发送图文消息
                 sonMap.put("openIds", openIds);
-                list.add(sonMap);
+                targetUsers.add(sonMap);
             }
         }
-        if (list != null && list.size() > 0) {
-            map.put("type", Integer.parseInt(qkjvipMemberMessage.getCategoryType().trim()));
-            map.put("title", qkjvipMemberMessage.getTitle());
-            map.put("url", qkjvipMemberMessage.getUrl());
-            map.put("content", qkjvipMemberMessage.getWxContent());
-            map.put("list", list);
-
+        if (targetUsers != null && targetUsers.size() > 0) {
+            map.put("targetUsers", targetUsers);
+            map.put("isToAll", false);
+            sonMap = new HashMap();
+            sonMap.put("title", qkjvipMemberMessage.getTitle());
+            sonMap.put("coverUrl", qkjvipMemberMessage.getCoverImage());
+            StringBuilder sb = new StringBuilder();
+            sb.append(qkjvipMemberMessage.getWxContent());
+            if (qkjvipMemberMessage.getLinkImage() != null) {
+                sb.append("<a href='{url}'><img src='" + qkjvipMemberMessage.getLinkImage() + "'></a>");
+            }
+            sonMap.put("content", sb.toString());
+            sonMap.put("sourceUrl", qkjvipMemberMessage.getUrl());
+            articles.add(sonMap);
+            map.put("articles", articles);
             String queryJsonStr = JsonHelper.toJsonString(map);
             String resultPost = HttpClient.sendPost(Vars.MESSAGE_SEND, queryJsonStr);
             JSONObject resultObject = JSON.parseObject(resultPost);

@@ -72,6 +72,14 @@ public class QkjvipMemberMessageEntity implements Serializable {
     @NotBlank(message = "标题不可为空", groups = {AddGroup.class, UpdateGroup.class})
     private String title;
     /**
+     * 封面图
+     */
+    private String coverImage;
+    /**
+     * 消息底部链接图
+     */
+    private String linkImage;
+    /**
      * add_user
      */
     private String addUser;

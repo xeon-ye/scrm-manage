@@ -110,4 +110,9 @@ public class SysUserChannelServiceImpl extends ServiceImpl<SysUserChannelDao, Sy
         }
         return alias;
     }
+
+    @Override
+    public List<SysUserChannelEntity> queryPermissionChannels(Map<String, Object> params) {
+        return baseMapper.queryPermissionChannels(params);
+    }
 }

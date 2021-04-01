@@ -11,18 +11,25 @@
  */
 package com.platform.modules.qkjvip.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.platform.common.utils.Constant;
 import com.platform.common.utils.Query;
 import com.platform.modules.qkjvip.dao.QkjvipMemberMessageDao;
 import com.platform.modules.qkjvip.entity.QkjvipMemberMessageEntity;
+import com.platform.modules.qkjvip.entity.QkjvipOptionsEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberMessageService;
+import com.platform.modules.sys.entity.SysUserChannelEntity;
+import com.platform.modules.sys.service.SysUserChannelService;
+import com.platform.modules.util.HttpClient;
+import com.platform.modules.util.Vars;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Service实现类
@@ -32,6 +39,9 @@ import java.util.Map;
  */
 @Service("qkjvipMemberMessageService")
 public class QkjvipMemberMessageServiceImpl extends ServiceImpl<QkjvipMemberMessageDao, QkjvipMemberMessageEntity> implements QkjvipMemberMessageService {
+
+    @Autowired
+    private SysUserChannelService sysUserChannelService;
 
     @Override
     public List<QkjvipMemberMessageEntity> queryAll(Map<String, Object> params) {
@@ -66,5 +76,42 @@ public class QkjvipMemberMessageServiceImpl extends ServiceImpl<QkjvipMemberMess
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteBatch(String[] ids) {
         return this.removeByIds(Arrays.asList(ids));
+    }
+
+    @Override
+    public List<QkjvipOptionsEntity> queryChannels() {
+        List<QkjvipOptionsEntity> channelList = new ArrayList<>();
+        //获取公众号列表
+        String resultPost = HttpClient.sendGet(Vars.APPID_GETLIST_URL);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("0".equals(resultObject.get("code").toString())) {  //调用成功
+            channelList = JSON.parseArray(resultObject.getString("data"), QkjvipOptionsEntity.class);
+        }
+        return channelList;
+    }
+
+    @Override
+    public List<SysUserChannelEntity> queryPermissionChannels(List<QkjvipOptionsEntity> appChannels, String userId) {
+        Map param = new HashMap();
+        if (!Constant.SUPER_ADMIN.equals(userId) && !Constant.SUPER_ADMIN2.equals(userId) && !Constant.SUPER_ADMIN3.equals(userId)) {
+            param.put("userId", userId);
+        }
+        List<SysUserChannelEntity> allPermChannels = new ArrayList<>();
+        allPermChannels = sysUserChannelService.queryPermissionChannels(param); // 取出所有分配的渠道权限
+//        List<QkjvipOptionsEntity> permissionChannels = new ArrayList<>();
+//        if (appChannels != null && appChannels.size() > 0) {
+//            for (int i = 0; i < appChannels.size(); i++) {
+//                QkjvipOptionsEntity qkjvipOptionsEntity = new QkjvipOptionsEntity();
+//                for (int j = 0; j < allPermChannels.size(); j++) {
+//                    if (appChannels.get(i).getAppid().equals(allPermChannels.get(j).getAppid())) {
+//                        qkjvipOptionsEntity.setAppid(appChannels.get(i).getAppid());
+//                        qkjvipOptionsEntity.setName(appChannels.get(i).getName());
+//                        permissionChannels.add(qkjvipOptionsEntity);
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+        return allPermChannels;
     }
 }

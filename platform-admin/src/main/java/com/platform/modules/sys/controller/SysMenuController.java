@@ -20,8 +20,10 @@ import com.platform.common.validator.ValidatorUtils;
 import com.platform.common.validator.group.AddGroup;
 import com.platform.common.validator.group.UpdateGroup;
 import com.platform.modules.qkjvip.entity.QkjvipMemberChannelEntity;
+import com.platform.modules.qkjvip.entity.QkjvipOptionsEntity;
 import com.platform.modules.qkjvip.entity.QkjvipTaglibsEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberChannelService;
+import com.platform.modules.qkjvip.service.QkjvipMemberMessageService;
 import com.platform.modules.qkjvip.service.QkjvipTaglibsService;
 import com.platform.modules.sys.entity.*;
 import com.platform.modules.sys.service.*;
@@ -57,6 +59,8 @@ public class SysMenuController extends AbstractController {
     private QkjvipTaglibsService qkjvipTaglibsService;
     @Autowired
     private QkjvipMemberChannelService qkjvipMemberChannelService;
+    @Autowired
+    private QkjvipMemberMessageService qkjvipMemberMessageService;
 
     /**
      * 导航菜单
@@ -75,6 +79,8 @@ public class SysMenuController extends AbstractController {
         List<SysUserEntity> userList = userService.list(new QueryWrapper<SysUserEntity>().select("USER_ID,REAL_NAME"));
         List<QkjvipTaglibsEntity> areaList = qkjvipTaglibsService.list(new QueryWrapper<QkjvipTaglibsEntity>().eq("TAG_GROUP_ID", "9af1533bea3d4c89b856ad80e9d0e457")); //liuqianru add
         List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.queryAll(map);
+        List<QkjvipOptionsEntity> appChannels = qkjvipMemberMessageService.queryChannels();
+        List<SysUserChannelEntity> permissionChannels = qkjvipMemberMessageService.queryPermissionChannels(appChannels, getUserId());
         return RestResponse.success()
                 .put("menuList", menuList)
                 .put("permissions", permissions)
@@ -82,7 +88,9 @@ public class SysMenuController extends AbstractController {
                 .put("orgList", orgList)
                 .put("userList", userList)
                 .put("areaList", areaList)
-                .put("channelList", channelList);
+                .put("channelList", channelList)
+                .put("appChannels", appChannels)
+                .put("permissionChannels", permissionChannels);
     }
 
     /**

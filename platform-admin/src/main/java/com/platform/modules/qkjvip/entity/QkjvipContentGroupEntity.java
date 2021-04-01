@@ -1,0 +1,85 @@
+/*
+ * 项目名称:platform-plus
+ * 类名称:QkjvipContentGroupEntity.java
+ * 包名称:com.platform.modules.qkjvip.entity
+ *
+ * 修改履历:
+ *     日期                       修正者        主要内容
+ *     2021-03-24 15:41:39        liuqianru     初版做成
+ *
+ * Copyright (c) 2019-2019 微同软件
+ */
+package com.platform.modules.qkjvip.entity;
+
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * 实体
+ *
+ * @author liuqianru
+ * @date 2021-03-24 15:41:39
+ */
+@Data
+@TableName("QKJVIP_CONTENT_GROUP")
+public class QkjvipContentGroupEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 主键
+     */
+    @TableId
+    private String id;
+    /**
+     * 组名称
+     */
+    private String title;
+    /**
+     * 推送状态
+     */
+    private Integer pushstatus;
+    /**
+     * 推送目标标识
+     */
+    private Integer istoall;
+    /**
+     * lm_dept
+     */
+    private String lmDept;
+    /**
+     * add_dept
+     */
+    private String addDept;
+    /**
+     * lm_time
+     */
+    private Date lmTime;
+    /**
+     * add_time
+     */
+    private Date addTime;
+    /**
+     * add_user
+     */
+    private String addUser;
+    /**
+     * lm_user
+     */
+    private String lmUser;
+
+    @TableField(exist = false)
+    private List<QkjvipContentEntity> contentList;
+    @TableField(exist = false)
+    private List<QkjvipOptionsEntity> channelList;
+    @TableField(exist = false)
+    private List<QkjvipContentGroupuserEntity> memberList;
+    @TableField(exist = false)
+    private List<String> appids;
+}

@@ -28,7 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * NewsActionController
@@ -45,7 +47,7 @@ public class NewsActionController extends AbstractController {
      * @param newsQueryEntity 查询参数
      * @return RestResponse
      */
-    @PostMapping("/newslist")
+    @PostMapping("/newsList")
     public RestResponse list(@RequestBody NewsQueryEntity newsQueryEntity) throws IOException {
         List<NewsEntity> list = new ArrayList<>();
         Object obj = JSONArray.toJSON(newsQueryEntity);
@@ -55,10 +57,41 @@ public class NewsActionController extends AbstractController {
         System.out.println("新闻列表检索条件：" + queryJsonStr);
         JSONObject resultObject = JSON.parseObject(resultPost);
         if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
-            if (resultObject.get("newslist") != null) {
-                list = JSON.parseArray(resultObject.getString("newslist"), NewsEntity.class);
-            }
+            list = JSON.parseArray(resultObject.getString("newslist"), NewsEntity.class);
+            Map page = new HashMap<>();
+            page.put("newslist", list);
+            page.put("totalcount", Long.parseLong(resultObject.get("totalcount").toString()));
+            return RestResponse.success().put("page", page);
+        } else {
+            return RestResponse.error(resultObject.get("descr").toString());
         }
-        return RestResponse.success().put("newslist", list);
+    }
+
+    /**
+     * 新闻详情
+     *
+     * @param newsInfoQueryEntity 查询参数
+     * @return RestResponse
+     */
+    @PostMapping("/newsInfo")
+    public RestResponse info(@RequestBody NewsInfoQueryEntity newsInfoQueryEntity) throws IOException {
+        Object obj = JSONArray.toJSON(newsInfoQueryEntity);
+        String queryJsonStr = JsonHelper.toJsonString(obj);
+
+        String resultPost = HttpClient.sendPost(Vars.NEWS_INFO_URl, queryJsonStr);
+        System.out.println("新闻详情检索条件：" + queryJsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+            Map page = new HashMap<>();
+            page.put("title", resultObject.get("title").toString());
+            page.put("htmldoc", resultObject.get("htmldoc").toString());
+            page.put("module", resultObject.get("module").toString());
+            page.put("createtime", resultObject.get("createtime").toString());
+            page.put("readnum", Integer.parseInt(resultObject.get("readnum").toString()));
+            page.put("origin", resultObject.get("origin").toString());
+            return RestResponse.success().put("page", page);
+        } else {
+            return RestResponse.error(resultObject.get("descr").toString());
+        }
     }
 }
