@@ -21,6 +21,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -79,6 +80,19 @@ public class QkjvipContentController extends AbstractController {
     }
 
     /**
+     * 根据主键查询详情
+     *
+     * @param params 查询参数
+     * @return RestResponse
+     */
+    @RequestMapping("/getInfo")
+    public RestResponse getInfo(@RequestParam Map<String, Object> params) {
+        QkjvipContentEntity qkjvipContent = qkjvipContentService.getById(params.get("id").toString());
+
+        return RestResponse.success().put("content", qkjvipContent);
+    }
+
+    /**
      * 新增
      *
      * @param qkjvipContent qkjvipContent
@@ -88,7 +102,9 @@ public class QkjvipContentController extends AbstractController {
     @RequestMapping("/save")
     @RequiresPermissions("qkjvip:content:save")
     public RestResponse save(@RequestBody QkjvipContentEntity qkjvipContent) {
-
+        qkjvipContent.setAddUser(getUserId());
+        qkjvipContent.setAddDept(getOrgNo());
+        qkjvipContent.setAddTime(new Date());
         qkjvipContentService.add(qkjvipContent);
 
         return RestResponse.success();
@@ -104,7 +120,9 @@ public class QkjvipContentController extends AbstractController {
     @RequestMapping("/update")
     @RequiresPermissions("qkjvip:content:update")
     public RestResponse update(@RequestBody QkjvipContentEntity qkjvipContent) {
-
+        qkjvipContent.setLmUser(getUserId());
+        qkjvipContent.setLmDept(getOrgNo());
+        qkjvipContent.setLmTime(new Date());
         qkjvipContentService.update(qkjvipContent);
 
         return RestResponse.success();

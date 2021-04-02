@@ -66,6 +66,7 @@ public interface QkjvipContentService extends IService<QkjvipContentEntity> {
      * @return 更新结果
      */
     boolean update(QkjvipContentEntity qkjvipContent);
+    boolean updateBatch(List<QkjvipContentEntity> contentList);
 
     /**
      * 根据主键删除

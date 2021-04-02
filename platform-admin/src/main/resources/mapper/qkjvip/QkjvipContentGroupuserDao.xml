@@ -14,8 +14,8 @@
         FROM QKJVIP_CONTENT_GROUPUSER T
         join qkjvip_member a on (T.MEMBER_ID=a.member_id)
         WHERE 1=1
-        <if test="params.groupId != null and params.groupId.trim() != ''">
-            AND T.GROUPID = #{params.groupId}
+        <if test="params.groupid != null and params.groupid.trim() != ''">
+            AND T.GROUPID = #{params.groupid}
         </if>
         <if test="params.memberId != null and params.memberId.trim() != ''">
             AND T.MEMBER_ID = #{params.memberId}
@@ -34,4 +34,12 @@
         DELETE FROM QKJVIP_CONTENT_GROUPUSER
         where groupid = #{value}
     </delete>
+
+    <select id="queryByGroupId" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberMessageUserQueryEntity">
+        SELECT DISTINCT ISNULL(m1.memberidto, m1.member_id) as member_id, ISNULL(m2.openid, m1.openid) as openid, ISNULL(m2.mobile, m1.mobile) as mobile
+        FROM qkjvip_content_groupuser gu  WITH(NOLOCK)
+        inner join qkjvip_member m1 WITH(NOLOCK) on gu.member_id=m1.member_id
+        left join  qkjvip_member m2 WITH(NOLOCK) on m1.memberidto=m2.member_id
+        where gu.groupid = #{value}
+    </select>
 </mapper>

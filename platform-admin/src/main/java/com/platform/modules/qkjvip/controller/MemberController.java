@@ -108,8 +108,8 @@ public class MemberController extends AbstractController {
             memberQuery.setListorgno(sysRoleOrgService.queryOrgNoListByUserIdAndPerm(getUserId(), "qkjvip:member:list"));
             memberQuery.setListmemberchannel(sysUserChannelService.queryChannelIdByUserId(getUserId()));
         }
-        Object obj = JSONArray.toJSON(memberQuery);
-        String queryJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+//        Object obj = JSONArray.toJSON(memberQuery);
+        String queryJsonStr = JsonHelper.toJsonString(memberQuery, "yyyy-MM-dd HH:mm:ss");
 
         String resultPost = HttpClient.sendPost(Vars.MEMBER_GETLIST_URL, queryJsonStr);
         System.out.println("会员检索条件：" + queryJsonStr);

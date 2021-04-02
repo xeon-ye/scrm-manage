@@ -87,6 +87,11 @@ public class QkjvipContentGroupServiceImpl extends ServiceImpl<QkjvipContentGrou
     }
 
     @Override
+    public void update2(QkjvipContentGroupEntity qkjvipContentGroup) {
+        this.updateById(qkjvipContentGroup);
+    }
+
+    @Override
     public boolean delete(String id) {
         return this.removeById(id);
     }

@@ -64,6 +64,11 @@ public class QkjvipContentServiceImpl extends ServiceImpl<QkjvipContentDao, Qkjv
     }
 
     @Override
+    public boolean updateBatch(List<QkjvipContentEntity> contentList) {
+        return this.updateBatchById(contentList, 100);
+    }
+
+    @Override
     public boolean delete(String id) {
         return this.removeById(id);
     }

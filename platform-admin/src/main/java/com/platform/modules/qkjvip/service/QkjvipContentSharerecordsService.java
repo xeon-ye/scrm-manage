@@ -1,11 +1,11 @@
 /*
  * 项目名称:platform-plus
- * 类名称:QkjvipContentGroupuserService.java
+ * 类名称:QkjvipContentSharerecordsService.java
  * 包名称:com.platform.modules.qkjvip.service
  *
  * 修改履历:
  *     日期                       修正者        主要内容
- *     2021-03-31 17:47:01        liuqianru     初版做成
+ *     2021-04-01 17:01:46        liuqianru     初版做成
  *
  * Copyright (c) 2019-2019 微同软件
  */
@@ -13,10 +13,7 @@ package com.platform.modules.qkjvip.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.platform.modules.qkjvip.entity.QkjvipContentGroupEntity;
-import com.platform.modules.qkjvip.entity.QkjvipContentGroupuserEntity;
-import com.platform.modules.qkjvip.entity.QkjvipMemberMessageUserQueryEntity;
-import com.platform.modules.quartz.entity.QrtzMemberFansEntity;
+import com.platform.modules.qkjvip.entity.QkjvipContentSharerecordsEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -25,9 +22,9 @@ import java.util.Map;
  * Service接口
  *
  * @author liuqianru
- * @date 2021-03-31 17:47:01
+ * @date 2021-04-01 17:01:46
  */
-public interface QkjvipContentGroupuserService extends IService<QkjvipContentGroupuserEntity> {
+public interface QkjvipContentSharerecordsService extends IService<QkjvipContentSharerecordsEntity> {
 
     /**
      * 查询所有列表
@@ -35,7 +32,7 @@ public interface QkjvipContentGroupuserService extends IService<QkjvipContentGro
      * @param params 查询参数
      * @return List
      */
-    List<QkjvipContentGroupuserEntity> queryAll(Map<String, Object> params);
+    List<QkjvipContentSharerecordsEntity> queryAll(Map<String, Object> params);
 
     /**
      * 分页查询
@@ -48,19 +45,18 @@ public interface QkjvipContentGroupuserService extends IService<QkjvipContentGro
     /**
      * 新增
      *
-     * @param qkjvipContentGroupuser 
+     * @param qkjvipContentSharerecords 
      * @return 新增结果
      */
-    boolean add(QkjvipContentGroupuserEntity qkjvipContentGroupuser);
-    boolean addBatch(List<QkjvipContentGroupuserEntity> qkjvipContentGroupusers);
+    boolean add(QkjvipContentSharerecordsEntity qkjvipContentSharerecords);
 
     /**
      * 根据主键更新
      *
-     * @param qkjvipContentGroupuser 
+     * @param qkjvipContentSharerecords 
      * @return 更新结果
      */
-    boolean update(QkjvipContentGroupuserEntity qkjvipContentGroupuser);
+    boolean update(QkjvipContentSharerecordsEntity qkjvipContentSharerecords);
 
     /**
      * 根据主键删除
@@ -77,8 +73,4 @@ public interface QkjvipContentGroupuserService extends IService<QkjvipContentGro
      * @return 删除结果
      */
     boolean deleteBatch(String[] ids);
-
-    boolean deleteByGroupId(String groupId);
-
-    List<QkjvipMemberMessageUserQueryEntity> queryByGroupId(String groupId);
 }

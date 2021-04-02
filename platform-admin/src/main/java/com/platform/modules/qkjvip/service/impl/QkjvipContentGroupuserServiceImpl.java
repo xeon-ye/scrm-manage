@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.platform.common.utils.Query;
 import com.platform.modules.qkjvip.dao.QkjvipContentGroupuserDao;
 import com.platform.modules.qkjvip.entity.QkjvipContentGroupuserEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberMessageUserQueryEntity;
 import com.platform.modules.qkjvip.service.QkjvipContentGroupuserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,5 +77,10 @@ public class QkjvipContentGroupuserServiceImpl extends ServiceImpl<QkjvipContent
     @Override
     public boolean deleteByGroupId(String groupId) {
         return baseMapper.deleteByGroupId(groupId);
+    }
+
+    @Override
+    public List<QkjvipMemberMessageUserQueryEntity> queryByGroupId(String groupId) {
+        return baseMapper.queryByGroupId(groupId);
     }
 }

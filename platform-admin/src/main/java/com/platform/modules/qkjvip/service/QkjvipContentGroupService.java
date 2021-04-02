@@ -59,6 +59,7 @@ public interface QkjvipContentGroupService extends IService<QkjvipContentGroupEn
      * @return 更新结果
      */
     void update(QkjvipContentGroupEntity qkjvipContentGroup);
+    void update2(QkjvipContentGroupEntity qkjvipContentGroup);
 
     /**
      * 根据主键删除

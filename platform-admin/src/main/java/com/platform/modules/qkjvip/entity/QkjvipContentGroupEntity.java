@@ -74,6 +74,7 @@ public class QkjvipContentGroupEntity implements Serializable {
      */
     private String lmUser;
 
+    /*详情页查询显示用*/
     @TableField(exist = false)
     private List<QkjvipContentEntity> contentList;
     @TableField(exist = false)
@@ -82,4 +83,9 @@ public class QkjvipContentGroupEntity implements Serializable {
     private List<QkjvipContentGroupuserEntity> memberList;
     @TableField(exist = false)
     private List<String> appids;
+    /* 列表页显示用*/
+    @TableField(exist = false)
+    private String titles;
+    @TableField(exist = false)
+    private String channels;
 }

@@ -56,6 +56,8 @@ public class Vars {
 	// 消费者首页新闻
 	public static String NEWS_LIST_URl = "http://api.scrm.qkj.com.cn/api/News/GetNewsList";
 	public static String NEWS_INFO_URl = "http://api.scrm.qkj.com.cn/api/News/GetNewsInfo";
+	// 分享得积分
+	public static String CONTENT_SHARE_URL = "http://api.scrm.qkj.com.cn/api/Integral/SetCRMMemberIntegral";
 	/**
 	 * 订单
 	 */
