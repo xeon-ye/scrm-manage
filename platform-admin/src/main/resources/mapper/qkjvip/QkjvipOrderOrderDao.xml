@@ -57,11 +57,14 @@
     <select id="queryAll" resultType="com.platform.modules.qkjvip.entity.QkjvipOrderOrderEntity">
         <include refid="selectSql"/>
     </select>
-    <select id="queryorderbyMember" resultType="com.platform.modules.qkjvip.entity.MemberActiveEntity">
-        SELECT top 1 * from qkjvip_order_order where 1=1
+    <select id="queryorderbyMember" resultType="com.platform.modules.qkjvip.entity.QkjvipOrderOrderEntity">
+        SELECT top 1 * from qkjvip_order_order a where 1=1
         <if test="params.crmMemberid != null and params.crmMemberid != ''">
-            AND crm_memberid = #{params.crmMemberid}
+            AND (a.crm_memberid = #{params.crmMemberid}
+                or
+            EXISTS (SELECT 1 from qkjvip_member m where m.member_id=a.crm_memberid and m.memberidto=#{params.crmMemberid}))
+
         </if>
-        ORDER BY OrderDate DESC
+        ORDER BY a.OrderDate DESC
     </select>
 </mapper>

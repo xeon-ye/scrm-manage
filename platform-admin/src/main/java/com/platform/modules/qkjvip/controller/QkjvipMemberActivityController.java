@@ -278,6 +278,7 @@ public class QkjvipMemberActivityController extends AbstractController {
         qkjvipMemberActivity.setAdduser(getUserId());
         qkjvipMemberActivity.setAdddept(getOrgNo());
         qkjvipMemberActivity.setAddtime(new Date());
+        qkjvipMemberActivity.setStatus(0);
         List<QkjvipMemberActivitymbsEntity> mbs=new ArrayList<>();
         mbs=qkjvipMemberActivity.getMbs();
         qkjvipMemberActivityService.add(qkjvipMemberActivity);

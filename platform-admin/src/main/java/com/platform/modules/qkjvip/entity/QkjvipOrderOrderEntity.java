@@ -190,8 +190,12 @@ public class QkjvipOrderOrderEntity implements Serializable {
      */
     private String visitid;
 
+    private String payusername;
+
     @TableField(exist = false)
     private List<QkjvipProductProductEntity> listproduct;
+    @TableField(exist = false)
+    private List<QkjvipOrderOrderfileEntity> listfile;
     @TableField(exist = false)
     private List<QkjvipProductProductEntity> listorderproduct;
     @TableField(exist = false)
@@ -206,5 +210,9 @@ public class QkjvipOrderOrderEntity implements Serializable {
     private List<QkjvipProductStockEntity> liststocksumout;
     @TableField(exist = false)
     private String memberid;
+    @TableField(exist = false)
+    private List<QkjvipOrderOrderfileEntity> listuserfile;
+    @TableField(exist = false)
+    private List<QkjvipOrderOrderfileEntity> listfinalfile;
 
 }

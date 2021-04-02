@@ -135,7 +135,7 @@
         select top 1 a.crm_memberid as memberId,
         (
         select  top 1 b.mobile from [dbo].[qkjvip_member_jueru] a
-        inner join qkjvip_member b on a.AppOpenId=b.openid
+        inner join qkjvip_member b on a.crm_memberid=b.member_id
         where a.AppOpenId=#{params.openid} AND a.IsSubscribe = 1 and ISNULL(b.mobile, 'tt')!='tt')
         as mobile,
         case when (b.member_name=null or b.member_name='') then b.real_name
@@ -143,7 +143,7 @@
         case when (b.sex=3) then 1
         else b.sex end as sex
         from [dbo].[qkjvip_member_jueru] a
-        inner join qkjvip_member b on a.AppOpenId=b.openid
+        inner join qkjvip_member b on a.crm_memberid=b.member_id
         where a.AppOpenId=#{params.openid} AND a.IsSubscribe = 1
         and b.statusflag!=1
     </select>
