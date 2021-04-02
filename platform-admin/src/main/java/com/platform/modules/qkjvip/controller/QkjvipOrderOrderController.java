@@ -231,6 +231,7 @@ public class QkjvipOrderOrderController extends AbstractController {
                     Date date = new Date();//获取当前的日期
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
                     String str = df.format(date);//获取String类型的时间
+                    st.setSaleunit(5);
                     st.setCreateon(str);
                     st.setOrderid(orderid);
                     liststock.add(st);
