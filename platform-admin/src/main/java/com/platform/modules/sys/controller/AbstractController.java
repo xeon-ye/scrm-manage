@@ -11,15 +11,20 @@
  */
 package com.platform.modules.sys.controller;
 
+import com.platform.common.utils.Constant;
 import com.platform.common.utils.ShiroUtils;
+import com.platform.datascope.ContextHelper;
 import com.platform.datascope.DataScope;
+import com.platform.modules.sys.entity.SysRoleOrgEntity;
 import com.platform.modules.sys.entity.SysUserEntity;
 import com.platform.modules.sys.service.SysRoleOrgService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -99,6 +104,30 @@ public abstract class AbstractController {
 
         // 根据权限和用户id取出角色对应的部门id
         dataScope.setOrgNos(sysRoleOrgService.queryOrgNoListByUserIdAndPerm(getUserId(), userPerm));
+        return dataScope;
+    }
+
+
+    /**
+     * 数据权限构造孙珊珊
+     * 权限字符串 userAlias 添加人表字段名 orgAlias添加人部门名 userId 会员所属人
+     * @return DataScope
+     */
+    protected DataScope getDataScopeContex(String userPerm,String userAlias, String orgAlias) {
+        DataScope dataScope = new DataScope();
+        dataScope.setUserAlias(userAlias);
+        dataScope.setOrgAlias(orgAlias);
+
+        //拼接部门
+        if (!Constant.SUPER_ADMIN.equals(getUserId()) && !Constant.SUPER_ADMIN2.equals(getUserId()) ) {
+            List<SysRoleOrgEntity> sros = new ArrayList<>();
+            Map<String, Object> m = new HashMap<>();
+            m.put("userId", getUserId());
+            m.put("userPerm", userPerm);
+            sros = sysRoleOrgService.queryOrgNoIsselect(m);
+            String orgs = ContextHelper.setSearchDeptPermit4Search(sros, getOrgNo());
+            dataScope.setOrgNos(orgs);
+        }
         return dataScope;
     }
 }

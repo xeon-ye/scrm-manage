@@ -129,6 +129,7 @@ public class QkjvipMemberActivityController extends AbstractController {
     @GetMapping("/list")
     @RequiresPermissions("qkjvip:memberactivity:list")
     public RestResponse list(@RequestParam Map<String, Object> params) {
+        params.put("dataScope", getDataScopeContex("qkjvip:memberactivity:list", "t.adduser", "t.adddept"));
         Page page = qkjvipMemberActivityService.queryPage(params);
 
         return RestResponse.success().put("page", page);

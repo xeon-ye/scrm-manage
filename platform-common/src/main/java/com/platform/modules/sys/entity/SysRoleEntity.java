@@ -53,6 +53,8 @@ public class SysRoleEntity implements Serializable {
      */
     private String createUserId;
 
+    private Integer orgnoselect;
+
     /**
      * 创建者所属机构
      */

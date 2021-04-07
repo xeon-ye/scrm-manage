@@ -85,4 +85,9 @@ public class SysRoleOrgServiceImpl extends ServiceImpl<SysRoleOrgDao, SysRoleOrg
     public int deleteBatch(String[] roleIds) {
         return baseMapper.deleteBatch(roleIds);
     }
+
+    @Override
+    public List<SysRoleOrgEntity> queryOrgNoIsselect(Map<String, Object> params) {
+        return baseMapper.queryOrgNoIsselect(params);
+    }
 }

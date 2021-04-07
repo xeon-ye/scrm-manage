@@ -55,4 +55,13 @@ public interface SysRoleOrgService extends IService<SysRoleOrgEntity> {
      * @return int
      */
     int deleteBatch(String[] roleIds);
+
+    /**
+     * 根据登录人及菜单获取自定义部门及是否是子部门
+     *
+     * @param params 角色ids
+     * @return int
+     */
+
+    List<SysRoleOrgEntity> queryOrgNoIsselect(Map<String, Object> params);
 }

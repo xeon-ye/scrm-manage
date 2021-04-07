@@ -1,6 +1,7 @@
 package com.platform;
 
 import com.platform.datasources.DynamicDataSourceConfig;
+import com.platform.modules.cache.CacheFactory;
 import org.activiti.spring.boot.SecurityAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,6 +21,7 @@ public class PlatformAdminApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(PlatformAdminApplication.class, args);
+        CacheFactory.CacheFlow("dept");
     }
 
     @Override
