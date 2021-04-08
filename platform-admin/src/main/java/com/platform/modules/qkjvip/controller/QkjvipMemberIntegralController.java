@@ -69,6 +69,7 @@ public class QkjvipMemberIntegralController extends AbstractController {
     @GetMapping("/list")
     @RequiresPermissions("qkjvip:memberintegral:list")
     public RestResponse list(@RequestParam Map<String, Object> params) {
+        params.put("dataScope", getDataScope("qkjvip:memberintegral:list", "T.add_user", "T.add_dept", null));
         Page page = qkjvipMemberIntegralService.queryPage(params);
 
         return RestResponse.success().put("page", page);
