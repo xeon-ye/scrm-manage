@@ -11,8 +11,11 @@
  */
 package com.platform.datascope;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.parser.SqlInfo;
 import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.plugins.SqlExplainInterceptor;
+import com.baomidou.mybatisplus.extension.toolkit.SqlParserUtils;
 import com.platform.common.utils.Constant;
 import com.platform.common.utils.ShiroUtils;
 import com.platform.common.utils.StringUtils;
@@ -27,6 +30,9 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -54,6 +60,22 @@ public class DataScopeInterceptor extends SqlExplainInterceptor implements Inter
         BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
         StringBuilder filterSql = new StringBuilder(boundSql.getSql());
         Object parameterObject = boundSql.getParameterObject();
+        // liuqianru add start
+        IPage page = null;
+        if (parameterObject instanceof IPage) {
+            page = (IPage)parameterObject;
+        } else if (parameterObject instanceof Map) {
+            Iterator var8 = ((Map)parameterObject).values().iterator();
+
+            while(var8.hasNext()) {
+                Object arg = var8.next();
+                if (arg instanceof IPage) {
+                    page = (IPage)arg;
+                    break;
+                }
+            }
+        }
+        // liuqianru add end
 
         //参数中DataScope类型的参数
         DataScope dataScope = findDataScopeObject(parameterObject);
@@ -114,6 +136,22 @@ public class DataScopeInterceptor extends SqlExplainInterceptor implements Inter
                         filterSql.append(beforsql);
                         System.out.println(filterSql);
                     }
+
+                    // liuqianru add start
+                    if (page.isSearchCount()) {
+                        Connection connection = (Connection)invocation.getArgs()[0];
+                        int first = filterSql.toString().indexOf("(");
+                        int last = filterSql.toString().lastIndexOf(")");
+                        String originalSql = filterSql.toString().substring(first + 1, last);
+                        SqlInfo sqlInfo = SqlParserUtils.getOptimizeCountSql(true, null, originalSql);
+                        PreparedStatement statement = connection.prepareStatement(sqlInfo.getSql());
+                        ResultSet resultSet = statement.executeQuery();
+                        if (resultSet.next()) {
+                            long total = resultSet.getLong(1);
+                            page.setTotal(total);
+                        }
+                    }
+                    // liuqianru add end
                 }
                 metaObject.setValue("delegate.boundSql.sql", filterSql.toString());
             }

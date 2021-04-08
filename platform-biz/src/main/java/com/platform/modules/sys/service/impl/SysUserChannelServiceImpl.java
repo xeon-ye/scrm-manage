@@ -102,9 +102,7 @@ public class SysUserChannelServiceImpl extends ServiceImpl<SysUserChannelDao, Sy
         if (channelIdlist != null && !channelIdlist.isEmpty()) {
             for (Integer channelId : channelIdlist) {
                 channelIdStr.append(",");
-                channelIdStr.append("'");
                 channelIdStr.append(channelId);
-                channelIdStr.append("'");
             }
             alias = channelIdStr.toString().substring(1, channelIdStr.length());
         }
