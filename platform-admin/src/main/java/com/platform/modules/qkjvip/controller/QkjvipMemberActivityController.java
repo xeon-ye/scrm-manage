@@ -473,7 +473,7 @@ public class QkjvipMemberActivityController extends AbstractController {
         } else {
             //插入impont 表
             try {
-                List<QkjvipMemberImportEntity> list = ExportExcelUtils.importExcel(file, 1, 1,QkjvipMemberImportEntity.class);
+                List<QkjvipMemberImportEntity> list = ExportExcelUtils.importExcel(file, 1, 2,QkjvipMemberImportEntity.class);
                 for (int i = 0; i < list.size(); i++) {
                     list.get(i).setAddUser(getUserId());
                     list.get(i).setAddDept(getOrgNo());
