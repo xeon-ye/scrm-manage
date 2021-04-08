@@ -7,10 +7,16 @@ import com.platform.modules.cache.SysDBCacheLogic;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysRoleOrgEntity;
 import com.platform.modules.sys.entity.SysUserEntity;
+import com.platform.modules.sys.service.SysRoleOrgService;
 import com.platform.modules.util.JSONUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,10 +26,19 @@ import java.util.Map;
  * @author Kreo
  * 
  */
+@Component
 public class ContextHelper extends AbstractController {
 
 	private static Log log = LogFactory.getLog(ContextHelper.class);
+	@Autowired
+	private SysRoleOrgService sysRoleOrgService;
 
+	private static SysRoleOrgService sysRoleOrgServicestatic;
+
+	@PostConstruct
+	public void init() {
+		sysRoleOrgServicestatic = this.sysRoleOrgService;
+	}
 
 	/**
 	 * 专门为限制部门人员查询而做的工具函数,可以把部门和人员查询的限制条件加入map中
@@ -64,14 +79,18 @@ public class ContextHelper extends AbstractController {
 						deps.append("'");
 						deps.append(dept+"',");
 					}else if(d.getOrgNo().equals("2")){ //本部门权及子部门
-						for(int i=0;i<s.length;i++){
-							deps.append("'"+s[i]+"',");
+						if(s!=null&&s.length>0){
+							for(int i=0;i<s.length;i++){
+								deps.append("'"+s[i]+"',");
+							}
 						}
 						deps.append("'");
 						deps.append(dept+"',");
 					}else if(d.getOrgNo().equals("3")){ //仅子部门
-						for(int i=0;i<s.length;i++){
-							deps.append("'"+s[i]+"',");
+						if(s!=null&&s.length>0){
+							for(int i=0;i<s.length;i++){
+								deps.append("'"+s[i]+"',");
+							}
 						}
 					}else{
 						deps.append("'");
@@ -83,4 +102,13 @@ public class ContextHelper extends AbstractController {
 		return deps.substring(0,deps.length()-1)+"";
 	}
 
+	public static  String setSearchDepts(String userPerm,String userid,String dept) {
+		List<SysRoleOrgEntity> sros = new ArrayList<>();
+		Map<String, Object> m = new HashMap<>();
+		m.put("userId", userid);
+		m.put("userPerm", userPerm);
+		sros = sysRoleOrgServicestatic.queryOrgNoIsselect(m);
+		String orgs = ContextHelper.setSearchDeptPermit4Search(sros, dept);
+		return orgs;
+	}
 }

@@ -71,7 +71,6 @@ public class SysUserController extends AbstractController {
      * @return RestResponse
      */
     @GetMapping("/list")
-    @RequiresPermissions("sys:user:list")
     public RestResponse list(@RequestParam Map<String, Object> params) {
 
         //如需数据权限，在参数中添加DataScope

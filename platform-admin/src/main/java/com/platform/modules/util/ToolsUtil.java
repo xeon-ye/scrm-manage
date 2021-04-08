@@ -1,0 +1,63 @@
+package com.platform.modules.util;
+
+import java.beans.PropertyDescriptor;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.annotation.Annotation;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.TreeMap;
+import java.util.UUID;
+import java.util.Vector;
+
+import org.apache.commons.io.IOUtils;
+
+public class ToolsUtil {
+
+	private final static String[] simpleClass = { "java.lang.String", "java.lang.Double", "java.lang.Integer", "java.lang.Float", "java.lang.Lang", "java.lang.Number",
+			"java.lang.Short" };
+
+	/**
+	 * 检查obj是否为空(包括""和null)
+	 *
+	 * @param obj
+	 * @return 空返回true
+	 */
+	public static boolean isEmpty(Object obj) {
+		return obj == null || "".equals(obj.toString());
+	}
+
+	/**
+	 * 在特定的map&lt;id:p_id&gt;中,用来判定是否存在从属关系,即判断id是否从属于p_id(可能包含多层),
+	 * id和p_id相同将返回false
+	 *
+	 * @param map
+	 *            特定格式的map,格式为&lt;id,p_id&gt;
+	 * @param id
+	 * @param p_id
+	 * @return
+	 */
+	public static boolean checkParent(Map<String, String> map, String id, String p_id) {
+		while (true) {
+			if (map.containsKey(id)) {
+				return p_id.equals(map.get(id)) || checkParent(map, map.get(id), p_id);
+			} else {
+				break;
+			}
+		}
+		return false;
+	}
+}

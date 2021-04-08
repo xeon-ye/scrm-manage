@@ -19,6 +19,7 @@ import com.platform.common.utils.RestResponse;
 import com.platform.common.validator.ValidatorUtils;
 import com.platform.common.validator.group.AddGroup;
 import com.platform.common.validator.group.UpdateGroup;
+import com.platform.datascope.ContextHelper;
 import com.platform.modules.qkjvip.entity.QkjvipMemberChannelEntity;
 import com.platform.modules.qkjvip.entity.QkjvipOptionsEntity;
 import com.platform.modules.qkjvip.entity.QkjvipTaglibsEntity;
@@ -32,10 +33,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 系统菜单
@@ -71,6 +69,23 @@ public class SysMenuController extends AbstractController {
     public RestResponse nav() {
         List<SysMenuEntity> menuList = sysMenuService.getUserMenuList(getUserId());
         Set<String> permissions = shiroService.getUserPermissions(getUserId());
+
+        // sunshanshan
+        String userId=getUserId();
+        if (!Constant.SUPER_ADMIN.equals(userId) && !Constant.SUPER_ADMIN2.equals(userId) && !Constant.SUPER_ADMIN3.equals(userId)) {
+            Set<String> permsSet = new HashSet<>();
+            Iterator<String> it = permissions.iterator();
+            while (it.hasNext()) {
+                String str = it.next();
+                if(str!=null&&!str.contains(":info")&&!str.contains(":list")){
+                    permsSet.add(str+userId);
+                    //菜单部门
+                    String orgs = ContextHelper.setSearchDepts(str,getUserId(),getOrgNo());
+                    permsSet.add(str+orgs+";");
+                }
+            }
+            permissions.addAll(permsSet);
+        }
 
         Map<String, Object> map = new HashMap<>(2);
 

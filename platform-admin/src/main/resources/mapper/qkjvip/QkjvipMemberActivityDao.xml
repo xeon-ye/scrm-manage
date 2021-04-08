@@ -5,7 +5,9 @@
 
     <sql id="selectSql">
         SELECT
-        T.*,u.REAL_NAME realname
+        T.*,u.REAL_NAME realname,
+        (SELECT count(1) from qkjvip_member_activitymbs mb where mb.activity_id=t.id group by mb.activity_id)
+        as activeper
         FROM QKJVIP_MEMBER_ACTIVITY T
         join sys_user u on (u.USER_ID=t.adduser)
         WHERE 1=1

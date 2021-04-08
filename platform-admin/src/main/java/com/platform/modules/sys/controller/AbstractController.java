@@ -120,12 +120,7 @@ public abstract class AbstractController {
 
         //拼接部门
         if (!Constant.SUPER_ADMIN.equals(getUserId()) && !Constant.SUPER_ADMIN2.equals(getUserId()) ) {
-            List<SysRoleOrgEntity> sros = new ArrayList<>();
-            Map<String, Object> m = new HashMap<>();
-            m.put("userId", getUserId());
-            m.put("userPerm", userPerm);
-            sros = sysRoleOrgService.queryOrgNoIsselect(m);
-            String orgs = ContextHelper.setSearchDeptPermit4Search(sros, getOrgNo());
+            String orgs = ContextHelper.setSearchDepts(userPerm,getUserId(),getOrgNo());
             dataScope.setOrgNos(orgs);
         }
         return dataScope;
