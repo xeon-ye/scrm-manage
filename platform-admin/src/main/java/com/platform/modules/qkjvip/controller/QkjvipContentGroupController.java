@@ -63,6 +63,7 @@ public class QkjvipContentGroupController extends AbstractController {
     @RequestMapping("/queryAll")
     @RequiresPermissions("qkjvip:contentgroup:list")
     public RestResponse queryAll(@RequestParam Map<String, Object> params) {
+        params.put("dataScope", getDataScopeContex("qkjvip:contentgroup:list", "T.add_user", "T.add_dept"));
         List<QkjvipContentGroupEntity> list = qkjvipContentGroupService.queryAll(params);
 
         return RestResponse.success().put("list", list);
