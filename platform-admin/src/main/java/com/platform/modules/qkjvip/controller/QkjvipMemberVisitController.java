@@ -74,7 +74,7 @@ public class QkjvipMemberVisitController extends AbstractController {
     @RequiresPermissions("qkjvip:membervisit:list")
     public RestResponse list(@RequestParam Map<String, Object> params) {
         // 每个人只可查看自己添加的数据和对应部门的数据
-        params.put("dataScope", getDataScope("qkjvip:membervisit:list", "T.add_user", "T.add_dept", null));
+        params.put("dataScope", getDataScopeContex("qkjvip:membervisit:list", "T.add_user", "T.add_dept"));
         Page page = qkjvipMemberVisitService.queryPage(params);
 
         return RestResponse.success().put("page", page);

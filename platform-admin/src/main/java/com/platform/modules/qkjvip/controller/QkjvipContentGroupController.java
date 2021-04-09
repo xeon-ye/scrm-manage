@@ -77,6 +77,7 @@ public class QkjvipContentGroupController extends AbstractController {
     @GetMapping("/list")
     @RequiresPermissions("qkjvip:contentgroup:list")
     public RestResponse list(@RequestParam Map<String, Object> params) {
+        params.put("dataScope", getDataScopeContex("qkjvip:contentgroup:list", "T.add_user", "T.add_dept"));
         Page page = qkjvipContentGroupService.queryPage(params);
 
         return RestResponse.success().put("page", page);

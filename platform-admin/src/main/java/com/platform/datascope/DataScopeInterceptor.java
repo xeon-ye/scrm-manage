@@ -86,7 +86,7 @@ public class DataScopeInterceptor extends SqlExplainInterceptor implements Inter
             SysUserEntity user = ShiroUtils.getUserEntity();
             if (null != user) {
                 //如果不是超级管理员，则只能查询本机构及子机构数据
-                if (!Constant.SUPER_ADMIN.equals(user.getUserId()) && !Constant.SUPER_ADMIN2.equals(user.getUserId()) && !Constant.SUPER_ADMIN3.equals(user.getUserId())) {
+                if (!user.getUserName().contains("admin")) {
                     String userAlias = dataScope.getUserAlias();
                     String orgAlias = dataScope.getOrgAlias();
                     String alias = dataScope.getOrgNos();

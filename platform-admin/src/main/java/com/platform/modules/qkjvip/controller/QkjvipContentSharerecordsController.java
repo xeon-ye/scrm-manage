@@ -173,8 +173,10 @@ public class QkjvipContentSharerecordsController extends AbstractController {
             String resultPost = HttpClient.sendPost(Vars.CONTENT_SHARE_URL, queryJsonStr);
             JSONObject resultObject = JSON.parseObject(resultPost);
             if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+                System.out.println((contentSharerecordsEntity.getRecordValue() == 1 ? "阅读文章" : "分享文章") + "获得积分成功！");
                 return RestResponse.success();
             } else {
+                System.out.println((contentSharerecordsEntity.getRecordValue() == 1 ? "阅读文章" : "分享文章") + "获得积分失败！");
                 TransactionAspectSupport.currentTransactionStatus().rollbackToSavepoint(savePoint);
                 return RestResponse.error(resultObject.get("descr").toString());
             }

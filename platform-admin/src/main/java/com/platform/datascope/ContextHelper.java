@@ -54,7 +54,7 @@ public class ContextHelper extends AbstractController {
 	public static void setSearchDeptPermit4Search(Map<String, Object> m, String dept_column, String user_column,String menu_column) {
 		SysUserEntity user = ShiroUtils.getUserEntity();
 		//如果不是超级管理员，则只能查询本机构及子机构数据
-		if (user!=null&&!Constant.SUPER_ADMIN.equals(user.getUserId())&&!Constant.SUPER_ADMIN2.equals(user.getUserId())) {
+		if (user!=null&&!user.getUserName().contains("admin")) {
 			if(dept_column!=null)m.put(dept_column,user.getOrgNo());
 			if(user_column!=null)m.put(user_column, user.getUserId());
 			if(menu_column!=null)m.put("select_menu",menu_column);

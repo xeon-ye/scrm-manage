@@ -99,14 +99,14 @@ public class MemberController extends AbstractController {
                 memberQuery.getMembertags().get(i).setTagList(null);
             }
         }
-        if (getUser().getUserName().contains("admin")) {
+        if (getUser().getUserName().contains("admin")) {  // 空默认是全部所有权限
             memberQuery.setCurrentmemberid("");
             memberQuery.setListorgno("");
             memberQuery.setListmemberchannel("");
         } else {
             memberQuery.setCurrentmemberid(getUserId());
             memberQuery.setListorgno(sysRoleOrgService.queryOrgNoListByUserIdAndPerm(getUserId(), "qkjvip:member:list"));
-            memberQuery.setListmemberchannel(sysUserChannelService.queryChannelIdByUserId(getUserId()));
+            memberQuery.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "" : sysUserChannelService.queryChannelIdByUserId(getUserId())); // 0代表选择的是全部渠道
         }
 //        Object obj = JSONArray.toJSON(memberQuery);
         String queryJsonStr = JsonHelper.toJsonString(memberQuery, "yyyy-MM-dd HH:mm:ss");

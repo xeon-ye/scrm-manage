@@ -119,7 +119,7 @@ public abstract class AbstractController {
         dataScope.setOrgAlias(orgAlias);
 
         //拼接部门
-        if (!Constant.SUPER_ADMIN.equals(getUserId()) && !Constant.SUPER_ADMIN2.equals(getUserId()) ) {
+        if (!getUser().getUserName().contains("admin")) {
             String orgs = ContextHelper.setSearchDepts(userPerm,getUserId(),getOrgNo());
             dataScope.setOrgNos(orgs);
         }
