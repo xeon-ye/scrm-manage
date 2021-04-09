@@ -136,6 +136,7 @@ public class QkjvipMemberActivityController extends AbstractController {
     }
     @GetMapping("/listsum")
     public RestResponse listsum (@RequestParam Map<String, Object> params) {
+        params.put("dataScope", getDataScopeContex("qkjvip:memberactivity:list", "t.adduser", "t.adddept"));
         Page page = qkjvipMemberActivityService.queryPageCount(params);
 
         return RestResponse.success().put("page", page);
