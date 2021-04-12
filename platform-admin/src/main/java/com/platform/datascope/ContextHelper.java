@@ -99,7 +99,7 @@ public class ContextHelper extends AbstractController {
 				}
 			}
 		}
-		if(deps==null||deps.equals("")){
+		if(deps==null||deps.toString().equals("")||deps.length()<=0){
 			return "";
 		}else{
 			return deps.substring(0,deps.length()-1)+"";
