@@ -99,7 +99,11 @@ public class ContextHelper extends AbstractController {
 				}
 			}
 		}
-		return deps.substring(0,deps.length()-1)+"";
+		if(deps==null||deps.equals("")){
+			return "";
+		}else{
+			return deps.substring(0,deps.length()-1)+"";
+		}
 	}
 
 	public static  String setSearchDepts(String userPerm,String userid,String dept) {
