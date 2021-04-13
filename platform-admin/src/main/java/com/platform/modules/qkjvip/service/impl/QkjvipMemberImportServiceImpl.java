@@ -44,7 +44,9 @@ public class QkjvipMemberImportServiceImpl extends ServiceImpl<QkjvipMemberImpor
         params.put("sidx", "T.memberId");
         params.put("asc", false);
         Page<QkjvipMemberImportEntity> page = new Query<QkjvipMemberImportEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipMemberImportPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipMemberImportPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
 

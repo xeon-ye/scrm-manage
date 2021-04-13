@@ -48,7 +48,9 @@ public class QkjvipMemberActivitymbsServiceImpl extends ServiceImpl<QkjvipMember
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipMemberActivitymbsEntity> page = new Query<QkjvipMemberActivitymbsEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipMemberActivitymbsPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipMemberActivitymbsPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

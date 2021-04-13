@@ -49,7 +49,9 @@ public class QkjvipMemberActivityServiceImpl extends ServiceImpl<QkjvipMemberAct
         params.put("sidx", "T.addtime");
         params.put("asc", false);
         Page<QkjvipMemberActivityEntity> page = new Query<QkjvipMemberActivityEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipMemberActivityPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipMemberActivityPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

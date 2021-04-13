@@ -45,7 +45,9 @@ public class QkjvipContentGroupuserServiceImpl extends ServiceImpl<QkjvipContent
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipContentGroupuserEntity> page = new Query<QkjvipContentGroupuserEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipContentGroupuserPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipContentGroupuserPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

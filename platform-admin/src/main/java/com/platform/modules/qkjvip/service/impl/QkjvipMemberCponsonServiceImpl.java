@@ -45,7 +45,9 @@ public class QkjvipMemberCponsonServiceImpl extends ServiceImpl<QkjvipMemberCpon
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipMemberCponsonEntity> page = new Query<QkjvipMemberCponsonEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipMemberCponsonPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipMemberCponsonPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

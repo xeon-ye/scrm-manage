@@ -45,7 +45,9 @@ public class QkjvipContentGroupcontentServiceImpl extends ServiceImpl<QkjvipCont
         params.put("sidx", "T.sortvalue");
         params.put("asc", true);
         Page<QkjvipContentGroupcontentEntity> page = new Query<QkjvipContentGroupcontentEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipContentGroupcontentPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipContentGroupcontentPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

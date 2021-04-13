@@ -44,7 +44,9 @@ public class QkjvipProductStockServiceImpl extends ServiceImpl<QkjvipProductStoc
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipProductStockEntity> page = new Query<QkjvipProductStockEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipProductStockPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipProductStockPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

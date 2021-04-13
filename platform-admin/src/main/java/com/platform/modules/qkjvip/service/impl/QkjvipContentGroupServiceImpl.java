@@ -53,7 +53,9 @@ public class QkjvipContentGroupServiceImpl extends ServiceImpl<QkjvipContentGrou
         params.put("sidx", "T.add_time");
         params.put("asc", false);
         Page<QkjvipContentGroupEntity> page = new Query<QkjvipContentGroupEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipContentGroupPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipContentGroupPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

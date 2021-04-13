@@ -44,7 +44,9 @@ public class QkjvipContentSharerecordsServiceImpl extends ServiceImpl<QkjvipCont
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipContentSharerecordsEntity> page = new Query<QkjvipContentSharerecordsEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipContentSharerecordsPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipContentSharerecordsPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

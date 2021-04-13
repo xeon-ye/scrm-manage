@@ -44,7 +44,9 @@ public class QkjvipMemberSignupmemberServiceImpl extends ServiceImpl<QkjvipMembe
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipMemberSignupmemberEntity> page = new Query<QkjvipMemberSignupmemberEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipMemberSignupmemberPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipMemberSignupmemberPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

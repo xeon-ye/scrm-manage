@@ -44,7 +44,9 @@ public class QkjvipMemberIntentionorderServiceImpl extends ServiceImpl<QkjvipMem
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipMemberIntentionorderEntity> page = new Query<QkjvipMemberIntentionorderEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipMemberIntentionorderPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipMemberIntentionorderPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

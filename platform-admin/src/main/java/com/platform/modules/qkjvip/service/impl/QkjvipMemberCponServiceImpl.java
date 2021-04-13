@@ -44,7 +44,9 @@ public class QkjvipMemberCponServiceImpl extends ServiceImpl<QkjvipMemberCponDao
         params.put("sidx", "T.add_time");
         params.put("asc", false);
         Page<QkjvipMemberCponEntity> page = new Query<QkjvipMemberCponEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipMemberCponPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipMemberCponPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

@@ -49,7 +49,9 @@ public class QkjvipOrderOrderServiceImpl extends ServiceImpl<QkjvipOrderOrderDao
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipOrderOrderEntity> page = new Query<QkjvipOrderOrderEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipOrderOrderPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipOrderOrderPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override
