@@ -44,7 +44,9 @@ public class QkjvipOrderPaylogServiceImpl extends ServiceImpl<QkjvipOrderPaylogD
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipOrderPaylogEntity> page = new Query<QkjvipOrderPaylogEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipOrderPaylogPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipOrderPaylogPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

@@ -44,7 +44,9 @@ public class QkjvipProductProductServiceImpl extends ServiceImpl<QkjvipProductPr
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipProductProductEntity> page = new Query<QkjvipProductProductEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipProductProductPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipProductProductPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

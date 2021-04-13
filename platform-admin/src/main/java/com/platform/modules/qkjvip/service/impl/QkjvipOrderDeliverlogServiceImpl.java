@@ -44,7 +44,9 @@ public class QkjvipOrderDeliverlogServiceImpl extends ServiceImpl<QkjvipOrderDel
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipOrderDeliverlogEntity> page = new Query<QkjvipOrderDeliverlogEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipOrderDeliverlogPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipOrderDeliverlogPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

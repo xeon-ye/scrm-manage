@@ -42,7 +42,9 @@ public class MemberCommuServiceImpl extends ServiceImpl<MemberCommuDao, MemberCo
         params.put("sidx", "mc.add_time");
         params.put("asc", false);
         Page<MemberCommuEntity> page = new Query<MemberCommuEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectMemberCommuList(page, params));
+        page.setRecords(baseMapper.selectMemberCommuList(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

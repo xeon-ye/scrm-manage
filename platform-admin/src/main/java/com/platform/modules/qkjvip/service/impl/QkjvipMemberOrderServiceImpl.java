@@ -49,7 +49,9 @@ public class QkjvipMemberOrderServiceImpl extends ServiceImpl<QkjvipMemberOrderD
         params.put("sidx", "convert(datetime,T.orderdate, 20)");
         params.put("asc", false);
         Page<QkjvipMemberOrderEntity> page = new Query<QkjvipMemberOrderEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipMemberOrderPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipMemberOrderPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

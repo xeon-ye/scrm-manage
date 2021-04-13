@@ -138,19 +138,22 @@ public class DataScopeInterceptor extends SqlExplainInterceptor implements Inter
                     }
 
                     // liuqianru add start
-                    if (page.isSearchCount()) {
-                        Connection connection = (Connection)invocation.getArgs()[0];
-                        int first = filterSql.toString().indexOf("(");
-                        int last = filterSql.toString().lastIndexOf(")");
-                        String originalSql = filterSql.toString().substring(first + 1, last);
-                        SqlInfo sqlInfo = SqlParserUtils.getOptimizeCountSql(true, null, originalSql);
-                        PreparedStatement statement = connection.prepareStatement(sqlInfo.getSql());
-                        ResultSet resultSet = statement.executeQuery();
-                        if (resultSet.next()) {
-                            long total = resultSet.getLong(1);
-                            page.setTotal(total);
-                        }
-                    }
+//                    if (page.isSearchCount()) {
+//                        Connection connection = (Connection)invocation.getArgs()[0];
+//                        String originalSql = filterSql.toString();
+//                        if (filterSql.toString().contains("WITH selectTemp")) {
+//                            int first = filterSql.toString().indexOf("(");
+//                            int last = filterSql.toString().lastIndexOf(")");
+//                            originalSql = filterSql.toString().substring(first + 1, last);
+//                        }
+//                        SqlInfo sqlInfo = SqlParserUtils.getOptimizeCountSql(true, null, originalSql);
+//                        PreparedStatement statement = connection.prepareStatement(sqlInfo.getSql());
+//                        ResultSet resultSet = statement.executeQuery();
+//                        if (resultSet.next()) {
+//                            long total = resultSet.getLong(1);
+//                            page.setTotal(total);
+//                        }
+//                    }
                     // liuqianru add end
                 }
                 metaObject.setValue("delegate.boundSql.sql", filterSql.toString());

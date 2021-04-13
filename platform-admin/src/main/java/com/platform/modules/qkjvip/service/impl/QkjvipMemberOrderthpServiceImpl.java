@@ -44,7 +44,9 @@ public class QkjvipMemberOrderthpServiceImpl extends ServiceImpl<QkjvipMemberOrd
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipMemberOrderthpEntity> page = new Query<QkjvipMemberOrderthpEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipMemberOrderthpPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipMemberOrderthpPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

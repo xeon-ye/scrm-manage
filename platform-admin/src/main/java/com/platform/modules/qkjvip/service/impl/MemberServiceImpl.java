@@ -70,11 +70,13 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
 
         // 如果追加了会员标签的检索条件start
         if (params.get("conditionSql") != null && !"".equals(params.get("conditionSql").toString())) {
-            return page.setRecords(baseMapper.selectMemberList2(page, params));
+            page.setRecords(baseMapper.selectMemberList2(page, params));
         }
         // 如果追加了会员标签的检索条件end
 
-        return page.setRecords(baseMapper.selectMemberList(page, params));
+        page.setRecords(baseMapper.selectMemberList(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

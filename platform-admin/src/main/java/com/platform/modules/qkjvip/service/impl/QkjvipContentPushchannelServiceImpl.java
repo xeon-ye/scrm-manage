@@ -44,7 +44,9 @@ public class QkjvipContentPushchannelServiceImpl extends ServiceImpl<QkjvipConte
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipContentPushchannelEntity> page = new Query<QkjvipContentPushchannelEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipContentPushchannelPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipContentPushchannelPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

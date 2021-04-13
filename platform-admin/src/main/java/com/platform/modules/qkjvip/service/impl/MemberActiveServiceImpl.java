@@ -43,7 +43,9 @@ public class MemberActiveServiceImpl extends ServiceImpl<MemberActiveDao, Member
         params.put("sidx", "ma.add_time");
         params.put("asc", false);
         Page<MemberActiveEntity> page = new Query<MemberActiveEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectMemberActiveList(page, params));
+        page.setRecords(baseMapper.selectMemberActiveList(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

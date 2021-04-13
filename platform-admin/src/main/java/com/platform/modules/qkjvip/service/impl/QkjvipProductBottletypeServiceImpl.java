@@ -44,7 +44,9 @@ public class QkjvipProductBottletypeServiceImpl extends ServiceImpl<QkjvipProduc
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipProductBottletypeEntity> page = new Query<QkjvipProductBottletypeEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipProductBottletypePage(page, params));
+        page.setRecords(baseMapper.selectQkjvipProductBottletypePage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

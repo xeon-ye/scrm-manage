@@ -44,7 +44,9 @@ public class QkjvipMemberIntegralruleServiceImpl extends ServiceImpl<QkjvipMembe
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipMemberIntegralruleEntity> page = new Query<QkjvipMemberIntegralruleEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipMemberIntegralrulePage(page, params));
+        page.setRecords(baseMapper.selectQkjvipMemberIntegralrulePage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

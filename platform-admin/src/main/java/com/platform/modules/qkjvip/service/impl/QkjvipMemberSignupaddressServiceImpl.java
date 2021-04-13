@@ -44,7 +44,9 @@ public class QkjvipMemberSignupaddressServiceImpl extends ServiceImpl<QkjvipMemb
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipMemberSignupaddressEntity> page = new Query<QkjvipMemberSignupaddressEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipMemberSignupaddressPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipMemberSignupaddressPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

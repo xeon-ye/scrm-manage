@@ -59,6 +59,7 @@ public class QkjvipMemberVisitController extends AbstractController {
     @RequestMapping("/queryAll")
     @RequiresPermissions("qkjvip:membervisit:list")
     public RestResponse queryAll(@RequestParam Map<String, Object> params) {
+        params.put("dataScope", getDataScopeContex("qkjvip:membervisit:list", "T.add_user", "T.add_dept"));
         List<QkjvipMemberVisitEntity> list = qkjvipMemberVisitService.queryAll(params);
 
         return RestResponse.success().put("list", list);

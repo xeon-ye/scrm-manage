@@ -44,7 +44,9 @@ public class QkjvipTaglibsServiceImpl extends ServiceImpl<QkjvipTaglibsDao, Qkjv
         params.put("sidx", "T.addTime");
         params.put("asc", false);
         Page<QkjvipTaglibsEntity> page = new Query<QkjvipTaglibsEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipTaglibsPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipTaglibsPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

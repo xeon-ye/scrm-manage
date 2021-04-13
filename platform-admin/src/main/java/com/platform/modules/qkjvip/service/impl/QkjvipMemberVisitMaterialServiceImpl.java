@@ -45,7 +45,9 @@ public class QkjvipMemberVisitMaterialServiceImpl extends ServiceImpl<QkjvipMemb
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipMemberVisitMaterialEntity> page = new Query<QkjvipMemberVisitMaterialEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipMemberVisitMaterialPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipMemberVisitMaterialPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

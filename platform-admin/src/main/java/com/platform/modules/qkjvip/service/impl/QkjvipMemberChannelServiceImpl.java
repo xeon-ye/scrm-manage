@@ -44,7 +44,9 @@ public class QkjvipMemberChannelServiceImpl extends ServiceImpl<QkjvipMemberChan
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipMemberChannelEntity> page = new Query<QkjvipMemberChannelEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipMemberChannelPage(page, params));
+        page.setRecords(baseMapper.selectQkjvipMemberChannelPage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

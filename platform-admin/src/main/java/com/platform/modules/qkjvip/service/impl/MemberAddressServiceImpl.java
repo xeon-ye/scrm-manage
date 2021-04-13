@@ -44,7 +44,9 @@ public class MemberAddressServiceImpl extends ServiceImpl<MemberAddressDao, Memb
         params.put("sidx", "ma.add_time");
         params.put("asc", false);
         Page<MemberAddressEntity> page = new Query<MemberAddressEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectMemberAddrList(page, params));
+        page.setRecords(baseMapper.selectMemberAddrList(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

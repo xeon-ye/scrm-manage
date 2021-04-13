@@ -44,7 +44,9 @@ public class QkjvipOrderWarehouseServiceImpl extends ServiceImpl<QkjvipOrderWare
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipOrderWarehouseEntity> page = new Query<QkjvipOrderWarehouseEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipOrderWarehousePage(page, params));
+        page.setRecords(baseMapper.selectQkjvipOrderWarehousePage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override

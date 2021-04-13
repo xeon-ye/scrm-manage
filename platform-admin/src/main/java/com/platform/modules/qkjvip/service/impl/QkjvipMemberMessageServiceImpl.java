@@ -54,7 +54,9 @@ public class QkjvipMemberMessageServiceImpl extends ServiceImpl<QkjvipMemberMess
         params.put("sidx", "T.id");
         params.put("asc", false);
         Page<QkjvipMemberMessageEntity> page = new Query<QkjvipMemberMessageEntity>(params).getPage();
-        return page.setRecords(baseMapper.selectQkjvipMemberMessagePage(page, params));
+        page.setRecords(baseMapper.selectQkjvipMemberMessagePage(page, params));
+        page.setTotal(baseMapper.queryAll(params).size());
+        return page;
     }
 
     @Override
