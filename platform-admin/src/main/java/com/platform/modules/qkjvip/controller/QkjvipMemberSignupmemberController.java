@@ -183,7 +183,6 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
     @RequestMapping("/savesign")
     public RestResponse savesign(@RequestBody QkjvipMemberSignupmemberEntity qkjvipMemberSignupmember) throws IOException {
         // 清洗会员(微信id有则不清洗,无清洗)
-
         Map<String, Object> params=new HashMap<>();
         String openid=qkjvipMemberSignupmember.getOpenId();//模拟的微信id
         String mobile=qkjvipMemberSignupmember.getMobile();//模拟的手机号
@@ -208,6 +207,9 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
         if(list.size()>0){//已签到
             //return RestResponse.error("已签到成功，谢谢");
             //已签到显示行程安排、参加的活动记录、用户的积分、积分商城
+            if(qkjvipMemberSignupmember!=null&&qkjvipMemberSignupmember.getOpenId()!=null){
+                logger.info("已签到信息："+"memberid:"+qkjvipMemberSignupmember.getMemberId()+";openid:" + qkjvipMemberSignupmember.getOpenId());
+            }
         } else {
             //邀请补充
             qkjvipMemberActivitymbsService.supadd(qkjvipMemberSignupmember.getActivityId(),member.getMemberId());
@@ -222,6 +224,9 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
             qkjvipMemberSignupmember.setSignupId(bmid);
             qkjvipMemberSignupmemberService.add(qkjvipMemberSignupmember);
             System.out.println("签到成功活动id："+qkjvipMemberSignupmember.getActivityId());
+            if(qkjvipMemberSignupmember!=null&&qkjvipMemberSignupmember.getOpenId()!=null){
+                logger.info("正常签到信息："+"memberid:"+qkjvipMemberSignupmember.getMemberId()+";openid:" + qkjvipMemberSignupmember.getOpenId());
+            }
         }
 
         return RestResponse.success();

@@ -103,20 +103,21 @@ public class QkjvipMemberActivityController extends AbstractController {
         // 百度地图申请的ak
         String ak = "Ed5GYHTqRm1E5VZgHB6jm7Qz2vckMfQg";
         // 这里调用百度的ip定位api服务 详见 http://api.map.baidu.com/lbsapi/cloud/ip-location-api.htm
-        try{
-            JSONObject json = readJsonFromUrl("http://api.map.baidu.com/location/ip?ip=" + ip + "&ak=" + ak);
-            //这里只取出了两个参数，根据自己需求去获取
-            if(json.get("content")!=null){
-                JSONObject obj = (JSONObject) ((JSONObject) json.get("content")).get("address_detail");
-                String province = obj.getString("province");
-                String city = obj.getString("city");
-                System.out.println(province);
-                params.put("memberIdSignAddress",city);
-            }
-            list = qkjvipMemberActivityService.queryAllSignAddress(params);
-        }catch (IOException e){
-
-        }
+//        try{
+//            JSONObject json = readJsonFromUrl("http://api.map.baidu.com/location/ip?ip=" + ip + "&ak=" + ak);
+//            //这里只取出了两个参数，根据自己需求去获取
+//            if(json.get("content")!=null){
+//                JSONObject obj = (JSONObject) ((JSONObject) json.get("content")).get("address_detail");
+//                String province = obj.getString("province");
+//                String city = obj.getString("city");
+//                System.out.println(province);
+//                params.put("memberIdSignAddress",city);
+//            }
+//            list = qkjvipMemberActivityService.queryAllSignAddress(params);
+//        }catch (IOException e){
+//
+//        }
+        list = qkjvipMemberActivityService.queryAllSignAddress(params);
         return RestResponse.success().put("list", list);
     }
 

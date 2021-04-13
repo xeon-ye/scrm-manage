@@ -13,11 +13,18 @@
         <if test="params.title != null and params.title.trim() != ''">
             AND o.title LIKE '%${params.title}%'
         </if>
+        <if test="params.activityId != null and params.activityId.trim() != ''">
+            AND t.activity_id = '${params.activityId}'
+        </if>
         <if test="params.mobile != null and params.mobile.trim() != ''">
             AND m.mobile = '${params.mobile}'
         </if>
         <if test="params.memberId != null and params.memberId.trim() != ''">
-            AND T.member_id LIKE '${params.memberId}'
+            AND ( t.member_id = '${params.memberId}'
+            or EXISTS(SELECT 1 from qkjvip_member m
+            where m.member_id=t.member_id and  ISNULL(m.memberidto, '88')!='88'
+            and m.memberidto='${params.memberId}')
+            )
         </if>
     </sql>
 

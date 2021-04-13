@@ -103,45 +103,32 @@ public class QkjvipMemberSignupController extends AbstractController {
     @RequestMapping("/save")
     public RestResponse save(@RequestBody QkjvipMemberSignupEntity qkjvipMemberSignup) {
         Map<String, Object> params=new HashMap<>();
-        params.put("phone",qkjvipMemberSignup.getPhone());
+        //params.put("phone",qkjvipMemberSignup.getPhone());
+        params.put("memberid",qkjvipMemberSignup.getMemberid());
         params.put("acitvityId",qkjvipMemberSignup.getAcitvityId());
         List<QkjvipMemberSignupEntity> list = qkjvipMemberSignupService.queryAll(params);
+        if(qkjvipMemberSignup!=null&&qkjvipMemberSignup.getOpenid()!=null){
+            logger.info("报名信息："+"memberid:"+qkjvipMemberSignup.getMemberid()+";openid:" + qkjvipMemberSignup.getOpenid());
+        }
         if(list.size()>0){
             //return RestResponse.error("已报名成功，谢谢");
             logger.info("已报名成功，谢谢"+ qkjvipMemberSignup.getAcitvityId());
             qkjvipMemberSignup = list.get(0);
         }else{
-            List<QkjvipMemberImportEntity> mbs=new ArrayList<>();
-            //查询中间表是否有此手机号
-            Map<String, Object> map=new HashMap<>();
-            map.put("mobile",qkjvipMemberSignup.getPhone());
-            mbs=qkjvipMemberImportService.selectMemberByMobile(map);
-            QkjvipMemberImportEntity memberImport=new QkjvipMemberImportEntity();
-            memberImport.setAddUser(qkjvipMemberSignup.getMemadduser());
-            memberImport.setAddDept(qkjvipMemberSignup.getMemadddept());
-            memberImport.setOrgUserid(qkjvipMemberSignup.getMemadduser());
-            memberImport.setOrgNo(qkjvipMemberSignup.getMemadddept());
-            memberImport.setServicename("天佑德青青稞酒");
-            memberImport.setAddTime(new Date());
-            memberImport.setOfflineflag(2);
-            memberImport.setMemberName(qkjvipMemberSignup.getUserName());
-            memberImport.setMobile(qkjvipMemberSignup.getPhone());
-            memberImport.setOpenid(qkjvipMemberSignup.getOpenid());
-            if(mbs==null||mbs.size()<=0){
-                //清洗会员
-                qkjvipMemberImportService.add(memberImport);  //将数据保存到中间表
-            }
-
-            //调用数据清洗接口
             MemberEntity member = new MemberEntity();
+            member.setMobile(qkjvipMemberSignup.getPhone());
+            member.setMemberId(qkjvipMemberSignup.getMemberid());
+            member.setMemberName(qkjvipMemberSignup.getUserName());
             try {
-                Object obj = JSONArray.toJSON(memberImport);
-                String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
-                System.out.println("报名清洗会员："+memberJsonStr);
-                String resultPost = HttpClient.sendPost(Vars.MEMBER_ADD_URL, memberJsonStr);
-                //插入会员标签
-                JSONObject resultObject = JSON.parseObject(resultPost);
-                member.setMemberId(resultObject.get("memberid").toString());
+                if(qkjvipMemberSignup!=null&&(qkjvipMemberSignup.getOldphone()==null||qkjvipMemberSignup.getOldphone().equals("")||!qkjvipMemberSignup.getOldphone().equals(qkjvipMemberSignup.getPhone()))){
+                    //清洗
+                    Object obj = JSONArray.toJSON(member);
+                    String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+                    String resultPost = HttpClient.sendPost(Vars.MEMBER_UPDATE_URL, memberJsonStr);
+                    JSONObject resultObject = JSON.parseObject(resultPost);
+                    if (!"200".equals(resultObject.get("resultcode").toString())) {  //修改手机号成功
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
