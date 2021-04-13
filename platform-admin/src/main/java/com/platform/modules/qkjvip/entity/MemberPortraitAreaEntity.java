@@ -39,6 +39,8 @@ public class MemberPortraitAreaEntity implements Serializable {
     private Date endregtime;
     private Integer pageindex;
     private Integer pagesize;
+    private String currentmemberid;
+    private String listmemberchannel;
     /*检索条件end*/
 
     /*返回值start*/
