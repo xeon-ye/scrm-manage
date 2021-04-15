@@ -166,7 +166,7 @@ public class QkjvipContentSharerecordsController extends AbstractController {
                 qkjvipMemberIntegralrule = qkjvipMemberIntegralruleService.getById("37f41bf2a2605825fd9642b1ff104655");
             }
             map.put("crmmemberid", contentSharerecordsEntity.getMemberId());
-            map.put("actiontype", 1);
+            map.put("actiontype", 15);
             map.put("integral", qkjvipMemberIntegralrule.getIntegral());
 
             String queryJsonStr = JsonHelper.toJsonString(map);

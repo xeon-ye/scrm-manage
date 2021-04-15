@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.platform.modules.qkjvip.dao.MemberAddressDao">
-	<select id="selectMemberAddrList" resultType="com.platform.modules.qkjvip.entity.MemberAddressEntity">
+	<sql id="selectSql">
 		SELECT ma.* FROM qkjvip_member_address ma
 		WHERE 1=1
 		<if test="params.uuid != null and params.uuid != ''">
@@ -11,5 +11,11 @@
 		<if test="params.memberId != null and params.memberId != ''">
 			AND ma.member_id = #{params.memberId}
 		</if>
+	</sql>
+	<select id="selectMemberAddrList" resultType="com.platform.modules.qkjvip.entity.MemberAddressEntity">
+		<include refid="selectSql"/>
+	</select>
+	<select id="queryAll" resultType="com.platform.modules.qkjvip.entity.MemberAddressEntity">
+		<include refid="selectSql"/>
 	</select>
 </mapper>
