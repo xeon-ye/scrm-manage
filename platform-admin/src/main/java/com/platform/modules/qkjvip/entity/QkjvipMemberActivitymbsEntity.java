@@ -67,4 +67,8 @@ public class QkjvipMemberActivitymbsEntity implements Serializable {
     private Integer qdstatus;
     @TableField(exist = false)
     private String bmid;
+    @TableField(exist = false)
+    private String headImgUrl;
+    @TableField(exist = false)
+    private String servicename;
 }

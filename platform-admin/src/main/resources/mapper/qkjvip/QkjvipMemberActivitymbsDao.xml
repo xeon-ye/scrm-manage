@@ -10,7 +10,9 @@
         T.ACTIVITY_ID,
         a.member_name,
         a.real_name,
-        a.mobile
+        a.mobile,
+        a.head_img_url,
+        a.ServiceName
         FROM QKJVIP_MEMBER_ACTIVITYMBS T
         join qkjvip_member a on (t.MEMBER_ID=a.member_id)
         WHERE 1=1  --(a.statusflag = 0 OR a.statusflag = 2)
