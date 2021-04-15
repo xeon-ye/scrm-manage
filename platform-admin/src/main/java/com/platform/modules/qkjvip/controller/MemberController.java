@@ -99,16 +99,13 @@ public class MemberController extends AbstractController {
                 memberQuery.getMembertags().get(i).setTagList(null);
             }
         }
-        if (getUser().getUserName().contains("admin")) {  // 空默认是全部所有权限
-            memberQuery.setCurrentmemberid("");
-            memberQuery.setListorgno("");
-            memberQuery.setListmemberchannel("");
-        } else {
+        if (!getUser().getUserName().contains("admin")) {  // 空默认是全部所有权限
             memberQuery.setCurrentmemberid(getUserId());
-            memberQuery.setListorgno(sysRoleOrgService.queryOrgNoListByUserIdAndPerm(getUserId(), "qkjvip:member:list"));
-            memberQuery.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "" : sysUserChannelService.queryChannelIdByUserId(getUserId())); // 0代表选择的是全部渠道
+//            memberQuery.setListorgno(sysRoleOrgService.queryOrgNoListByUserIdAndPerm(getUserId(), "qkjvip:member:list"));
+            memberQuery.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId())); // 0代表选择的是全部渠道传-1
+        } else {
+            memberQuery.setListmemberchannel("-1");
         }
-//        Object obj = JSONArray.toJSON(memberQuery);
         String queryJsonStr = JsonHelper.toJsonString(memberQuery, "yyyy-MM-dd HH:mm:ss");
 
         String resultPost = HttpClient.sendPost(Vars.MEMBER_GETLIST_URL, queryJsonStr);

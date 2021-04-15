@@ -19,8 +19,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.utils.RestResponse;
 import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.sys.controller.AbstractController;
+import com.platform.modules.sys.service.SysUserChannelService;
 import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.Vars;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +37,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/qkjvip/memberportrait")
 public class MemberPortraitController extends AbstractController {
+    @Autowired
+    private SysUserChannelService sysUserChannelService;
 
     /**
      * 性别统计
@@ -45,6 +49,10 @@ public class MemberPortraitController extends AbstractController {
     @PostMapping("/getMemberSexReport")
     public RestResponse getMemberSexReport(@RequestBody MemberPortraitSexEntity memberPortraitSexEntity) throws IOException {
         List<MemberPortraitSexEntity> list = new ArrayList<>();
+        if (!getUser().getUserName().contains("admin")) {
+            memberPortraitSexEntity.setCurrentmemberid(getUserId());
+            memberPortraitSexEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
+        }
         Object obj = JSONArray.toJSON(memberPortraitSexEntity);
         String queryJsonStr = JsonHelper.toJsonString(obj);
 
@@ -68,6 +76,10 @@ public class MemberPortraitController extends AbstractController {
     @PostMapping("/getMemberAgeReport")
     public RestResponse getMemberAgeReport(@RequestBody MemberPortraitAgeEntity memberPortraitAgeEntity) throws IOException {
         List<MemberPortraitAgeEntity> list = new ArrayList<>();
+        if (!getUser().getUserName().contains("admin")) {
+            memberPortraitAgeEntity.setCurrentmemberid(getUserId());
+            memberPortraitAgeEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
+        }
         Object obj = JSONArray.toJSON(memberPortraitAgeEntity);
         String queryJsonStr = JsonHelper.toJsonString(obj);
 
@@ -91,6 +103,10 @@ public class MemberPortraitController extends AbstractController {
     @PostMapping("/getMemberCityReport")
     public RestResponse getMemberCityReport(@RequestBody MemberPortraitAreaEntity memberPortraitAreaEntity) throws IOException {
         List<MemberPortraitAreaEntity> list = new ArrayList<>();
+        if (!getUser().getUserName().contains("admin")) {
+            memberPortraitAreaEntity.setCurrentmemberid(getUserId());
+            memberPortraitAreaEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
+        }
         Object obj = JSONArray.toJSON(memberPortraitAreaEntity);
         String queryJsonStr = JsonHelper.toJsonString(obj);
 

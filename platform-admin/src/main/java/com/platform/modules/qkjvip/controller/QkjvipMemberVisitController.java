@@ -129,7 +129,7 @@ public class QkjvipMemberVisitController extends AbstractController {
     @RequiresPermissions("qkjvip:membervisit:save")
     public RestResponse save(@RequestBody QkjvipMemberVisitEntity qkjvipMemberVisit) {
         Date nowDate = new Date();
-        if (qkjvipMemberVisit.getVisitStartDate().after(nowDate)) {
+        if (qkjvipMemberVisit.getVisitStartDate().after(nowDate) || qkjvipMemberVisit.getVisitEndDate().after(nowDate)) {
             qkjvipMemberVisit.setVisitStatus(1);  // 计划拜访
         }
         if (qkjvipMemberVisit.getVisitEndDate().before(nowDate)) {
@@ -182,7 +182,7 @@ public class QkjvipMemberVisitController extends AbstractController {
     @RequiresPermissions("qkjvip:membervisit:update")
     public RestResponse update(@RequestBody QkjvipMemberVisitEntity qkjvipMemberVisit) {
         Date nowDate = new Date();
-        if (qkjvipMemberVisit.getVisitStartDate().after(nowDate)) {
+        if (qkjvipMemberVisit.getVisitStartDate().after(nowDate) || qkjvipMemberVisit.getVisitEndDate().after(nowDate)) {
             qkjvipMemberVisit.setVisitStatus(1);  // 计划拜访
         }
         if (qkjvipMemberVisit.getVisitEndDate().before(nowDate)) {

@@ -39,6 +39,8 @@ public class MemberPortraitSexEntity implements Serializable {
     private String servicename;
     private Date startregtime;
     private Date endregtime;
+    private String currentmemberid;
+    private String listmemberchannel;
     /*检索条件end*/
 
     /*返回值start*/

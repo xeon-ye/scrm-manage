@@ -116,7 +116,7 @@ public class SysLoginController extends AbstractController {
 
         //账号不存在
         if (user == null) {
-            return RestResponse.error("账号不存在");
+            return RestResponse.error("账号未绑定，请绑定账号！");
         }
 
         //账号锁定
