@@ -8,11 +8,14 @@
         T.ID,
         T.MEMBER_ID,
         T.ACTIVITY_ID,
+        t.status,
         a.member_name,
         a.real_name,
         a.mobile,
         a.head_img_url,
-        a.ServiceName
+        a.ServiceName,
+        (SELECT top 1 g.id from qkjvip_member_signup g where g.acitvity_id=t.activity_id and g.memberid=a.member_id) as singtype,
+        (SELECT top 1 1 from qkjvip_member_signupmember g where g.activity_id=t.activity_id and g.member_id=a.member_id) as smemtype
         FROM QKJVIP_MEMBER_ACTIVITYMBS T
         join qkjvip_member a on (t.MEMBER_ID=a.member_id)
         WHERE 1=1  --(a.statusflag = 0 OR a.statusflag = 2)
