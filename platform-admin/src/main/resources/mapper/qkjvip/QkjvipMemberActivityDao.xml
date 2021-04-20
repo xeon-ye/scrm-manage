@@ -7,7 +7,10 @@
         SELECT
         T.*,u.REAL_NAME realname,
         (SELECT count(1) from qkjvip_member_activitymbs mb where mb.activity_id=t.id group by mb.activity_id)
-        as activeper
+        as activeper,
+        (SELECT count(1) from qkjvip_member_signup sgn
+        where sgn.acitvity_id=t.id group by sgn.acitvity_id
+        ) as signper
         FROM QKJVIP_MEMBER_ACTIVITY T
         join sys_user u on (u.USER_ID=t.adduser)
         WHERE 1=1
@@ -35,7 +38,12 @@
         select * ,
         (SELECT top 1 address from qkjvip_member_signupaddress a where a.activityid=act.id) as addressstr
 
-        from (SELECT *,1 istake
+        from (SELECT *,
+        case when ISNULL((
+        SELECT top 1 sme.id from qkjvip_member_signupmember sme where sme.activity_id=t.id
+        and sme.member_id in (SELECT member_id from qkjvip_member mb where mb.member_id=#{params.memberIdSign} or mb.memberidto=#{params.memberIdSign})
+        ),'')='' then 0
+        else 1 end as istake
 
         from QKJVIP_MEMBER_ACTIVITY t
         where 1=1
@@ -60,6 +68,17 @@
             )
             )
 
+        </if>
+
+        <if test="params.ispri != null">
+            AND T.ispri = 0
+            or (
+            t.ispri=1 and EXISTS
+            (SELECT 1 from qkjvip_member_activitymbs bc
+            where t.id=bc.activity_id
+            and bc.member_id in (SELECT member_id from qkjvip_member mems where mems.member_id=#{params.memberIdSign} or mems.memberidto=#{params.memberIdSign})
+            )
+            )
         </if>
         <if test="params.memberIdSignAddress != null and params.memberIdSignAddress.trim() != ''">
             and EXISTS (SELECT 1 from qkjvip_member_signupaddress adres

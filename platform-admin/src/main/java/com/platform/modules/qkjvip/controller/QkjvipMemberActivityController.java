@@ -97,7 +97,7 @@ public class QkjvipMemberActivityController extends AbstractController {
     public RestResponse queryAllhtml(@RequestParam Map<String, Object> params) {
         //已参加的活动
         List<QkjvipMemberActivityEntity> list=new ArrayList<>();
-        //附近的未参加的活动
+        //附近的未参加的活动(公开的及邀约的)
         HttpServletRequest request = getHttpServletRequest();
         String ip = getIp(request);
         // 百度地图申请的ak
@@ -117,6 +117,7 @@ public class QkjvipMemberActivityController extends AbstractController {
 //        }catch (IOException e){
 //
 //        }
+        params.put("ispri",0);
         list = qkjvipMemberActivityService.queryAllSignAddress(params);
         return RestResponse.success().put("list", list);
     }
@@ -196,7 +197,28 @@ public class QkjvipMemberActivityController extends AbstractController {
                 iscanjia=1;
             }
         }
-        return RestResponse.success().put("memberactivity", qkjvipMemberActivity).put("istake",iscanjia);
+        String isabove = "0"; //未超出人数限制
+        String isinvite="0";//未被邀请
+        if(qkjvipMemberActivity!=null&&qkjvipMemberActivity.getIspri()!=null&&qkjvipMemberActivity.getIspri()==0){ //公开的活动(人数限制)
+            if(qkjvipMemberActivity.getPriPerson()!=null){
+                if(qkjvipMemberActivity.getSignper()!=null){ //报名人数
+                    if(qkjvipMemberActivity.getSignper()>=qkjvipMemberActivity.getPriPerson()){//报名人数小于限制人数
+                        isabove="1";
+                    }
+                }
+            }
+        } else { //私有活动是否包含当前人
+            if(mmbs!=null&&mmbs.size()>0&&params.get("myopenid")!=null && !params.get("myopenid").equals("")){
+                String myop=params.get("myopenid")+"";
+                for(QkjvipMemberActivitymbsEntity ms:mmbs){
+                    if(ms!=null&&ms.getOpenid()!=null&&ms.getOpenid().equals(myop)){//邀约里有此openid
+                        isinvite="1";break;
+                    }
+                }
+            }
+
+        }
+        return RestResponse.success().put("memberactivity", qkjvipMemberActivity).put("istake",iscanjia).put("isabove",isabove).put("isinvite",isinvite);
     }
 
     /**
