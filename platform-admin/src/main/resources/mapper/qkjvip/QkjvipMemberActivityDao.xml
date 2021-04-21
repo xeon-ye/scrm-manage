@@ -18,7 +18,7 @@
             AND T.title LIKE '%${params.title}%'
         </if>
         <if test="params.id != null and params.id.trim() != ''">
-            AND T.NAME = '${params.id}'
+            AND T.id = '${params.id}'
         </if>
         <if test="params.memberId != null and params.memberId.trim() != ''">
             AND EXISTS (SELECT 1 from qkjvip_member_signupmember b where b.activity_id=T.id and b.member_id=#{params.memberId})

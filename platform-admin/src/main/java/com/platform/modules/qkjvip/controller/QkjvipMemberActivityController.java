@@ -172,7 +172,13 @@ public class QkjvipMemberActivityController extends AbstractController {
     @RequestMapping("/infohtml")
     public RestResponse infohtml(@RequestParam Map<String, Object> params) {
         QkjvipMemberActivityEntity qkjvipMemberActivity=new QkjvipMemberActivityEntity();
-        qkjvipMemberActivity = qkjvipMemberActivityService.getById(params.get("id").toString());
+        Map<String, Object> acmap=new HashMap<>();
+        acmap.put("id",params.get("id").toString());
+        List<QkjvipMemberActivityEntity> acs=new ArrayList<>();
+        acs=qkjvipMemberActivityService.queryAll(acmap);
+        if(acs!=null&&acs.size()==1){
+            qkjvipMemberActivity=acs.get(0);
+        }
         Map<String, Object> map=new HashMap<String,Object>();
         map.put("activityId",params.get("id").toString());
         List<QkjvipMemberActivitymbsEntity> mmbs=new ArrayList<>();
