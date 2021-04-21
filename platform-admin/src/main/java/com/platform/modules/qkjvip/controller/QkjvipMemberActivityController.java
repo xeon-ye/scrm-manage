@@ -71,6 +71,8 @@ public class QkjvipMemberActivityController extends AbstractController {
     private SysSmsLogService sysSmsLogService;
     @Autowired
     private QkjvipMemberSignupService qkjvipMemberSignupService;
+    @Autowired
+    private MemberService memberService;
 
     /**
      * 查看所有列表
@@ -193,7 +195,11 @@ public class QkjvipMemberActivityController extends AbstractController {
             qkjvipMemberActivity.setAddresses(addresses);
         }
         int iscanjia=0;
+        List<MemberEntity> list=new ArrayList<>();
         if(params.get("myopenid")!=null && !params.get("myopenid").equals("")){//查询是否参加过本活动
+            acmap.clear();
+            acmap.put("openid",params.get("myopenid"));
+            list = memberService.selectMemberByOpenid(acmap);
             Map<String, Object> mapt = new HashMap<>();
             map.put("myopenid",params.get("myopenid")+"");
             map.put("acitvityId",params.get("id").toString());
@@ -214,17 +220,19 @@ public class QkjvipMemberActivityController extends AbstractController {
                 }
             }
         } else { //私有活动是否包含当前人
-            if(mmbs!=null&&mmbs.size()>0&&params.get("myopenid")!=null && !params.get("myopenid").equals("")){
-                String myop=params.get("myopenid")+"";
-                for(QkjvipMemberActivitymbsEntity ms:mmbs){
-                    if(ms!=null&&ms.getOpenid()!=null&&ms.getOpenid().equals(myop)){//邀约里有此openid
-                        isinvite="1";break;
+            //查询关注人的最新memberid
+            if(list!=null&&list.size()>0){
+                if(mmbs!=null&&mmbs.size()>0){
+                    String myop=list.get(0).getMemberId();
+                    for(QkjvipMemberActivitymbsEntity ms:mmbs){
+                        if(ms!=null&&ms.getMemberidto()!=null&&ms.getMemberidto().equals(myop)){//邀约里有此openid
+                            isinvite="1";break;
+                        }
                     }
                 }
             }
-
         }
-        return RestResponse.success().put("memberactivity", qkjvipMemberActivity).put("istake",iscanjia).put("isabove",isabove).put("isinvite",isinvite);
+        return RestResponse.success().put("memberactivity", qkjvipMemberActivity).put("istake",iscanjia).put("isabove",isabove).put("list",list);
     }
 
     /**
