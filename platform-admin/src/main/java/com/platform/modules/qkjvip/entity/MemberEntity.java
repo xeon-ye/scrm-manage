@@ -298,6 +298,10 @@ public class MemberEntity implements Serializable {
      * 会员渠道号
      */
     private Integer memberchannel;
+    /**
+     * 是否同步到青稞荟
+     */
+    private Integer toqkh;
 
     /**
      * 所属人姓名

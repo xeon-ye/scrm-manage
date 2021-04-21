@@ -95,7 +95,7 @@ public class QkjvipMemberImportEntity implements Serializable {
     /**
      * 会员等级
      */
-    @Excel(name = "会员等级", orderNum = "16", width = 15, groupName = "扩展信息", fixedIndex = 16, replace={"普通会员_0","三星会员_1","四星会员_2","五星会员_3","六星会员_4","银牌会员_5"})
+    @Excel(name = "会员等级", orderNum = "16", width = 15, groupName = "扩展信息", fixedIndex = 16, replace={"普通会员_10","人之德级_20","家之德级_30","国之德级_40","天之德级_50","德天下级_60"})
     private String memberLevel;
     /**
      * 会员来源
@@ -303,6 +303,10 @@ public class QkjvipMemberImportEntity implements Serializable {
      * 会员渠道号
      */
     private Integer memberchannel;
+    /**
+     * 是否同步到青稞荟
+     */
+    private Integer toqkh;
     /**
      * 标签数组
      */

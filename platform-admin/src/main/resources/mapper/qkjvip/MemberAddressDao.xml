@@ -18,4 +18,9 @@
 	<select id="queryAll" resultType="com.platform.modules.qkjvip.entity.MemberAddressEntity">
 		<include refid="selectSql"/>
 	</select>
+	<update id="updateByMemberId" parameterType="string">
+		update qkjvip_member_address
+		set default_address = 0
+		where member_id = #{value}
+	</update>
 </mapper>

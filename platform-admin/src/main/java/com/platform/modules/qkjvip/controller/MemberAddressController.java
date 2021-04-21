@@ -50,7 +50,6 @@ public class MemberAddressController extends AbstractController {
     @RequiresPermissions("qkjvip:maddress:list")
     public RestResponse queryAll(@RequestParam Map<String, Object> params) {
         List<MemberAddressEntity> list = memberAddressService.queryAll(params);
-
         return RestResponse.success().put("list", list);
     }
 
@@ -63,12 +62,7 @@ public class MemberAddressController extends AbstractController {
     @GetMapping("/list")
     @RequiresPermissions("qkjvip:maddress:list")
     public RestResponse list(@RequestParam Map<String, Object> params) {
-
-        //如需数据权限，在参数中添加DataScope
-//        params.put("dataScope", getDataScope());
-
         Page page = memberAddressService.queryPage(params);
-
         return RestResponse.success().put("page", page);
     }
 
@@ -95,15 +89,11 @@ public class MemberAddressController extends AbstractController {
     @PostMapping("/save")
     @RequiresPermissions("qkjvip:maddress:save")
     public RestResponse save(@RequestBody MemberAddressEntity maddress) {
-
         Map<String, Object> params = new HashMap<>(2);
-        params.put("dataScope", getDataScope());
-
         maddress.setAddUser(getUserId());
         maddress.setAddDept(getOrgNo());
         maddress.setAddTime(new Date());
         memberAddressService.add(maddress, params);
-
         return RestResponse.success();
     }
 
@@ -118,12 +108,8 @@ public class MemberAddressController extends AbstractController {
     @RequiresPermissions("qkjvip:maddress:update")
     public RestResponse update(@RequestBody MemberAddressEntity maddress) {
         ValidatorUtils.validateEntity(maddress, UpdateGroup.class);
-
         Map<String, Object> params = new HashMap<>(2);
-        params.put("dataScope", getDataScope());
-
         memberAddressService.update(maddress, params);
-
         return RestResponse.success();
     }
 
@@ -138,7 +124,6 @@ public class MemberAddressController extends AbstractController {
     @RequiresPermissions("qkjvip:maddress:delete")
     public RestResponse delete(@RequestBody String[] uuids) {
         memberAddressService.deleteBatch(uuids);
-
         return RestResponse.success();
     }
 }

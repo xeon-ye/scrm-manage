@@ -115,11 +115,10 @@ public abstract class AbstractController {
      */
     protected DataScope getDataScopeContex(String userPerm,String userAlias, String orgAlias) {
         DataScope dataScope = new DataScope();
-        dataScope.setUserAlias(userAlias);
-        dataScope.setOrgAlias(orgAlias);
-
         //拼接部门
         if (!getUser().getUserName().contains("admin")) {
+            dataScope.setUserAlias(userAlias);
+            dataScope.setOrgAlias(orgAlias);
             String orgs = ContextHelper.setSearchDepts(userPerm,getUserId(),getOrgNo());
             dataScope.setOrgNos(orgs);
         }

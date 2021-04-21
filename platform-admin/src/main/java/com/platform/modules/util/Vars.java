@@ -32,6 +32,8 @@ public class Vars {
 	//会员检索url start
 	public static String MEMBER_GETLIST_URL = "http://api.scrm.qkj.com.cn/api/Member/GetMemberList";
 	public static String MEMBER_GETINFO_URL = "http://api.scrm.qkj.com.cn/api/Member/GetMemberEntity";
+	public static String MEMBER_GETLEVEL_URL = "http://api.scrm.qkj.com.cn/api/MemberLevel/GetMemberLevel";
+	public static String MEMBER_SETLEVEL_URL = "http://api.scrm.qkj.com.cn/api/MemberLevel/SetMemberLevel";
 	//会员检索url end
 	//积分发放url start
 	public static String MEMBER_INTEGRAL_SEND_URL = "http://api.scrm.qkj.com.cn/api/Integral/SetBatchMemberIntegral";

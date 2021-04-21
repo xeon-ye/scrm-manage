@@ -41,7 +41,7 @@ public class MemberAddressServiceImpl extends ServiceImpl<MemberAddressDao, Memb
     @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
-        params.put("sidx", "ma.add_time");
+        params.put("sidx", "ma.default_address desc, ma.add_time");
         params.put("asc", false);
         Page<MemberAddressEntity> page = new Query<MemberAddressEntity>(params).getPage();
         page.setRecords(baseMapper.selectMemberAddrList(page, params));
@@ -50,7 +50,12 @@ public class MemberAddressServiceImpl extends ServiceImpl<MemberAddressDao, Memb
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void add(MemberAddressEntity maddress, Map<String, Object> params) {
+        if (maddress.getDefaultAddress() == 1) {  // 设置了默认地址
+            // 将其他地址修改为非默认
+            updateByMemberId(maddress.getMemberId());
+        }
         this.save(maddress);
     }
 
@@ -60,7 +65,12 @@ public class MemberAddressServiceImpl extends ServiceImpl<MemberAddressDao, Memb
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void update(MemberAddressEntity maddress, Map<String, Object> params) {
+        if (maddress.getDefaultAddress() == 1) {  // 设置了默认地址
+            // 将其他地址修改为非默认
+            updateByMemberId(maddress.getMemberId());
+        }
         this.updateById(maddress);
     }
 
@@ -68,5 +78,9 @@ public class MemberAddressServiceImpl extends ServiceImpl<MemberAddressDao, Memb
     @Transactional(rollbackFor = Exception.class)
     public void deleteBatch(String[] uuids) {
         this.removeByIds(Arrays.asList(uuids));
+    }
+
+    public void updateByMemberId(String memberId) {
+        baseMapper.updateByMemberId(memberId);
     }
 }
