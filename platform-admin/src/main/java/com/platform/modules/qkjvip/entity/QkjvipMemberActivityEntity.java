@@ -54,7 +54,7 @@ public class QkjvipMemberActivityEntity implements Serializable {
     private String starDate;
     private String endDate;
     private Integer ispri;
-    private String priPerson;
+    private Integer priPerson;
     private String leading;
     private String remark;
     private Integer isaud;
@@ -70,6 +70,8 @@ public class QkjvipMemberActivityEntity implements Serializable {
     private String activilog;
     private Date addtime;
     private Integer showtype;//活动详情展示形式
+    private Integer cardpoints;//活动积分
+    private Integer clockpoints; //签到积分
 
     @TableField(exist = false)
     private String htmlurl;
@@ -95,4 +97,6 @@ public class QkjvipMemberActivityEntity implements Serializable {
     private String realname;
     @TableField(exist = false)
     private Integer activeper;
+    @TableField(exist = false)
+    private Integer signper;
 }

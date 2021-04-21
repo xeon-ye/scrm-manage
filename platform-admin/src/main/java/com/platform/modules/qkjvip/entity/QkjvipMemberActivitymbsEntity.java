@@ -75,4 +75,6 @@ public class QkjvipMemberActivitymbsEntity implements Serializable {
     private String singtype;
     @TableField(exist = false)
     private Integer smemtype;
+    @TableField(exist = false)
+    private String openid;
 }
