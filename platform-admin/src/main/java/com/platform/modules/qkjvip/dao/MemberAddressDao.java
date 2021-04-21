@@ -43,4 +43,6 @@ public interface MemberAddressDao extends BaseMapper<MemberAddressEntity> {
      * @return List
      */
     List<MemberAddressEntity> selectMemberAddrList(IPage page, @Param("params") Map<String, Object> params);
+
+    void updateByMemberId(String memberId);
 }

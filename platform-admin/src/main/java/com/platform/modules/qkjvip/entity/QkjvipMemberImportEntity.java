@@ -304,6 +304,10 @@ public class QkjvipMemberImportEntity implements Serializable {
      */
     private Integer memberchannel;
     /**
+     * 是否同步到青稞荟
+     */
+    private Integer toqkh;
+    /**
      * 标签数组
      */
     @TableField(exist = false)
