@@ -73,4 +73,6 @@ public interface MemberDao extends BaseMapper<MemberEntity> {
     void removeByIds(String[] memberIds);
 
     List<MemberEntity> queryMemByList(List<MemberEntity> mbList);
+
+    List<MemberEntity> selectQkhMemberById(String memberId);
 }

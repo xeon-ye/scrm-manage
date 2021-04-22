@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * 会员详情实体类
  * @author liuqianru
  * @date 2020/3/9 14:21
  */
@@ -310,48 +311,6 @@ public class MemberEntity implements Serializable {
     private String orgUsername;
 
     /**
-     * 年龄
-     */
-    @TableField(exist = false)
-    private Integer ageFrom;
-
-    @TableField(exist = false)
-    private Integer ageTo;
-
-    /**
-     * 注册时间
-     */
-    @TableField(exist = false)
-    private String regTimeFrom;
-
-    @TableField(exist = false)
-    private String regTimeTo;
-
-    @TableField(exist = false)
-    private String buyPeriod;
-
-    @TableField(exist = false)
-    private Double amountfrom;
-    @TableField(exist = false)
-    private Double amountto;
-
-    @TableField(exist = false)
-    private Integer buynumfrom;
-    @TableField(exist = false)
-    private Integer buynumto;
-
-    @TableField(exist = false)
-    private Double unitpricefrom;
-    @TableField(exist = false)
-    private Double unitpriceto;
-
-    @TableField(exist = false)
-    private String activitydatefrom;
-
-    @TableField(exist = false)
-    private String activitydateto;
-
-    /**
      * 最后一次参加活动日期
      */
     @TableField(exist = false)
@@ -373,6 +332,11 @@ public class MemberEntity implements Serializable {
     @TableField(exist = false)
     private String areaType;
 
+    /**
+     * 是否为青稞荟的会员
+     */
+    @TableField(exist = false)
+    private boolean isqkh;
     /**
      * 标签数组
      */
