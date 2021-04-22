@@ -36,6 +36,7 @@
             d.name as tagGroupName,
             a.tag_value,
             d.tag_type,
+            a.tag_value_text,
             stuff(
                 (
                     SELECT DISTINCT
@@ -53,12 +54,6 @@
             qkjvip_member_tags a
         LEFT JOIN sys_dict d ON (a.tag_group_id=d.id)
         WHERE a.tag_locktype &lt;&gt; 1 and a.member_id = #{params.memberId}
-        GROUP BY
-            a.member_id,
-            a.tag_group_id,
-            d.name,
-            a.tag_value,
-			d.tag_type
         ORDER BY a.tag_group_id
 	</select>
 </mapper>

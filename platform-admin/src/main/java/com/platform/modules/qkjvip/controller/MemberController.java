@@ -164,10 +164,14 @@ public class MemberController extends AbstractController {
                 params.put("tagGroupId", memberTagsEntities.get(i).getTagGroupId());
                 List<QkjvipTaglibsEntity> tagList = qkjvipTaglibsService.queryAll(params);
                 memberTagsQueryEntity.setTagList(tagList);
-                if (memberTagsEntities.get(i).getTagType() != null && memberTagsEntities.get(i).getTagType() == 2) {
+                if (memberTagsEntities.get(i).getTagType() != null && memberTagsEntities.get(i).getTagType() == 2) {  // 选择型的，用户可再编辑
                     memberTagsQueryEntity.setTagIdList(Arrays.asList(memberTagsEntities.get(i).getItems().split(",")));
                     memberTagsQueryEntity.setTagValue("");
-                } else {
+                } else if (memberTagsEntities.get(i).getTagType() != null && memberTagsEntities.get(i).getTagType() == 4) {  // 只读选择型的，用户不可编辑
+                    List<String> tagIdList = new ArrayList<>();
+                    memberTagsQueryEntity.setTagIdList(tagIdList);
+                    memberTagsQueryEntity.setTagValue(memberTagsEntities.get(i).getTagValueText());
+                } else {  // 输入型和只读型
                     List<String> tagIdList = new ArrayList<>();
                     memberTagsQueryEntity.setTagIdList(tagIdList);
                     memberTagsQueryEntity.setTagValue(memberTagsEntities.get(i).getTagValue());
