@@ -232,7 +232,7 @@ public class QkjvipMemberActivityController extends AbstractController {
                 }
             }
         }
-        return RestResponse.success().put("memberactivity", qkjvipMemberActivity).put("istake",iscanjia).put("isabove",isabove).put("list",list);
+        return RestResponse.success().put("memberactivity", qkjvipMemberActivity).put("istake",iscanjia).put("isabove",isabove).put("isinvite",isinvite).put("list",list);
     }
 
     /**
