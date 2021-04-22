@@ -14,7 +14,7 @@
         a.mobile,
         a.head_img_url,
         a.ServiceName,
-        a.openid,
+        ISNULL(a.memberidto, a.member_id) memberidto,
         (SELECT top 1 g.id from qkjvip_member_signup g where g.acitvity_id=t.activity_id and g.memberid=a.member_id) as singtype,
         (SELECT top 1 1 from qkjvip_member_signupmember g where g.activity_id=t.activity_id and g.member_id=a.member_id) as smemtype
         FROM QKJVIP_MEMBER_ACTIVITYMBS T
@@ -24,7 +24,7 @@
             AND T.ACTIVITY_ID LIKE '%${params.activityId}%'
         </if>
         <if test="params.memberId != null and params.memberId.trim() != ''">
-            AND T.member_id LIKE '${params.memberId}'
+            AND (a.member_id ='${params.memberId}' or a.memberidto='${params.memberId}')
         </if>
     </sql>
 
@@ -44,7 +44,7 @@
             AND a.ACTIVITY_ID LIKE '%${params.activityId}%'
         </if>
         <if test="params.memberId != null and params.memberId.trim() != ''">
-            AND a.member_id LIKE '${params.memberId}'
+            AND (a.member_id ='${params.memberId}' or a.memberidto='${params.memberId}')
         </if>
     </sql>
 

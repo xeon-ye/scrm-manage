@@ -76,5 +76,5 @@ public class QkjvipMemberActivitymbsEntity implements Serializable {
     @TableField(exist = false)
     private Integer smemtype;
     @TableField(exist = false)
-    private String openid;
+    private String memberidto;
 }
