@@ -8,6 +8,7 @@
         T.*,a.address addressstr
         FROM QKJVIP_MEMBER_SIGNUP T
         left join qkjvip_member_signupaddress a on (a.id=t.address)
+        left join [dbo].[qkjvip_member] b on T.memberid=b.member_id
         WHERE 1=1
         <if test="params.phone != null and params.phone.trim() != ''">
             AND T.phone LIKE '${params.phone}'
@@ -16,10 +17,11 @@
             AND T.acitvity_id = '${params.acitvityId}'
         </if>
         <if test="params.memberid != null and params.memberid.trim() != ''">
-            AND ( t.memberid = '${params.memberid}'
-            or EXISTS(SELECT 1 from qkjvip_member m
-            where m.member_id=t.memberid and  ISNULL(m.memberidto, '88')!='88'
-            and m.memberidto='${params.memberid}')
+            AND
+            EXISTS(
+            select top 1 * from qkjvip_member c
+            where ISNULL(c.memberidto,c.member_id)=ISNULL(b.memberidto,b.member_id)
+            and c.member_id='${params.memberid}'
             )
         </if>
         <if test="params.myopenid != null and params.myopenid.trim() != ''">

@@ -40,19 +40,29 @@
 
         from (SELECT *,
         case when ISNULL((
-        SELECT top 1 sme.id from qkjvip_member_signupmember sme where sme.activity_id=t.id
-        and sme.member_id in (SELECT member_id from qkjvip_member mb where mb.member_id=#{params.memberIdSign} or mb.memberidto=#{params.memberIdSign})
+        SELECT top 1 sme.id from qkjvip_member_signupmember sme
+        left outer join [dbo].[qkjvip_member] b on sme.member_id=b.member_id
+        where sme.activity_id=t.id
+        and
+        EXISTS(
+        select 1 from qkjvip_member c
+        where ISNULL(c.memberidto,c.member_id)=ISNULL(b.memberidto,b.member_id)
+        and c.member_id='${params.memberIdSign}'
+        )
         ),'')='' then 0
         else 1 end as istake
 
         from QKJVIP_MEMBER_ACTIVITY t
         where 1=1
         <if test="params.memberIdSign != null and params.memberIdSign.trim() != ''">
-            AND EXISTS (SELECT 1 from qkjvip_member_signup s where s.acitvity_id=t.id and
-            (s.memberid=#{params.memberIdSign}
-            or EXISTS(SELECT 1 from qkjvip_member m
-            where m.member_id=s.memberid and ISNULL(m.memberidto, '88')!='88'
-            and m.memberidto=#{params.memberIdSign})
+            AND
+            EXISTS (SELECT 1 from qkjvip_member_signup s
+            left join [dbo].[qkjvip_member] b on (s.memberid=b.member_id)
+            where s.acitvity_id=t.id
+            and EXISTS(
+            select top 1 * from qkjvip_member c
+            where ISNULL(c.memberidto,c.member_id)=ISNULL(b.memberidto,b.member_id)
+            and c.member_id='${params.memberIdSign}'
             )
             )
         </if>
@@ -60,11 +70,13 @@
         SELECT *,2 istake from QKJVIP_MEMBER_ACTIVITY t
         where 1=1
         <if test="params.memberIdSign != null and params.memberIdSign.trim() != ''">
-            AND not EXISTS (SELECT 1 from qkjvip_member_signup s where s.acitvity_id=t.id and
-            (s.memberid=#{params.memberIdSign}
-            or EXISTS(SELECT 1 from qkjvip_member m
-            where m.member_id=s.memberid and ISNULL(m.memberidto, '88')!='88'
-            and m.memberidto=#{params.memberIdSign})
+            AND not EXISTS (SELECT 1 from qkjvip_member_signup s
+            left join [dbo].[qkjvip_member] b on (s.memberid=b.member_id)
+            where s.acitvity_id=t.id
+            and EXISTS(
+            select top 1 * from qkjvip_member c
+            where ISNULL(c.memberidto,c.member_id)=ISNULL(b.memberidto,b.member_id)
+            and c.member_id='${params.memberIdSign}'
             )
             )
 

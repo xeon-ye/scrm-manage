@@ -132,7 +132,7 @@
     </select>
     <!--根据openid判断是否关注公众号：孙珊珊-->
     <select id="selectMemberByOpenid" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
-        select top 1 a.crm_memberid as memberId,
+        select top 1 ISNULL(b.memberidto,b.member_id) as memberId,
         (
         select  top 1 b.mobile from [dbo].[qkjvip_member_jueru] a
         inner join qkjvip_member b on a.crm_memberid=b.member_id
