@@ -10,23 +10,13 @@
  */
 package com.platform.modules.qkjvip.entity;
 
-import cn.afterturn.easypoi.excel.annotation.Excel;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.platform.common.validator.group.AddGroup;
-import com.platform.common.validator.group.UpdateGroup;
 import lombok.Data;
-import org.apache.poi.hpsf.Decimal;
-
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 /**
+ * 会员检索条件实体类
  * @author liuqianru
  * @date 2020/10/29 14:21
  */
@@ -84,6 +74,8 @@ public class MemberQueryEntity implements Serializable {
     private Integer scannumtoall;
     private Double startunitprice;
     private Double endunitprice;
+    private String startbirthday;
+    private String endbirthday;
     private String areatype;
     private String membertype;
     private String activitytype;

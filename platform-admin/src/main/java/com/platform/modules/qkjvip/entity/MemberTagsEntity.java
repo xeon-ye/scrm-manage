@@ -55,6 +55,10 @@ public class MemberTagsEntity implements Serializable {
      */
     private Integer tagLocktype;
     /**
+     * 标签汉字名
+     */
+    private String tagValueText;
+    /**
      * 以逗号隔开的标签字符串
      */
     @TableField(exist = false)

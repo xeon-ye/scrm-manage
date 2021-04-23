@@ -35,6 +35,7 @@ public interface MemberService extends IService<MemberEntity> {
     List<MemberEntity> queryAll(Map<String, Object> params);
     List<MemberEntity> selectMemberByOpenid(Map<String, Object> params);
     List<MemberEntity> selectMemberByJuruMemberid(Map<String, Object> params);
+    List<MemberEntity> selectQkhMemberById(String memberId);
 
     /**
      * 查询条数

@@ -61,6 +61,11 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     }
 
     @Override
+    public List<MemberEntity> selectQkhMemberById(String memberId) {
+        return baseMapper.selectQkhMemberById(memberId);
+    }
+
+    @Override
     public pageCount selectMemberCount(Map<String, Object> params) {
         return baseMapper.selectMemberCount(params);
     }

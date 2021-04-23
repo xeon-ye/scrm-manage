@@ -162,6 +162,10 @@
         and b.MemberChannel=19 and b.IsSubscribe=1 and b.Disabled=0
     </select>
 
+    <select id="selectQkhMemberById" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
+        select top 1 * from qkjvip_member_jueru where MemberChannel=18 and Disabled=0 and crm_memberid=#{value}
+    </select>
+
     <delete id="removeByIds">
         UPDATE qkjvip_member SET statusflag = 1 WHERE member_id IN
         <foreach item="memberId" collection="array" open="(" separator="," close=")">

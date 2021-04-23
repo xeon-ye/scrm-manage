@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * 会员导出实体类
  * @author liuqianru
  * @date 2020/3/9 14:21
  */

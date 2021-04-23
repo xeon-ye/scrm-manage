@@ -34,6 +34,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -136,6 +138,15 @@ public class MemberController extends AbstractController {
     @RequiresPermissions("qkjvip:member:info")
     public RestResponse info(@PathVariable("memberId") String memberId) throws IOException {
         MemberEntity member = memberService.getById(memberId);
+        if (member == null) {
+            return RestResponse.error("此会员在索引中存在，会员表中不存在，请联系管理员！");
+        }
+        List<MemberEntity> qkhlist = memberService.selectQkhMemberById(memberId);
+        if (qkhlist != null && qkhlist.size() > 0) {
+            member.setIsqkh(true);
+        } else {
+            member.setIsqkh(false);
+        }
         //获取会员标签
         Map<String, Object> params = new HashMap<>();
         params.put("memberId", memberId);
@@ -153,10 +164,14 @@ public class MemberController extends AbstractController {
                 params.put("tagGroupId", memberTagsEntities.get(i).getTagGroupId());
                 List<QkjvipTaglibsEntity> tagList = qkjvipTaglibsService.queryAll(params);
                 memberTagsQueryEntity.setTagList(tagList);
-                if (memberTagsEntities.get(i).getTagType() != null && memberTagsEntities.get(i).getTagType() == 2) {
+                if (memberTagsEntities.get(i).getTagType() != null && memberTagsEntities.get(i).getTagType() == 2) {  // 选择型的，用户可再编辑
                     memberTagsQueryEntity.setTagIdList(Arrays.asList(memberTagsEntities.get(i).getItems().split(",")));
                     memberTagsQueryEntity.setTagValue("");
-                } else {
+                } else if (memberTagsEntities.get(i).getTagType() != null && memberTagsEntities.get(i).getTagType() == 4) {  // 只读选择型的，用户不可编辑
+                    List<String> tagIdList = new ArrayList<>();
+                    memberTagsQueryEntity.setTagIdList(tagIdList);
+                    memberTagsQueryEntity.setTagValue(memberTagsEntities.get(i).getTagValueText());
+                } else {  // 输入型和只读型
                     List<String> tagIdList = new ArrayList<>();
                     memberTagsQueryEntity.setTagIdList(tagIdList);
                     memberTagsQueryEntity.setTagValue(memberTagsEntities.get(i).getTagValue());
@@ -367,6 +382,7 @@ public class MemberController extends AbstractController {
     @SysLog("导入会员")
     @RequestMapping("/import")
     @RequiresPermissions("qkjvip:member:import")
+    @Transactional(rollbackFor = Exception.class)
     public RestResponse importExcel(MultipartFile file) {
         String fileName = file.getOriginalFilename();
         if (StringUtils.isBlank(fileName)) {
@@ -392,6 +408,7 @@ public class MemberController extends AbstractController {
                     list.get(i).setOfflineflag(1);
                 }
                 if (list.size() > 0) {
+                    Object savePoint = TransactionAspectSupport.currentTransactionStatus().createSavepoint();
                     qkjvipMemberImportService.addBatch(list); //批量导入临时表
 
                     //调用数据清洗接口
@@ -401,6 +418,7 @@ public class MemberController extends AbstractController {
 
                     JSONObject resultObject = JSON.parseObject(resultPost);
                     if (!"200".equals(resultObject.get("resultcode").toString())) {  //清洗失败
+                        TransactionAspectSupport.currentTransactionStatus().rollbackToSavepoint(savePoint);
                         return RestResponse.error(resultObject.get("descr").toString());
                     }
                 }

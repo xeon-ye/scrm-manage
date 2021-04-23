@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 实体
+ * 会员导入实体
  *
  * @author liuqianru
  * @date 2020-09-21 15:46:52
