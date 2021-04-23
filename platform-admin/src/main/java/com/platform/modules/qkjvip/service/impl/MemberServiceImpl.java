@@ -55,6 +55,10 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     public List<MemberEntity> selectMemberByOpenid(Map<String, Object> params) {
         return baseMapper.selectMemberByOpenid(params);
     }
+    @Override
+    public List<MemberEntity> selectMemberByJuruMemberid(Map<String, Object> params) {
+        return baseMapper.selectMemberByJuruMemberid(params);
+    }
 
     @Override
     public pageCount selectMemberCount(Map<String, Object> params) {
