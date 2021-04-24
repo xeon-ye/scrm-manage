@@ -88,4 +88,6 @@ public class QkjvipMemberCponEntity implements Serializable {
     private Integer SendNum;
     @TableField(exist = false)
     private String Desc;
+    @TableField(exist = false)
+    private String UserLevelLower;
 }

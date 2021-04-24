@@ -132,7 +132,7 @@
     </select>
     <!--根据openid判断是否关注公众号：孙珊珊-->
     <select id="selectMemberByOpenid" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
-        select top 1 a.crm_memberid as memberId,
+        select top 1 ISNULL(b.memberidto,b.member_id) as memberId,
         (
         select  top 1 b.mobile from [dbo].[qkjvip_member_jueru] a
         inner join qkjvip_member b on a.crm_memberid=b.member_id
@@ -147,14 +147,20 @@
         where a.AppOpenId=#{params.openid} AND a.IsSubscribe = 1
         and b.statusflag!=1
     </select>
-<!--    <select id="selectMemberByOpenid" resultType="int">-->
-<!--        SELECT SUM(cnt) cnt FROM (-->
-<!--        SELECT COUNT(*) cnt FROM qkjvip_member_fans-->
-<!--        WHERE OpenId = #{params.openid} AND IsUnSubscribe = 0-->
-<!--        UNION ALL-->
-<!--        SELECT COUNT(*) cnt FROM qkjvip_member_jueru-->
-<!--        WHERE AppOpenId = #{params.openid} AND IsSubscribe = 1) a-->
-<!--    </select>-->
+
+    <!--根据jueru memberid判断是否关注公众号：孙珊珊-->
+    <select id="selectMemberByJuruMemberid" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
+        select top 1 ISNULL(a.memberidto,a.member_id) as memberId,a.mobile,
+        case when (a.member_name=null or a.member_name='') then a.real_name
+        else a.member_name end as member_name,
+        case when (b.sex=3) then 1
+        else b.sex end as sex
+        from [dbo].[qkjvip_member] a
+        inner join [dbo].[qkjvip_member_jueru] b on
+        (a.member_id=b.crm_memberid or a.memberidto=b.crm_memberid)
+        where a.member_id=#{params.memberId} and a.statusflag!=1
+        and b.MemberChannel=19 and b.IsSubscribe=1 and b.Disabled=0
+    </select>
 
     <select id="selectQkhMemberById" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
         select top 1 * from qkjvip_member_jueru where MemberChannel=18 and Disabled=0 and crm_memberid=#{value}

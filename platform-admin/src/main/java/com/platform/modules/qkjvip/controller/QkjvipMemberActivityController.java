@@ -209,6 +209,20 @@ public class QkjvipMemberActivityController extends AbstractController {
                 iscanjia=1;
             }
         }
+        if(params.get("juerumemberid")!=null && !params.get("juerumemberid").equals("")){//根据觉如memberid查询是否参加过本活动
+            acmap.clear();
+            acmap.put("memberId",params.get("juerumemberid"));
+            list = memberService.selectMemberByJuruMemberid(acmap);
+            acmap.clear();
+            Map<String, Object> mapt = new HashMap<>();
+            mapt.put("memberid",params.get("juerumemberid")+"");
+            mapt.put("acitvityId",params.get("id").toString());
+            List<QkjvipMemberSignupEntity> sgs=new ArrayList<>();
+            sgs=qkjvipMemberSignupService.queryAll(mapt);
+            if(sgs.size()>0){
+                iscanjia=1;
+            }
+        }
         String isabove = "0"; //未超出人数限制
         String isinvite="0";//未被邀请
         if(qkjvipMemberActivity!=null&&qkjvipMemberActivity.getIspri()!=null&&qkjvipMemberActivity.getIspri()==0){ //公开的活动(人数限制)

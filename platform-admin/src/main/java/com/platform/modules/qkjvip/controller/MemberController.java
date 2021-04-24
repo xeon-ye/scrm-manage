@@ -440,4 +440,16 @@ public class MemberController extends AbstractController {
         List<MemberEntity> list = memberService.selectMemberByOpenid(params);
         return RestResponse.success().put("list", list);
     }
+
+    /**
+     * 根据openid查看所有列表
+     *
+     * @param params 查询参数
+     * @return RestResponse
+     */
+    @RequestMapping("/selectMemByJueruMemberid")
+    public RestResponse selectMemberByJuruMemberid(@RequestParam Map<String, Object> params) {
+        List<MemberEntity> list = memberService.selectMemberByJuruMemberid(params);
+        return RestResponse.success().put("list", list);
+    }
 }

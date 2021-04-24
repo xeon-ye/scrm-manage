@@ -211,34 +211,34 @@ public class QkjvipMemberCponController extends AbstractController {
     @RequestMapping("/sendCpon/{id}")
     public RestResponse sendCpon(@PathVariable("id") String id)throws IOException  {
         QkjvipMemberCponEntity qkjvipMemberCpon = qkjvipMemberCponService.getById(id);
-        qkjvipMemberCpon.setStatus(1);//修改为已发放
-        qkjvipMemberCponService.update(qkjvipMemberCpon);
-//        Map<String, Object> map=new HashMap<String,Object>();
-//        map.put("mainId",qkjvipMemberCpon.getId());
-//        List<QkjvipMemberCponsonEntity> sonlists=new ArrayList<>();
-//        sonlists = qkjvipMemberCponsonService.queryAll(map);
-//        String[] cols_title = new String[sonlists.size()];
-//        if(sonlists.size()>0){
-//            for(int i=0;i<sonlists.size();i++){
-//                cols_title[i] = new String(sonlists.get(i).getMemberId());
-//            }
-//        }
-//        JSONObject jsonObject = new JSONObject();
-//        jsonObject.put("couponid", Integer.parseInt(qkjvipMemberCpon.getCponid()));
-//        jsonObject.put("listmemberid", cols_title);
-//        jsonObject.put("remark", "");
-//        String memberJsonStr = JsonHelper.toJsonString(jsonObject);
-//
-//        String resultPost = HttpClient.sendPost(Vars.MEMBER_CPON_SEND_URl,memberJsonStr);
-//        JSONObject resultObject = JSON.parseObject(resultPost);
-//        if ("200".equals(resultObject.get("resultcode").toString())) {  //成功
-//            qkjvipMemberCpon.setStatus(1);//修改为已发放
-//            qkjvipMemberCponService.update(qkjvipMemberCpon);
-//            return RestResponse.success();
-//        } else {
-//            return RestResponse.error(resultObject.get("descr").toString());
-//        }
-        return RestResponse.success();
+//        qkjvipMemberCpon.setStatus(1);//修改为已发放
+//        qkjvipMemberCponService.update(qkjvipMemberCpon);
+        Map<String, Object> map=new HashMap<String,Object>();
+        map.put("mainId",qkjvipMemberCpon.getId());
+        List<QkjvipMemberCponsonEntity> sonlists=new ArrayList<>();
+        sonlists = qkjvipMemberCponsonService.queryAll(map);
+        String[] cols_title = new String[sonlists.size()];
+        if(sonlists.size()>0){
+            for(int i=0;i<sonlists.size();i++){
+                cols_title[i] = new String(sonlists.get(i).getMemberId());
+            }
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("couponid", Integer.parseInt(qkjvipMemberCpon.getCponid()));
+        jsonObject.put("listmemberid", cols_title);
+        jsonObject.put("remark", "");
+        String memberJsonStr = JsonHelper.toJsonString(jsonObject);
+
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_CPON_SEND_URl,memberJsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //成功
+            qkjvipMemberCpon.setStatus(1);//修改为已发放
+            qkjvipMemberCponService.update(qkjvipMemberCpon);
+            return RestResponse.success();
+        } else {
+            return RestResponse.error(resultObject.get("descr").toString());
+        }
+        // return RestResponse.success();
     }
 
     /**

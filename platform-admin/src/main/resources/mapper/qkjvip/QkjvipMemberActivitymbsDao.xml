@@ -24,7 +24,12 @@
             AND T.ACTIVITY_ID LIKE '%${params.activityId}%'
         </if>
         <if test="params.memberId != null and params.memberId.trim() != ''">
-            AND (a.member_id ='${params.memberId}' or a.memberidto='${params.memberId}')
+            AND
+            EXISTS(
+            select top 1 * from qkjvip_member c
+            where ISNULL(c.memberidto,c.member_id)=ISNULL(a.memberidto,a.member_id)
+            and c.member_id='${params.memberId}'
+            )
         </if>
     </sql>
 
@@ -44,7 +49,12 @@
             AND a.ACTIVITY_ID LIKE '%${params.activityId}%'
         </if>
         <if test="params.memberId != null and params.memberId.trim() != ''">
-            AND (a.member_id ='${params.memberId}' or a.memberidto='${params.memberId}')
+            AND
+            EXISTS(
+            select top 1 * from qkjvip_member c
+            where ISNULL(c.memberidto,c.member_id)=ISNULL(a.memberidto,a.member_id)
+            and c.member_id='${params.memberId}'
+            )
         </if>
     </sql>
 
