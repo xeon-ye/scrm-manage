@@ -123,11 +123,12 @@ public class QkjvipMemberSignupController extends AbstractController {
             try {
                 if(qkjvipMemberSignup!=null){
                     Boolean isqxflag = false;//是否清洗
-                    if (qkjvipMemberSignup.getOldphone()==null||qkjvipMemberSignup.getOldphone().equals("")||!qkjvipMemberSignup.getOldphone().equals(qkjvipMemberSignup.getPhone())) {
+                    isnullflag(qkjvipMemberSignup.getOldphone(),qkjvipMemberSignup.getPhone());
+                    if(isnullflag(qkjvipMemberSignup.getOldphone(),qkjvipMemberSignup.getPhone())==true){
                         isqxflag = true;
-                    }else  if(qkjvipMemberSignup.getOldsex()==null||qkjvipMemberSignup.getOldsex()==1||qkjvipMemberSignup.getOldsex()!=qkjvipMemberSignup.getSex()){
+                    } else if(isnullflag(qkjvipMemberSignup.getOldsex()+"",qkjvipMemberSignup.getSex()+"")==true){
                         isqxflag = true;
-                    } else if(qkjvipMemberSignup.getOldname()==null || qkjvipMemberSignup.getOldname().equals("") || !qkjvipMemberSignup.getOldname().equals(qkjvipMemberSignup.getUserName())){
+                    } else if (isnullflag(qkjvipMemberSignup.getOldname(),qkjvipMemberSignup.getUserName())==true){
                         isqxflag = true;
                     }
                     //清洗
@@ -157,6 +158,17 @@ public class QkjvipMemberSignupController extends AbstractController {
         return RestResponse.success().put("membersignup",qkjvipMemberSignup);
     }
 
+    public Boolean isnullflag(String oldstr,String newstr){
+        Boolean isnullflag = false;
+        if(newstr!=null&&!newstr.equals("")){
+            if(oldstr==null||oldstr.equals("")||oldstr.equals(newstr)){
+                isnullflag = true;
+            }
+            if(oldstr==null)oldstr="";
+            logger.info("判断是否清洗："+"旧："+oldstr+"新："+newstr);
+        }
+        return isnullflag;
+    }
     /**
      * 修改
      *
