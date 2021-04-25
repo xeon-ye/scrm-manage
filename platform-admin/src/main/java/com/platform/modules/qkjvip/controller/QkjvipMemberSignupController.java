@@ -123,7 +123,6 @@ public class QkjvipMemberSignupController extends AbstractController {
             try {
                 if(qkjvipMemberSignup!=null){
                     Boolean isqxflag = false;//是否清洗
-                    isnullflag(qkjvipMemberSignup.getOldphone(),qkjvipMemberSignup.getPhone());
                     if(isnullflag(qkjvipMemberSignup.getOldphone(),qkjvipMemberSignup.getPhone())==true){
                         isqxflag = true;
                     } else if(isnullflag(qkjvipMemberSignup.getOldsex()+"",qkjvipMemberSignup.getSex()+"")==true){
