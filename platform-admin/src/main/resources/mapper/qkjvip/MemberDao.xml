@@ -140,7 +140,8 @@
         as mobile,
         ISNULL(b.real_name, b.member_name) as member_name,
         case when (b.sex=3) then 1
-        else b.sex end as sex
+        else b.sex end as sex,
+        b.sex as oldsex
         from [dbo].[qkjvip_member_jueru] a
         inner join qkjvip_member b on a.crm_memberid=b.member_id
         where a.AppOpenId=#{params.openid} AND a.IsSubscribe = 1
@@ -152,7 +153,8 @@
         select top 1 ISNULL(a.memberidto,a.member_id) as memberId,a.mobile,
         ISNULL(a.real_name, a.member_name) as member_name,
         case when (b.sex=3) then 1
-        else b.sex end as sex
+        else b.sex end as sex,
+        b.sex as oldsex
         from [dbo].[qkjvip_member] a
         inner join [dbo].[qkjvip_member_jueru] b on
         (a.member_id=b.crm_memberid or a.memberidto=b.crm_memberid)

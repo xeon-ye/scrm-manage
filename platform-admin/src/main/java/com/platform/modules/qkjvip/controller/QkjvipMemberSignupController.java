@@ -135,6 +135,7 @@ public class QkjvipMemberSignupController extends AbstractController {
                     if(isqxflag == true){
                         Object obj = JSONArray.toJSON(member);
                         String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+                        logger.info(memberJsonStr);
                         String resultPost = HttpClient.sendPost(Vars.MEMBER_UPDATE_URL, memberJsonStr);
                         JSONObject resultObject = JSON.parseObject(resultPost);
                         if (!"200".equals(resultObject.get("resultcode").toString())) {  //修改手机号成功
