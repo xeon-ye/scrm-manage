@@ -118,16 +118,28 @@ public class QkjvipMemberSignupController extends AbstractController {
             MemberEntity member = new MemberEntity();
             member.setMobile(qkjvipMemberSignup.getPhone());
             member.setMemberId(qkjvipMemberSignup.getMemberid());
+            member.setSex(qkjvipMemberSignup.getSex());
             member.setMemberName(qkjvipMemberSignup.getUserName());
             try {
-                if(qkjvipMemberSignup!=null&&(qkjvipMemberSignup.getOldphone()==null||qkjvipMemberSignup.getOldphone().equals("")||!qkjvipMemberSignup.getOldphone().equals(qkjvipMemberSignup.getPhone()))){
-                    //清洗
-                    Object obj = JSONArray.toJSON(member);
-                    String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
-                    String resultPost = HttpClient.sendPost(Vars.MEMBER_UPDATE_URL, memberJsonStr);
-                    JSONObject resultObject = JSON.parseObject(resultPost);
-                    if (!"200".equals(resultObject.get("resultcode").toString())) {  //修改手机号成功
+                if(qkjvipMemberSignup!=null){
+                    Boolean isqxflag = false;//是否清洗
+                    if (qkjvipMemberSignup.getOldphone()==null||qkjvipMemberSignup.getOldphone().equals("")||!qkjvipMemberSignup.getOldphone().equals(qkjvipMemberSignup.getPhone())) {
+                        isqxflag = true;
+                    }else  if(qkjvipMemberSignup.getOldsex()==null||qkjvipMemberSignup.getOldsex()==1||qkjvipMemberSignup.getOldsex()!=qkjvipMemberSignup.getSex()){
+                        isqxflag = true;
+                    } else if(qkjvipMemberSignup.getOldname()==null || qkjvipMemberSignup.getOldname().equals("") || !qkjvipMemberSignup.getOldname().equals(qkjvipMemberSignup.getUserName())){
+                        isqxflag = true;
                     }
+                    //清洗
+                    if(isqxflag == true){
+                        Object obj = JSONArray.toJSON(member);
+                        String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+                        String resultPost = HttpClient.sendPost(Vars.MEMBER_UPDATE_URL, memberJsonStr);
+                        JSONObject resultObject = JSON.parseObject(resultPost);
+                        if (!"200".equals(resultObject.get("resultcode").toString())) {  //修改手机号成功
+                        }
+                    }
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();
