@@ -138,8 +138,7 @@
         inner join qkjvip_member b on a.crm_memberid=b.member_id
         where a.AppOpenId=#{params.openid} AND a.IsSubscribe = 1 and ISNULL(b.mobile, 'tt')!='tt')
         as mobile,
-        case when (b.member_name=null or b.member_name='') then b.real_name
-        else b.member_name end as member_name,
+        ISNULL(b.real_name, b.member_name) as member_name,
         case when (b.sex=3) then 1
         else b.sex end as sex
         from [dbo].[qkjvip_member_jueru] a
@@ -151,8 +150,7 @@
     <!--根据jueru memberid判断是否关注公众号：孙珊珊-->
     <select id="selectMemberByJuruMemberid" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
         select top 1 ISNULL(a.memberidto,a.member_id) as memberId,a.mobile,
-        case when (a.member_name=null or a.member_name='') then a.real_name
-        else a.member_name end as member_name,
+        ISNULL(a.real_name, a.member_name) as member_name,
         case when (b.sex=3) then 1
         else b.sex end as sex
         from [dbo].[qkjvip_member] a
