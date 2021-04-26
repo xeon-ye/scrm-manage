@@ -364,6 +364,8 @@ public class QkjvipMemberMessageController extends AbstractController {
             String queryJsonStr = JsonHelper.toJsonString(map);
             String resultPost = HttpClient.sendPost(Vars.MESSAGE_SEND, queryJsonStr);
             JSONObject resultObject = JSON.parseObject(resultPost);
+            System.out.println("发送微信消息返回结果code：" + resultObject.get("code").toString());
+            System.out.println("发送微信消息返回结果msg：" + resultObject.get("msg").toString());
             return resultObject.get("code").toString();
         }
         return "0";
