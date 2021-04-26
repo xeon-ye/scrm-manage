@@ -86,6 +86,7 @@ public class MemberQueryEntity implements Serializable {
     private String currentmemberid;  // 当前登录用户id
     private String listmemberchannel;  // 用户的渠道权限
     private String searchmemberchannel; // 检索条件的渠道
+    private String listmemberlevel;  // 会员等级
     private List<MemberTagsQueryEntity> membertags;
     private Integer pageindex;
     private Integer pagesize;
