@@ -90,4 +90,6 @@ public class QkjvipMemberCponEntity implements Serializable {
     private String Desc;
     @TableField(exist = false)
     private String UserLevelLower;
+    @TableField(exist = false)
+    private Integer[] AllowLevel;
 }
