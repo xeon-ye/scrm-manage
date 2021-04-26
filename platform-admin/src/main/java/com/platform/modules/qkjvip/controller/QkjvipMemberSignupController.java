@@ -118,16 +118,29 @@ public class QkjvipMemberSignupController extends AbstractController {
             MemberEntity member = new MemberEntity();
             member.setMobile(qkjvipMemberSignup.getPhone());
             member.setMemberId(qkjvipMemberSignup.getMemberid());
+            member.setSex(qkjvipMemberSignup.getSex());
             member.setMemberName(qkjvipMemberSignup.getUserName());
             try {
-                if(qkjvipMemberSignup!=null&&(qkjvipMemberSignup.getOldphone()==null||qkjvipMemberSignup.getOldphone().equals("")||!qkjvipMemberSignup.getOldphone().equals(qkjvipMemberSignup.getPhone()))){
-                    //清洗
-                    Object obj = JSONArray.toJSON(member);
-                    String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
-                    String resultPost = HttpClient.sendPost(Vars.MEMBER_UPDATE_URL, memberJsonStr);
-                    JSONObject resultObject = JSON.parseObject(resultPost);
-                    if (!"200".equals(resultObject.get("resultcode").toString())) {  //修改手机号成功
+                if(qkjvipMemberSignup!=null){
+                    Boolean isqxflag = false;//是否清洗
+                    if(isnullflag(qkjvipMemberSignup.getOldphone(),qkjvipMemberSignup.getPhone())==true){
+                        isqxflag = true;
+                    } else if(isnullflag(qkjvipMemberSignup.getOldsex()+"",qkjvipMemberSignup.getSex()+"")==true){
+                        isqxflag = true;
+                    } else if (isnullflag(qkjvipMemberSignup.getOldname(),qkjvipMemberSignup.getUserName())==true){
+                        isqxflag = true;
                     }
+                    //清洗
+                    if(isqxflag == true){
+                        Object obj = JSONArray.toJSON(member);
+                        String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+                        logger.info(memberJsonStr);
+                        String resultPost = HttpClient.sendPost(Vars.MEMBER_UPDATE_URL, memberJsonStr);
+                        JSONObject resultObject = JSON.parseObject(resultPost);
+                        if (!"200".equals(resultObject.get("resultcode").toString())) {  //修改手机号成功
+                        }
+                    }
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -145,6 +158,17 @@ public class QkjvipMemberSignupController extends AbstractController {
         return RestResponse.success().put("membersignup",qkjvipMemberSignup);
     }
 
+    public Boolean isnullflag(String oldstr,String newstr){
+        Boolean isnullflag = false;
+        if(newstr!=null&&!newstr.equals("")){
+            if(oldstr==null||oldstr.equals("")||oldstr.equals(newstr)){
+                isnullflag = true;
+            }
+            if(oldstr==null)oldstr="";
+            logger.info("判断是否清洗："+"旧："+oldstr+"新："+newstr);
+        }
+        return isnullflag;
+    }
     /**
      * 修改
      *
