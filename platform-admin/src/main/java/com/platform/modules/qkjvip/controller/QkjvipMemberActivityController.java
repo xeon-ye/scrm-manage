@@ -120,8 +120,15 @@ public class QkjvipMemberActivityController extends AbstractController {
 //
 //        }
         params.put("ispri",0);
-        list = qkjvipMemberActivityService.queryAllSignAddress(params);
-        return RestResponse.success().put("list", list);
+        String topClassShow = params.get("topClassShow")+"";
+        if(topClassShow!=null&&topClassShow.equals("1")){
+            Page page  = qkjvipMemberActivityService.queryAllSignAddress(params);
+            return RestResponse.success().put("page", page);
+        } else {
+            //与我相关活动
+            Page mypage = qkjvipMemberActivityService.queryAllSignAddressmain(params);
+            return RestResponse.success().put("page", mypage);
+        }
     }
 
     /**
