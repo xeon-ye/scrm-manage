@@ -33,6 +33,7 @@ public interface QkjvipMemberRightsService extends IService<QkjvipMemberRightsEn
      * @return List
      */
     List<QkjvipMemberRightsEntity> queryAll(Map<String, Object> params);
+    List<QkjvipMemberRightsEntity> queryByGroup(Map<String, Object> params);
 
     /**
      * 分页查询
@@ -57,6 +58,7 @@ public interface QkjvipMemberRightsService extends IService<QkjvipMemberRightsEn
      * @return 更新结果
      */
     boolean update(QkjvipMemberRightsEntity qkjvipMemberRights);
+    boolean updateByMemberlevel(QkjvipMemberRightsEntity qkjvipMemberRights);
 
     /**
      * 根据主键删除

@@ -45,4 +45,8 @@ public interface QkjvipMemberRightsDao extends BaseMapper<QkjvipMemberRightsEnti
      * @return List
      */
     List<QkjvipMemberRightsEntity> selectQkjvipMemberRightsPage(IPage page, @Param("params") Map<String, Object> params);
+
+    List<QkjvipMemberRightsEntity> queryByGroup(Map<String, Object> params);
+
+    boolean updateByMemberlevel(QkjvipMemberRightsEntity qkjvipMemberRightsEntity);
 }

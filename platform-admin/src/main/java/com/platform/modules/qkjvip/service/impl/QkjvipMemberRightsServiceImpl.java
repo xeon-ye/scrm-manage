@@ -39,6 +39,11 @@ public class QkjvipMemberRightsServiceImpl extends ServiceImpl<QkjvipMemberRight
     }
 
     @Override
+    public List<QkjvipMemberRightsEntity> queryByGroup(Map<String, Object> params) {
+        return baseMapper.queryByGroup(params);
+    }
+
+    @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
         params.put("sidx", "T.id");
@@ -55,6 +60,11 @@ public class QkjvipMemberRightsServiceImpl extends ServiceImpl<QkjvipMemberRight
     @Override
     public boolean update(QkjvipMemberRightsEntity qkjvipMemberRights) {
         return this.updateById(qkjvipMemberRights);
+    }
+
+    @Override
+    public boolean updateByMemberlevel(QkjvipMemberRightsEntity qkjvipMemberRights) {
+        return baseMapper.updateByMemberlevel(qkjvipMemberRights);
     }
 
     @Override
