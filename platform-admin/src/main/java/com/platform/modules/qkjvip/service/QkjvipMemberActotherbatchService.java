@@ -1,11 +1,11 @@
 /*
  * 项目名称:platform-plus
- * 类名称:QkjvipMemberActivityService.java
+ * 类名称:QkjvipMemberActotherbatchService.java
  * 包名称:com.platform.modules.qkjvip.service
  *
  * 修改履历:
  *     日期                       修正者        主要内容
- *     2020-09-03 09:49:29        孙珊珊     初版做成
+ *     2021-04-26 15:07:44        孙珊珊     初版做成
  *
  * Copyright (c) 2019-2019 微同软件
  */
@@ -13,7 +13,7 @@ package com.platform.modules.qkjvip.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.platform.modules.qkjvip.entity.QkjvipMemberActivityEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberActotherbatchEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -22,9 +22,9 @@ import java.util.Map;
  * Service接口
  *
  * @author 孙珊珊
- * @date 2020-09-03 09:49:29
+ * @date 2021-04-26 15:07:44
  */
-public interface QkjvipMemberActivityService extends IService<QkjvipMemberActivityEntity> {
+public interface QkjvipMemberActotherbatchService extends IService<QkjvipMemberActotherbatchEntity> {
 
     /**
      * 查询所有列表
@@ -32,10 +32,7 @@ public interface QkjvipMemberActivityService extends IService<QkjvipMemberActivi
      * @param params 查询参数
      * @return List
      */
-    List<QkjvipMemberActivityEntity> queryAll(Map<String, Object> params);
-
-    Page queryAllSignAddress(Map<String, Object> params);
-    Page queryAllSignAddressmain(Map<String, Object> params);
+    List<QkjvipMemberActotherbatchEntity> queryAll(Map<String, Object> params);
 
     /**
      * 分页查询
@@ -44,37 +41,36 @@ public interface QkjvipMemberActivityService extends IService<QkjvipMemberActivi
      * @return Page
      */
     Page queryPage(Map<String, Object> params);
-    Page queryPageCount(Map<String, Object> params);
 
     /**
      * 新增
      *
-     * @param qkjvipMemberActivity 
+     * @param qkjvipMemberActotherbatch 
      * @return 新增结果
      */
-    boolean add(QkjvipMemberActivityEntity qkjvipMemberActivity);
+    boolean add(QkjvipMemberActotherbatchEntity qkjvipMemberActotherbatch);
 
     /**
      * 根据主键更新
      *
-     * @param qkjvipMemberActivity 
+     * @param qkjvipMemberActotherbatch 
      * @return 更新结果
      */
-    boolean update(QkjvipMemberActivityEntity qkjvipMemberActivity);
+    boolean update(QkjvipMemberActotherbatchEntity qkjvipMemberActotherbatch);
 
     /**
      * 根据主键删除
      *
-     * @param id id
+     * @param mainId mainId
      * @return 删除结果
      */
-    boolean delete(String id);
+    boolean delete(String mainId);
 
     /**
      * 根据主键批量删除
      *
-     * @param ids ids
+     * @param mainIds mainIds
      * @return 删除结果
      */
-    boolean deleteBatch(String[] ids);
+    boolean deleteBatch(String[] mainIds);
 }
