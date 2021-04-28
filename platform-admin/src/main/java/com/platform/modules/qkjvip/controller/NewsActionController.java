@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.utils.RestResponse;
+import com.platform.common.utils.StringUtils;
 import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.util.HttpClient;
@@ -93,5 +94,21 @@ public class NewsActionController extends AbstractController {
         } else {
             return RestResponse.error(resultObject.get("descr").toString());
         }
+    }
+
+    /**
+     * 热门兑换
+     *
+     * @param productEntity 查询参数
+     * @return RestResponse
+     */
+    @PostMapping("/productList")
+    public RestResponse productList(@RequestBody ProductEntity productEntity) throws IOException {
+        String resultPost = HttpClient.sendPost(Vars.PRODUCT_LIST_URL, null);
+        List<ProductEntity> productList = new ArrayList<>();
+        if (StringUtils.isNotBlank(resultPost)) {
+            productList = JSON.parseArray(resultPost, ProductEntity.class);
+        }
+        return RestResponse.success().put("productlist", productList);
     }
 }
