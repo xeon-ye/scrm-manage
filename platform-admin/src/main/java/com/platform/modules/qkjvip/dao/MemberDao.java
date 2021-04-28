@@ -76,5 +76,5 @@ public interface MemberDao extends BaseMapper<MemberEntity> {
 
     List<MemberEntity> queryMemByList(List<MemberEntity> mbList);
 
-    List<MemberEntity> selectQkhMemberById(String memberId);
+    int selectQkhMemberById(String memberId);
 }

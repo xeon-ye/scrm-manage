@@ -141,8 +141,8 @@ public class MemberController extends AbstractController {
         if (member == null) {
             return RestResponse.error("此会员在索引中存在，会员表中不存在，请联系管理员！");
         }
-        List<MemberEntity> qkhlist = memberService.selectQkhMemberById(memberId);
-        if (qkhlist != null && qkhlist.size() > 0) {
+        int qkhcnt = memberService.selectQkhMemberById(memberId);
+        if (qkhcnt > 0) {
             member.setIsqkh(true);
         } else {
             member.setIsqkh(false);

@@ -61,7 +61,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     }
 
     @Override
-    public List<MemberEntity> selectQkhMemberById(String memberId) {
+    public int selectQkhMemberById(String memberId) {
         return baseMapper.selectQkhMemberById(memberId);
     }
 
