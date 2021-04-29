@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -18,6 +19,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 实体
@@ -26,15 +28,9 @@ import java.util.Date;
  * @date 2021-04-26 16:38:38
  */
 @Data
-@TableName("QKJVIP_MEMBER_RIGHTS")
-public class QkjvipMemberRightsEntity implements Serializable {
+public class QkjvipMemberRightsResultEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Id
-     */
-    @TableId
-    private String id;
     /**
      * 会员等级Id
      */
@@ -44,43 +40,13 @@ public class QkjvipMemberRightsEntity implements Serializable {
      */
     private String memberlevelname;
     /**
-     * 会员权益Id
-     */
-    private Integer memberright;
-    /**
-     * 会员权益描述
-     */
-    private String memberrightname;
-    /**
-     * 权益值
+     * 会员折扣
      */
     private BigDecimal rightvalue;
-    /**
-     * 是否有权益
-     */
-    private Boolean ishave;
-    /**
-     * 是否删除
-     */
-    private Boolean disabled;
-    /**
-     * 备注
-     */
-    private String remark;
-    /**
-     * 创建人
-     */
-    private String creator;
-    /**
-     * 创建时间
-     */
-    private Date createon;
-    /**
-     * 更信人
-     */
-    private String updatename;
-    /**
-     * 更新时间
-     */
-    private Date updatetime;
+
+    @TableField(exist = false)
+    private List<QkjvipMemberRightsEntity> rightsList;
+
+    @TableField(exist = false)
+    private List<Integer> checkedList;
 }
