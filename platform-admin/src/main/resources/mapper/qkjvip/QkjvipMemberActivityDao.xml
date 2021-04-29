@@ -84,7 +84,7 @@
         </if>
 
         <if test="params.ispri != null">
-            AND T.ispri = 0
+            AND (T.ispri = 0
             or EXISTS (
             SELECT 1 from qkjvip_member_activitymbs s
             left join qkjvip_member b on (s.member_id=b.member_id)
@@ -94,7 +94,7 @@
             where ISNULL(c.memberidto,c.member_id)=ISNULL(b.memberidto,b.member_id)
             and c.member_id='${params.memberIdSign}'
             )
-            )
+            ))
         </if>
         <if test="params.memberIdSignAddress != null and params.memberIdSignAddress.trim() != ''">
             and EXISTS (SELECT 1 from qkjvip_member_signupaddress adres
