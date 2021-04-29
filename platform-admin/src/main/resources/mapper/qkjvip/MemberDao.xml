@@ -144,7 +144,7 @@
         b.sex as oldsex
         from [dbo].[qkjvip_member_jueru] a
         inner join qkjvip_member b on a.crm_memberid=b.member_id
-        where a.AppOpenId=#{params.openid} AND a.IsSubscribe = 1
+        where a.AppOpenId=#{params.openid} and a.MemberChannel=200 AND a.IsSubscribe = 1
         and b.statusflag!=1
     </select>
 
@@ -159,7 +159,7 @@
         inner join [dbo].[qkjvip_member_jueru] b on
         (a.member_id=b.crm_memberid or a.memberidto=b.crm_memberid)
         where a.member_id=#{params.memberId} and a.statusflag!=1
-        and b.MemberChannel=19 and b.IsSubscribe=1 and b.Disabled=0
+        and b.MemberChannel=200 and b.IsSubscribe=1 and b.Disabled=0
     </select>
 
     <select id="selectQkhMemberById" resultType="int">
