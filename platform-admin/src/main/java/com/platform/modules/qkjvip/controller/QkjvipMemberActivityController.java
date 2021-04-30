@@ -206,6 +206,9 @@ public class QkjvipMemberActivityController extends AbstractController {
         if(params.get("myopenid")!=null && !params.get("myopenid").equals("")){//查询是否参加过本活动
             acmap.clear();
             acmap.put("openid",params.get("myopenid"));
+            if(params.get("isfollow")!=null && !params.get("isfollow").equals("")){
+                acmap.put("isfollow",params.get("isfollow"));
+            }
             list = memberService.selectMemberByOpenid(acmap);
             Map<String, Object> mapt = new HashMap<>();
             map.put("myopenid",params.get("myopenid")+"");
@@ -219,6 +222,9 @@ public class QkjvipMemberActivityController extends AbstractController {
         if(params.get("juerumemberid")!=null && !params.get("juerumemberid").equals("")){//根据觉如memberid查询是否参加过本活动
             acmap.clear();
             acmap.put("memberId",params.get("juerumemberid"));
+            if(params.get("isfollow")!=null && !params.get("isfollow").equals("")){
+                acmap.put("isfollow",params.get("isfollow"));
+            }
             list = memberService.selectMemberByJuruMemberid(acmap);
             acmap.clear();
             Map<String, Object> mapt = new HashMap<>();

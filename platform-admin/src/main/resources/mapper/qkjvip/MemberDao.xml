@@ -144,8 +144,11 @@
         b.sex as oldsex
         from [dbo].[qkjvip_member_jueru] a
         inner join qkjvip_member b on a.crm_memberid=b.member_id
-        where a.AppOpenId=#{params.openid} and a.MemberChannel=200 AND a.IsSubscribe = 1
-        and b.statusflag!=1
+        where a.AppOpenId=#{params.openid}
+
+        <if test="params.isfollow != null and params.isfollow != ''">
+            and a.MemberChannel=200 AND a.IsSubscribe = 1
+        </if>
     </select>
 
     <!--根据jueru memberid判断是否关注公众号：孙珊珊-->
@@ -158,8 +161,11 @@
         from [dbo].[qkjvip_member] a
         inner join [dbo].[qkjvip_member_jueru] b on
         (a.member_id=b.crm_memberid or a.memberidto=b.crm_memberid)
-        where a.member_id=#{params.memberId} and a.statusflag!=1
-        and b.MemberChannel=200 and b.IsSubscribe=1 and b.Disabled=0
+        where a.member_id=#{params.memberId}  and b.Disabled=0
+        <if test="params.isfollow != null and params.isfollow != ''">
+            and a.statusflag!=1
+            and b.MemberChannel=200 and b.IsSubscribe=1
+        </if>
     </select>
 
     <select id="selectQkhMemberById" resultType="int">
