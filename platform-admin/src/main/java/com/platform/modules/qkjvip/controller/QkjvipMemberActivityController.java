@@ -204,6 +204,7 @@ public class QkjvipMemberActivityController extends AbstractController {
         int iscanjia=0;
         List<MemberEntity> list=new ArrayList<>();
         if(params.get("myopenid")!=null && !params.get("myopenid").equals("")){//查询是否参加过本活动
+            logger.info("查询活动详情：openid:" + params.get("myopenid"));
             acmap.clear();
             acmap.put("openid",params.get("myopenid"));
             if(params.get("isfollow")!=null && !params.get("isfollow").equals("")){
