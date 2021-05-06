@@ -93,7 +93,7 @@ public class MemberExportEntity implements Serializable {
     /*
      * 生日
      */
-    @Excel(name = "生日", orderNum = "11", width = 15, groupName = "扩展信息", fixedIndex = 10)
+    @Excel(name = "生日", exportFormat = "yyyy-MM-dd HH:mm:ss", orderNum = "11", width = 15, groupName = "扩展信息", fixedIndex = 10)
     private Date birthday;
     /*
      * 会员邮件
@@ -103,7 +103,7 @@ public class MemberExportEntity implements Serializable {
     /*
      * 加入时间/注册时间
      */
-    @Excel(name = "注册时间", orderNum = "13", width = 15, groupName = "扩展信息", fixedIndex = 12)
+    @Excel(name = "注册时间", exportFormat = "yyyy-MM-dd HH:mm:ss", orderNum = "13", width = 15, groupName = "扩展信息", fixedIndex = 12)
     private Date regTime;
     /*
      * 会员类型

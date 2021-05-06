@@ -78,10 +78,11 @@ public class QkjvipMemberImportEntity implements Serializable {
     private Integer age;
     /**
      * 生日
+     * 不可修改类型，否则导入的时间为null
      */
-    @Excel(name = "生日", orderNum = "11", width = 15, groupName = "扩展信息", fixedIndex = 11)
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-    private Date birthday;
+    @Excel(name = "生日", importFormat = "yyyy-MM-dd HH:mm:ss", orderNum = "11", width = 15, groupName = "扩展信息", fixedIndex = 11)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private String birthday;
     /**
      * 会员类型
      */
@@ -124,10 +125,11 @@ public class QkjvipMemberImportEntity implements Serializable {
     private String jobTitle;
     /**
      * 加入时间/注册时间
+     * 不可修改类型，否则导入的时间为null
      */
-    @Excel(name = "注册时间", orderNum = "13", width = 15, groupName = "扩展信息", fixedIndex = 13)
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-    private Date regTime;
+    @Excel(name = "注册时间", importFormat = "yyyy-MM-dd HH:mm:ss", orderNum = "13", width = 15, groupName = "扩展信息", fixedIndex = 13)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private String regTime;
     /**
      * 推荐人部门
      */

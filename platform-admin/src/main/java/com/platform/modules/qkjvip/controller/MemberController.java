@@ -412,15 +412,15 @@ public class MemberController extends AbstractController {
                     qkjvipMemberImportService.addBatch(list); //批量导入临时表
 
                     //调用数据清洗接口
-                    Object objList = JSONArray.toJSON(list);
-                    String memberJsonStr = JsonHelper.toJsonString(objList, "yyyy-MM-dd HH:mm:ss");
-                    String resultPost = HttpClient.sendPost(Vars.MEMBER_IMPORT_URL, memberJsonStr);
-
-                    JSONObject resultObject = JSON.parseObject(resultPost);
-                    if (!"200".equals(resultObject.get("resultcode").toString())) {  //清洗失败
-                        TransactionAspectSupport.currentTransactionStatus().rollbackToSavepoint(savePoint);
-                        return RestResponse.error(resultObject.get("descr").toString());
-                    }
+//                    Object objList = JSONArray.toJSON(list);
+//                    String memberJsonStr = JsonHelper.toJsonString(objList, "yyyy-MM-dd HH:mm:ss");
+//                    String resultPost = HttpClient.sendPost(Vars.MEMBER_IMPORT_URL, memberJsonStr);
+//
+//                    JSONObject resultObject = JSON.parseObject(resultPost);
+//                    if (!"200".equals(resultObject.get("resultcode").toString())) {  //清洗失败
+//                        TransactionAspectSupport.currentTransactionStatus().rollbackToSavepoint(savePoint);
+//                        return RestResponse.error(resultObject.get("descr").toString());
+//                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();

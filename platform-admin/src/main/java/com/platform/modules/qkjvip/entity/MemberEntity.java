@@ -69,7 +69,7 @@ public class MemberEntity implements Serializable {
     /*
      * 生日
      */
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date birthday;
     /*
      * 会员类型
@@ -106,7 +106,7 @@ public class MemberEntity implements Serializable {
     /*
      * 加入时间/注册时间
      */
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date regTime;
     /*
      * 推荐人部门
