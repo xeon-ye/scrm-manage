@@ -203,6 +203,39 @@ public class QkjvipOrderOrderController extends AbstractController {
      * @param qkjvipOrderOrder qkjvipOrderOrder
      * @return RestResponse
      */
+    @SysLog("推送商城")
+    @RequestMapping("/savetocom")
+    public RestResponse savetocom(@RequestBody QkjvipOrderOrderEntity qkjvipOrderOrder) throws IOException {
+        // 修改信息
+        qkjvipOrderOrder.setListuserfile(null);
+        qkjvipOrderOrder.setListfinalfile(null);
+        qkjvipOrderOrder.setCreatoradminid(getUserId());
+        qkjvipOrderOrder.setCreatoradmin(getUser().getUserName());
+        if(qkjvipOrderOrder.getCrmMemberid()!=null){
+            qkjvipOrderOrder.setMemberid(qkjvipOrderOrder.getCrmMemberid());
+        }
+        Object obj = JSONArray.toJSON(qkjvipOrderOrder);
+        String JsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_ORDER_ORDER_ADD, JsonStr);
+
+        // 推送
+        QkjvipOrderOrderEntity newo =new QkjvipOrderOrderEntity();
+        newo.setOrderstatus(30);
+        newo.setMorderid(qkjvipOrderOrder.getMorderid());
+        newo.setToqkh(1);
+        obj = JSONArray.toJSON(newo);
+        JsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+        resultPost = HttpClient.sendPost(Vars.MEMBER_ORDER_ORDER_MDYSTATUS, JsonStr);
+        //qkjvipOrderOrderService.add(qkjvipOrderOrder);
+        return RestResponse.success();
+    }
+
+    /**
+     * 新增
+     *
+     * @param qkjvipOrderOrder qkjvipOrderOrder
+     * @return RestResponse
+     */
     @SysLog("新增&修改封坛")
     @RequestMapping("/saveft")
     public RestResponse saveft(@RequestBody QkjvipOrderOrderEntity qkjvipOrderOrder) throws IOException {

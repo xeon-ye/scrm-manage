@@ -66,6 +66,8 @@ public class Vars {
 	 */
 	//订单添加
 	public static String MEMBER_ORDER_ORDER_ADD = "http://api.scrm.qkj.com.cn/api/Order/SubmitOrder";
+	//订单添加
+	public static String MEMBER_ORDER_ORDER_MDYSTATUS = "http://api.scrm.qkj.com.cn/api/Order/SetOrderStatus";
 	//订单列表
 	public static String MEMBER_ORDER_ORDER_LIST = "http://api.scrm.qkj.com.cn/api/Order/GetOrderList";
 	//订单详情
