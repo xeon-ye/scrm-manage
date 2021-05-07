@@ -24,6 +24,7 @@ import com.platform.modules.qkjvip.service.QkjvipOrderOrderdetailService;
 import com.platform.modules.qkjvip.service.QkjvipProductStockService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.service.QkjvipOrderOrderService;
+import com.platform.modules.sys.service.SysUserChannelService;
 import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.Vars;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -53,6 +54,8 @@ public class QkjvipOrderOrderController extends AbstractController {
     private QkjvipProductStockService qkjvipProductStockService;
     @Autowired
     private QkjvipOrderDeliverlogService qkjvipOrderDeliverlogService;
+    @Autowired
+    private SysUserChannelService sysUserChannelService;
 
     /**
      * 查看所有列表
@@ -92,6 +95,13 @@ public class QkjvipOrderOrderController extends AbstractController {
     @PostMapping("/list")
     public RestResponse list(@RequestBody QkjvipOrderOrderQuaryEntity order) throws IOException {
         //Page page = qkjvipOrderOrderService.queryPage(params);
+        if (!getUser().getUserName().contains("admin")) {  // 空默认是全部所有权限
+            order.setCurrentmemberid(getUserId());
+//            memberQuery.setListorgno(sysRoleOrgService.queryOrgNoListByUserIdAndPerm(getUserId(), "qkjvip:member:list"));
+            order.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId())); // 0代表选择的是全部渠道传-1
+        } else {
+            order.setListmemberchannel("-1");
+        }
         Object obj = JSONArray.toJSON(order);
         String queryJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
         String resultPost = HttpClient.sendPost(Vars.MEMBER_ORDER_ORDER_LIST, queryJsonStr);
