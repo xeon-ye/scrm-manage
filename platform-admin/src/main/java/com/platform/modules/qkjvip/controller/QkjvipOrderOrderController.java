@@ -137,9 +137,6 @@ public class QkjvipOrderOrderController extends AbstractController {
         String resultPost = HttpClient.sendPost(Vars.MEMBER_ORDER_ORDER_LISTDETILE, queryJsonStr);
         JSONObject resultObject = JSON.parseObject(resultPost);
         QkjvipOrderOrderEntity qkjvipOrderOrder = JSON.toJavaObject(resultObject,QkjvipOrderOrderEntity.class);
-        if(qkjvipOrderOrder.getCrmmemberid()!=null&&!qkjvipOrderOrder.getCrmmemberid().equals("")){
-            qkjvipOrderOrder.setCrmMemberid(qkjvipOrderOrder.getCrmmemberid());
-        }
         qkjvipOrderOrder.setId(qkjvipOrderOrder.getMorderid());
         qkjvipOrderOrder.setOrderid(qkjvipOrderOrder.getMorderid());
         //查询库存分配
