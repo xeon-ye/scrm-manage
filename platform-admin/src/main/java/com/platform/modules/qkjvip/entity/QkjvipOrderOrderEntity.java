@@ -214,5 +214,7 @@ public class QkjvipOrderOrderEntity implements Serializable {
     private List<QkjvipOrderOrderfileEntity> listuserfile;
     @TableField(exist = false)
     private List<QkjvipOrderOrderfileEntity> listfinalfile;
+    @TableField(exist = false)
+    private String crmmemberid;
 
 }
