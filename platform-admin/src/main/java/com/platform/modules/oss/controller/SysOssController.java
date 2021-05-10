@@ -125,6 +125,7 @@ public class SysOssController {
      * @param file file
      * @return RestResponse
      */
+    @CrossOrigin
     @RequestMapping("/upload")
     public Object upload(@RequestParam(value = "file", required = false) MultipartFile file,
                          @RequestParam(value = "action", required = false) String action,
