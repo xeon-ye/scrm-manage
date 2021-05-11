@@ -608,7 +608,7 @@ public class QkjvipMemberActivityController extends AbstractController {
         isex.setAtype("1");
         String surl="";
         if (oneflag!=null&&!oneflag.equals("")){//有单据
-            surl = "/components/newWebview/webview?name=详情&url=https://crm.qkj.com.cn/#/activity?id=" + oneflag + "";
+            surl = "/components/newWebview/webview?name=encodeURIComponent(详情)&url=encodeURIComponent(https://crm.qkj.com.cn/#/activity?id=" + oneflag + ")";
             isex.setHtmlurl(surl);
         }
         islist.add(isex);
@@ -617,7 +617,7 @@ public class QkjvipMemberActivityController extends AbstractController {
         isex.setAtype("4");
         surl="";
         if (twoflag!=null&&!twoflag.equals("")){//有单据
-            surl = "/components/newWebview/webview?name=详情&url=https://crm.qkj.com.cn/#/activity?id=" + twoflag + "";
+            surl = "/components/newWebview/webview?name=encodeURIComponent(详情)&url=encodeURIComponent(https://crm.qkj.com.cn/#/activity?id=" + twoflag + ")";
             isex.setHtmlurl(surl);
         }
         islist.add(isex);
@@ -626,7 +626,7 @@ public class QkjvipMemberActivityController extends AbstractController {
         isex.setAtype("6");
         surl="";
         if (threeflag!=null&&!threeflag.equals("")){//有单据
-            surl = "/components/newWebview/webview?name=详情&url=https://crm.qkj.com.cn/#/activity?id=" + threeflag + "";
+            surl = "/components/newWebview/webview?name=encodeURIComponent(详情)&url=encodeURIComponent(https://crm.qkj.com.cn/#/activity?id=" + threeflag + ")";
             isex.setHtmlurl(surl);
         }
         islist.add(isex);
