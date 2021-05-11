@@ -61,6 +61,7 @@ public class QkjvipMemberImportServiceImpl extends ServiceImpl<QkjvipMemberImpor
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void addBatch(List<QkjvipMemberImportEntity> mList) {
         this.saveBatch(mList);
     }

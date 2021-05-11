@@ -381,7 +381,6 @@ public class MemberController extends AbstractController {
     @SysLog("导入会员")
     @RequestMapping("/import")
     @RequiresPermissions("qkjvip:member:import")
-    @Transactional(rollbackFor = Exception.class)
     public RestResponse importExcel(MultipartFile file) {
         String fileName = file.getOriginalFilename();
         if (StringUtils.isBlank(fileName)) {
@@ -407,7 +406,6 @@ public class MemberController extends AbstractController {
                     list.get(i).setOfflineflag(1);
                 }
                 if (list.size() > 0) {
-                    Object savePoint = TransactionAspectSupport.currentTransactionStatus().createSavepoint();
                     qkjvipMemberImportService.addBatch(list); //批量导入临时表
 
                     //调用数据清洗接口
@@ -417,7 +415,6 @@ public class MemberController extends AbstractController {
 
                     JSONObject resultObject = JSON.parseObject(resultPost);
                     if (!"200".equals(resultObject.get("resultcode").toString())) {  //清洗失败
-                        TransactionAspectSupport.currentTransactionStatus().rollbackToSavepoint(savePoint);
                         return RestResponse.error(resultObject.get("descr").toString());
                     }
                 }

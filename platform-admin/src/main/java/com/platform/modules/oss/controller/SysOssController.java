@@ -125,6 +125,7 @@ public class SysOssController {
      * @param file file
      * @return RestResponse
      */
+    @CrossOrigin
     @RequestMapping("/upload")
     public Object upload(@RequestParam(value = "file", required = false) MultipartFile file,
                          @RequestParam(value = "action", required = false) String action,
@@ -161,6 +162,7 @@ public class SysOssController {
         sysOssService.save(ossEntity);
 
         //返回兼容UEditor的参数
+        System.out.println("上传后的url:" + url);
         return RestResponse.success().put("url", url).put("state", "SUCCESS").put("title", url).put("original", url);
     }
 

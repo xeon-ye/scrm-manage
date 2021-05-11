@@ -80,7 +80,10 @@ public class ShiroConfig {
         filterMap.put("/qkjvip/member/selectMemByJueruMemberid", "anon");
         filterMap.put("/qkjvip/membersignup/save", "anon");
         filterMap.put("/qkjvip/membersignup/queryAll", "anon");
-        filterMap.put("/qkjvip/news/**", "anon"); //liuqianru add 2021/03/11
+        filterMap.put("/remote/news/**", "anon"); //liuqianru add 2021/03/11
+        filterMap.put("/qkjvip/newscarousel/carouselList", "anon"); // liuqianru add 2021/05/10
+        filterMap.put("/qkjvip/news/newsList", "anon"); // liuqianru add 2021/05/10
+        filterMap.put("/qkjvip/news/newsInfo", "anon"); // liuqianru add 2021/05/10
         filterMap.put("/qkjvip/content/getInfo", "anon");
         filterMap.put("/qkjvip/contentsharerecords/addIntegral", "anon");
 //        filterMap.put("/qkjvip/membervisit/**", "anon");  //liuqianru add 2020/12/09

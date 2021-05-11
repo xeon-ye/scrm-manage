@@ -40,7 +40,7 @@ import java.util.Map;
  * @date 2021/3/11 13:09
  */
 @RestController
-@RequestMapping("/qkjvip/news")
+@RequestMapping("/remote/news")
 public class NewsActionController extends AbstractController {
     /**
      * 新闻列表
