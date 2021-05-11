@@ -79,7 +79,6 @@ public class MemberController extends AbstractController {
      * @return RestResponse
      */
     @RequestMapping("/queryAll")
-    @RequiresPermissions("qkjvip:member:list")
     public RestResponse queryAll(@RequestParam Map<String, Object> params) {
         List<MemberEntity> list = memberService.queryAll(params);
 

@@ -70,4 +70,9 @@ public class QkjvipMemberSignupmemberEntity implements Serializable {
     @TableField(exist = false)
     private String title;
 
+    @TableField(exist = false)
+    private String userName;//称呼
+    @TableField(exist = false)
+    private Integer sex;
+
 }

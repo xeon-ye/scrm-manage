@@ -42,6 +42,9 @@ public interface QkjvipMemberActivityDao extends BaseMapper<QkjvipMemberActivity
     List<QkjvipMemberActivityEntity> queryAllSignAddressmain(IPage page, @Param("params") Map<String, Object> params);
     List<QkjvipMemberActivityEntity> queryAllSignAddressmain(@Param("params") Map<String, Object> params);
 
+    List<QkjvipMemberActivityEntity> actityisexist();
+
+
     /**
      * 自定义分页查询
      *

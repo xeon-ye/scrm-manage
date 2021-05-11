@@ -196,4 +196,35 @@ select * from (
     <select id="queryAllSignAddressmain" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberActivityEntity">
         <include refid="selectSqlSignAddressMain"/>
     </select>
+
+    <select id="actityisexist" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberActivityEntity">
+        SELECT * from (
+            SELECT
+                    top 1 T.*
+                    FROM QKJVIP_MEMBER_ACTIVITY T
+                    join sys_user u on (u.USER_ID=t.adduser)
+                    WHERE 1=1 and t.atype in (1)  and t.ispri =0
+            ORDER BY t.end_date desc ,t.addtime desc
+            ) a
+            union all
+            SELECT * from (
+            SELECT
+                    top 1 T.*
+                    FROM QKJVIP_MEMBER_ACTIVITY T
+                    join sys_user u on (u.USER_ID=t.adduser)
+                    WHERE 1=1 and t.atype in (4)  and t.ispri =0
+            ORDER BY t.end_date desc ,t.addtime desc
+            ) b
+
+            union all
+            SELECT * from (
+            SELECT
+                    top 1 T.*
+                    FROM QKJVIP_MEMBER_ACTIVITY T
+                    join sys_user u on (u.USER_ID=t.adduser)
+                    WHERE 1=1 and t.atype in (6) and t.ispri =0
+            ORDER BY t.end_date desc ,t.addtime desc
+            ) b
+
+    </select>
 </mapper>

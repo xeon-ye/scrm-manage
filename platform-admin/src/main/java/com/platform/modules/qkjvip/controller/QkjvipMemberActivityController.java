@@ -88,7 +88,6 @@ public class QkjvipMemberActivityController extends AbstractController {
         return RestResponse.success().put("list", list);
     }
 
-
     /**
      * 查看所有列表
      *
@@ -239,7 +238,7 @@ public class QkjvipMemberActivityController extends AbstractController {
         }
         String isabove = "0"; //未超出人数限制
         String isinvite="0";//未被邀请
-        if(qkjvipMemberActivity!=null&&qkjvipMemberActivity.getIspri()!=null&&qkjvipMemberActivity.getIspri()==0){ //公开的活动(人数限制)
+        if(qkjvipMemberActivity!=null&&qkjvipMemberActivity.getIspri()!=null&&(qkjvipMemberActivity.getPriPerson()!=null&&qkjvipMemberActivity.getPriPerson()>0)){ //的活动(人数限制)
             if(qkjvipMemberActivity.getPriPerson()!=null){
                 if(qkjvipMemberActivity.getSignper()!=null){ //报名人数
                     if(qkjvipMemberActivity.getSignper()>=qkjvipMemberActivity.getPriPerson()){//报名人数小于限制人数
@@ -570,6 +569,69 @@ public class QkjvipMemberActivityController extends AbstractController {
             }
         }
         return RestResponse.success().put("memberlist", mees);
+    }
+
+    /**
+     * 查看活动是否对存在to韩洁
+     *
+     * @param
+     * @return RestResponse
+     */
+    @RequestMapping("/actityisexist")
+    public RestResponse actityisexist() {
+        List<QkjvipMemberActivityEntity> list = qkjvipMemberActivityService.actityisexist();
+        String oneflag = "";
+        String twoflag = "";
+        String threeflag = "";
+        List<QkjvipIsExitEntity> islist =new ArrayList<>();
+        for (QkjvipMemberActivityEntity ae : list) {
+            if(ae!=null&&ae.getAtype()!=null&&ae.getAtype().equals("1")){ //品鉴会
+                oneflag = ae.getId();
+                break;
+            }
+        }
+
+        for (QkjvipMemberActivityEntity ae : list) {
+            if(ae!=null&&ae.getAtype()!=null&&ae.getAtype().equals("4")){ //回场游
+                twoflag = ae.getId();
+                break;
+            }
+        }
+
+        for (QkjvipMemberActivityEntity ae : list) {
+            if(ae!=null&&ae.getAtype()!=null&&ae.getAtype().equals("6")){ //新品试饮
+                threeflag = ae.getId();
+                break;
+            }
+        }
+        QkjvipIsExitEntity isex= new QkjvipIsExitEntity();
+        isex.setAtype("1");
+        String surl="";
+        if (oneflag!=null&&!oneflag.equals("")){//有单据
+            surl = "/components/newWebview/webview?name=详情&url=https://crm.qkj.com.cn/#/activity?id=" + oneflag + "";
+            isex.setHtmlurl(surl);
+        }
+        islist.add(isex);
+
+        isex= new QkjvipIsExitEntity();
+        isex.setAtype("4");
+        surl="";
+        if (twoflag!=null&&!twoflag.equals("")){//有单据
+            surl = "/components/newWebview/webview?name=详情&url=https://crm.qkj.com.cn/#/activity?id=" + twoflag + "";
+            isex.setHtmlurl(surl);
+        }
+        islist.add(isex);
+
+        isex= new QkjvipIsExitEntity();
+        isex.setAtype("6");
+        surl="";
+        if (threeflag!=null&&!threeflag.equals("")){//有单据
+            surl = "/components/newWebview/webview?name=详情&url=https://crm.qkj.com.cn/#/activity?id=" + threeflag + "";
+            isex.setHtmlurl(surl);
+        }
+        islist.add(isex);
+
+        return RestResponse.success().put("actitylist", islist);
     }
 
     public static String getIp(HttpServletRequest request){

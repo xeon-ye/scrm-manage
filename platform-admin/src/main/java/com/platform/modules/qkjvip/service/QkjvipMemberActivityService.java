@@ -33,6 +33,7 @@ public interface QkjvipMemberActivityService extends IService<QkjvipMemberActivi
      * @return List
      */
     List<QkjvipMemberActivityEntity> queryAll(Map<String, Object> params);
+    List<QkjvipMemberActivityEntity> actityisexist();
 
     Page queryAllSignAddress(Map<String, Object> params);
     Page queryAllSignAddressmain(Map<String, Object> params);

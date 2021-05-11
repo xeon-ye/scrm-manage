@@ -190,6 +190,8 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
         MemberEntity member = new MemberEntity();
         member.setMobile(mobile);
         member.setMemberId(qkjvipMemberSignupmember.getMemberId());
+        member.setMemberName(qkjvipMemberSignupmember.getUserName());
+        member.setSex(qkjvipMemberSignupmember.getSex());
         //修改此会员手机号
         if(qkjvipMemberSignupmember!=null&&qkjvipMemberSignupmember.getIsphone()!=null&&qkjvipMemberSignupmember.getIsphone()==1){
             Object obj = JSONArray.toJSON(member);

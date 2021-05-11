@@ -39,6 +39,11 @@ public class QkjvipMemberActivityServiceImpl extends ServiceImpl<QkjvipMemberAct
     }
 
     @Override
+    public List<QkjvipMemberActivityEntity> actityisexist() {
+        return baseMapper.actityisexist();
+    }
+
+    @Override
     public Page queryAllSignAddress(Map<String, Object> params) {
         params.put("sidx", "act.istake asc,act.end_date");
         params.put("asc", false);
