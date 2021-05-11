@@ -204,6 +204,7 @@ select * from (
                     FROM QKJVIP_MEMBER_ACTIVITY T
                     join sys_user u on (u.USER_ID=t.adduser)
                     WHERE 1=1 and t.atype in (1)  and t.ispri =0
+        and DATEDIFF(day, t.end_date, GETDATE()) &lt;=0
             ORDER BY t.end_date desc ,t.addtime desc
             ) a
             union all
@@ -213,6 +214,7 @@ select * from (
                     FROM QKJVIP_MEMBER_ACTIVITY T
                     join sys_user u on (u.USER_ID=t.adduser)
                     WHERE 1=1 and t.atype in (4)  and t.ispri =0
+                    and DATEDIFF(day, t.end_date, GETDATE()) &lt;=0
             ORDER BY t.end_date desc ,t.addtime desc
             ) b
 
@@ -223,6 +225,7 @@ select * from (
                     FROM QKJVIP_MEMBER_ACTIVITY T
                     join sys_user u on (u.USER_ID=t.adduser)
                     WHERE 1=1 and t.atype in (6) and t.ispri =0
+                    and DATEDIFF(day, t.end_date, GETDATE()) &lt;=0
             ORDER BY t.end_date desc ,t.addtime desc
             ) b
 
