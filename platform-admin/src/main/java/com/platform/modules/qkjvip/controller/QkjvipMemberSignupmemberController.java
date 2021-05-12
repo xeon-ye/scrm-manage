@@ -230,20 +230,23 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
                 logger.info("正常签到信息："+"memberid:"+qkjvipMemberSignupmember.getMemberId()+";openid:" + qkjvipMemberSignupmember.getOpenId());
             }
 
-            Map map = new HashMap();
-            map.put("remark", "活动签到得积分");
-            map.put("crmmemberid", member.getMemberId());
-            map.put("actiontype", 17);
-            map.put("integral", qkjvipMemberSignupmember.getIntegral());
+            if(qkjvipMemberSignupmember.getIntegral()!=null&&qkjvipMemberSignupmember.getIntegral()>0){
+                Map map = new HashMap();
+                map.put("remark", "活动签到得积分");
+                map.put("crmmemberid", member.getMemberId());
+                map.put("actiontype", 17);
+                map.put("integral", qkjvipMemberSignupmember.getIntegral());
 
-            String queryJsonStr = JsonHelper.toJsonString(map);
-            String resultPost = HttpClient.sendPost(Vars.CONTENT_SHARE_URL, queryJsonStr);
-            JSONObject resultObject = JSON.parseObject(resultPost);
-            if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
-                System.out.println("活动签到得积分获得成功！");
-            } else {
-                System.out.println("活动签到得积分获得失败！");
+                String queryJsonStr = JsonHelper.toJsonString(map);
+                String resultPost = HttpClient.sendPost(Vars.CONTENT_SHARE_URL, queryJsonStr);
+                JSONObject resultObject = JSON.parseObject(resultPost);
+                if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+                    System.out.println("活动签到得积分获得成功！");
+                } else {
+                    System.out.println("活动签到得积分获得失败！");
+                }
             }
+
         }
 
         return RestResponse.success();

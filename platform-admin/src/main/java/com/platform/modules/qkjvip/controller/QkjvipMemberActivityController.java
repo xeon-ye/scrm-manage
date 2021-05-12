@@ -210,14 +210,17 @@ public class QkjvipMemberActivityController extends AbstractController {
                 acmap.put("isfollow",params.get("isfollow"));
             }
             list = memberService.selectMemberByOpenid(acmap);
-            Map<String, Object> mapt = new HashMap<>();
-            map.put("myopenid",params.get("myopenid")+"");
-            map.put("acitvityId",params.get("id").toString());
-            List<QkjvipMemberSignupEntity> sgs=new ArrayList<>();
-            sgs=qkjvipMemberSignupService.queryAll(map);
-            if(sgs.size()>0){
-                iscanjia=1;
+            if(params.get("isqiandao") == null || !params.get("isqiandao").equals("1")){ //是报名
+                Map<String, Object> mapt = new HashMap<>();
+                map.put("myopenid",params.get("myopenid")+"");
+                map.put("acitvityId",params.get("id").toString());
+                List<QkjvipMemberSignupEntity> sgs=new ArrayList<>();
+                sgs=qkjvipMemberSignupService.queryAll(map);
+                if(sgs.size()>0){
+                    iscanjia=1;
+                }
             }
+
         }
         if(params.get("juerumemberid")!=null && !params.get("juerumemberid").equals("")){//根据觉如memberid查询是否参加过本活动
             acmap.clear();
