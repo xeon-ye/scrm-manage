@@ -79,4 +79,6 @@ public class QkjvipMemberSignupEntity implements Serializable {
     private Integer oldsex;
     @TableField(exist = false)
     private String oldname;
+    @TableField(exist = false)
+    private Integer integral;
 }
