@@ -73,6 +73,8 @@ public class QkjvipMemberActivityController extends AbstractController {
     private QkjvipMemberSignupService qkjvipMemberSignupService;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private QkjvipMemberSignupmemberService qkjvipMemberSignupmemberService;
 
     /**
      * 查看所有列表
@@ -187,18 +189,19 @@ public class QkjvipMemberActivityController extends AbstractController {
         if(acs!=null&&acs.size()==1){
             qkjvipMemberActivity=acs.get(0);
         }
-        Map<String, Object> map=new HashMap<String,Object>();
-        map.put("activityId",params.get("id").toString());
-        List<QkjvipMemberActivitymbsEntity> mmbs=new ArrayList<>();
-        mmbs=qkjvipMemberActivitymbsService.queryAll(map);
-        if(mmbs!=null&&mmbs.size()>0){
-            qkjvipMemberActivity.setMbs(mmbs);
-        }
-        //查询地址
-        List<QkjvipMemberSignupaddressEntity> addresses=new ArrayList<>();
-        addresses = qkjvipMemberSignupaddressService.queryAll(map);
-        if(addresses!=null&&addresses.size()>0){
-            qkjvipMemberActivity.setAddresses(addresses);
+        Map<String, Object> map = new HashMap<String, Object>();
+        List<QkjvipMemberActivitymbsEntity> mmbs = new ArrayList<>();
+        if(params.get("isqiandao") == null || !params.get("isqiandao").equals("1")) { //是报名才查询详情及地址
+            mmbs = qkjvipMemberActivitymbsService.queryAll(map);
+            if (mmbs != null && mmbs.size() > 0) {
+                qkjvipMemberActivity.setMbs(mmbs);
+            }
+            //查询地址
+            List<QkjvipMemberSignupaddressEntity> addresses = new ArrayList<>();
+            addresses = qkjvipMemberSignupaddressService.queryAll(map);
+            if (addresses != null && addresses.size() > 0) {
+                qkjvipMemberActivity.setAddresses(addresses);
+            }
         }
         int iscanjia=0;
         List<MemberEntity> list=new ArrayList<>();
@@ -219,6 +222,15 @@ public class QkjvipMemberActivityController extends AbstractController {
                 if(sgs.size()>0){
                     iscanjia=1;
                 }
+            } else { //是否签到
+                Map<String, Object> mapt = new HashMap<>();
+                mapt.put("myopenid", params.get("myopenid") + "");
+                mapt.put("activityId",params.get("id").toString());
+                List<QkjvipMemberSignupmemberEntity> listed = qkjvipMemberSignupmemberService.queryAll(mapt);
+                if (listed.size() > 0) {
+                    iscanjia = 1;
+                    logger.info("已签到");
+                }
             }
 
         }
@@ -231,35 +243,47 @@ public class QkjvipMemberActivityController extends AbstractController {
             list = memberService.selectMemberByJuruMemberid(acmap);
             acmap.clear();
             Map<String, Object> mapt = new HashMap<>();
-            mapt.put("memberid",params.get("juerumemberid")+"");
-            mapt.put("acitvityId",params.get("id").toString());
-            List<QkjvipMemberSignupEntity> sgs=new ArrayList<>();
-            sgs=qkjvipMemberSignupService.queryAll(mapt);
-            if(sgs.size()>0){
-                iscanjia=1;
+            if(params.get("isqiandao") == null || !params.get("isqiandao").equals("1")) { //是报名
+                mapt.put("memberid", params.get("juerumemberid") + "");
+                mapt.put("acitvityId", params.get("id").toString());
+                List<QkjvipMemberSignupEntity> sgs = new ArrayList<>();
+                sgs = qkjvipMemberSignupService.queryAll(mapt);
+                if (sgs.size() > 0) {
+                    iscanjia = 1;
+                }
+            } else { //是否签到
+                mapt.put("memberId", params.get("juerumemberid") + "");
+                mapt.put("activityId",params.get("id").toString());
+                List<QkjvipMemberSignupmemberEntity> listed = qkjvipMemberSignupmemberService.queryAll(mapt);
+                if (listed.size() > 0) {
+                    iscanjia = 1;
+                }
             }
         }
         String isabove = "0"; //未超出人数限制
         String isinvite="0";//未被邀请
-        if(qkjvipMemberActivity!=null&&qkjvipMemberActivity.getIspri()!=null&&(qkjvipMemberActivity.getPriPerson()!=null&&qkjvipMemberActivity.getPriPerson()>0)){ //的活动(人数限制)
-            if(qkjvipMemberActivity.getPriPerson()!=null){
-                if(qkjvipMemberActivity.getSignper()!=null){ //报名人数
-                    if(qkjvipMemberActivity.getSignper()>=qkjvipMemberActivity.getPriPerson()){//报名人数小于限制人数
-                        isabove="1";
-                    }
-                }
-            }
-        } else { //私有活动是否包含当前人
-            //查询关注人的最新memberid
-            if(list!=null&&list.size()>0){
-                if(mmbs!=null&&mmbs.size()>0){
-                    String myop=list.get(0).getMemberId();
-                    for(QkjvipMemberActivitymbsEntity ms:mmbs){
-                        if(ms!=null&&ms.getMemberidto()!=null&&ms.getMemberidto().equals(myop)){//邀约里有此openid
-                            isinvite="1";break;
+        if(params.get("isqiandao") == null || !params.get("isqiandao").equals("1")) { //是报名才查询详情及地址
+            if (qkjvipMemberActivity != null && qkjvipMemberActivity.getIspri() != null && (qkjvipMemberActivity.getPriPerson() != null && qkjvipMemberActivity.getPriPerson() > 0)) { //的活动(人数限制)
+                if (qkjvipMemberActivity.getPriPerson() != null) {
+                    if (qkjvipMemberActivity.getSignper() != null) { //报名人数
+                        if (qkjvipMemberActivity.getSignper() >= qkjvipMemberActivity.getPriPerson()) {//报名人数小于限制人数
+                            isabove = "1";
                         }
                     }
                 }
+            } else { //私有活动是否包含当前人
+                //查询关注人的最新memberid
+//                if (list != null && list.size() > 0) {
+//                    if (mmbs != null && mmbs.size() > 0) {
+//                        String myop = list.get(0).getMemberId();
+//                        for (QkjvipMemberActivitymbsEntity ms : mmbs) {
+//                            if (ms != null && ms.getMemberidto() != null && ms.getMemberidto().equals(myop)) {//邀约里有此openid
+//                                isinvite = "1";
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
             }
         }
         return RestResponse.success().put("memberactivity", qkjvipMemberActivity).put("istake",iscanjia).put("isabove",isabove).put("isinvite",isinvite).put("list",list);

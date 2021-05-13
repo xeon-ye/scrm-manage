@@ -26,6 +26,11 @@
             and m.memberidto='${params.memberId}')
             )
         </if>
+        <if test="params.myopenid != null and params.myopenid.trim() != ''">
+            AND EXISTS (SELECT 1 from qkjvip_member a
+            where a.member_id=t.member_id and a.openid='${params.myopenid}')
+        </if>
+
     </sql>
 
     <select id="selectQkjvipMemberSignupmemberPage" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberSignupmemberEntity">
