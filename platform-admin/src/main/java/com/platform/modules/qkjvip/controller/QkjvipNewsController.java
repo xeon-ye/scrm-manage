@@ -74,6 +74,8 @@ public class QkjvipNewsController extends AbstractController {
     @PostMapping("/newsInfo")
     public RestResponse newsInfo(@RequestBody QkjvipNewsEntity qkjvipNews) {
         qkjvipNews = qkjvipNewsService.getById(qkjvipNews.getId());
+        qkjvipNews.setReadnum(qkjvipNews.getReadnum() + 1);
+        qkjvipNewsService.update(qkjvipNews);
 
         return RestResponse.success().put("news", qkjvipNews);
     }
@@ -119,6 +121,7 @@ public class QkjvipNewsController extends AbstractController {
         qkjvipNews.setAddUser(getUserId());
         qkjvipNews.setAddDept(getOrgNo());
         qkjvipNews.setAddTime(new Date());
+        qkjvipNews.setReadnum(0);
         qkjvipNewsService.add(qkjvipNews);
 
         return RestResponse.success();
