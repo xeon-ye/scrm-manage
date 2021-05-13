@@ -210,14 +210,17 @@ public class QkjvipMemberActivityController extends AbstractController {
                 acmap.put("isfollow",params.get("isfollow"));
             }
             list = memberService.selectMemberByOpenid(acmap);
-            Map<String, Object> mapt = new HashMap<>();
-            map.put("myopenid",params.get("myopenid")+"");
-            map.put("acitvityId",params.get("id").toString());
-            List<QkjvipMemberSignupEntity> sgs=new ArrayList<>();
-            sgs=qkjvipMemberSignupService.queryAll(map);
-            if(sgs.size()>0){
-                iscanjia=1;
+            if(params.get("isqiandao") == null || !params.get("isqiandao").equals("1")){ //是报名
+                Map<String, Object> mapt = new HashMap<>();
+                map.put("myopenid",params.get("myopenid")+"");
+                map.put("acitvityId",params.get("id").toString());
+                List<QkjvipMemberSignupEntity> sgs=new ArrayList<>();
+                sgs=qkjvipMemberSignupService.queryAll(map);
+                if(sgs.size()>0){
+                    iscanjia=1;
+                }
             }
+
         }
         if(params.get("juerumemberid")!=null && !params.get("juerumemberid").equals("")){//根据觉如memberid查询是否参加过本活动
             acmap.clear();
@@ -608,7 +611,7 @@ public class QkjvipMemberActivityController extends AbstractController {
         isex.setAtype("1");
         String surl="";
         if (oneflag!=null&&!oneflag.equals("")){//有单据
-            surl = "/components/newWebview/webview?name=详情&url=https://crm.qkj.com.cn/#/activity?id=" + oneflag + "";
+            surl = "/components/newWebview/webview?name=" + URLEncoder.encode("详情") + "&url=" + URLEncoder.encode("https://crm.qkj.com.cn/#/activity?id=" + oneflag);
             isex.setHtmlurl(surl);
         }
         islist.add(isex);
@@ -617,7 +620,7 @@ public class QkjvipMemberActivityController extends AbstractController {
         isex.setAtype("4");
         surl="";
         if (twoflag!=null&&!twoflag.equals("")){//有单据
-            surl = "/components/newWebview/webview?name=详情&url=https://crm.qkj.com.cn/#/activity?id=" + twoflag + "";
+            surl = "/components/newWebview/webview?name=" + URLEncoder.encode("详情") + "&url=" + URLEncoder.encode("https://crm.qkj.com.cn/#/activity?id=" + twoflag);
             isex.setHtmlurl(surl);
         }
         islist.add(isex);
@@ -626,7 +629,7 @@ public class QkjvipMemberActivityController extends AbstractController {
         isex.setAtype("6");
         surl="";
         if (threeflag!=null&&!threeflag.equals("")){//有单据
-            surl = "/components/newWebview/webview?name=详情&url=https://crm.qkj.com.cn/#/activity?id=" + threeflag + "";
+            surl = "/components/newWebview/webview?name=" + URLEncoder.encode("详情") + "&url=" + URLEncoder.encode("https://crm.qkj.com.cn/#/activity?id=" + threeflag);
             isex.setHtmlurl(surl);
         }
         islist.add(isex);

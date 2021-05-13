@@ -151,6 +151,29 @@ public class QkjvipMemberSignupController extends AbstractController {
             qkjvipMemberSignup.setMemberid(member.getMemberId());
             qkjvipMemberSignupService.add(qkjvipMemberSignup);
 
+            try {
+                if(qkjvipMemberSignup.getIntegral()!=null&&qkjvipMemberSignup.getIntegral()>0) {
+                    Map map = new HashMap();
+                    map.put("remark", "活动报名得积分");
+                    map.put("crmmemberid", member.getMemberId());
+                    map.put("actiontype", 16);
+                    map.put("integral", qkjvipMemberSignup.getIntegral());
+
+                    String queryJsonStr = JsonHelper.toJsonString(map);
+                    String resultPost = HttpClient.sendPost(Vars.CONTENT_SHARE_URL, queryJsonStr);
+                    JSONObject resultObject = JSON.parseObject(resultPost);
+                    if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+                        System.out.println("活动报名得积分获得成功！");
+                    } else {
+                        System.out.println("活动报名得积分获得失败！");
+                    }
+                }
+            } catch (IOException e) {
+                System.out.println("scrm活动报名得积分获得失败！");
+            }
+
+
+
         }
 
         //查询活动情况
