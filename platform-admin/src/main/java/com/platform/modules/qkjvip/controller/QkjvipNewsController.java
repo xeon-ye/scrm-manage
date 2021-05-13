@@ -121,6 +121,7 @@ public class QkjvipNewsController extends AbstractController {
         qkjvipNews.setAddUser(getUserId());
         qkjvipNews.setAddDept(getOrgNo());
         qkjvipNews.setAddTime(new Date());
+        qkjvipNews.setReadnum(0);
         qkjvipNewsService.add(qkjvipNews);
 
         return RestResponse.success();
