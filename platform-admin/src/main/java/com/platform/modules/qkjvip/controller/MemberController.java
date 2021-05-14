@@ -183,30 +183,6 @@ public class MemberController extends AbstractController {
     }
 
     /**
-     * 获取会员等级
-     *
-     * @param memberLevelQuery 查询参数
-     * @return RestResponse
-     */
-    @PostMapping("/getMemberLevel")
-    @RequiresPermissions("qkjvip:member:info")
-    public RestResponse getMemberLevel(@RequestBody MemberLevelQueryEntity memberLevelQuery) throws IOException {
-
-        String queryJsonStr = JsonHelper.toJsonString(memberLevelQuery, "yyyy-MM-dd HH:mm:ss");
-
-        String resultPost = HttpClient.sendPost(Vars.MEMBER_GETLEVEL_URL, queryJsonStr);
-        System.out.println("会员等级条件：" + queryJsonStr);
-        //读取会员等级
-        JSONObject resultObject = JSON.parseObject(resultPost);
-        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
-            String memberlevel = resultObject.get("memberlevel").toString();
-            return RestResponse.success().put("memberlevel", memberlevel);
-        } else {
-            return RestResponse.error(resultObject.get("descr").toString());
-        }
-    }
-
-    /**
      * 保存会员信息
      *
      * @param memberImport memberImport
@@ -423,6 +399,52 @@ public class MemberController extends AbstractController {
             }
         }
         return RestResponse.success().put("msg", "导入成功！");
+    }
+
+    /**
+     * 获取会员等级
+     *
+     * @param memberLevelQuery 查询参数
+     * @return RestResponse
+     */
+    @PostMapping("/getMemberLevel")
+    @RequiresPermissions("qkjvip:member:info")
+    public RestResponse getMemberLevel(@RequestBody MemberLevelQueryEntity memberLevelQuery) throws IOException {
+
+        String queryJsonStr = JsonHelper.toJsonString(memberLevelQuery, "yyyy-MM-dd HH:mm:ss");
+
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_GETLEVEL_URL, queryJsonStr);
+        System.out.println("会员等级条件：" + queryJsonStr);
+        //读取会员等级
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+            String memberlevel = resultObject.get("memberlevel").toString();
+            return RestResponse.success().put("memberlevel", memberlevel);
+        } else {
+            return RestResponse.error(resultObject.get("descr").toString());
+        }
+    }
+
+    /**
+     * 扫码领取会员等级
+     *
+     * @param memberLevelFromScanEntity 查询参数
+     * @return RestResponse
+     */
+    @PostMapping("/getMemberLevelFromScan")
+    public RestResponse getMemberLevelFromScan(@RequestBody MemberLevelFromScanEntity memberLevelFromScanEntity) throws IOException {
+
+        String queryJsonStr = JsonHelper.toJsonString(memberLevelFromScanEntity);
+
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_GETLEVEL_FROM_SCAN_URL, queryJsonStr);
+        System.out.println("扫码领取会员等级条件：" + queryJsonStr);
+        //读取会员等级
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+            return RestResponse.success();
+        } else {
+            return RestResponse.error(resultObject.get("descr").toString());
+        }
     }
 
     /**
