@@ -132,6 +132,17 @@ public class QkjvipMemberActivityController extends AbstractController {
         }
     }
 
+    @RequestMapping("/queryAllcount")
+    public RestResponse queryAllcount(@RequestParam Map<String, Object> params) {
+        //已参加的活动
+        List<QkjvipMemberActivityEntity> list=new ArrayList<>();
+        params.put("ispri",0);
+        String topClassShow = params.get("topClassShow")+"";
+        Page page  = qkjvipMemberActivityService.queryAllSignAddress(params);
+        Page mypage = qkjvipMemberActivityService.queryAllSignAddressmain(params);
+        return RestResponse.success().put("page", page).put("pagetwo",mypage);
+    }
+
     /**
      * 分页查询
      *
@@ -189,7 +200,8 @@ public class QkjvipMemberActivityController extends AbstractController {
         if(acs!=null&&acs.size()==1){
             qkjvipMemberActivity=acs.get(0);
         }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map=new HashMap<String,Object>();
+        map.put("activityId",params.get("id").toString());
         List<QkjvipMemberActivitymbsEntity> mmbs = new ArrayList<>();
         if(params.get("isqiandao") == null || !params.get("isqiandao").equals("1")) { //是报名才查询详情及地址
             mmbs = qkjvipMemberActivitymbsService.queryAll(map);
