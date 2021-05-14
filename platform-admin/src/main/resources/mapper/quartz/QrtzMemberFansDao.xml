@@ -10,7 +10,7 @@
 		</if>
 		UNION
 		SELECT WechatAppId AppId, AppOpenId OpenId, UnionId FROM qkjvip_member_jueru
-		WHERE memberchannel = 19 and disabled=0 and IsSubscribe = 1 and (crm_memberid IN ${params.memberidstr} or AppOpenId IN ${params.openidStr})
+		WHERE memberchannel = 200 and disabled=0 and IsSubscribe = 1 and (crm_memberid IN ${params.memberidstr} or AppOpenId IN ${params.openidStr})
 		<if test="params.appidstr != null and params.appidstr.trim() != ''">
 			AND WechatAppId IN ${params.appidstr}
 		</if>
@@ -27,7 +27,7 @@
 		GROUP BY ServiceName, AppId
 		UNION
 		SELECT COUNT(*) membernum, ServiceName, WechatAppId AppId FROM qkjvip_member_jueru
-		WHERE memberchannel=19 and disabled=0 and IsSubscribe = 1 and (crm_memberid IN ${params.userStr} or AppOpenId IN ${params.openidStr})
+		WHERE memberchannel=200 and disabled=0 and IsSubscribe = 1 and (crm_memberid IN ${params.userStr} or AppOpenId IN ${params.openidStr})
 		GROUP BY ServiceName, WechatAppId
 	</select>
 </mapper>
