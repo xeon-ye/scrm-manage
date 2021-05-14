@@ -440,15 +440,7 @@ public class MemberController extends AbstractController {
         System.out.println("扫码领取会员等级条件：" + queryJsonStr);
         //读取会员等级
         JSONObject resultObject = JSON.parseObject(resultPost);
-        int resultcode = -999;
-        if (resultObject.get("resultcode") != null) {
-            resultcode = Integer.parseInt(resultObject.get("resultcode").toString());
-        }
-        if (200 == resultcode) {  //调用成功
-            return RestResponse.success();
-        } else {
-            return RestResponse.error(resultcode, resultObject.get("descr").toString());
-        }
+        return RestResponse.success().put("result", resultObject);
     }
 
     /**
