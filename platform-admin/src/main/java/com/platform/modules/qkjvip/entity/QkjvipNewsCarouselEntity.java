@@ -47,6 +47,10 @@ public class QkjvipNewsCarouselEntity implements Serializable {
      */
     private String linkurl;
     /**
+     * 类型
+     */
+    private Integer carouseltype;
+    /**
      * 状态（0：正常 1：禁用）
      */
     private Integer status;
