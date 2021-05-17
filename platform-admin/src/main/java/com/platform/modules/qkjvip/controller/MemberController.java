@@ -426,6 +426,23 @@ public class MemberController extends AbstractController {
     }
 
     /**
+     * 扫码check等级以及是否被领取
+     *
+     * @param memberLevelFromScanEntity 查询参数
+     * @return RestResponse
+     */
+    @PostMapping("/checkFromScan")
+    public RestResponse checkFromScan(@RequestBody MemberLevelFromScanEntity memberLevelFromScanEntity) throws IOException {
+
+        String queryJsonStr = JsonHelper.toJsonString(memberLevelFromScanEntity);
+
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_VALIDCHECK_FROM_SCAN, queryJsonStr);
+        System.out.println("扫码check会员等级以及是否被领取条件：" + queryJsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        return RestResponse.success().put("result", resultObject);
+    }
+
+    /**
      * 扫码领取会员等级
      *
      * @param memberLevelFromScanEntity 查询参数
@@ -436,7 +453,7 @@ public class MemberController extends AbstractController {
 
         String queryJsonStr = JsonHelper.toJsonString(memberLevelFromScanEntity);
 
-        String resultPost = HttpClient.sendPost(Vars.MEMBER_GETLEVEL_FROM_SCAN_URL, queryJsonStr);
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_GETLEVEL_FROM_SCAN, queryJsonStr);
         System.out.println("扫码领取会员等级条件：" + queryJsonStr);
         //读取会员等级
         JSONObject resultObject = JSON.parseObject(resultPost);
