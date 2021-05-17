@@ -24,6 +24,7 @@ import com.platform.modules.qkjvip.service.QkjvipMemberIntentionorderService;
 import com.platform.modules.qkjvip.service.QkjvipMemberVisitMaterialService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.service.QkjvipMemberVisitService;
+import com.platform.modules.sys.service.SysUserChannelService;
 import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.Vars;
 import org.apache.poi.ss.formula.functions.T;
@@ -49,6 +50,8 @@ public class QkjvipMemberVisitController extends AbstractController {
     private QkjvipMemberVisitMaterialService qkjvipMemberVisitMaterialService;
     @Autowired
     private QkjvipMemberIntentionorderService qkjvipMemberIntentionorderService;
+    @Autowired
+    private SysUserChannelService sysUserChannelService;
 
     /**
      * 查看所有列表
@@ -105,6 +108,12 @@ public class QkjvipMemberVisitController extends AbstractController {
         //查询订单
         QkjvipOrderOrderQuaryEntity order = new QkjvipOrderOrderQuaryEntity();
         order.setVisitid(id);
+        if (!getUser().getUserName().contains("admin")) {  // 空默认是全部所有权限
+            order.setCurrentmemberid(getUserId());
+            order.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId())); // 0代表选择的是全部渠道传-1
+        } else {
+            order.setListmemberchannel("-1");
+        }
         Object obj = JSONArray.toJSON(order);
         String queryJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
         String resultPost = HttpClient.sendPost(Vars.MEMBER_ORDER_ORDER_LIST, queryJsonStr);
