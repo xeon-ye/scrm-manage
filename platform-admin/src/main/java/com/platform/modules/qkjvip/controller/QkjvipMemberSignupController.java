@@ -149,6 +149,7 @@ public class QkjvipMemberSignupController extends AbstractController {
             qkjvipMemberActivitymbsService.supadd(qkjvipMemberSignup.getAcitvityId(),member.getMemberId());
             //添加报名记录
             qkjvipMemberSignup.setMemberid(member.getMemberId());
+            qkjvipMemberSignup.setAddtime(new Date());
             qkjvipMemberSignupService.add(qkjvipMemberSignup);
 
             try {

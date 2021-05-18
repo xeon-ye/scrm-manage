@@ -17,6 +17,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 实体
@@ -57,6 +58,8 @@ public class QkjvipMemberSignupEntity implements Serializable {
      * 地址
      */
     private String address;
+
+    private Date addtime;
     /**
      * id
      */
