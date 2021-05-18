@@ -363,6 +363,8 @@ public class QkjvipMemberMessageController extends AbstractController {
             sonMap.put("coverUrl", qkjvipMemberMessage.getCoverImage());
             StringBuilder sb = new StringBuilder();
             sb.append(qkjvipMemberMessage.getWxContent());
+            String tmpUrl = qkjvipMemberMessage.getAppletsurl() + "?" + URLEncoder.encode(qkjvipMemberMessage.getAppletsparam(), "UTF-8");
+            sb.append("<a class=\"weapp_text_link\" style=\"font-size:17px;\" data-miniprogram-appid=\"wxacf5db8e2b0ef6a5\" data-miniprogram-path=\"" + tmpUrl + "\" data-miniprogram-nickname=\"青稞荟\" href=\"\" data-miniprogram-type=\"text\" data-miniprogram-servicetype=\"\">点击打开小程序</a>");
             if (qkjvipMemberMessage.getLinkImage() != null) {
                 sb.append("<a href='{url}'><img src='" + qkjvipMemberMessage.getLinkImage() + "'></a>");
             }
