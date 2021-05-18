@@ -279,20 +279,29 @@ public class QkjvipMemberMessageController extends AbstractController {
             qkjvipMemberMessageService.add(qkjvipMemberMessage);
             //群发发短信
             if (qkjvipMemberMessage.getChannels().contains("012345678987654321")) {  //包含短信修改为群发孙珊
-                StringBuffer mobiles=new StringBuffer();
-                msg = qkjvipMemberMessage.getDxContent() + "请在微信里打开以下链接：" + qkjvipMemberMessage.getUrl();
-                for(QkjvipMemberMessageUserQueryEntity selectedUser : selectedUserList){
-                    if (selectedUser != null && StringUtils.isNotBlank(selectedUser.getMobile())) {
-                        mobiles.append(selectedUser.getMobile()+",");
+                //调用接口返回小程序url
+                String tmpUrl =  Vars.APPLETS_URL_GET + "?path=" + URLEncoder.encode(qkjvipMemberMessage.getAppletsurl(), "UTF-8") + "&query=" + URLEncoder.encode(qkjvipMemberMessage.getAppletsparam(), "UTF-8");
+                System.out.println("获取小程序URL检索条件：" + tmpUrl);
+                String resultPost = HttpClient.sendGet(tmpUrl);
+                JSONObject resultObject = JSON.parseObject(resultPost);
+                if ("0".equals(resultObject.get("code").toString())) {  //调用成功
+                    StringBuffer mobiles = new StringBuffer();
+                    msg = qkjvipMemberMessage.getDxContent() + " 请点击以下链接进入青稞荟小程序查看：" + resultObject.get("data").toString();
+                    for(QkjvipMemberMessageUserQueryEntity selectedUser : selectedUserList){
+                        if (selectedUser != null && StringUtils.isNotBlank(selectedUser.getMobile())) {
+                            mobiles.append(selectedUser.getMobile()+",");
+                        }
                     }
-                }
-                SysSmsLogEntity smsLog = new SysSmsLogEntity();
-                smsLog.setContent(msg);
-                smsLog.setMobile(mobiles.toString());
-                SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSmsBach(smsLog);
-                if (sysSmsLogEntity.getSendStatus() == 1) {
-                    TransactionAspectSupport.currentTransactionStatus().rollbackToSavepoint(savePoint);
-                    return RestResponse.error("短信通知发送失败！");
+                    SysSmsLogEntity smsLog = new SysSmsLogEntity();
+                    smsLog.setContent(msg);
+                    smsLog.setMobile(mobiles.toString());
+                    SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSmsBach(smsLog);
+                    if (sysSmsLogEntity.getSendStatus() == 1) {
+                        TransactionAspectSupport.currentTransactionStatus().rollbackToSavepoint(savePoint);
+                        return RestResponse.error("短信通知发送失败！");
+                    }
+                } else {
+                    System.out.println("获取小程序URL失败：" + resultObject.get("msg").toString());
                 }
             }
             //群发微信

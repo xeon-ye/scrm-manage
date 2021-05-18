@@ -67,6 +67,14 @@ public class QkjvipMemberMessageEntity implements Serializable {
      */
     private String url;
     /**
+     * 小程序url
+     */
+    private String appletsurl;
+    /**
+     * 小程序参数
+     */
+    private String appletsparam;
+    /**
      * title
      */
     @NotBlank(message = "标题不可为空", groups = {AddGroup.class, UpdateGroup.class})

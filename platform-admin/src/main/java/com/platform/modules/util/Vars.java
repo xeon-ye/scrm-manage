@@ -34,7 +34,8 @@ public class Vars {
 	public static String MEMBER_GETINFO_URL = "http://api.scrm.qkj.com.cn/api/Member/GetMemberEntity";
 	public static String MEMBER_GETLEVEL_URL = "http://api.scrm.qkj.com.cn/api/MemberLevel/GetMemberLevel";
 	public static String MEMBER_SETLEVEL_URL = "http://api.scrm.qkj.com.cn/api/MemberLevel/SetMemberLevel";
-	public static String MEMBER_GETLEVEL_FROM_SCAN_URL = "http://api.scrm.qkj.com.cn/api/MemberLevel/ReceiveMemberSendLevel";
+	public static String MEMBER_GETLEVEL_FROM_SCAN = "http://api.scrm.qkj.com.cn/api/MemberLevel/ReceiveMemberSendLevel";
+	public static String MEMBER_VALIDCHECK_FROM_SCAN = "http://api.scrm.qkj.com.cn/api/MemberLevel/ReceiveMemberSendLevel";
 	//会员检索url end
 	//积分发放url start
 	public static String MEMBER_INTEGRAL_SEND_URL = "http://api.scrm.qkj.com.cn/api/Integral/SetBatchMemberIntegral";
@@ -43,6 +44,8 @@ public class Vars {
 	public static String APPID_GETLIST_URL = "http://scrm-wxcb.ym.qkj.com.cn/WeiXinPublish/GetPublishList";
 	//群发图文消息接口
 	public static String MESSAGE_SEND = "http://scrm-wxcb.ym.qkj.com.cn/WeiXinMsg/MassMultiNewsMessage";
+	// 微信url接口
+	public static String APPLETS_URL_GET = "http://scrm-wxcb.ym.qkj.com.cn/MiniProgram/GetTempUrlLink";
 	//公众号url end
 	//优惠券查询
 	public static String MEMBER_CPON_LIST_URl = "http://api.mall.qkj.com.cn/MobileAPI/Coupon/GetCouponList";

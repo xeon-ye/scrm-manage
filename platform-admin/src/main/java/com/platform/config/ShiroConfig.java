@@ -79,6 +79,7 @@ public class ShiroConfig {
         filterMap.put("/qkjvip/member/selectMemByOpenid", "anon");
         filterMap.put("/qkjvip/member/queryAll", "anon");
         filterMap.put("/qkjvip/member/selectMemByJueruMemberid", "anon");
+        filterMap.put("/qkjvip/member/checkFromScan", "anon"); // liuqianru add 2021/05/17
         filterMap.put("/qkjvip/member/getMemberLevelFromScan", "anon"); // liuqianru add 2021/05/14
         filterMap.put("/qkjvip/membersignup/save", "anon");
         filterMap.put("/qkjvip/membersignup/queryAll", "anon");
