@@ -188,7 +188,8 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
         String mobile=qkjvipMemberSignupmember.getMobile();//模拟的手机号
 
         MemberEntity member = new MemberEntity();
-        member.setMobile(mobile);
+        //member.setMobile(mobile);
+        member.setScanphoneno(mobile);
         member.setMemberId(qkjvipMemberSignupmember.getMemberId());
         member.setMemberName(qkjvipMemberSignupmember.getUserName());
         member.setSex(qkjvipMemberSignupmember.getSex());

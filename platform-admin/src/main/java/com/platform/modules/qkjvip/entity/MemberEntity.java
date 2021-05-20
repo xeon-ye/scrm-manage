@@ -348,6 +348,12 @@ public class MemberEntity implements Serializable {
     @TableField(exist = false)
     private Integer oldsex;
 
+    /**
+     * 孙珊添加活动报名用
+     */
+    @TableField(exist = false)
+    private String scanphoneno;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -134,9 +134,11 @@
     <select id="selectMemberByOpenid" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
         select top 1 ISNULL(b.memberidto,b.member_id) as memberId,
         (
-        select  top 1 b.mobile from [dbo].[qkjvip_member_jueru] a
-        inner join qkjvip_member b on a.crm_memberid=b.member_id
-        where a.AppOpenId=#{params.openid} AND a.IsSubscribe = 1 and ISNULL(b.mobile, 'tt')!='tt')
+        select  top 1 ISNULL(tb.mobile,ta.ScanPhoneNo) as mobile  from [dbo].[qkjvip_member_jueru] ta
+        inner join qkjvip_member tb on ta.crm_memberid=tb.member_id
+        where ta.AppOpenId=#{params.openid} AND ta.IsSubscribe = 1
+        and ((tb.mobile!='' and tb.mobile is not null) or (ta.ScanPhoneNo!='' and ta.ScanPhoneNo is not null))
+        )
         as mobile,
         ISNULL(b.real_name, b.member_name) as member_name,
         case when (b.sex=3) then 1
@@ -153,7 +155,7 @@
 
     <!--根据jueru memberid判断是否关注公众号：孙珊珊-->
     <select id="selectMemberByJuruMemberid" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
-        select top 1 ISNULL(a.memberidto,a.member_id) as memberId,a.mobile,
+        select top 1 ISNULL(a.memberidto,a.member_id) as memberId,ISNULL(a.mobile,b.ScanPhoneNo) as mobile,
         ISNULL(a.real_name, a.member_name) as member_name,
         case when (b.sex=3) then 1
         else b.sex end as sex,

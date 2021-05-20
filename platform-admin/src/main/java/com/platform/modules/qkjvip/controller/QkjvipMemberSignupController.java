@@ -116,7 +116,8 @@ public class QkjvipMemberSignupController extends AbstractController {
             qkjvipMemberSignup = list.get(0);
         }else{
             MemberEntity member = new MemberEntity();
-            member.setMobile(qkjvipMemberSignup.getPhone());
+            //member.setMobile(qkjvipMemberSignup.getPhone());
+            member.setScanphoneno(qkjvipMemberSignup.getPhone());
             member.setMemberId(qkjvipMemberSignup.getMemberid());
             member.setSex(qkjvipMemberSignup.getSex());
             member.setMemberName(qkjvipMemberSignup.getUserName());
