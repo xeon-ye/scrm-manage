@@ -216,6 +216,7 @@ public class QkjvipMemberActivityController extends AbstractController {
             }
         }
         int iscanjia=0;
+        int isbaoming =0;
         List<MemberEntity> list=new ArrayList<>();
         if(params.get("myopenid")!=null && !params.get("myopenid").equals("")){//查询是否参加过本活动
             logger.info("查询活动详情：openid:" + params.get("myopenid"));
@@ -236,6 +237,15 @@ public class QkjvipMemberActivityController extends AbstractController {
                 }
             } else { //是否签到
                 Map<String, Object> mapt = new HashMap<>();
+                map.put("myopenid",params.get("myopenid")+"");
+                map.put("acitvityId",params.get("id").toString());
+                List<QkjvipMemberSignupEntity> sgs=new ArrayList<>();
+                sgs=qkjvipMemberSignupService.queryAll(map);
+                if(sgs.size()>0){
+                    isbaoming=1;
+                }
+
+                mapt.clear();
                 mapt.put("myopenid", params.get("myopenid") + "");
                 mapt.put("activityId",params.get("id").toString());
                 List<QkjvipMemberSignupmemberEntity> listed = qkjvipMemberSignupmemberService.queryAll(mapt);
@@ -264,6 +274,15 @@ public class QkjvipMemberActivityController extends AbstractController {
                     iscanjia = 1;
                 }
             } else { //是否签到
+                mapt.clear();
+                mapt.put("memberid", params.get("juerumemberid") + "");
+                mapt.put("acitvityId", params.get("id").toString());
+                List<QkjvipMemberSignupEntity> sgs = new ArrayList<>();
+                sgs = qkjvipMemberSignupService.queryAll(mapt);
+                if (sgs.size() > 0) {
+                    isbaoming = 1;
+                }
+                mapt.clear();
                 mapt.put("memberId", params.get("juerumemberid") + "");
                 mapt.put("activityId",params.get("id").toString());
                 List<QkjvipMemberSignupmemberEntity> listed = qkjvipMemberSignupmemberService.queryAll(mapt);
@@ -298,7 +317,7 @@ public class QkjvipMemberActivityController extends AbstractController {
 //                }
             }
         }
-        return RestResponse.success().put("memberactivity", qkjvipMemberActivity).put("istake",iscanjia).put("isabove",isabove).put("isinvite",isinvite).put("list",list);
+        return RestResponse.success().put("memberactivity", qkjvipMemberActivity).put("istake",iscanjia).put("isabove",isabove).put("isinvite",isinvite).put("list",list).put("isbaoming",isbaoming);
     }
 
     /**

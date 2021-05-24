@@ -91,6 +91,7 @@ public class QkjvipMemberSignupServiceImpl extends ServiceImpl<QkjvipMemberSignu
             m.setAcitvityId(activity);
             m.setPhone(mem.getMobile());
             m.setUserName(mem.getMemberName());
+            if(mem.getSex()!=null&&(mem.getSex().equals(1) || mem.getSex().equals(2)))m.setSex(mem.getSex());
             this.add(m);
             id=m.getId();
         }else{
