@@ -135,10 +135,9 @@
         select top 1 ISNULL(b.memberidto,b.member_id) as memberId,
         (
         select  top 1 ISNULL(tb.mobile,ta.ScanPhoneNo) as mobile  from [dbo].[qkjvip_member_jueru] ta
-        inner join qkjvip_member tb on ta.crm_memberid=tb.member_id
+        inner join qkjvip_member tb on ta.crm_memberid=tb.member_id and ta.Disabled=0
         where ta.AppOpenId=#{params.openid} AND ta.IsSubscribe = 1
-        and ((tb.mobile!='' and tb.mobile is not null) or (ta.ScanPhoneNo!='' and ta.ScanPhoneNo is not null))
-        )
+        and ((tb.mobile!='' and tb.mobile is not null) or (ta.ScanPhoneNo!='' and ta.ScanPhoneNo is not null)))
         as mobile,
         ISNULL(b.real_name, b.member_name) as member_name,
         case when (b.sex=3) then 1
@@ -155,14 +154,14 @@
 
     <!--根据jueru memberid判断是否关注公众号：孙珊珊-->
     <select id="selectMemberByJuruMemberid" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
-        select top 1 ISNULL(a.memberidto,a.member_id) as memberId,ISNULL(a.mobile,b.ScanPhoneNo) as mobile,
+        select top 1 ISNULL(a.memberidto,a.member_id) as memberId,ISNULL(ISNULL(a.mobile,b.PhoneNo),b.ScanPhoneNo) as mobile,
         ISNULL(a.real_name, a.member_name) as member_name,
         case when (b.sex=3) then 1
         else b.sex end as sex,
         b.sex as oldsex
         from [dbo].[qkjvip_member] a
         inner join [dbo].[qkjvip_member_jueru] b on
-        (a.member_id=b.crm_memberid or a.memberidto=b.crm_memberid)
+        (a.member_id=b.crm_memberid or a.memberidto=b.crm_memberid) and b.MemberChannel=18
         where a.member_id=#{params.memberId}  and b.Disabled=0
         <if test="params.isfollow != null and params.isfollow != ''">
             and a.statusflag!=1
