@@ -81,7 +81,7 @@ public class QkjvipMemberSignupServiceImpl extends ServiceImpl<QkjvipMemberSignu
         mem=memberService.getById(member_id);
         //是否存在记录
         Map<String, Object> map=new HashMap<String,Object>();
-        map.put("activityId",activity);
+        map.put("acitvityId",activity);
         map.put("memberid",member_id);
         List<QkjvipMemberSignupEntity> mbslist = new ArrayList<>();
         mbslist=this.queryAll(map);
