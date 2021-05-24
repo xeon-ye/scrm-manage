@@ -145,7 +145,7 @@
         b.sex as oldsex
         from [dbo].[qkjvip_member_jueru] a
         inner join qkjvip_member b on a.crm_memberid=b.member_id
-        where a.AppOpenId=#{params.openid}
+        where a.AppOpenId=#{params.openid} and a.Disabled=0
 
         <if test="params.isfollow != null and params.isfollow != ''">
             and a.MemberChannel=200 AND a.IsSubscribe = 1
