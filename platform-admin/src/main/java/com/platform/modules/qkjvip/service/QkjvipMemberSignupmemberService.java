@@ -35,6 +35,15 @@ public interface QkjvipMemberSignupmemberService extends IService<QkjvipMemberSi
     List<QkjvipMemberSignupmemberEntity> queryAll(Map<String, Object> params);
 
     /**
+     * 查询是否存在
+     *
+     * @param params 查询参数
+     * @return List
+     */
+
+    List<QkjvipMemberSignupmemberEntity> queryTopOne(Map<String, Object> params);
+
+    /**
      * 分页查询
      *
      * @param params 查询参数

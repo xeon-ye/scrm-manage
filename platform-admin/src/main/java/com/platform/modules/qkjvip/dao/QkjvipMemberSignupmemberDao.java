@@ -37,6 +37,8 @@ public interface QkjvipMemberSignupmemberDao extends BaseMapper<QkjvipMemberSign
      */
     List<QkjvipMemberSignupmemberEntity> queryAll(@Param("params") Map<String, Object> params);
 
+    List<QkjvipMemberSignupmemberEntity> queryTopOne(@Param("params") Map<String, Object> params);
+
     /**
      * 自定义分页查询
      *

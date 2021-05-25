@@ -105,7 +105,7 @@ public class QkjvipMemberActivitymbsServiceImpl extends ServiceImpl<QkjvipMember
         map.put("activityId",activity);
         map.put("memberId",member_id);
         List<QkjvipMemberActivitymbsEntity> mbslist = new ArrayList<>();
-        mbslist=this.queryAll(map);
+        mbslist=baseMapper.queryTopOne(map);
         if(mbslist.size()<=0){//无邀约
             QkjvipMemberActivitymbsEntity m=new QkjvipMemberActivitymbsEntity();
             m.setStatus(2);//自主报名

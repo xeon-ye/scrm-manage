@@ -39,6 +39,13 @@ public interface QkjvipMemberActivitymbsDao extends BaseMapper<QkjvipMemberActiv
     List<QkjvipMemberActivitymbsEntity> queryAll(@Param("params") Map<String, Object> params);
 
     /**
+     * 查询是否存在
+     * @param params
+     * @return
+     */
+    List<QkjvipMemberActivitymbsEntity> queryTopOne(@Param("params") Map<String, Object> params);
+
+    /**
      * 自定义分页查询
      *
      * @param page   分页参数

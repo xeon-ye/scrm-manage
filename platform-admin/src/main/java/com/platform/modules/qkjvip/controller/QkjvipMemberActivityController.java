@@ -248,7 +248,7 @@ public class QkjvipMemberActivityController extends AbstractController {
                 mapt.clear();
                 mapt.put("myopenid", params.get("myopenid") + "");
                 mapt.put("activityId",params.get("id").toString());
-                List<QkjvipMemberSignupmemberEntity> listed = qkjvipMemberSignupmemberService.queryAll(mapt);
+                List<QkjvipMemberSignupmemberEntity> listed = qkjvipMemberSignupmemberService.queryTopOne(mapt);
                 if (listed.size() > 0) {
                     iscanjia = 1;
                     logger.info("已签到");
@@ -285,7 +285,7 @@ public class QkjvipMemberActivityController extends AbstractController {
                 mapt.clear();
                 mapt.put("memberId", params.get("juerumemberid") + "");
                 mapt.put("activityId",params.get("id").toString());
-                List<QkjvipMemberSignupmemberEntity> listed = qkjvipMemberSignupmemberService.queryAll(mapt);
+                List<QkjvipMemberSignupmemberEntity> listed = qkjvipMemberSignupmemberService.queryTopOne(mapt);
                 if (listed.size() > 0) {
                     iscanjia = 1;
                 }
@@ -302,19 +302,6 @@ public class QkjvipMemberActivityController extends AbstractController {
                         }
                     }
                 }
-            } else { //私有活动是否包含当前人
-                //查询关注人的最新memberid
-//                if (list != null && list.size() > 0) {
-//                    if (mmbs != null && mmbs.size() > 0) {
-//                        String myop = list.get(0).getMemberId();
-//                        for (QkjvipMemberActivitymbsEntity ms : mmbs) {
-//                            if (ms != null && ms.getMemberidto() != null && ms.getMemberidto().equals(myop)) {//邀约里有此openid
-//                                isinvite = "1";
-//                                break;
-//                            }
-//                        }
-//                    }
-//                }
             }
         }
         return RestResponse.success().put("memberactivity", qkjvipMemberActivity).put("istake",iscanjia).put("isabove",isabove).put("isinvite",isinvite).put("list",list).put("isbaoming",isbaoming);

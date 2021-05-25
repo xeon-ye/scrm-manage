@@ -106,7 +106,7 @@ public class QkjvipMemberSignupController extends AbstractController {
         //params.put("phone",qkjvipMemberSignup.getPhone());
         params.put("memberid",qkjvipMemberSignup.getMemberid());
         params.put("acitvityId",qkjvipMemberSignup.getAcitvityId());
-        List<QkjvipMemberSignupEntity> list = qkjvipMemberSignupService.queryAll(params);
+        List<QkjvipMemberSignupEntity> list = qkjvipMemberSignupService.queryTopOne(params);
         if(qkjvipMemberSignup!=null&&qkjvipMemberSignup.getOpenid()!=null){
             logger.info("报名信息："+"memberid:"+qkjvipMemberSignup.getMemberid()+";openid:" + qkjvipMemberSignup.getOpenid());
         }

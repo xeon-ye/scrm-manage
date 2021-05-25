@@ -25,6 +25,7 @@ import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.Vars;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -193,20 +194,11 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
         member.setMemberId(qkjvipMemberSignupmember.getMemberId());
         member.setMemberName(qkjvipMemberSignupmember.getUserName());
         member.setSex(qkjvipMemberSignupmember.getSex());
-        //修改此会员手机号
-        if(qkjvipMemberSignupmember!=null&&qkjvipMemberSignupmember.getIsphone()!=null&&qkjvipMemberSignupmember.getIsphone()==1){
-            Object obj = JSONArray.toJSON(member);
-            String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
-            String resultPost = HttpClient.sendPost(Vars.MEMBER_UPDATE_URL, memberJsonStr);
-            JSONObject resultObject = JSON.parseObject(resultPost);
-            if (!"200".equals(resultObject.get("resultcode").toString())) {  //修改手机号成功
-            }
-        }
         //是否已签到
         params.clear();
         params.put("memberId",member.getMemberId());
         params.put("activityId",qkjvipMemberSignupmember.getActivityId());
-        List<QkjvipMemberSignupmemberEntity> list = qkjvipMemberSignupmemberService.queryAll(params);
+        List<QkjvipMemberSignupmemberEntity> list = qkjvipMemberSignupmemberService.queryTopOne(params);
         if(list.size()>0){//已签到
             //return RestResponse.error("已签到成功，谢谢");
             //已签到显示行程安排、参加的活动记录、用户的积分、积分商城
@@ -214,6 +206,10 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
                 logger.info("已签到信息："+"memberid:"+qkjvipMemberSignupmember.getMemberId()+";openid:" + qkjvipMemberSignupmember.getOpenId());
             }
         } else {
+            long start, end2;
+            start = System.currentTimeMillis();
+            //修改此会员手机号
+            updateMember(qkjvipMemberSignupmember,member);
             //邀请补充
             qkjvipMemberActivitymbsService.supadd(qkjvipMemberSignupmember.getActivityId(),member.getMemberId());
             //报名补充
@@ -230,27 +226,58 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
             if(qkjvipMemberSignupmember!=null&&qkjvipMemberSignupmember.getOpenId()!=null){
                 logger.info("正常签到信息："+"memberid:"+qkjvipMemberSignupmember.getMemberId()+";openid:" + qkjvipMemberSignupmember.getOpenId());
             }
-
-            if(qkjvipMemberSignupmember.getIntegral()!=null&&qkjvipMemberSignupmember.getIntegral()>0){
-                Map map = new HashMap();
-                map.put("remark", "活动签到得积分");
-                map.put("crmmemberid", member.getMemberId());
-                map.put("actiontype", 17);
-                map.put("integral", qkjvipMemberSignupmember.getIntegral());
-
-                String queryJsonStr = JsonHelper.toJsonString(map);
-                String resultPost = HttpClient.sendPost(Vars.CONTENT_SHARE_URL, queryJsonStr);
-                JSONObject resultObject = JSON.parseObject(resultPost);
-                if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
-                    System.out.println("活动签到得积分获得成功！");
-                } else {
-                    System.out.println("活动签到得积分获得失败！");
-                }
-            }
-
+            // 送积分
+            updateMemberIntegral(qkjvipMemberSignupmember,member);
+            end2 = System.currentTimeMillis();
+            System.out.println("签到成功，耗费了" + (end2 - start) + "ms");
         }
 
         return RestResponse.success();
+    }
+
+    @Async
+    public  void updateMemberIntegral (QkjvipMemberSignupmemberEntity qkjvipMemberSignupmember,MemberEntity member) {
+        if(qkjvipMemberSignupmember.getIntegral()!=null&&qkjvipMemberSignupmember.getIntegral()>0){
+            Map map = new HashMap();
+            map.put("remark", "活动签到得积分");
+            map.put("crmmemberid", member.getMemberId());
+            map.put("actiontype", 17);
+            map.put("integral", qkjvipMemberSignupmember.getIntegral());
+
+            String queryJsonStr = JsonHelper.toJsonString(map);
+            String resultPost = null;
+            try {
+                resultPost = HttpClient.sendPost(Vars.CONTENT_SHARE_URL, queryJsonStr);
+            } catch (IOException e) {
+                //e.printStackTrace();
+                logger.error("签到送积分接口调用失败");
+            }
+            JSONObject resultObject = JSON.parseObject(resultPost);
+            if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+                System.out.println("活动签到得积分获得成功！");
+            } else {
+                System.out.println("活动签到得积分获得失败！");
+            }
+        }
+    }
+
+    @Async
+    public  void updateMember (QkjvipMemberSignupmemberEntity qkjvipMemberSignupmember,MemberEntity member) {
+        if(qkjvipMemberSignupmember!=null&&qkjvipMemberSignupmember.getIsphone()!=null&&qkjvipMemberSignupmember.getIsphone()==1){
+            Object obj = JSONArray.toJSON(member);
+            String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+            String resultPost = null;
+            try {
+                resultPost = HttpClient.sendPost(Vars.MEMBER_UPDATE_URL, memberJsonStr);
+            } catch (IOException e) {
+                //e.printStackTrace();
+                logger.error("签到接口调用失败");
+            }
+            JSONObject resultObject = JSON.parseObject(resultPost);
+            if (!"200".equals(resultObject.get("resultcode").toString())) {  //修改手机号成功
+                logger.info("签到接口数据清洗失败");
+            }
+        }
     }
 
     /**

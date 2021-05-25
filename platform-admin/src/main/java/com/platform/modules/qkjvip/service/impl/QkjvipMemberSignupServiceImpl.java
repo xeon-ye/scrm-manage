@@ -43,6 +43,11 @@ public class QkjvipMemberSignupServiceImpl extends ServiceImpl<QkjvipMemberSignu
     }
 
     @Override
+    public List<QkjvipMemberSignupEntity> queryTopOne(Map<String, Object> params) {
+        return baseMapper.queryTopOne(params);
+    }
+
+    @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
         params.put("sidx", "T.id");
@@ -84,7 +89,7 @@ public class QkjvipMemberSignupServiceImpl extends ServiceImpl<QkjvipMemberSignu
         map.put("acitvityId",activity);
         map.put("memberid",member_id);
         List<QkjvipMemberSignupEntity> mbslist = new ArrayList<>();
-        mbslist=this.queryAll(map);
+        mbslist=baseMapper.queryTopOne(map);
         if(mbslist.size()<=0){//无报名
             QkjvipMemberSignupEntity m=new QkjvipMemberSignupEntity();
             m.setMemberid(member_id);

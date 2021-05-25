@@ -14,6 +14,7 @@ package com.platform.modules.qkjvip.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.platform.modules.qkjvip.entity.QkjvipMemberSignupEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberSignupmemberEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -36,6 +37,8 @@ public interface QkjvipMemberSignupDao extends BaseMapper<QkjvipMemberSignupEnti
      * @return List
      */
     List<QkjvipMemberSignupEntity> queryAll(@Param("params") Map<String, Object> params);
+
+    List<QkjvipMemberSignupEntity> queryTopOne(@Param("params") Map<String, Object> params);
 
     /**
      * 自定义分页查询

@@ -39,6 +39,11 @@ public class QkjvipMemberSignupmemberServiceImpl extends ServiceImpl<QkjvipMembe
     }
 
     @Override
+    public List<QkjvipMemberSignupmemberEntity> queryTopOne(Map<String, Object> params) {
+        return baseMapper.queryTopOne(params);
+    }
+
+    @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
         params.put("sidx", "T.id");

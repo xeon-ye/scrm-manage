@@ -85,4 +85,22 @@
         left join  qkjvip_member m2 WITH(NOLOCK) on m1.memberidto=m2.member_id
         where a.ACTIVITY_ID = #{value}
     </select>
+
+    <select id="queryTopOne" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberActivitymbsEntity">
+        SELECT top 1 t.*
+        FROM QKJVIP_MEMBER_ACTIVITYMBS T
+        join qkjvip_member a on (t.MEMBER_ID=a.member_id)
+        WHERE 1=1
+        <if test="params.activityId != null and params.activityId.trim() != ''">
+            AND T.ACTIVITY_ID LIKE '%${params.activityId}%'
+        </if>
+        <if test="params.memberId != null and params.memberId.trim() != ''">
+            AND
+            EXISTS(
+            select top 1 * from qkjvip_member c
+            where ISNULL(c.memberidto,c.member_id)=ISNULL(a.memberidto,a.member_id)
+            and c.member_id='${params.memberId}'
+            )
+        </if>
+    </select>
 </mapper>
