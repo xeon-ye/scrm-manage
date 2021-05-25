@@ -196,6 +196,7 @@ public class QkjvipMemberActivityController extends AbstractController {
         Map<String, Object> acmap=new HashMap<>();
         acmap.put("id",params.get("id").toString());
         List<QkjvipMemberActivityEntity> acs=new ArrayList<>();
+        QkjvipMemberSignupEntity qsign=new QkjvipMemberSignupEntity();//报名信息
         acs=qkjvipMemberActivityService.queryAll(acmap);
         if(acs!=null&&acs.size()==1){
             qkjvipMemberActivity=acs.get(0);
@@ -243,6 +244,7 @@ public class QkjvipMemberActivityController extends AbstractController {
                 sgs=qkjvipMemberSignupService.queryAll(map);
                 if(sgs.size()>0){
                     isbaoming=1;
+                    qsign=sgs.get(0);
                 }
 
                 mapt.clear();
@@ -281,6 +283,7 @@ public class QkjvipMemberActivityController extends AbstractController {
                 sgs = qkjvipMemberSignupService.queryAll(mapt);
                 if (sgs.size() > 0) {
                     isbaoming = 1;
+                    qsign=sgs.get(0);
                 }
                 mapt.clear();
                 mapt.put("memberId", params.get("juerumemberid") + "");
@@ -304,7 +307,7 @@ public class QkjvipMemberActivityController extends AbstractController {
                 }
             }
         }
-        return RestResponse.success().put("memberactivity", qkjvipMemberActivity).put("istake",iscanjia).put("isabove",isabove).put("isinvite",isinvite).put("list",list).put("isbaoming",isbaoming);
+        return RestResponse.success().put("memberactivity", qkjvipMemberActivity).put("istake",iscanjia).put("isabove",isabove).put("isinvite",isinvite).put("list",list).put("isbaoming",isbaoming).put("qsign",qsign);
     }
 
     /**
