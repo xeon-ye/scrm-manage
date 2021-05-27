@@ -310,7 +310,7 @@ public class MemberController extends AbstractController {
             for (int i = 0; i < dictList.size(); i++) {
                 dictAttr[i] = dictList.get(i).getName();
             }
-            ExcelSelectListUtil.selectList(workbook, 14, 14, dictAttr);
+            ExcelSelectListUtil.selectList(workbook, 13, 13, dictAttr);
 
             //会员性质
             params.clear();
@@ -320,7 +320,7 @@ public class MemberController extends AbstractController {
             for (int i = 0; i < dictList.size(); i++) {
                 dictAttr[i] = dictList.get(i).getName();
             }
-            ExcelSelectListUtil.selectList(workbook, 15, 15, dictAttr);
+            ExcelSelectListUtil.selectList(workbook, 14, 14, dictAttr);
 
             //会员等级
 //            params.clear();
@@ -340,7 +340,7 @@ public class MemberController extends AbstractController {
             for (int i = 0; i < dictList.size(); i++) {
                 dictAttr[i] = dictList.get(i).getName();
             }
-            ExcelSelectListUtil.selectList(workbook, 16, 16, dictAttr);
+            ExcelSelectListUtil.selectList(workbook, 15, 15, dictAttr);
             response.setCharacterEncoding("UTF-8");
             response.setHeader("content-Type", "application/vnd.ms-excel");
             response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode( "会员信息表." + ExportExcelUtils.ExcelTypeEnum.XLS.getValue(), "UTF-8"));
