@@ -86,7 +86,7 @@ public class CmntMgmtThumbsupController extends AbstractController {
      */
     @SysLog("新增")
     @RequestMapping("/save")
-    @RequiresPermissions("cmnt:mgmtthumbsup:save")
+//    @RequiresPermissions("cmnt:mgmtthumbsup:save")
     public RestResponse save(@RequestBody CmntMgmtThumbsupEntity cmntMgmtThumbsup) {
 
         cmntMgmtThumbsupService.add(cmntMgmtThumbsup);

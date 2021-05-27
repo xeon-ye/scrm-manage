@@ -7,8 +7,11 @@
         SELECT T.*
         FROM CMNT_MGMT_COMMENT T
         WHERE 1=1
-        <if test="params.name != null and params.name.trim() != ''">
-            AND T.NAME LIKE '%${params.name}%'
+        <if test="params.mainId != null and params.mainId.trim() != ''">
+            AND T.mainId = #{params.mainid}
+        </if>
+        <if test="params.mainType != null and params.mainType != ''">
+            AND T.mainType = #{params.maintype}
         </if>
     </sql>
 
@@ -18,5 +21,19 @@
 
     <select id="queryAll" resultType="com.platform.modules.cmnt.entity.CmntMgmtCommentEntity">
         <include refid="selectSql"/>
+    </select>
+
+    <select id="queryList" resultType="com.platform.modules.cmnt.entity.CmntMgmtCommentEntity">
+        SELECT T.*, T2.memberId AS targetmemberid, T2.memberName AS targetmembername
+        FROM CMNT_MGMT_COMMENT T
+        LEFT JOIN cmnt_mgmt_comment T2 ON (T.parentId = T2.id)
+        WHERE 1=1
+        <if test="params.mainId != null and params.mainId.trim() != ''">
+            AND T.mainId = #{params.mainid}
+        </if>
+        <if test="params.mainType != null and params.mainType != ''">
+            AND T.mainType = #{params.maintype}
+        </if>
+        ORDER BY T.createDate DESC
     </select>
 </mapper>

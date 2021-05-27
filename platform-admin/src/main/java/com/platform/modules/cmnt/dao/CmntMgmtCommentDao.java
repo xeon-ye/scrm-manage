@@ -45,4 +45,6 @@ public interface CmntMgmtCommentDao extends BaseMapper<CmntMgmtCommentEntity> {
      * @return List
      */
     List<CmntMgmtCommentEntity> selectCmntMgmtCommentPage(IPage page, @Param("params") Map<String, Object> params);
+
+    List<CmntMgmtCommentEntity> queryList(@Param("params") Map<String, Object> params);
 }

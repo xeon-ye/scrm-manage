@@ -14,6 +14,7 @@ package com.platform.modules.cmnt.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
+import com.platform.modules.cmnt.entity.CmntMgmtCommentResultEntity;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.cmnt.entity.CmntMgmtCommentEntity;
 import com.platform.modules.cmnt.service.CmntMgmtCommentService;
@@ -21,6 +22,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -73,9 +75,9 @@ public class CmntMgmtCommentController extends AbstractController {
     @GetMapping("/viewList")
 //    @RequiresPermissions("cmnt:mgmtcomment:list")
     public RestResponse viewList(@RequestParam Map<String, Object> params) {
-        Page page = cmntMgmtCommentService.queryPage(params);
+        List<CmntMgmtCommentResultEntity> list = cmntMgmtCommentService.viewList(params);
 
-        return RestResponse.success().put("page", page);
+        return RestResponse.success().put("list", list);
     }
 
     /**
@@ -102,7 +104,7 @@ public class CmntMgmtCommentController extends AbstractController {
     @RequestMapping("/save")
 //    @RequiresPermissions("cmnt:mgmtcomment:save")
     public RestResponse save(@RequestBody CmntMgmtCommentEntity cmntMgmtComment) {
-
+        cmntMgmtComment.setCreatedate(new Date());
         cmntMgmtCommentService.add(cmntMgmtComment);
 
         return RestResponse.success();

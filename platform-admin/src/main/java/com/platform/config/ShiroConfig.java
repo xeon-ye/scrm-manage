@@ -85,6 +85,7 @@ public class ShiroConfig {
         filterMap.put("/qkjvip/membersignup/queryAll", "anon");
         filterMap.put("/remote/news/**", "anon"); //liuqianru add 2021/03/11
         filterMap.put("/cmnt/mgmtcomment/**", "anon"); //liuqianru add 2021/05/26
+        filterMap.put("/cmnt/mgmtthumbsup/**", "anon"); //liuqianru add 2021/05/26
         filterMap.put("/qkjvip/newscarousel/carouselList", "anon"); // liuqianru add 2021/05/10
         filterMap.put("/qkjvip/news/newsList", "anon"); // liuqianru add 2021/05/10
         filterMap.put("/qkjvip/news/newsInfo", "anon"); // liuqianru add 2021/05/10

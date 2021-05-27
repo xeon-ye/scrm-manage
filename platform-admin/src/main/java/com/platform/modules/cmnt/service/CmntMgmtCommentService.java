@@ -14,6 +14,7 @@ package com.platform.modules.cmnt.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.platform.modules.cmnt.entity.CmntMgmtCommentEntity;
+import com.platform.modules.cmnt.entity.CmntMgmtCommentResultEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,13 @@ public interface CmntMgmtCommentService extends IService<CmntMgmtCommentEntity> 
      * @return Page
      */
     Page queryPage(Map<String, Object> params);
+    /**
+     * 查询所有列表
+     *
+     * @param params 查询参数
+     * @return List
+     */
+    List<CmntMgmtCommentResultEntity> viewList(Map<String, Object> params);
 
     /**
      * 新增
