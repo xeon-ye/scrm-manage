@@ -323,14 +323,14 @@ public class MemberController extends AbstractController {
             ExcelSelectListUtil.selectList(workbook, 15, 15, dictAttr);
 
             //会员等级
-            params.clear();
-            params.put("code", "MEMBERLEVEL");
-            dictList = sysDictService.queryByCode(params);
-            dictAttr = new String[dictList.size()];
-            for (int i = 0; i < dictList.size(); i++) {
-                dictAttr[i] = dictList.get(i).getName();
-            }
-            ExcelSelectListUtil.selectList(workbook, 16, 16, dictAttr);
+//            params.clear();
+//            params.put("code", "MEMBERLEVEL");
+//            dictList = sysDictService.queryByCode(params);
+//            dictAttr = new String[dictList.size()];
+//            for (int i = 0; i < dictList.size(); i++) {
+//                dictAttr[i] = dictList.get(i).getName();
+//            }
+//            ExcelSelectListUtil.selectList(workbook, 16, 16, dictAttr);
 
             //会员来源
             params.clear();
@@ -340,7 +340,7 @@ public class MemberController extends AbstractController {
             for (int i = 0; i < dictList.size(); i++) {
                 dictAttr[i] = dictList.get(i).getName();
             }
-            ExcelSelectListUtil.selectList(workbook, 17, 17, dictAttr);
+            ExcelSelectListUtil.selectList(workbook, 16, 16, dictAttr);
             response.setCharacterEncoding("UTF-8");
             response.setHeader("content-Type", "application/vnd.ms-excel");
             response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode( "会员信息表." + ExportExcelUtils.ExcelTypeEnum.XLS.getValue(), "UTF-8"));

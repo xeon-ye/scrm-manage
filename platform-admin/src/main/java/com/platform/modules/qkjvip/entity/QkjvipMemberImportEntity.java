@@ -94,34 +94,29 @@ public class QkjvipMemberImportEntity implements Serializable {
     @Excel(name = "会员性质", orderNum = "15", width = 15, groupName = "扩展信息", fixedIndex = 15, replace={"企业单位_0","事业单位_1","政府机关_2","个人_3"})
     private String memberNature;
     /**
-     * 会员等级
-     */
-    @Excel(name = "会员等级", orderNum = "16", width = 15, groupName = "扩展信息", fixedIndex = 16, replace={"普通会员_10","人之德级_20","家之德级_30","国之德级_40","天之德级_50","德天下级_60"})
-    private String memberLevel;
-    /**
      * 会员来源
      */
-    @Excel(name = "会员来源", orderNum = "17", width = 15, groupName = "扩展信息", fixedIndex = 17, replace={"OMS门店_0","线下活动_1","线上活动_2","线上交易_3","线下交易_4","会员推荐_5","旅游景区_6","其他来源_20"})
+    @Excel(name = "会员来源", orderNum = "17", width = 15, groupName = "扩展信息", fixedIndex = 16, replace={"OMS门店_0","线下活动_1","线上活动_2","线上交易_3","线下交易_4","会员推荐_5","旅游景区_6","其他来源_20"})
     private String memberSource;
     /**
      * 行业类别
      */
-    @Excel(name = "行业类别", orderNum = "18", width = 15, groupName = "扩展信息", fixedIndex = 18)
+    @Excel(name = "行业类别", orderNum = "18", width = 15, groupName = "扩展信息", fixedIndex = 17)
     private String industryType;
     /**
      * 单位性质
      */
-    @Excel(name = "单位性质", orderNum = "19", width = 15, groupName = "扩展信息", fixedIndex = 19)
+    @Excel(name = "单位性质", orderNum = "19", width = 15, groupName = "扩展信息", fixedIndex = 18)
     private String unitProperty;
     /**
      * 公司名称
      */
-    @Excel(name = "公司名称", orderNum = "20", width = 15, groupName = "扩展信息", fixedIndex = 20)
+    @Excel(name = "公司名称", orderNum = "20", width = 15, groupName = "扩展信息", fixedIndex = 19)
     private String companyName;
     /**
      * 职位
      */
-    @Excel(name = "职位", orderNum = "21", width = 15, groupName = "扩展信息", fixedIndex = 21)
+    @Excel(name = "职位", orderNum = "21", width = 15, groupName = "扩展信息", fixedIndex = 20)
     private String jobTitle;
     /**
      * 加入时间/注册时间
@@ -133,7 +128,7 @@ public class QkjvipMemberImportEntity implements Serializable {
     /**
      * 推荐人部门
      */
-    @Excel(name = "推荐人部门", orderNum = "22", width = 15, groupName = "扩展信息", fixedIndex = 22)
+    @Excel(name = "推荐人部门", orderNum = "22", width = 15, groupName = "扩展信息", fixedIndex = 21)
     private String referrerDept;
     /**
      * 推荐人
@@ -233,7 +228,7 @@ public class QkjvipMemberImportEntity implements Serializable {
     /**
      * 身份证
      */
-    @Excel(name = "身份证", orderNum = "23", width = 15, groupName = "扩展信息", fixedIndex = 23)
+    @Excel(name = "身份证", orderNum = "23", width = 15, groupName = "扩展信息", fixedIndex = 22)
     private String idcard;
     /**
      * 是否是手动导入的会员(1：是）
