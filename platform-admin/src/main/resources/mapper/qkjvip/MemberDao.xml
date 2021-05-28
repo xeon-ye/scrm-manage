@@ -148,7 +148,7 @@
         inner join qkjvip_member b on a.crm_memberid=b.member_id
         where a.AppOpenId=#{params.openid} and a.Disabled=0
 
-        <if test="params.isfollow != null and params.isfollow != ''">
+        <if test="params.isfollow != null and params.isfollow != ''"> <!-- isfollow不为空时查询是否是会员，否则查询客户信息-->
             and a.MemberChannel=200 AND a.IsSubscribe = 1
         </if>
     </select>
@@ -165,7 +165,7 @@
         inner join [dbo].[qkjvip_member_jueru] b on
         (a.member_id=b.crm_memberid or a.memberidto=b.crm_memberid) and b.MemberChannel=18
         where a.member_id=#{params.memberId}  and b.Disabled=0
-        <if test="params.isfollow != null and params.isfollow != ''">
+        <if test="params.isfollow != null and params.isfollow != ''"> <!-- isfollow不为空时查询是否是会员，否则查询客户信息-->
             and a.statusflag!=1
             and b.MemberChannel=200 and b.IsSubscribe=1
         </if>
