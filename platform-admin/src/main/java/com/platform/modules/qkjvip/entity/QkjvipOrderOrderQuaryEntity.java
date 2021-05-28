@@ -34,7 +34,7 @@ public class QkjvipOrderOrderQuaryEntity implements Serializable {
 
     private String  productname;
     private String  ordercode;
-    private String  ordertype;
+    private Integer  ordertype;
     private String  orderstatus;
     private String  startorderdate;
     private String  endorderdate;
