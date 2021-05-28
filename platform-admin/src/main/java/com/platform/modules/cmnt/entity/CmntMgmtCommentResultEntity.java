@@ -38,10 +38,10 @@ public class CmntMgmtCommentResultEntity implements Serializable {
 
     private Date createdate;
 
-    /**
-     * 回复列表
-     */
-    @TableField(exist = false)
+    private Integer thumbsupcnt;
+
+    private Boolean isthumbsup;
+
     private List<CmntMgmtCommentChildrenEntity> childrenlist;
 
 }

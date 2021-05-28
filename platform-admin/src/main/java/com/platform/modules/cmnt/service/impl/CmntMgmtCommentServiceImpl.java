@@ -63,11 +63,13 @@ public class CmntMgmtCommentServiceImpl extends ServiceImpl<CmntMgmtCommentDao, 
                 comment.setId(cmnt1.getId());
                 comment.setContent(cmnt1.getComment());
                 comment.setCreatedate(cmnt1.getCreatedate());
-
+                comment.setThumbsupcnt(cmnt1.getThumbsupcnt());
+                comment.setIsthumbsup(cmnt1.getIsthumbsup());
+                // 评论人对象
                 CmntMgmtCommentUserEntity commentuser = new CmntMgmtCommentUserEntity();
                 commentuser.setMemberid(cmnt1.getMemberid());
                 commentuser.setNickname(cmnt1.getMembername());
-                commentuser.setAvatar("");
+                commentuser.setAvatar(cmnt1.getAvatar());
                 comment.setCommentuser(commentuser);
 
                 List<CmntMgmtCommentChildrenEntity> childrenList = new ArrayList<>();
@@ -77,17 +79,19 @@ public class CmntMgmtCommentServiceImpl extends ServiceImpl<CmntMgmtCommentDao, 
                         commentChildren.setId(cmnt2.getId());
                         commentChildren.setContent(cmnt2.getComment());
                         commentChildren.setCreatedate(cmnt2.getCreatedate());
-
+                        commentChildren.setThumbsupcnt(cmnt2.getThumbsupcnt());
+                        commentChildren.setIsthumbsup(cmnt2.getIsthumbsup());
+                        // 回复人对象
                         CmntMgmtCommentUserEntity subcommentuser = new CmntMgmtCommentUserEntity();
                         subcommentuser.setMemberid(cmnt2.getMemberid());
                         subcommentuser.setNickname(cmnt2.getMembername());
-                        subcommentuser.setAvatar("");
+                        subcommentuser.setAvatar(cmnt2.getAvatar());
                         commentChildren.setCommentuser(subcommentuser);
-
+                        // 被回复人对象
                         CmntMgmtCommentUserEntity targetuser = new CmntMgmtCommentUserEntity();
                         targetuser.setMemberid(cmnt2.getTargetmemberid());
                         targetuser.setNickname(cmnt2.getTargetmembername());
-                        targetuser.setAvatar("");
+                        targetuser.setAvatar(cmnt2.getTargetavatar());
                         commentChildren.setTargetuser(targetuser);
 
                         childrenList.add(commentChildren);

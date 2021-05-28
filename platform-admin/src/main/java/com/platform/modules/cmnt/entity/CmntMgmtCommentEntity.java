@@ -65,13 +65,21 @@ public class CmntMgmtCommentEntity implements Serializable {
      */
     private Date createdate;
     /**
+     * 评论类型（1：评论 2：回复）
+     */
+    private Integer cmnttype;
+    /**
      * 评论人姓名
      */
     private String membername;
     /**
-     * 评论类型（1：评论 2：回复）
+     * 头像
      */
-    private Integer cmnttype;
+    private String avatar;
+    /**
+     * 审核状态
+     */
+    private Integer approvedstatus;
 
     /**
      * 被回复人的昵称
@@ -82,4 +90,15 @@ public class CmntMgmtCommentEntity implements Serializable {
     private String targetmembername;
     @TableField(exist = false)
     private String targetavatar;
+
+    /**
+     * 点赞数
+     */
+    @TableField(exist = false)
+    private Integer thumbsupcnt;
+    /**
+     * 是否已点赞
+     */
+    @TableField(exist = false)
+    private Boolean isthumbsup;
 }

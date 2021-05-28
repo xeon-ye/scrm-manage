@@ -21,6 +21,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -88,7 +89,7 @@ public class CmntMgmtThumbsupController extends AbstractController {
     @RequestMapping("/save")
 //    @RequiresPermissions("cmnt:mgmtthumbsup:save")
     public RestResponse save(@RequestBody CmntMgmtThumbsupEntity cmntMgmtThumbsup) {
-
+        cmntMgmtThumbsup.setCreatedate(new Date());
         cmntMgmtThumbsupService.add(cmntMgmtThumbsup);
 
         return RestResponse.success();
@@ -121,6 +122,20 @@ public class CmntMgmtThumbsupController extends AbstractController {
     @RequiresPermissions("cmnt:mgmtthumbsup:delete")
     public RestResponse delete(@RequestBody String[] ids) {
         cmntMgmtThumbsupService.deleteBatch(ids);
+
+        return RestResponse.success();
+    }
+
+    /**
+     * 删除点赞
+     *
+     * @param params params
+     * @return RestResponse
+     */
+    @SysLog("删除点赞")
+    @GetMapping("/doDelete")
+    public RestResponse doDelete(@RequestParam Map<String, Object> params) {
+        cmntMgmtThumbsupService.doDelete(params);
 
         return RestResponse.success();
     }

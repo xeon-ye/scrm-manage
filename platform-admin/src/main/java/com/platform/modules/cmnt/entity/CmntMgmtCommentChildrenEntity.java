@@ -38,4 +38,8 @@ public class CmntMgmtCommentChildrenEntity implements Serializable {
 
     private Date createdate;
 
+    private Integer thumbsupcnt;
+
+    private Boolean isthumbsup;
+
 }

@@ -14,6 +14,7 @@ package com.platform.modules.cmnt.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
+import com.platform.common.utils.StringUtils;
 import com.platform.modules.cmnt.entity.CmntMgmtCommentResultEntity;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.cmnt.entity.CmntMgmtCommentEntity;
@@ -73,7 +74,6 @@ public class CmntMgmtCommentController extends AbstractController {
      * @return RestResponse
      */
     @GetMapping("/viewList")
-//    @RequiresPermissions("cmnt:mgmtcomment:list")
     public RestResponse viewList(@RequestParam Map<String, Object> params) {
         List<CmntMgmtCommentResultEntity> list = cmntMgmtCommentService.viewList(params);
 
@@ -102,7 +102,6 @@ public class CmntMgmtCommentController extends AbstractController {
      */
     @SysLog("新增")
     @RequestMapping("/save")
-//    @RequiresPermissions("cmnt:mgmtcomment:save")
     public RestResponse save(@RequestBody CmntMgmtCommentEntity cmntMgmtComment) {
         cmntMgmtComment.setCreatedate(new Date());
         cmntMgmtCommentService.add(cmntMgmtComment);
@@ -118,7 +117,6 @@ public class CmntMgmtCommentController extends AbstractController {
      */
     @SysLog("修改")
     @RequestMapping("/update")
-    @RequiresPermissions("cmnt:mgmtcomment:update")
     public RestResponse update(@RequestBody CmntMgmtCommentEntity cmntMgmtComment) {
 
         cmntMgmtCommentService.update(cmntMgmtComment);

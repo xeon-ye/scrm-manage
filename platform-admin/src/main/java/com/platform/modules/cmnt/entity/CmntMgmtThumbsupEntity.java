@@ -51,11 +51,7 @@ public class CmntMgmtThumbsupEntity implements Serializable {
      */
     private Date createdate;
     /**
-     * 点赞人昵称
-     */
-    private String membername;
-    /**
-     * 点赞标识（"min-program"+小程序openid，"wx-offical"+服务号openid）
+     * 点赞标识
      */
     private String openid;
 }

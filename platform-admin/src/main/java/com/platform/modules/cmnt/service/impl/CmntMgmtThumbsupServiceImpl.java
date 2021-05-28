@@ -69,4 +69,9 @@ public class CmntMgmtThumbsupServiceImpl extends ServiceImpl<CmntMgmtThumbsupDao
     public boolean deleteBatch(String[] ids) {
         return this.removeByIds(Arrays.asList(ids));
     }
+
+    @Override
+    public boolean doDelete(Map<String, Object> params) {
+        return baseMapper.doDelete(params);
+    }
 }
