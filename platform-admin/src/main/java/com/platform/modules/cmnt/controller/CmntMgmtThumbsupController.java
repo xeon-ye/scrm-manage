@@ -129,13 +129,13 @@ public class CmntMgmtThumbsupController extends AbstractController {
     /**
      * 删除点赞
      *
-     * @param params params
+     * @param cmntMgmtThumbsup cmntMgmtThumbsup
      * @return RestResponse
      */
     @SysLog("删除点赞")
-    @GetMapping("/doDelete")
-    public RestResponse doDelete(@RequestParam Map<String, Object> params) {
-        cmntMgmtThumbsupService.doDelete(params);
+    @RequestMapping("/doDelete")
+    public RestResponse doDelete(@RequestBody CmntMgmtThumbsupEntity cmntMgmtThumbsup) {
+        cmntMgmtThumbsupService.doDelete(cmntMgmtThumbsup);
 
         return RestResponse.success();
     }

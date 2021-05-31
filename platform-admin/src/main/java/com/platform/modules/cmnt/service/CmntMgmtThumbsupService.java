@@ -77,8 +77,8 @@ public interface CmntMgmtThumbsupService extends IService<CmntMgmtThumbsupEntity
     /**
      * 根据条件删除
      *
-     * @param params params
+     * @param cmntMgmtThumbsup cmntMgmtThumbsup
      * @return 删除结果
      */
-    boolean doDelete(Map<String, Object> params);
+    boolean doDelete(CmntMgmtThumbsupEntity cmntMgmtThumbsup);
 }

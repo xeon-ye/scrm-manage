@@ -117,8 +117,26 @@ public class CmntMgmtCommentController extends AbstractController {
      */
     @SysLog("修改")
     @RequestMapping("/update")
+    @RequiresPermissions("cmnt:mgmtcomment:update")
     public RestResponse update(@RequestBody CmntMgmtCommentEntity cmntMgmtComment) {
 
+        cmntMgmtCommentService.update(cmntMgmtComment);
+
+        return RestResponse.success();
+    }
+
+    /**
+     * 审核
+     *
+     * @param cmntMgmtComment cmntMgmtComment
+     * @return RestResponse
+     */
+    @SysLog("审核")
+    @RequestMapping("/review")
+    @RequiresPermissions("cmnt:mgmtcomment:update")
+    public RestResponse review(@RequestBody CmntMgmtCommentEntity cmntMgmtComment) {
+        cmntMgmtComment.setApproveduser(getUserId());
+        cmntMgmtComment.setApprovedtime(new Date());
         cmntMgmtCommentService.update(cmntMgmtComment);
 
         return RestResponse.success();

@@ -80,6 +80,20 @@ public class CmntMgmtCommentEntity implements Serializable {
      * 审核状态
      */
     private Integer approvedstatus;
+    /**
+     * 审核人
+     */
+    private String approveduser;
+    /**
+     * 审核时间
+     */
+    private Date approvedtime;
+
+    /**
+     * 审核人姓名
+     */
+    @TableField(exist = false)
+    private String approvedusername;
 
     /**
      * 被回复人的昵称

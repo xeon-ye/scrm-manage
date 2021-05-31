@@ -21,9 +21,6 @@
     </select>
     <delete id="doDelete">
         DELETE FROM CMNT_MGMT_THUMBSUP
-        WHERE commentId = #{params.commentid} AND (memberId = #{params.memberid} OR openId = #{params.openid})
-        <if test="params.mainid != null and params.mainid.trim() != ''">
-            AND mainId = #{params.mainid}
-        </if>
+        WHERE mainId = #{mainid} AND commentId = #{commentid} AND (memberId = #{memberid} OR openId = #{openid})
     </delete>
 </mapper>

@@ -71,7 +71,7 @@ public class CmntMgmtThumbsupServiceImpl extends ServiceImpl<CmntMgmtThumbsupDao
     }
 
     @Override
-    public boolean doDelete(Map<String, Object> params) {
-        return baseMapper.doDelete(params);
+    public boolean doDelete(CmntMgmtThumbsupEntity cmntMgmtThumbsup) {
+        return baseMapper.doDelete(cmntMgmtThumbsup);
     }
 }
