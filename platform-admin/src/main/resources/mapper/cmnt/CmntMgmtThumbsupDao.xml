@@ -19,4 +19,8 @@
     <select id="queryAll" resultType="com.platform.modules.cmnt.entity.CmntMgmtThumbsupEntity">
         <include refid="selectSql"/>
     </select>
+    <delete id="doDelete">
+        DELETE FROM CMNT_MGMT_THUMBSUP
+        WHERE mainId = #{mainid} AND commentId = #{commentid} AND (memberId = #{memberid} OR openId = #{openid})
+    </delete>
 </mapper>

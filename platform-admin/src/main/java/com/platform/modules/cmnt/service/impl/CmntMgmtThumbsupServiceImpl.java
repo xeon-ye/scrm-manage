@@ -41,7 +41,7 @@ public class CmntMgmtThumbsupServiceImpl extends ServiceImpl<CmntMgmtThumbsupDao
     @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
-        params.put("sidx", "T.addtime");
+        params.put("sidx", "T.createdate");
         params.put("asc", false);
         Page<CmntMgmtThumbsupEntity> page = new Query<CmntMgmtThumbsupEntity>(params).getPage();
         page.setRecords(baseMapper.selectCmntMgmtThumbsupPage(page, params));
@@ -68,5 +68,10 @@ public class CmntMgmtThumbsupServiceImpl extends ServiceImpl<CmntMgmtThumbsupDao
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteBatch(String[] ids) {
         return this.removeByIds(Arrays.asList(ids));
+    }
+
+    @Override
+    public boolean doDelete(CmntMgmtThumbsupEntity cmntMgmtThumbsup) {
+        return baseMapper.doDelete(cmntMgmtThumbsup);
     }
 }

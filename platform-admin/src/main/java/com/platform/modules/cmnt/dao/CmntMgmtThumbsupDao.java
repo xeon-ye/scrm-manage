@@ -45,4 +45,6 @@ public interface CmntMgmtThumbsupDao extends BaseMapper<CmntMgmtThumbsupEntity> 
      * @return List
      */
     List<CmntMgmtThumbsupEntity> selectCmntMgmtThumbsupPage(IPage page, @Param("params") Map<String, Object> params);
+
+    boolean doDelete(CmntMgmtThumbsupEntity cmntMgmtThumbsup);
 }

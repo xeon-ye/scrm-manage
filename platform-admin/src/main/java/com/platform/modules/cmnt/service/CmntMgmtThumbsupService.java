@@ -73,4 +73,12 @@ public interface CmntMgmtThumbsupService extends IService<CmntMgmtThumbsupEntity
      * @return 删除结果
      */
     boolean deleteBatch(String[] ids);
+
+    /**
+     * 根据条件删除
+     *
+     * @param cmntMgmtThumbsup cmntMgmtThumbsup
+     * @return 删除结果
+     */
+    boolean doDelete(CmntMgmtThumbsupEntity cmntMgmtThumbsup);
 }

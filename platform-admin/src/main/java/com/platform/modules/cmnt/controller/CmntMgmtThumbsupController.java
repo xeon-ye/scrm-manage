@@ -21,6 +21,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -86,9 +87,9 @@ public class CmntMgmtThumbsupController extends AbstractController {
      */
     @SysLog("新增")
     @RequestMapping("/save")
-    @RequiresPermissions("cmnt:mgmtthumbsup:save")
+//    @RequiresPermissions("cmnt:mgmtthumbsup:save")
     public RestResponse save(@RequestBody CmntMgmtThumbsupEntity cmntMgmtThumbsup) {
-
+        cmntMgmtThumbsup.setCreatedate(new Date());
         cmntMgmtThumbsupService.add(cmntMgmtThumbsup);
 
         return RestResponse.success();
@@ -121,6 +122,20 @@ public class CmntMgmtThumbsupController extends AbstractController {
     @RequiresPermissions("cmnt:mgmtthumbsup:delete")
     public RestResponse delete(@RequestBody String[] ids) {
         cmntMgmtThumbsupService.deleteBatch(ids);
+
+        return RestResponse.success();
+    }
+
+    /**
+     * 删除点赞
+     *
+     * @param cmntMgmtThumbsup cmntMgmtThumbsup
+     * @return RestResponse
+     */
+    @SysLog("删除点赞")
+    @RequestMapping("/doDelete")
+    public RestResponse doDelete(@RequestBody CmntMgmtThumbsupEntity cmntMgmtThumbsup) {
+        cmntMgmtThumbsupService.doDelete(cmntMgmtThumbsup);
 
         return RestResponse.success();
     }

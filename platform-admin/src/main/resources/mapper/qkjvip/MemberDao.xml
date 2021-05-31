@@ -143,7 +143,7 @@
         case when (b.sex=3) then 1
         else b.sex end as sex,
         b.sex as oldsex,
-        ISNULL(b.head_img_url, a.HeadImgurl) headimgurl
+        ISNULL(b.head_img_url, a.HeadImgurl) headImgUrl
         from [dbo].[qkjvip_member_jueru] a
         inner join qkjvip_member b on a.crm_memberid=b.member_id
         where a.AppOpenId=#{params.openid} and a.Disabled=0
@@ -160,7 +160,7 @@
         case when (b.sex=3) then 1
         else b.sex end as sex,
         b.sex as oldsex,
-        ISNULL(a.head_img_url, b.HeadImgurl) headimgurl
+        ISNULL(a.head_img_url, b.HeadImgurl) headImgUrl
         from [dbo].[qkjvip_member] a
         inner join [dbo].[qkjvip_member_jueru] b on
         (a.member_id=b.crm_memberid or a.memberidto=b.crm_memberid) and b.MemberChannel=18

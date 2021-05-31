@@ -11,12 +11,14 @@
  */
 package com.platform.modules.cmnt.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 实体
@@ -49,7 +51,7 @@ public class CmntMgmtCommentEntity implements Serializable {
     /**
      * 回复评论的id
      */
-    private String replyid;
+    private String parentid;
     /**
      * 主评论id
      */
@@ -63,7 +65,54 @@ public class CmntMgmtCommentEntity implements Serializable {
      */
     private Date createdate;
     /**
+     * 评论类型（1：评论 2：回复）
+     */
+    private Integer cmnttype;
+    /**
      * 评论人姓名
      */
     private String membername;
+    /**
+     * 头像
+     */
+    private String avatar;
+    /**
+     * 审核状态
+     */
+    private Integer approvedstatus;
+    /**
+     * 审核人
+     */
+    private String approveduser;
+    /**
+     * 审核时间
+     */
+    private Date approvedtime;
+
+    /**
+     * 审核人姓名
+     */
+    @TableField(exist = false)
+    private String approvedusername;
+
+    /**
+     * 被回复人的昵称
+     */
+    @TableField(exist = false)
+    private String targetmemberid;
+    @TableField(exist = false)
+    private String targetmembername;
+    @TableField(exist = false)
+    private String targetavatar;
+
+    /**
+     * 点赞数
+     */
+    @TableField(exist = false)
+    private Integer thumbsupcnt;
+    /**
+     * 是否已点赞
+     */
+    @TableField(exist = false)
+    private Boolean isthumbsup;
 }

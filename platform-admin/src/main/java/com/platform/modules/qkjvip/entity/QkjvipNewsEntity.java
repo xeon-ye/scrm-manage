@@ -65,7 +65,7 @@ public class QkjvipNewsEntity implements Serializable {
     /**
      * 是否开启评论（0：否 1：是）
      */
-    private Boolean iscommment;
+    private Boolean iscomment;
     /**
      * 是否开启审核（0：否 1：是）
      */

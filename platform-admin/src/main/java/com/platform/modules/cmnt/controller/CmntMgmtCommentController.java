@@ -14,6 +14,8 @@ package com.platform.modules.cmnt.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
+import com.platform.common.utils.StringUtils;
+import com.platform.modules.cmnt.entity.CmntMgmtCommentResultEntity;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.cmnt.entity.CmntMgmtCommentEntity;
 import com.platform.modules.cmnt.service.CmntMgmtCommentService;
@@ -21,6 +23,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -71,11 +74,10 @@ public class CmntMgmtCommentController extends AbstractController {
      * @return RestResponse
      */
     @GetMapping("/viewList")
-//    @RequiresPermissions("cmnt:mgmtcomment:list")
     public RestResponse viewList(@RequestParam Map<String, Object> params) {
-        Page page = cmntMgmtCommentService.queryPage(params);
+        List<CmntMgmtCommentResultEntity> list = cmntMgmtCommentService.viewList(params);
 
-        return RestResponse.success().put("page", page);
+        return RestResponse.success().put("list", list);
     }
 
     /**
@@ -100,9 +102,8 @@ public class CmntMgmtCommentController extends AbstractController {
      */
     @SysLog("新增")
     @RequestMapping("/save")
-//    @RequiresPermissions("cmnt:mgmtcomment:save")
     public RestResponse save(@RequestBody CmntMgmtCommentEntity cmntMgmtComment) {
-
+        cmntMgmtComment.setCreatedate(new Date());
         cmntMgmtCommentService.add(cmntMgmtComment);
 
         return RestResponse.success();
@@ -119,6 +120,23 @@ public class CmntMgmtCommentController extends AbstractController {
     @RequiresPermissions("cmnt:mgmtcomment:update")
     public RestResponse update(@RequestBody CmntMgmtCommentEntity cmntMgmtComment) {
 
+        cmntMgmtCommentService.update(cmntMgmtComment);
+
+        return RestResponse.success();
+    }
+
+    /**
+     * 审核
+     *
+     * @param cmntMgmtComment cmntMgmtComment
+     * @return RestResponse
+     */
+    @SysLog("审核")
+    @RequestMapping("/review")
+    @RequiresPermissions("cmnt:mgmtcomment:update")
+    public RestResponse review(@RequestBody CmntMgmtCommentEntity cmntMgmtComment) {
+        cmntMgmtComment.setApproveduser(getUserId());
+        cmntMgmtComment.setApprovedtime(new Date());
         cmntMgmtCommentService.update(cmntMgmtComment);
 
         return RestResponse.success();

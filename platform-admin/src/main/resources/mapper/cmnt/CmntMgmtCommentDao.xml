@@ -4,11 +4,24 @@
 <mapper namespace="com.platform.modules.cmnt.dao.CmntMgmtCommentDao">
 
     <sql id="selectSql">
-        SELECT T.*
+        SELECT T.*, u.REAL_NAME approvedusername
         FROM CMNT_MGMT_COMMENT T
+        LEFT JOIN sys_user u ON (T.approvedUser = u.user_id)
         WHERE 1=1
-        <if test="params.name != null and params.name.trim() != ''">
-            AND T.NAME LIKE '%${params.name}%'
+        <if test="params.mainid != null and params.mainid.trim() != ''">
+            AND T.mainId = #{params.mainid}
+        </if>
+        <if test="params.maintype != null and params.maintype != ''">
+            AND T.mainType = #{params.maintype}
+            <if test="params.title != null and params.title.trim() != '' and params.maintype == 1">
+                AND EXISTS (SELECT 1 from qkjvip_member_activity a where a.id = T.mainId and a.title like '%${params.title}%')
+            </if>
+            <if test="params.title != null and params.title.trim() != '' and params.maintype == 2">
+                AND EXISTS (SELECT 1 from qkjvip_news n where n.id = T.mainId and n.title like '%${params.title}%')
+            </if>
+        </if>
+        <if test="params.approvedstatus != null and params.approvedstatus != ''">
+            AND T.approvedStatus = #{params.approvedstatus}
         </if>
     </sql>
 
@@ -18,5 +31,26 @@
 
     <select id="queryAll" resultType="com.platform.modules.cmnt.entity.CmntMgmtCommentEntity">
         <include refid="selectSql"/>
+    </select>
+
+    <select id="queryList" resultType="com.platform.modules.cmnt.entity.CmntMgmtCommentEntity">
+        SELECT
+        T.*, tp.thumbsupCnt thumbsupcnt,
+        T2.memberId AS targetmemberid,
+        T2.memberName AS targetmembername,
+        T2.avatar AS targetavatar,
+        (CASE WHEN EXISTS (SELECT 1 FROM cmnt_mgmt_thumbsup tp2 WHERE T.id = tp2.commentId AND (tp2.memberId = #{params.memberid} OR tp2.openId = #{params.openid})) THEN 1 ELSE 0 END) isthumbsup
+        FROM CMNT_MGMT_COMMENT T
+        LEFT JOIN cmnt_mgmt_comment T2 ON (T.parentId = T2.id)
+        LEFT JOIN (SELECT COUNT(*) thumbsupCnt, commentId FROM cmnt_mgmt_thumbsup
+        GROUP BY commentId) tp ON (T.id = tp.commentId)
+        WHERE (T.approvedStatus = 0 or T.approvedStatus = 2)
+        <if test="params.mainId != null and params.mainId.trim() != ''">
+            AND T.mainId = #{params.mainid}
+        </if>
+        <if test="params.mainType != null and params.mainType != ''">
+            AND T.mainType = #{params.maintype}
+        </if>
+        ORDER BY T.createDate DESC
     </select>
 </mapper>
