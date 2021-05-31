@@ -35,6 +35,7 @@ public interface QkjvipMemberActivitymbsService extends IService<QkjvipMemberAct
      */
     List<QkjvipMemberActivitymbsEntity> queryAll(Map<String, Object> params);
     List<QkjvipMemberActivitymbsEntity> queryAllCount(Map<String, Object> params);
+    List<QkjvipMemberActivitymbsEntity> queryTopOne(Map<String, Object> params);
 
     /**
      * 分页查询
