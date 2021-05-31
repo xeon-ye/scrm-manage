@@ -38,6 +38,11 @@ public class QkjvipMemberActivitymbsServiceImpl extends ServiceImpl<QkjvipMember
     }
 
     @Override
+    public List<QkjvipMemberActivitymbsEntity> queryTopOne(Map<String, Object> params) {
+        return baseMapper.queryTopOne(params);
+    }
+
+    @Override
     public List<QkjvipMemberActivitymbsEntity> queryAllCount(Map<String, Object> params) {
         return baseMapper.queryAllCount(params);
     }

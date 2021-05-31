@@ -99,4 +99,6 @@ public class QkjvipMemberActivityEntity implements Serializable {
     private Integer activeper;
     @TableField(exist = false)
     private Integer signper;
+    @TableField(exist = false)
+    private Integer isbackqd;
 }

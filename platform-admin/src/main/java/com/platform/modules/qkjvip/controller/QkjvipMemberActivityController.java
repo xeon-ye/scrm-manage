@@ -46,6 +46,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static cn.afterturn.easypoi.excel.entity.enmus.CellValueType.Date;
@@ -517,14 +518,38 @@ public class QkjvipMemberActivityController extends AbstractController {
                 map.put("activityId",qkjvipMemberActivity.getId());
                 map.put("memberId",m.getMemberId());
                 List<QkjvipMemberActivitymbsEntity> mbslist = new ArrayList<>();
-                mbslist=qkjvipMemberActivitymbsService.queryAll(map);
+                mbslist=qkjvipMemberActivitymbsService.queryTopOne(map);
                 if(mbslist.size()<=0){//无邀约
                     m.setActivityId(qkjvipMemberActivity.getId());
                     m.setStatus(3);//现场
                     newmemList.add(m);
+                    qkjvipMemberActivitymbsService.add(m);
                 }
+                if (qkjvipMemberActivity.getIsbackqd()!=null && qkjvipMemberActivity.getIsbackqd()==1) {
+                    // 补报名
+                    String bmid=qkjvipMemberSignupService.supadd(qkjvipMemberActivity.getId(),m.getMemberId());
+                    //签到
+                    Date date=new Date();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String date2=sdf.format(date);
+                    Map<String, Object> params=new HashMap<String,Object>();
+                    params.put("memberId",m.getMemberId());
+                    params.put("activityId",qkjvipMemberActivity.getId());
+                    List<QkjvipMemberSignupmemberEntity> list = qkjvipMemberSignupmemberService.queryTopOne(params);
+                    if(list.size()>0) {//已签到
+                    } else {
+                        QkjvipMemberSignupmemberEntity qkjvipMemberSignupmember=new QkjvipMemberSignupmemberEntity();
+                        qkjvipMemberSignupmember.setMemberId(m.getMemberId());
+                        qkjvipMemberSignupmember.setTime(date2);
+                        qkjvipMemberSignupmember.setSignupId(bmid);
+                        qkjvipMemberSignupmember.setActivityId(qkjvipMemberActivity.getId());
+                        qkjvipMemberSignupmemberService.add(qkjvipMemberSignupmember);
+                    }
+                }
+
             }
-            qkjvipMemberActivitymbsService.batchAdd(mbs);
+            //qkjvipMemberActivitymbsService.batchAdd(mbs);
+
         }
         return RestResponse.success();
     }
