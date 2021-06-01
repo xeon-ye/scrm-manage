@@ -40,6 +40,8 @@ public interface MemberDao extends BaseMapper<MemberEntity> {
 
     List<MemberEntity> selectMemberByJuruMemberid(@Param("params") Map<String, Object> params);
 
+    List<MemberEntity> queryAllByMobile(@Param("params") Map<String, Object> params);
+
     /**
      * 自定义分页查询
      *
