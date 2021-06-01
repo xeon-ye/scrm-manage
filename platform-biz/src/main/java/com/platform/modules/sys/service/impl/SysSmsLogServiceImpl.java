@@ -12,6 +12,9 @@
 package com.platform.modules.sys.service.impl;
 
 import cn.emay.Example;
+import cn.emay.ResultModel;
+import cn.emay.eucp.inter.http.v1.dto.response.SmsResponse;
+import cn.emay.util.JsonHelper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -26,10 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 短信发送日志Service实现类
@@ -51,7 +51,7 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
     @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
-        params.put("sidx", "T.SEND_ID");
+        params.put("sidx", "T.STIME");
         params.put("asc", false);
         Page<SysSmsLogEntity> page = new Query<SysSmsLogEntity>(params).getPage();
         return page.setRecords(baseMapper.selectSysSmsLogPage(page, params));
@@ -133,7 +133,7 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
 //            if (null == smsLog.getStime()) {
 //                smsLog.setStime(new Date());
 //            }
-        }else{
+        } else {
             //青稞酒
             // appId
             String appId = config.getAppid();// 请联系销售，或者在页面中 获取
@@ -149,19 +149,18 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
             boolean isGizp = true;
             String content=smsLog.getContent();
             String mobile=smsLog.getMobile();
-            String resule=Example.setSingleSms(appId, secretKey, host,algorithm,content, null, null, mobile, isGizp, encode);
-            if("SUCCESS".equals(resule)){
+            ResultModel resultModel = Example.setSingleSms(appId, secretKey, host,algorithm,content, null, null, mobile, isGizp, encode);
+            if("SUCCESS".equals(resultModel.getCode())){  // 发送成功
+                SmsResponse response = JsonHelper.fromJson(SmsResponse.class, resultModel.getResult());
+                smsLog.setSendId(response.getSmsId());
                 smsLog.setSendStatus(0);
-            } else {
-                //发送失败
+            } else {  //发送失败
                 smsLog.setSendStatus(1);
             }
-
+            smsLog.setStime(new Date());
+            smsLog.setUserId(ShiroUtils.getUserId());
+            smsLog.setReturnMsg(resultModel.getCode());
         }
-        /**
-         * 待补充
-         */
-
         //保存发送记录
         save(smsLog);
         return smsLog;
@@ -222,7 +221,7 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
 //            if (null == smsLog.getStime()) {
 //                smsLog.setStime(new Date());
 //            }
-        }else{
+        } else {
             //青稞酒
             // appId
             String appId = config.getAppid();// 请联系销售，或者在页面中 获取
@@ -236,25 +235,35 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
             String encode = "UTF-8";
             // 是否压缩
             boolean isGizp = true;
-            String content=smsLog.getContent();
-            String mobile=smsLog.getMobile();
-            String[] mobel=smsLog.getMobile().split(",");
-            String resule=Example.setBatchOnlySms(appId, secretKey, host, algorithm, content, null, mobel, isGizp, encode);
-
-            if("SUCCESS".equals(resule)){
+            String content = smsLog.getContent();
+            String[] mobiles = smsLog.getMobile().split(",");
+            ResultModel resultModel = Example.setBatchOnlySms(appId, secretKey, host, algorithm, content, null, mobiles, isGizp, encode);
+            List<SysSmsLogEntity> smsLogList = new ArrayList<>();
+            if("SUCCESS".equals(resultModel.getCode())){  // 发送成功
                 smsLog.setSendStatus(0);
-            } else {
-                //发送失败
+                SmsResponse[] response = JsonHelper.fromJson(SmsResponse[].class, resultModel.getResult());
+                for (SmsResponse d : response) {
+                    SysSmsLogEntity smsLogEntity = new SysSmsLogEntity();
+                    smsLogEntity.setSendId(d.getSmsId());
+                    smsLogEntity.setMobile(d.getMobile());
+                    smsLogEntity.setReturnMsg(resultModel.getCode());
+                    smsLogEntity.setType(SmsUtil.TYPE);
+                    smsLogEntity.setStime(new Date());
+                    smsLogEntity.setContent(content);
+                    smsLogEntity.setUserId(ShiroUtils.getUserId());
+                    smsLogEntity.setSendStatus(0);
+                    smsLogList.add(smsLogEntity);
+                }
+                saveBatch(smsLogList, 1000);
+            } else {  //发送失败
+                smsLog.setStime(new Date());
+                smsLog.setUserId(ShiroUtils.getUserId());
+                smsLog.setReturnMsg(resultModel.getCode());
                 smsLog.setSendStatus(1);
+                //保存发送记录
+                save(smsLog);
             }
-
         }
-        /**
-         * 待补充
-         */
-
-        //保存发送记录
-        save(smsLog);
         return smsLog;
     }
 }

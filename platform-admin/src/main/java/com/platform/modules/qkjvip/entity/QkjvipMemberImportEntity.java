@@ -118,7 +118,7 @@ public class QkjvipMemberImportEntity implements Serializable {
     /**
      * 会员性质
      */
-    @Excel(name = "会员性质", orderNum = "14", width = 15, groupName = "扩展信息", fixedIndex = 14, replace={"企业单位_0","事业单位_1","政府机关_2","个人_3"})
+    @Excel(name = "会员性质", orderNum = "14", width = 15, groupName = "扩展信息", fixedIndex = 14, replace={"企业单位_0","事业单位_1","政府机关_2","个人_3","核心团购客户_4","团购客户_5","核心终端_6","终端_7","酒店_8","核心酒店_9","核心消费者_10","陪同人员_11"})
     private String memberNature;
     /**
      * 会员来源

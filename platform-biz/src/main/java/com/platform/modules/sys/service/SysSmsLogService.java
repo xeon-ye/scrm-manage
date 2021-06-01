@@ -71,12 +71,18 @@ public interface SysSmsLogService extends IService<SysSmsLogEntity> {
     void deleteBatch(String[] ids);
 
     /**
-     * 发送短信
+     * 发送单条短信
      *
      * @param smsLog smsLog
      * @return SysSmsLogEntity
      */
     SysSmsLogEntity sendSms(SysSmsLogEntity smsLog);
 
+    /**
+     * 批量发送短信
+     *
+     * @param smsLog smsLog
+     * @return SysSmsLogEntity
+     */
     SysSmsLogEntity sendSmsBach(SysSmsLogEntity smsLog);
 }
