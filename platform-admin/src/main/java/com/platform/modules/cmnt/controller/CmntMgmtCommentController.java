@@ -135,11 +135,13 @@ public class CmntMgmtCommentController extends AbstractController {
     @RequestMapping("/review")
     @RequiresPermissions("cmnt:mgmtcomment:update")
     public RestResponse review(@RequestBody CmntMgmtCommentEntity cmntMgmtComment) {
+        cmntMgmtComment.setApprovedstatus(2);  // 审核通过
         cmntMgmtComment.setApproveduser(getUserId());
         cmntMgmtComment.setApprovedtime(new Date());
         cmntMgmtCommentService.update(cmntMgmtComment);
 
-        return RestResponse.success();
+        cmntMgmtComment.setApprovedusername(getUser().getRealName());
+        return RestResponse.success().put("mgmtcomment", cmntMgmtComment);
     }
 
     /**

@@ -39,7 +39,7 @@ public class SysUserChannelEntity implements Serializable {
      */
     private String userId;
     /**
-     * 角色ID
+     * 渠道ID
      */
     private Integer channelId;
 
