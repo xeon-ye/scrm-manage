@@ -43,4 +43,6 @@ public class SysRoleOrgEntity implements Serializable {
 
     @TableField(exist = false)
     private Integer orgnoselect;
+    @TableField(exist = false)
+    private String ordertype;
 }

@@ -21,6 +21,7 @@ import com.platform.modules.sys.entity.SysRoleEntity;
 import com.platform.modules.sys.service.SysRoleMenuService;
 import com.platform.modules.sys.service.SysRoleOrgService;
 import com.platform.modules.sys.service.SysRoleService;
+import com.platform.modules.util.ToolsUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -95,7 +96,9 @@ public class SysRoleController extends AbstractController {
     @RequiresPermissions("sys:role:info")
     public RestResponse info(@PathVariable("roleId") String roleId) {
         SysRoleEntity role = sysRoleService.getById(roleId);
-
+        if(role!=null&&role.getOrdertype()!=null){
+            role.setOrdertypes(role.getOrdertype().split(","));
+        }
         //查询角色对应的菜单
         List<String> menuIdList = sysRoleMenuService.queryMenuIdList(roleId);
         role.setMenuIdList(menuIdList);
@@ -118,7 +121,7 @@ public class SysRoleController extends AbstractController {
     @RequiresPermissions("sys:role:save")
     public RestResponse save(@RequestBody SysRoleEntity role) {
         ValidatorUtils.validateEntity(role);
-
+        role.setOrdertype(ToolsUtil.Array2String(role.getOrdertypes() == null ? new String[] {} : role.getOrdertypes(), ","));
         role.setCreateUserId(getUserId());
         role.setCreateUserOrgNo(getOrgNo());
         sysRoleService.add(role);
@@ -137,6 +140,7 @@ public class SysRoleController extends AbstractController {
     @RequiresPermissions("sys:role:update")
     public RestResponse update(@RequestBody SysRoleEntity role) {
         ValidatorUtils.validateEntity(role);
+        role.setOrdertype(ToolsUtil.Array2String(role.getOrdertypes() == null ? new String[] {} : role.getOrdertypes(), ","));
 
         role.setCreateUserId(getUserId());
         role.setCreateUserOrgNo(getOrgNo());

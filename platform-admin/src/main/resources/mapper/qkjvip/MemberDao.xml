@@ -188,4 +188,15 @@
             #{item.mobile}
         </foreach>
     </select>
+
+    <!--根据手机查信息，孙珊珊-->
+    <select id="queryAllByMobile" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
+        SELECT top 1 isnull(m.real_name,m.member_name) member_name,m.member_id,
+        case when m.sex =0 or m.sex=3 or isnull(m.sex,0)=0 then 3
+        ELSE m.sex end as sex
+        FROM qkjvip_member m WHERE 1=1 and m.statusflag!=1
+        <if test="params.mobile != null and params.mobile != ''">
+            AND m.mobile = #{params.mobile}
+        </if>
+    </select>
 </mapper>

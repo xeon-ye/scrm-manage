@@ -60,4 +60,24 @@ public class ToolsUtil {
 		}
 		return false;
 	}
+	/**
+	 * 数组转换成字符串,用split隔开
+	 *
+	 * @param array
+	 *            数组,可以是简单类型的数组String[],Integer[],Double[]等
+	 * @param split
+	 *            分隔字符
+	 * @return
+	 */
+	public static String Array2String(Object[] array, String split) {
+		if (!(array == null || array.length == 0)) {
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < array.length; i++)
+				sb.append(array[i]).append(split);
+			sb.delete(sb.length() - split.length(), sb.length());
+			return sb.toString();
+		} else {
+			return null;
+		}
+	}
 }

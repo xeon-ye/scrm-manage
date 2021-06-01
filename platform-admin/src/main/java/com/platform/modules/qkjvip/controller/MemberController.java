@@ -87,6 +87,16 @@ public class MemberController extends AbstractController {
     }
 
     /**
+     * 根据手机查询列表
+     */
+    @RequestMapping("/queryAllByMobile")
+    public RestResponse queryAllByMobile(@RequestParam Map<String, Object> params) {
+        List<MemberEntity> list = memberService.queryAllByMobile(params);
+
+        return RestResponse.success().put("list", list);
+    }
+
+    /**
      * 所有会员列表
      *
      * @param memberQuery 查询参数
