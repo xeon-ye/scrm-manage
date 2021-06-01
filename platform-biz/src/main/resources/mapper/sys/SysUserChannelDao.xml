@@ -27,6 +27,12 @@
 		SELECT CHANNEL_ID FROM SYS_USER_CHANNEL WHERE USER_ID = #{value}
 	</select>
 
+    <select id="queryChannelList" resultType="com.platform.modules.sys.entity.SysUserChannelEntity">
+		SELECT T.*,c.AppId,c.ServiceName FROM SYS_USER_CHANNEL T
+        INNER JOIN qkjvip_member_channel c ON (c.MemberChannel = T.CHANNEL_ID)
+        WHERE T.USER_ID = #{value}
+	</select>
+
     <select id="queryPermissionChannels" resultType="com.platform.modules.sys.entity.SysUserChannelEntity">
 		SELECT T.*,c.AppId,c.ServiceName FROM SYS_USER_CHANNEL T
         RIGHT JOIN qkjvip_member_channel c ON (c.MemberChannel = T.CHANNEL_ID)

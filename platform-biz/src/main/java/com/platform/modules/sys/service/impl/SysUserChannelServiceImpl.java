@@ -110,6 +110,11 @@ public class SysUserChannelServiceImpl extends ServiceImpl<SysUserChannelDao, Sy
     }
 
     @Override
+    public List<SysUserChannelEntity> queryChannelByUserId(String userId) {
+        return baseMapper.queryChannelList(userId);
+    }
+
+    @Override
     public List<SysUserChannelEntity> queryPermissionChannels(Map<String, Object> params) {
         return baseMapper.queryPermissionChannels(params);
     }

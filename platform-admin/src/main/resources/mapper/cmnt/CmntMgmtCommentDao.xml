@@ -45,10 +45,10 @@
         LEFT JOIN (SELECT COUNT(*) thumbsupCnt, commentId FROM cmnt_mgmt_thumbsup
         GROUP BY commentId) tp ON (T.id = tp.commentId)
         WHERE (T.approvedStatus = 0 or T.approvedStatus = 2)
-        <if test="params.mainId != null and params.mainId.trim() != ''">
+        <if test="params.mainid != null and params.mainid.trim() != ''">
             AND T.mainId = #{params.mainid}
         </if>
-        <if test="params.mainType != null and params.mainType != ''">
+        <if test="params.maintype != null and params.maintype != ''">
             AND T.mainType = #{params.maintype}
         </if>
         ORDER BY T.createDate DESC

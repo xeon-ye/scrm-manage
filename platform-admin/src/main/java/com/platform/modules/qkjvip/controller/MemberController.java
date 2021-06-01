@@ -26,6 +26,7 @@ import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.qkjvip.service.*;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysDictEntity;
+import com.platform.modules.sys.entity.SysUserChannelEntity;
 import com.platform.modules.sys.service.SysDictService;
 import com.platform.modules.sys.service.SysRoleOrgService;
 import com.platform.modules.sys.service.SysUserChannelService;
@@ -286,6 +287,7 @@ public class MemberController extends AbstractController {
         Map<String, Object> params = new HashMap<>();
         List<SysDictEntity> dictList = new ArrayList<>();
         List<QkjvipMemberChannelEntity> memberChannelList = new ArrayList<>();
+        List<SysUserChannelEntity> permChannelList = new ArrayList<>();
         String[] dictAttr = null;
         try {
             Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("会员信息表", "会员信息"), MemberExportEntity.class, list);
@@ -294,11 +296,22 @@ public class MemberController extends AbstractController {
             ExcelSelectListUtil.selectList(workbook, 5, 5, new String[]{"是","否"});
 
             //会员渠道
-            params.clear();
-            memberChannelList = qkjvipMemberChannelService.queryAll(params);
-            dictAttr = new String[memberChannelList.size()];
-            for (int i = 0; i < memberChannelList.size(); i++) {
-                dictAttr[i] = memberChannelList.get(i).getServicename().trim() + "-" + memberChannelList.get(i).getMemberchannel();
+            String channelIds = "";
+            channelIds = sysUserChannelService.queryChannelIdByUserId(getUserId());
+            if ("0".equals(channelIds)) {  // 所有渠道权限
+                params.clear();
+                memberChannelList = qkjvipMemberChannelService.queryAll(params);
+                dictAttr = new String[memberChannelList.size()];
+                for (int i = 0; i < memberChannelList.size(); i++) {
+                    dictAttr[i] = memberChannelList.get(i).getServicename().trim() + "-" + memberChannelList.get(i).getMemberchannel();
+                }
+            } else {  // 查询登陆人的渠道权限
+                params.clear();
+                permChannelList = sysUserChannelService.queryChannelByUserId(getUserId());
+                dictAttr = new String[permChannelList.size()];
+                for (int i = 0; i < permChannelList.size(); i++) {
+                    dictAttr[i] = permChannelList.get(i).getServicename().trim() + "-" + permChannelList.get(i).getChannelId();
+                }
             }
             ExcelSelectListUtil.ExcelTo255(workbook, "hidden", 1, dictAttr, 3, 65535, 6, 6);
 
@@ -365,6 +378,12 @@ public class MemberController extends AbstractController {
             try {
                 List<QkjvipMemberImportEntity> list = ExportExcelUtils.importExcel(file, 1, 2,QkjvipMemberImportEntity.class);
                 for (int i = 0; i < list.size(); i++) {
+                    if (StringUtils.isNotBlank(list.get(i).getIdcard())) {
+                        String idCard = list.get(i).getIdcard();
+                        if (!ValidateIdCardUtil.isIDCard(idCard)) {  // 身份证校验不成功
+                            return RestResponse.error("有不正确的身份证号,请修改后重新上传！");
+                        }
+                    }
                     String[] channel = null;
                     if (StringUtils.isNotBlank(list.get(i).getServicename())) {
                         channel = new String[list.get(i).getServicename().split("-").length];
