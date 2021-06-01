@@ -55,6 +55,11 @@ public class SysRoleEntity implements Serializable {
 
     private Integer orgnoselect;
 
+    private String ordertype;
+
+    @TableField(exist = false)
+    private String[] ordertypes;
+
     /**
      * 创建者所属机构
      */

@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -89,4 +90,6 @@ public class QkjvipOrderDeliverlogEntity implements Serializable {
     private String createon;
     private Double synum;
     private Float packsize;
+    @TableField(exist = false)
+    private String addusername;
 }

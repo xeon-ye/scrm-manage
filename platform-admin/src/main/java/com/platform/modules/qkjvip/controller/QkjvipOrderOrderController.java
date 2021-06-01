@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
+import com.platform.datascope.ContextHelper;
 import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.qkjvip.service.QkjvipOrderDeliverlogService;
 import com.platform.modules.qkjvip.service.QkjvipOrderOrderdetailService;
@@ -94,6 +95,9 @@ public class QkjvipOrderOrderController extends AbstractController {
      */
     @PostMapping("/list")
     public RestResponse list(@RequestBody QkjvipOrderOrderQuaryEntity order) throws IOException {
+        Set<String> list = new HashSet<>();
+        list=ContextHelper.setOrdertypesm("qkjvip:memberactivity:list",getUserId());
+        //Object[] result = list.toArray();
         //Page page = qkjvipOrderOrderService.queryPage(params);
         if (!getUser().getUserName().contains("admin")) {  // 空默认是全部所有权限
             order.setCurrentmemberid(getUserId());
@@ -260,6 +264,7 @@ public class QkjvipOrderOrderController extends AbstractController {
                     }else{
                         st.setProductcount(st.getIntotalcount().subtract(st.getOuttotalcount()));
                     }
+                    st.setCreator(getUserId());
                     st.setCreateon(new Date());
                     st.setOrderid(orderid);
                     liststock.add(st);

@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * HttpServlet相关的工具类
@@ -106,6 +103,22 @@ public class ContextHelper extends AbstractController {
 		}
 	}
 
+
+	public static Set<String> setOrdertypes(List<SysRoleOrgEntity> sros) {
+		Set<String> dset = new HashSet<>();
+		if(sros!=null&&sros.size()>0){
+			for(SysRoleOrgEntity d:sros){
+				if(d!=null&&d.getOrdertype()!=null){
+					String[] str=d.getOrdertype().split(",");
+					for (int i=0;i<str.length;i++) {
+						dset.add(str[i]);
+					}
+				}
+			}
+		}
+		return dset;
+	}
+
 	public static  String setSearchDepts(String userPerm,String userid,String dept) {
 		List<SysRoleOrgEntity> sros = new ArrayList<>();
 		Map<String, Object> m = new HashMap<>();
@@ -114,5 +127,17 @@ public class ContextHelper extends AbstractController {
 		sros = sysRoleOrgServicestatic.queryOrgNoIsselect(m);
 		String orgs = ContextHelper.setSearchDeptPermit4Search(sros, dept);
 		return orgs;
+	}
+
+	public static  Set<String> setOrdertypesm(String userPerm,String userid) {
+		List<SysRoleOrgEntity> sros = new ArrayList<>();
+		Map<String, Object> m = new HashMap<>();
+		m.put("userId", userid);
+		m.put("userPerm", userPerm);
+		sros = sysRoleOrgServicestatic.queryOrgNoIsselect(m);
+
+		Set<String> list = new HashSet<>();
+		list = ContextHelper.setOrdertypes(sros);
+		return list;
 	}
 }

@@ -38,7 +38,7 @@
 
     <select id="queryOrgNoIsselect" resultType="com.platform.modules.sys.entity.SysRoleOrgEntity">
         SELECT case when b.orgnoselect=0 then o.ORG_NO
-        ELSE b.orgnoselect end ORG_NO from sys_role_menu a
+        ELSE b.orgnoselect end ORG_NO,b.ordertype from sys_role_menu a
         join sys_role b on (a.ROLE_ID=b.ROLE_ID)
         left join sys_role_org o on (b.ROLE_ID=o.ROLE_ID)
         where 1=1
