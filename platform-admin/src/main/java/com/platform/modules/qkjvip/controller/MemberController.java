@@ -298,7 +298,7 @@ public class MemberController extends AbstractController {
             //会员渠道
             String channelIds = "";
             channelIds = sysUserChannelService.queryChannelIdByUserId(getUserId());
-            if ("0".equals(channelIds)) {  // 所有渠道权限
+            if ("0".equals(channelIds) || getUser().getUserName().contains("admin")) {  // 所有渠道权限
                 params.clear();
                 memberChannelList = qkjvipMemberChannelService.queryAll(params);
                 dictAttr = new String[memberChannelList.size()];
@@ -313,7 +313,9 @@ public class MemberController extends AbstractController {
                     dictAttr[i] = permChannelList.get(i).getServicename().trim() + "-" + permChannelList.get(i).getChannelId();
                 }
             }
-            ExcelSelectListUtil.ExcelTo255(workbook, "hidden", 1, dictAttr, 3, 65535, 6, 6);
+            if (dictAttr != null && dictAttr.length > 0) {
+                ExcelSelectListUtil.ExcelTo255(workbook, "hidden", 1, dictAttr, 3, 65535, 6, 6);
+            }
 
             //会员类型
             params.clear();
