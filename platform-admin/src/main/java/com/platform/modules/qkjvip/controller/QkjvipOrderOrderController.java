@@ -234,6 +234,10 @@ public class QkjvipOrderOrderController extends AbstractController {
         obj = JSONArray.toJSON(newo);
         JsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
         resultPost = HttpClient.sendPost(Vars.MEMBER_ORDER_ORDER_MDYSTATUS, JsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if (!"200".equals(resultObject.get("resultcode").toString())) {  //清洗失败
+            return RestResponse.error(resultObject.get("descr").toString());
+        }
         //qkjvipOrderOrderService.add(qkjvipOrderOrder);
         return RestResponse.success();
     }
@@ -290,6 +294,8 @@ public class QkjvipOrderOrderController extends AbstractController {
                 }
                 qkjvipOrderDeliverlogService.batchAdd(liststock);
             }
+        }else {
+            return RestResponse.error(resultObject.get("descr").toString());
         }
 
         //qkjvipOrderOrderService.add(qkjvipOrderOrder);

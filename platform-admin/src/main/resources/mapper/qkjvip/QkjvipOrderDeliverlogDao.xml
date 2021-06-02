@@ -8,13 +8,21 @@
         T.*,u.REAL_NAME addusername
         FROM QKJVIP_ORDER_DELIVERLOG T
         left join sys_user u on (t.creator = u.USER_ID)
+        join qkjvip_order_order od on (od.Id=t.OrderId)
         WHERE 1=1
-        <if test="params.name != null and params.name.trim() != ''">
+        <if test="params.productname != null and params.productname.trim() != ''">
             AND T.NAME LIKE '%${params.name}%'
         </if>
-        <if test="params.orderid != null and params.orderid.trim() != ''">
-            AND T.orderid LIKE '${params.orderid}'
+        <if test="params.ordercode != null and params.ordercode.trim() != ''">
+            AND od.OrderCode = '${params.ordercode}'
         </if>
+        <if test="params.membername != null and params.membername.trim() != ''">
+            AND od.MemberName like '%${params.membername}%'
+        </if>
+        <if test="params.mobile != null and params.mobile.trim() != ''">
+            AND od.CellPhone = '${params.mobile}'
+        </if>
+
     </sql>
 
     <select id="selectQkjvipOrderDeliverlogPage" resultType="com.platform.modules.qkjvip.entity.QkjvipOrderDeliverlogEntity">

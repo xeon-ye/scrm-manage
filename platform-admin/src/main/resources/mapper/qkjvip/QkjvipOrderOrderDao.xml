@@ -58,13 +58,16 @@
         <include refid="selectSql"/>
     </select>
     <select id="queryorderbyMember" resultType="com.platform.modules.qkjvip.entity.QkjvipOrderOrderEntity">
-        SELECT top 1 * from qkjvip_order_order a where 1=1
+        SELECT top 1 * from qkjvip_order_order a where 1=1 AND 
+        a.ReceiveProvince is not null
         <if test="params.crmMemberid != null and params.crmMemberid != ''">
-            AND (a.crm_memberid = #{params.crmMemberid}
-                or
-            EXISTS (SELECT 1 from qkjvip_member m where m.member_id=a.crm_memberid and m.memberidto=#{params.crmMemberid}))
-
+            AND EXISTS (
+            SELECT 1 from qkjvip_member b
+            inner join qkjvip_member  c
+            on ISNULL(b.memberidto,b.member_id)=ISNULL(c.memberidto,c.member_id)
+            where a.crm_memberid=b.member_id and c.member_id='${params.crmMemberid}'
+            )
         </if>
-        ORDER BY a.OrderDate DESC
+        <!--ORDER BY a.OrderDate DESC-->
     </select>
 </mapper>
