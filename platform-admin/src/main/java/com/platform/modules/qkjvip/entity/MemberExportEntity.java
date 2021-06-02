@@ -108,12 +108,12 @@ public class MemberExportEntity implements Serializable {
     /*
      * 会员性质
      */
-    @Excel(name = "会员性质", orderNum = "14", width = 15, groupName = "扩展信息",  fixedIndex = 13, replace={"企业单位_0","事业单位_1","政府机关_2","个人_3","核心团购客户_4","团购客户_5","核心终端_6","终端_7","酒店_8","核心酒店_9","核心消费者_10","陪同人员_11"})
+    @Excel(name = "会员性质", orderNum = "14", width = 15, groupName = "扩展信息",  fixedIndex = 13, replace={"企业单位_0","事业单位_1","政府机关_2","消费者_3","核心团购客户_4","团购客户_5","核心终端_6","终端_7","酒店_8","核心酒店_9","核心消费者_10","陪同人员_11", "经销商_12"})
     private String memberNature;
     /*
      * 会员来源
      */
-    @Excel(name = "会员来源", orderNum = "15", width = 15, groupName = "扩展信息",  fixedIndex = 14, replace={"OMS门店_0","线下活动_1","线上活动_2","线上交易_3","线下交易_4","会员推荐_5","旅游景区_6","其他来源_20"})
+    @Excel(name = "会员来源", orderNum = "15", width = 15, groupName = "扩展信息",  fixedIndex = 14, replace={"OMS门店_0","线下活动_1","线上活动_2","线上交易_3","线下交易_4","会员推荐_5","旅游景区_6","回厂游_7","其他来源_20"})
     private String memberSource;
     /*
      * 行业类别
