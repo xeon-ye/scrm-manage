@@ -24,8 +24,11 @@ import com.platform.modules.sys.entity.SmsConfig;
 import com.platform.modules.sys.entity.SysSmsLogEntity;
 import com.platform.modules.sys.service.SysConfigService;
 import com.platform.modules.sys.service.SysSmsLogService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +41,9 @@ import java.util.Map;
  * @author liuqianru
  * @date 2021/6/1 15:48
  */
+@RestController
+@Component("qrtzSmsLog")
+@Slf4j
 public class QrtzSmsLogController {
     @Autowired
     private SysConfigService sysConfigService;
@@ -89,15 +95,15 @@ public class QrtzSmsLogController {
             if (response != null && response.length > 0) {  // 有报告返回
                 Map params = new HashMap();
                 Date startDate = DateUtils.addDateDays(nowDate, -4);  // 4天前的数据
-                params.put("startTime", startDate);
-                params.put("endTime", nowDate);
+                params.put("startTime", DateUtil.toString(startDate, "yyyy-MM-dd HH:mm:ss"));
+                params.put("endTime", DateUtil.toString(nowDate, "yyyy-MM-dd HH:mm:ss"));
                 List<SysSmsLogEntity> smsList = sysSmsLogService.queryAll(params);
                 for (ReportResponse d : response) {
                     for (SysSmsLogEntity smsLogEntity : smsList) {
                         if (smsLogEntity.getSendId() != null && d.getSmsId().equals(smsLogEntity.getSendId()) && d.getMobile().equals(smsLogEntity.getMobile())) {
                             if (!"DELIVRD".equals(d.getState())) {  // 发送不成功
                                 smsLogEntity.setSendStatus(1);
-                                smsLogEntity.setReturnMsg(d.getState() + ":" + d.getDesc());
+                                smsLogEntity.setReturnMsg(d.getState());
                                 sysSmsLogService.update(smsLogEntity);  // 更新表发送状态
                             }
                         }
