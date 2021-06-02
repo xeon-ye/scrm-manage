@@ -12,20 +12,18 @@ package com.platform.modules.quartz.controller;
 
 import cn.emay.Example;
 import cn.emay.ResultModel;
-import cn.emay.RetrieveReportExample;
 import cn.emay.eucp.inter.http.v1.dto.response.ReportResponse;
 import cn.emay.util.DateUtil;
 import cn.emay.util.JsonHelper;
-import cn.emay.util.Md5;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.Constant;
 import com.platform.common.utils.DateUtils;
 import com.platform.common.utils.StringUtils;
-import com.platform.modules.quartz.entity.QrtzLastUpdateTimeEntity;
-import com.platform.modules.quartz.service.QrtzLastUpdateTimeService;
 import com.platform.modules.sys.entity.SmsConfig;
+import com.platform.modules.sys.entity.SysSmsLogEntity;
 import com.platform.modules.sys.service.SysConfigService;
+import com.platform.modules.sys.service.SysSmsLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -44,7 +42,7 @@ public class QrtzSmsLogController {
     @Autowired
     private SysConfigService sysConfigService;
     @Autowired
-    private QrtzLastUpdateTimeService qrtzLastUpdateTimeService;
+    private SysSmsLogService sysSmsLogService;
 
     /**
      * 定时获取短信发送状态报告
@@ -76,29 +74,38 @@ public class QrtzSmsLogController {
         String host = config.getHost();// 请联系销售获取
         // 编码
         String encode = "UTF-8";
-        // 时间戳
-        String timestamp = DateUtil.toString(new Date(), "yyyyMMddHHmmss");
-        // 签名
-        String sign = Md5.md5((appId + secretKey + timestamp).getBytes());
-        // 开始时间
-        String startTime = DateUtil.toString(new Date(), "yyyyMMddHHmmss");
-        // 结束时间
-        String endTime = DateUtil.toString(new Date(), "yyyyMMddHHmmss");
-        String smsId = "123123123,321321321";
+        // 加密算法
+        String algorithm = config.getAlgorithm();
+        // 是否压缩
+        boolean isGizp = true;
 
-        Map params = new HashMap();
-        params.put("type", 5);
-        List<QrtzLastUpdateTimeEntity> updateTimeList = qrtzLastUpdateTimeService.queryAll(params);
-        QrtzLastUpdateTimeEntity updateTimeEntity = new QrtzLastUpdateTimeEntity();
-        updateTimeEntity = updateTimeList.get(0);
-        if (updateTimeList.get(0).getLastDatetime() == null) {
-            startTime = "2017-01-01";
-//            DateUtils.addDateMinutes(endTime, -5);
-        } else {
-//            updateTime = sdf.format(updateTimeList.get(0).getLastDatetime());
+        long startTime, endTime;
+        Date nowDate = new Date();
+        startTime = System.currentTimeMillis();
+        ResultModel resultModel = Example.getReport(appId, secretKey, host, algorithm, isGizp, encode);  // 取3天前的数据，每次最多取500条
+        if ("SUCCESS".equals(resultModel.getCode())) {
+            System.out.println("短信状态报告：" + resultModel.getResult());
+            ReportResponse[] response = JsonHelper.fromJson(ReportResponse[].class, resultModel.getResult());
+            if (response != null && response.length > 0) {  // 有报告返回
+                Map params = new HashMap();
+                Date startDate = DateUtils.addDateDays(nowDate, -4);  // 4天前的数据
+                params.put("startTime", startDate);
+                params.put("endTime", nowDate);
+                List<SysSmsLogEntity> smsList = sysSmsLogService.queryAll(params);
+                for (ReportResponse d : response) {
+                    for (SysSmsLogEntity smsLogEntity : smsList) {
+                        if (smsLogEntity.getSendId() != null && d.getSmsId().equals(smsLogEntity.getSendId()) && d.getMobile().equals(smsLogEntity.getMobile())) {
+                            if (!"DELIVRD".equals(d.getState())) {  // 发送不成功
+                                smsLogEntity.setSendStatus(1);
+                                smsLogEntity.setReturnMsg(d.getState() + ":" + d.getDesc());
+                                sysSmsLogService.update(smsLogEntity);  // 更新表发送状态
+                            }
+                        }
+                    }
+                }
+            }
         }
-
-        RetrieveReportExample.getReport(appId, host, encode, timestamp, sign, startTime, endTime, smsId);
-
+        endTime = System.currentTimeMillis();
+        System.out.println("获取短信状态报告完成，用时" + (endTime - startTime) + "ms");
     }
 }

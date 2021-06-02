@@ -80,9 +80,6 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
 
     @Override
     public SysSmsLogEntity sendSms(SysSmsLogEntity smsLog) {
-        smsLog.setType(SmsUtil.TYPE);
-        smsLog.setUserId(ShiroUtils.getUserId());
-        String result = Constant.BLANK;
         //获取云存储配置信息
         SmsConfig config = sysConfigService.getConfigObject(Constant.SMS_CONFIG_KEY, SmsConfig.class);
         if (StringUtils.isNullOrEmpty(config)) {
@@ -147,9 +144,11 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
             String encode = "UTF-8";
             // 是否压缩
             boolean isGizp = true;
+
             String content=smsLog.getContent();
             String mobile=smsLog.getMobile();
             ResultModel resultModel = Example.setSingleSms(appId, secretKey, host,algorithm,content, null, null, mobile, isGizp, encode);
+
             if("SUCCESS".equals(resultModel.getCode())){  // 发送成功
                 SmsResponse response = JsonHelper.fromJson(SmsResponse.class, resultModel.getResult());
                 smsLog.setSendId(response.getSmsId());
@@ -157,20 +156,20 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
             } else {  //发送失败
                 smsLog.setSendStatus(1);
             }
+            smsLog.setType(SmsUtil.TYPE);
             smsLog.setStime(new Date());
             smsLog.setUserId(ShiroUtils.getUserId());
             smsLog.setReturnMsg(resultModel.getCode());
         }
         //保存发送记录
-        save(smsLog);
+        if (smsLog.getSendStatus() == 0) {
+            save(smsLog);
+        }
         return smsLog;
     }
 
     @Override
     public SysSmsLogEntity sendSmsBach(SysSmsLogEntity smsLog) {
-        smsLog.setType(SmsUtil.TYPE);
-        smsLog.setUserId(ShiroUtils.getUserId());
-        String result = Constant.BLANK;
         //获取云存储配置信息
         SmsConfig config = sysConfigService.getConfigObject(Constant.SMS_CONFIG_KEY, SmsConfig.class);
         if (StringUtils.isNullOrEmpty(config)) {
@@ -242,7 +241,9 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
             if("SUCCESS".equals(resultModel.getCode())){  // 发送成功
                 smsLog.setSendStatus(0);
                 SmsResponse[] response = JsonHelper.fromJson(SmsResponse[].class, resultModel.getResult());
+                System.out.println("=============begin sendSmsBach==================");
                 for (SmsResponse d : response) {
+                    System.out.println("data:" + d.getMobile() + "," + d.getSmsId() + "," + d.getCustomSmsId());
                     SysSmsLogEntity smsLogEntity = new SysSmsLogEntity();
                     smsLogEntity.setSendId(d.getSmsId());
                     smsLogEntity.setMobile(d.getMobile());
@@ -251,17 +252,18 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
                     smsLogEntity.setStime(new Date());
                     smsLogEntity.setContent(content);
                     smsLogEntity.setUserId(ShiroUtils.getUserId());
-                    smsLogEntity.setSendStatus(0);
                     smsLogList.add(smsLogEntity);
                 }
+                System.out.println("=============end sendSmsBach==================");
                 saveBatch(smsLogList, 1000);
-            } else {  //发送失败
+            } else {
+                smsLog.setType(SmsUtil.TYPE);
                 smsLog.setStime(new Date());
                 smsLog.setUserId(ShiroUtils.getUserId());
                 smsLog.setReturnMsg(resultModel.getCode());
                 smsLog.setSendStatus(1);
                 //保存发送记录
-                save(smsLog);
+//                save(smsLog);  //调用发送接口失败不插入 liuqianru mod 2021/06/02
             }
         }
         return smsLog;

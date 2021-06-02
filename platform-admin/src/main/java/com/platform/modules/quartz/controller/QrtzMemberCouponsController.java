@@ -101,10 +101,10 @@ public class QrtzMemberCouponsController extends AbstractController {
             if (resultPost != null && !"[]".equals(resultPost)) {
                 this.saveOrUpdateCoupon(resultPost, i + "");
             }
-            //将最后更新时间存入数据库
-            if (!StringUtils.isEmpty(updateTimeEntity.getId())) {
-                qrtzLastUpdateTimeService.updateLastDatetime(updateTimeEntity);
-            }
+        }
+        //将最后更新时间存入数据库
+        if (!StringUtils.isEmpty(updateTimeEntity.getId())) {
+            qrtzLastUpdateTimeService.updateLastDatetime(updateTimeEntity);
         }
     }
 

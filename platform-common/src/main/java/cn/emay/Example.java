@@ -177,15 +177,15 @@ public class Example {
 		ReportRequest pamars = new ReportRequest();
 		ResultModel result = request(appId, secretKey, algorithm, pamars, host + "/inter/getReport", isGzip, encode);
 		System.out.println("result code :" + result.getCode());
-		if ("SUCCESS".equals(result.getCode())) {
-			ReportResponse[] response = JsonHelper.fromJson(ReportResponse[].class, result.getResult());
-			if (response != null) {
-				for (ReportResponse d : response) {
-					System.out.println("result data : " + d.getExtendedCode() + "," + d.getMobile() + "," + d.getCustomSmsId() + "," + d.getSmsId() + "," + d.getState() + "," + d.getDesc() + ","
-							+ d.getSubmitTime() + "," + d.getReceiveTime());
-				}
-			}
-		}
+//		if ("SUCCESS".equals(result.getCode())) {  // liuqianru del 2021-06-02
+//			ReportResponse[] response = JsonHelper.fromJson(ReportResponse[].class, result.getResult());
+//			if (response != null) {
+//				for (ReportResponse d : response) {
+//					System.out.println("result data : " + d.getExtendedCode() + "," + d.getMobile() + "," + d.getCustomSmsId() + "," + d.getSmsId() + "," + d.getState() + "," + d.getDesc() + ","
+//							+ d.getSubmitTime() + "," + d.getReceiveTime());
+//				}
+//			}
+//		}
 		System.out.println("=============end getReport==================");
 		return result;
 	}
@@ -251,14 +251,14 @@ public class Example {
 		pamars.setContent(content);
 		ResultModel result = request(appId, secretKey, algorithm, pamars, host + "/inter/sendBatchOnlySMS", isGzip, encode);
 		System.out.println("result code :" + result.getCode());
-		if ("SUCCESS".equals(result.getCode())) {
-			SmsResponse[] response = JsonHelper.fromJson(SmsResponse[].class, result.getResult());
-			if (response != null) {
-				for (SmsResponse d : response) {
-					System.out.println("data:" + d.getMobile() + "," + d.getSmsId() + "," + d.getCustomSmsId());
-				}
-			}
-		}
+//		if ("SUCCESS".equals(result.getCode())) {  // liuqianru del 2021-06-02
+//			SmsResponse[] response = JsonHelper.fromJson(SmsResponse[].class, result.getResult());
+//			if (response != null) {
+//				for (SmsResponse d : response) {
+//					System.out.println("data:" + d.getMobile() + "," + d.getSmsId() + "," + d.getCustomSmsId());
+//				}
+//			}
+//		}
 		System.out.println("=============end setBatchOnlySms==================");
 		return result;
 	}
