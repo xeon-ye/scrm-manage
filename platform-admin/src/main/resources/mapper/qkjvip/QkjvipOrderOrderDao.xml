@@ -68,6 +68,6 @@
             where a.crm_memberid=b.member_id and c.member_id='${params.crmMemberid}'
             )
         </if>
-        <!--ORDER BY a.OrderDate DESC-->
+        ORDER BY a.OrderDate DESC
     </select>
 </mapper>
