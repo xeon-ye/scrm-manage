@@ -11,6 +11,8 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -45,10 +47,12 @@ public class QkjvipMemberIntegralruleEntity implements Serializable {
     /**
      * 每日上限得分
      */
+    @TableField(fill = FieldFill.UPDATE)
     private Integer dailylimit;
     /**
      * 每月上限得分
      */
+    @TableField(fill = FieldFill.UPDATE)
     private Integer monthlylimit;
     /**
      * 备注

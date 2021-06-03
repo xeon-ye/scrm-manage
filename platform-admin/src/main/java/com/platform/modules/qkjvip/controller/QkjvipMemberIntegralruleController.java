@@ -11,19 +11,23 @@
  */
 package com.platform.modules.qkjvip.controller;
 
+import cn.emay.util.JsonHelper;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipMemberIntegralruleEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberIntegralruleService;
+import com.platform.modules.util.HttpClient;
+import com.platform.modules.util.Vars;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Controller
@@ -104,10 +108,22 @@ public class QkjvipMemberIntegralruleController extends AbstractController {
     @SysLog("修改")
     @RequestMapping("/update")
     @RequiresPermissions("qkjvip:memberintegralrule:update")
-    public RestResponse update(@RequestBody QkjvipMemberIntegralruleEntity qkjvipMemberIntegralrule) {
+    public RestResponse update(@RequestBody QkjvipMemberIntegralruleEntity qkjvipMemberIntegralrule) throws IOException {
 
         qkjvipMemberIntegralruleService.update(qkjvipMemberIntegralrule);
 
+        List<Map> list = new ArrayList<>();
+        Map map = new HashMap();
+        map.put("integraltype", qkjvipMemberIntegralrule.getRuleid());
+        map.put("count", qkjvipMemberIntegralrule.getIntegral());
+        list.add(map);
+        String queryJsonStr = JsonHelper.toJsonString(list);
+        String resultPost = HttpClient.sendPost(Vars.INTEGRAL_RULE_PUSH_URL, queryJsonStr);
+        System.out.println("积分规则推送：" + queryJsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if (!"0".equals(resultObject.get("code").toString())) {  //调用成功
+            return RestResponse.error("积分规则推送失败！");
+        }
         return RestResponse.success();
     }
 

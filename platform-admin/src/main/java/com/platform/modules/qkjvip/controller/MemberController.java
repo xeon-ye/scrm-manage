@@ -392,8 +392,9 @@ public class MemberController extends AbstractController {
                 for (int i = 0; i < list.size(); i++) {
                     if (StringUtils.isNotBlank(list.get(i).getIdcard())) {
                         String idCard = list.get(i).getIdcard();
-                        if (!ValidateIdCardUtil.isIDCard(idCard)) {  // 身份证校验不成功
-                            return RestResponse.error("有不正确的身份证号,请修改后重新上传！");
+                        if (!ValidateIdCardUtil.isIDCard(idCard.trim())) {  // 身份证校验不成功
+                            int rownum = i + 4;
+                            return RestResponse.error("第" + rownum + "行的身份证号不正确,请修改后重新上传！");
                         }
                     }
                     String[] channel = null;

@@ -364,9 +364,10 @@ public class QkjvipMemberMessageController extends AbstractController {
             StringBuilder sb = new StringBuilder();
             sb.append(qkjvipMemberMessage.getWxContent());
             String tmpUrl = qkjvipMemberMessage.getAppletsurl() + "?" + qkjvipMemberMessage.getAppletsparam();
-            sb.append("<a class=\"weapp_text_link\" style=\"font-size:17px;\" data-miniprogram-appid=\"wxacf5db8e2b0ef6a5\" data-miniprogram-path=\"" + tmpUrl + "\" data-miniprogram-nickname=\"青稞荟\" href=\"\" data-miniprogram-type=\"text\" data-miniprogram-servicetype=\"\">点击打开小程序</a>");
+//            sb.append("<a class=\"weapp_text_link\" style=\"font-size:17px;\" data-miniprogram-appid=\"wxacf5db8e2b0ef6a5\" data-miniprogram-path=\"" + tmpUrl + "\" data-miniprogram-nickname=\"青稞荟\" href=\"\" data-miniprogram-type=\"text\" data-miniprogram-servicetype=\"\">点击打开小程序</a>");
+            sb.append("<p>点击图片查看详情</p>");
             if (qkjvipMemberMessage.getLinkImage() != null) {
-                sb.append("<a href='{url}'><img src='" + qkjvipMemberMessage.getLinkImage() + "'></a>");
+                sb.append("<a class=\"weapp_image_link\" data-miniprogram-appid=\"wxacf5db8e2b0ef6a5\" data-miniprogram-path=\"" + tmpUrl + "\" data-miniprogram-nickname=\"青稞荟\" href=\"\" data-miniprogram-type=\"image\" data-miniprogram-servicetype=\"\"><img src='" + qkjvipMemberMessage.getLinkImage() + "'></a>");
             }
             sonMap.put("content", sb.toString());
             sonMap.put("sourceUrl", qkjvipMemberMessage.getUrl());

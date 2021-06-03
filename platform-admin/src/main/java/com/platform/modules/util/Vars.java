@@ -37,16 +37,16 @@ public class Vars {
 	public static String MEMBER_GETLEVEL_FROM_SCAN = "http://api.scrm.qkj.com.cn/api/MemberLevel/ReceiveMemberSendLevel";
 	public static String MEMBER_VALIDCHECK_FROM_SCAN = "http://api.scrm.qkj.com.cn/api/MemberLevel/ValidateMemberReceiveLevel";
 	//会员检索url end
-	//积分发放url start
+	//积分url
 	public static String MEMBER_INTEGRAL_SEND_URL = "http://api.scrm.qkj.com.cn/api/Integral/SetBatchMemberIntegral";
-	//积分发放url end
-	//公众号url start
+	// 推送积分规则
+	public static String INTEGRAL_RULE_PUSH_URL = "https://api.mall.qkj.com.cn/MobileApi/Coupon/SetIntegralRule";
+	// 获取公众号
 	public static String APPID_GETLIST_URL = "http://scrm-wxcb.ym.qkj.com.cn/WeiXinPublish/GetPublishList";
 	//群发图文消息接口
 	public static String MESSAGE_SEND = "http://scrm-wxcb.ym.qkj.com.cn/WeiXinMsg/MassMultiNewsMessage";
 	// 微信url接口
 	public static String APPLETS_URL_GET = "http://scrm-wxcb.ym.qkj.com.cn/MiniProgram/GetTempUrlLink";
-	//公众号url end
 	//优惠券查询
 	public static String MEMBER_CPON_LIST_URl = "http://api.mall.qkj.com.cn/MobileAPI/Coupon/GetCouponList";
 	//优惠券发送
