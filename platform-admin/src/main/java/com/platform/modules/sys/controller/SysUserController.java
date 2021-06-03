@@ -57,7 +57,6 @@ public class SysUserController extends AbstractController {
      * @return RestResponse
      */
     @RequestMapping("/queryAll")
-    @RequiresPermissions("sys:dict:list")
     public RestResponse queryAll(@RequestParam Map<String, Object> params) {
         List<SysUserEntity> list = sysUserService.queryAll(params);
 
@@ -71,6 +70,7 @@ public class SysUserController extends AbstractController {
      * @return RestResponse
      */
     @GetMapping("/list")
+    @RequiresPermissions("sys:user:list")
     public RestResponse list(@RequestParam Map<String, Object> params) {
 
         //如需数据权限，在参数中添加DataScope

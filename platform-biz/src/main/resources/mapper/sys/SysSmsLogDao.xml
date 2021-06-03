@@ -24,6 +24,12 @@
         <if test="params.sendId != null and params.sendId.trim() != ''">
             AND T.SEND_ID LIKE '%${params.sendId}%'
         </if>
+        <if test="params.startTime != null and params.startTime != ''">
+            AND T.STIME &gt;= #{params.startTime}
+        </if>
+        <if test="params.endTime != null and params.endTime != ''">
+            AND T.STIME &lt; #{params.endTime}
+        </if>
     </sql>
 
     <select id="selectSysSmsLogPage" resultType="com.platform.modules.sys.entity.SysSmsLogEntity">
