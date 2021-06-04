@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -94,4 +95,13 @@ public class QkjvipNewsEntity implements Serializable {
      * lm_dept
      */
     private String lmDept;
+
+    @TableField(exist = false)
+    private boolean isthumbsup;
+    @TableField(exist = false)
+    private Integer thumbsupcnt;
+    @TableField(exist = false)
+    private String memberid; // 文章点赞用条件
+    @TableField(exist = false)
+    private String openid;  // 文章点赞用条件
 }
