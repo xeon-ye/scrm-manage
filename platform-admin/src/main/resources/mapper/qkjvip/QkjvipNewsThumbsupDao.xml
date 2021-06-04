@@ -10,7 +10,7 @@
         <if test="params.newid != null and params.newid.trim() != ''">
             AND T.newId = #{params.newid}
         </if>
-        <if test="params.memberid != null and params.memberid.trim() != '' and params.memberid != '0' and params.memberid != 0">
+        <if test="params.memberid != null and params.memberid.trim() != ''">
             AND T.memberId = #{params.memberid}
         </if>
         <if test="params.openid != null and params.openid.trim() != ''">
