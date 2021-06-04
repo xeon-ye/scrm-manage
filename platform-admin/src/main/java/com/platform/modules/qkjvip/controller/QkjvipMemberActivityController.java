@@ -210,12 +210,13 @@ public class QkjvipMemberActivityController extends AbstractController {
             if (mmbs != null && mmbs.size() > 0) {
                 qkjvipMemberActivity.setMbs(mmbs);
             }
-            //查询地址
-            List<QkjvipMemberSignupaddressEntity> addresses = new ArrayList<>();
-            addresses = qkjvipMemberSignupaddressService.queryAll(map);
-            if (addresses != null && addresses.size() > 0) {
-                qkjvipMemberActivity.setAddresses(addresses);
-            }
+
+        }
+        //查询地址
+        List<QkjvipMemberSignupaddressEntity> addresses = new ArrayList<>();
+        addresses = qkjvipMemberSignupaddressService.queryAll(map);
+        if (addresses != null && addresses.size() > 0) {
+            qkjvipMemberActivity.setAddresses(addresses);
         }
         int iscanjia=0;
         int isbaoming =0;
