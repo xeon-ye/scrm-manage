@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -65,6 +66,9 @@ public class QrtzMemberBasicController extends AbstractController {
     @SysLog("会员读取定时任务")
     @RequestMapping("/getMembers")
     public void getMembers(String params) throws IOException, NoSuchAlgorithmException {
+        InetAddress address = InetAddress.getLocalHost();//获取的是本地的IP地址 //PC-20140317PXKX/192.168.0.121
+        String hostAddress = address.getHostAddress();//192.168.0.121
+        System.out.println("运行环境IP地址：" + hostAddress);
         String url = "http://open.api.zhongjiu.cn/DashboardOpenAPI/ShopMeberDataSync";
         QrtzLastUpdateTimeEntity updateTimeEntity = new QrtzLastUpdateTimeEntity();
         String timeStamp = DateUtils.getTimeStamp();  //时间戳

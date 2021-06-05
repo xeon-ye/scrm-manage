@@ -21,6 +21,6 @@
     </select>
     <delete id="doDelete">
         DELETE FROM CMNT_MGMT_THUMBSUP
-        WHERE mainId = #{mainid} AND commentId = #{commentid} AND memberId = #{memberid} AND openId = #{openid}
+        WHERE mainId = #{mainid} AND commentId = #{commentid} AND openId = #{openid}
     </delete>
 </mapper>

@@ -84,7 +84,7 @@ public class QkjvipNewsController extends AbstractController {
         list = qkjvipNewsThumbsupService.queryAll(params);
         int thumbsupCnt = list.size();
         qkjvipNews.setThumbsupcnt(thumbsupCnt);
-        params.put("memberid", qkjvipNews.getMemberid());
+//        params.put("memberid", qkjvipNews.getMemberid());
         params.put("openid", qkjvipNews.getOpenid());
         list = qkjvipNewsThumbsupService.queryAll(params);
         if (list.size() > 0) {  // 已点赞

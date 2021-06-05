@@ -10,9 +10,9 @@
         <if test="params.newid != null and params.newid.trim() != ''">
             AND T.newId = #{params.newid}
         </if>
-        <if test="params.memberid != null and params.memberid.trim() != ''">
-            AND T.memberId = #{params.memberid}
-        </if>
+<!--        <if test="params.memberid != null and params.memberid.trim() != ''">-->
+<!--            AND T.memberId = #{params.memberid}-->
+<!--        </if>-->
         <if test="params.openid != null and params.openid.trim() != ''">
             AND T.openId = #{params.openid}
         </if>
@@ -28,6 +28,6 @@
 
     <delete id="doDelete">
         DELETE FROM QKJVIP_NEWS_THUMBSUP
-        WHERE newId = #{newid} AND memberId = #{memberid}  AND openId = #{openid}
+        WHERE newId = #{newid} AND openId = #{openid}
     </delete>
 </mapper>
