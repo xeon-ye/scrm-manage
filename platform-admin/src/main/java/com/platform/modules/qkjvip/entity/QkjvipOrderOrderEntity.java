@@ -216,5 +216,7 @@ public class QkjvipOrderOrderEntity implements Serializable {
     private List<QkjvipOrderOrderfileEntity> listfinalfile;
     @TableField(exist = false)
     private  Integer toqkh;
+    @TableField(exist = false)
+    private Boolean isqkhorder;
 
 }
