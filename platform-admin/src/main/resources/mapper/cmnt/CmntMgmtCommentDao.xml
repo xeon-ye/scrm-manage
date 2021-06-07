@@ -39,11 +39,10 @@
         T2.memberId AS targetmemberid,
         T2.memberName AS targetmembername,
         T2.avatar AS targetavatar,
+        (SELECT COUNT(1) FROM cmnt_mgmt_thumbsup tp WHERE T.id = tp.commentId GROUP BY tp.commentId) as thumbsupCnt,
         (CASE WHEN EXISTS (SELECT 1 FROM cmnt_mgmt_thumbsup tp2 WHERE T.id = tp2.commentId AND tp2.openId = #{params.openid}) THEN 1 ELSE 0 END) isthumbsup
         FROM CMNT_MGMT_COMMENT T
         LEFT JOIN cmnt_mgmt_comment T2 ON (T.parentId = T2.id)
-        LEFT JOIN (SELECT COUNT(*) thumbsupCnt, commentId FROM cmnt_mgmt_thumbsup
-        GROUP BY commentId) tp ON (T.id = tp.commentId)
         WHERE (T.approvedStatus = 0 or T.approvedStatus = 2)
         <if test="params.mainid != null and params.mainid.trim() != ''">
             AND T.mainId = #{params.mainid}
