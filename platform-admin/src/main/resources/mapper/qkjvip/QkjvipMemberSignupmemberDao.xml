@@ -56,8 +56,10 @@
             )
         </if>
         <if test="params.myopenid != null and params.myopenid.trim() != ''">
-            AND EXISTS (SELECT 1 from qkjvip_member a
-            where a.member_id=t.member_id and a.openid='${params.myopenid}')
+            AND EXISTS (
+            SELECT 1 from qkjvip_member_jueru a
+            where a.crm_memberid = t.member_id and a.appopenid='${params.myopenid}'
+            )
         </if>
     </select>
 
