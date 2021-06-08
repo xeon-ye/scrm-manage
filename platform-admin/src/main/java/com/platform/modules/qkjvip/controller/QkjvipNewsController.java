@@ -74,18 +74,19 @@ public class QkjvipNewsController extends AbstractController {
      */
     @PostMapping("/newsInfo")
     public RestResponse newsInfo(@RequestBody QkjvipNewsEntity qkjvipNews) {
+        QkjvipNewsEntity qkjvipNewsEntity = qkjvipNews;  // 先赋值是为了保留参数memberid和openid
         qkjvipNews = qkjvipNewsService.getById(qkjvipNews.getId());
         qkjvipNews.setReadnum(qkjvipNews.getReadnum() + 1);
         qkjvipNewsService.update(qkjvipNews);
 
         List<QkjvipNewsThumbsupEntity> list = new ArrayList<>();
         Map params = new HashMap();
-        params.put("newid", qkjvipNews.getId());
+        params.put("newid", qkjvipNewsEntity.getId());
         list = qkjvipNewsThumbsupService.queryAll(params);
         int thumbsupCnt = list.size();
         qkjvipNews.setThumbsupcnt(thumbsupCnt);
-//        params.put("memberid", qkjvipNews.getMemberid());
-        params.put("openid", qkjvipNews.getOpenid());
+//        params.put("memberid", qkjvipNewsEntity.getMemberid());
+        params.put("openid", qkjvipNewsEntity.getOpenid());
         list = qkjvipNewsThumbsupService.queryAll(params);
         if (list.size() > 0) {  // 已点赞
             qkjvipNews.setIsthumbsup(true);
