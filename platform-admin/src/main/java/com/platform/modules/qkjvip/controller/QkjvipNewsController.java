@@ -14,7 +14,8 @@ package com.platform.modules.qkjvip.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
-import com.platform.modules.qkjvip.entity.NewsInfoQueryEntity;
+import com.platform.modules.qkjvip.entity.QkjvipNewsThumbsupEntity;
+import com.platform.modules.qkjvip.service.QkjvipNewsThumbsupService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipNewsEntity;
 import com.platform.modules.qkjvip.service.QkjvipNewsService;
@@ -22,9 +23,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Controller
@@ -37,6 +36,8 @@ import java.util.Map;
 public class QkjvipNewsController extends AbstractController {
     @Autowired
     private QkjvipNewsService qkjvipNewsService;
+    @Autowired
+    private QkjvipNewsThumbsupService qkjvipNewsThumbsupService;
 
     /**
      * 查看所有列表
@@ -73,10 +74,25 @@ public class QkjvipNewsController extends AbstractController {
      */
     @PostMapping("/newsInfo")
     public RestResponse newsInfo(@RequestBody QkjvipNewsEntity qkjvipNews) {
+        QkjvipNewsEntity qkjvipNewsEntity = qkjvipNews;  // 先赋值是为了保留参数memberid和openid
         qkjvipNews = qkjvipNewsService.getById(qkjvipNews.getId());
         qkjvipNews.setReadnum(qkjvipNews.getReadnum() + 1);
         qkjvipNewsService.update(qkjvipNews);
 
+        List<QkjvipNewsThumbsupEntity> list = new ArrayList<>();
+        Map params = new HashMap();
+        params.put("newid", qkjvipNewsEntity.getId());
+        list = qkjvipNewsThumbsupService.queryAll(params);
+        int thumbsupCnt = list.size();
+        qkjvipNews.setThumbsupcnt(thumbsupCnt);
+//        params.put("memberid", qkjvipNewsEntity.getMemberid());
+        params.put("openid", qkjvipNewsEntity.getOpenid());
+        list = qkjvipNewsThumbsupService.queryAll(params);
+        if (list.size() > 0) {  // 已点赞
+            qkjvipNews.setIsthumbsup(true);
+        } else {
+            qkjvipNews.setIsthumbsup(false);
+        }
         return RestResponse.success().put("news", qkjvipNews);
     }
 
