@@ -390,15 +390,20 @@ public class MemberController extends AbstractController {
             try {
                 List<QkjvipMemberImportEntity> list = ExportExcelUtils.importExcel(file, 1, 2,QkjvipMemberImportEntity.class);
                 for (int i = 0; i < list.size(); i++) {
+                    int rownum = i + 4;
+                    if (StringUtils.isBlank(list.get(i).getMobile())) {
+                        return RestResponse.error("第" + rownum + "行手机号为空，请修改后重新上传！");
+                    }
                     if (StringUtils.isNotBlank(list.get(i).getIdcard())) {
                         String idCard = list.get(i).getIdcard();
                         if (!ValidateIdCardUtil.isIDCard(idCard.trim())) {  // 身份证校验不成功
-                            int rownum = i + 4;
                             return RestResponse.error("第" + rownum + "行的身份证号不正确,请修改后重新上传！");
                         }
                     }
-                    String[] channel = null;
-                    if (StringUtils.isNotBlank(list.get(i).getServicename())) {
+                    if (StringUtils.isBlank(list.get(i).getServicename())) {
+                        return RestResponse.error("第" + rownum + "渠道为空,请修改后重新上传！");
+                    } else {
+                        String[] channel = null;
                         channel = new String[list.get(i).getServicename().split("-").length];
                         channel = list.get(i).getServicename().split("-");
                         list.get(i).setServicename(channel[0]);

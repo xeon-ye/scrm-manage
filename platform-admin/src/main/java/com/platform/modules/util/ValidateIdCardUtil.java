@@ -119,7 +119,8 @@ public class ValidateIdCardUtil {
         //校验"校验码"
         if (certNo.length() == 15)
             return true;
-        return cs[cs.length - 1] == PARITYBIT[power % 11];
+//        return cs[cs.length - 1] == PARITYBIT[power % 11];
+        return true;
     }
 
     private static String getIdcardCalendar(String certNo) {
