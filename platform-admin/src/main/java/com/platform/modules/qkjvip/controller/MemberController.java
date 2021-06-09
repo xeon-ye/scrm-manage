@@ -22,6 +22,7 @@ import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.validator.ValidatorUtils;
+import com.platform.modules.oss.entity.UploadData;
 import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.qkjvip.service.*;
 import com.platform.modules.sys.controller.AbstractController;
@@ -382,8 +383,9 @@ public class MemberController extends AbstractController {
     @SysLog("导入会员")
     @RequestMapping("/import")
     @RequiresPermissions("qkjvip:member:import")
-    public RestResponse importExcel(MultipartFile file) {
+    public RestResponse importExcel(MultipartFile file, UploadData uploadData) {
         String fileName = file.getOriginalFilename();
+        String batchno = UUID.randomUUID().toString().replaceAll("-", "");  // 批次号
         if (StringUtils.isBlank(fileName)) {
             throw new BusinessException("请选择要导入的文件");
         } else {
@@ -411,6 +413,7 @@ public class MemberController extends AbstractController {
                             list.get(i).setMemberchannel(Integer.parseInt(channel[channel.length - 1]));
                         }
                     }
+                    list.get(i).setBatchno(batchno);
                     list.get(i).setOrgUserid(getUserId());  // 导入默认所属人
                     list.get(i).setOrgNo(getOrgNo()); //导入默认所属人部门
                     list.get(i).setAddUser(getUserId());
@@ -421,9 +424,14 @@ public class MemberController extends AbstractController {
                 if (list.size() > 0) {
                     qkjvipMemberImportService.addBatch(list); //批量导入临时表
 
+                    Map map = new HashMap();
+                    if (uploadData == null) uploadData = new UploadData();
+                    map.put("ischeckpass", uploadData.getIscheckpass());
+                    map.put("datalist", list);
+
                     //调用数据清洗接口
-                    Object objList = JSONArray.toJSON(list);
-                    String memberJsonStr = JsonHelper.toJsonString(objList, "yyyy-MM-dd HH:mm:ss");
+                    Object obj = JSONObject.toJSON(map);
+                    String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
                     String resultPost = HttpClient.sendPost(Vars.MEMBER_IMPORT_URL, memberJsonStr);
 
                     JSONObject resultObject = JSON.parseObject(resultPost);

@@ -300,6 +300,10 @@ public class QkjvipMemberImportEntity implements Serializable {
      */
     private Integer toqkh;
     /**
+     * 导入批次号
+     */
+    private String batchno;
+    /**
      * 标签数组
      */
     @TableField(exist = false)
