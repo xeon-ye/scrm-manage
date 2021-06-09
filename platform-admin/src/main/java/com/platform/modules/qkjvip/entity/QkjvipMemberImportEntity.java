@@ -47,35 +47,36 @@ public class QkjvipMemberImportEntity implements Serializable {
     @TableField(exist = false)
     private String memberHidden;
     /**
+     * 会员手机
+     */
+    @Excel(name = "电话", orderNum = "1", width = 15, groupName = "必填信息", fixedIndex = 1)
+    private String mobile;
+    /**
+     * 服务号名称，会员渠道
+     */
+    @Excel(name = "会员渠道", orderNum = "2", width = 15, groupName = "必填信息", fixedIndex = 2)
+    private String servicename;
+    /**
      * 会员名称(昵称)
      */
-    @Excel(name = "会员昵称", orderNum = "1", width = 15, groupName = "必填信息", fixedIndex = 1)
+    @Excel(name = "会员昵称", orderNum = "3", width = 15, groupName = "扩展信息", fixedIndex = 3)
     private String memberName;
     /**
      * 会员真实姓名
      */
-    @Excel(name = "真实姓名", orderNum = "2", width = 15, groupName = "必填信息", fixedIndex = 2)
+    @Excel(name = "真实姓名", orderNum = "4", width = 15, groupName = "扩展信息", fixedIndex = 4)
     private String realName;
-    /**
-     * 会员手机
-     */
-    @Excel(name = "电话", orderNum = "3", width = 15, groupName = "必填信息", fixedIndex = 3)
-    private String mobile;
     /**
      * 性别(0男1女）
      */
-    @Excel(name = "性别", orderNum = "4", width = 15, groupName = "必填信息", fixedIndex = 4, replace={"男_1","女_2","未知_3"})
+    @Excel(name = "性别", orderNum = "5", width = 15, groupName = "扩展信息", fixedIndex = 5, replace={"男_1","女_2","未知_3"})
     private Integer sex;
     /**
      * 是否潜在客户(0否1是)
      */
-    @Excel(name = "是否潜在客户", orderNum = "5", width = 15,replace={"否_0","是_1"}, groupName = "必填信息", fixedIndex = 5)
+    @Excel(name = "是否潜在客户", orderNum = "6", width = 15,replace={"否_0","是_1"}, groupName = "扩展信息", fixedIndex = 6)
     private Integer isCustomers;
-    /**
-     * 服务号名称，会员渠道
-     */
-    @Excel(name = "会员渠道", orderNum = "6", width = 15, groupName = "必填信息", fixedIndex = 6)
-    private String servicename;
+
     /**
      * 新增或导入时备注
      */
@@ -111,50 +112,49 @@ public class QkjvipMemberImportEntity implements Serializable {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private String regTime;
     /**
-     * 会员类型
-     */
-    @Excel(name = "会员类型", orderNum = "13", width = 15, groupName = "扩展信息", fixedIndex = 13, replace={"门店会员_0","团购会员_1","大店会员_2","意见领袖_3","普通消费者_4","公众粉丝_5","工业游_6","零售_7","批发_8","员工_9","旅游特通_10","其他_20"})
-    private String memberType;
-    /**
      * 会员性质
      */
-    @Excel(name = "会员性质", orderNum = "14", width = 15, groupName = "扩展信息", fixedIndex = 14, replace={"企业单位_0","事业单位_1","政府机关_2","消费者_3","核心团购客户_4","团购客户_5","核心终端_6","终端_7","酒店_8","核心酒店_9","核心消费者_10","陪同人员_11", "经销商_12"})
+    @Excel(name = "会员性质", orderNum = "13", width = 15, groupName = "扩展信息", fixedIndex = 13, replace={"企业单位_0","事业单位_1","政府机关_2","消费者_3","核心团购客户_4","团购客户_5","核心终端_6","终端_7","酒店_8","核心酒店_9","核心消费者_10","陪同人员_11", "经销商_12"})
     private String memberNature;
     /**
      * 会员来源
      */
-    @Excel(name = "会员来源", orderNum = "15", width = 15, groupName = "扩展信息", fixedIndex = 15, replace={"OMS门店_0","线下活动_1","线上活动_2","线上交易_3","线下交易_4","会员推荐_5","旅游景区_6","回厂游_7", "其他来源_20"})
+    @Excel(name = "会员来源", orderNum = "14", width = 15, groupName = "扩展信息", fixedIndex = 14, replace={"OMS门店_0","线下活动_1","线上活动_2","线上交易_3","线下交易_4","会员推荐_5","旅游景区_6","回厂游_7", "其他来源_20"})
     private String memberSource;
     /**
      * 行业类别
      */
-    @Excel(name = "行业类别", orderNum = "16", width = 15, groupName = "扩展信息", fixedIndex = 16)
+    @Excel(name = "行业类别", orderNum = "15", width = 15, groupName = "扩展信息", fixedIndex = 15)
     private String industryType;
     /**
      * 单位性质
      */
-    @Excel(name = "单位性质", orderNum = "17", width = 15, groupName = "扩展信息", fixedIndex = 17)
+    @Excel(name = "单位性质", orderNum = "16", width = 15, groupName = "扩展信息", fixedIndex = 16)
     private String unitProperty;
     /**
      * 公司名称
      */
-    @Excel(name = "公司名称", orderNum = "18", width = 15, groupName = "扩展信息", fixedIndex = 18)
+    @Excel(name = "公司名称", orderNum = "17", width = 15, groupName = "扩展信息", fixedIndex = 17)
     private String companyName;
     /**
      * 职位
      */
-    @Excel(name = "职位", orderNum = "19", width = 15, groupName = "扩展信息", fixedIndex = 19)
+    @Excel(name = "职位", orderNum = "18", width = 15, groupName = "扩展信息", fixedIndex = 18)
     private String jobTitle;
     /**
      * 推荐人部门
      */
-    @Excel(name = "推荐人部门", orderNum = "20", width = 15, groupName = "扩展信息", fixedIndex = 20)
+    @Excel(name = "推荐人部门", orderNum = "19", width = 15, groupName = "扩展信息", fixedIndex = 19)
     private String referrerDept;
     /**
      * 身份证
      */
-    @Excel(name = "身份证", orderNum = "21", width = 15, groupName = "扩展信息", fixedIndex = 21)
+    @Excel(name = "身份证", orderNum = "20", width = 15, groupName = "扩展信息", fixedIndex = 20)
     private String idcard;
+    /**
+     * 会员类型
+     */
+    private String memberType;
     /**
      * 所属办事处
      */

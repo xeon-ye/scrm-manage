@@ -302,8 +302,8 @@ public class MemberController extends AbstractController {
         try {
             Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("会员信息表", "会员信息"), MemberExportEntity.class, list);
             //这里是自己加的 带下拉框的代码
-            ExcelSelectListUtil.selectList(workbook, 4, 4, new String[]{"男","女","未知"});
-            ExcelSelectListUtil.selectList(workbook, 5, 5, new String[]{"是","否"});
+            ExcelSelectListUtil.selectList(workbook, 5, 5, new String[]{"男","女","未知"});
+            ExcelSelectListUtil.selectList(workbook, 6, 6, new String[]{"是","否"});
 
             //会员渠道
             String channelIds = "";
@@ -324,18 +324,18 @@ public class MemberController extends AbstractController {
                 }
             }
             if (dictAttr != null && dictAttr.length > 0) {
-                ExcelSelectListUtil.ExcelTo255(workbook, "hidden", 1, dictAttr, 3, 65535, 6, 6);
+                ExcelSelectListUtil.ExcelTo255(workbook, "hidden", 1, dictAttr, 3, 65535, 2, 2);
             }
 
             //会员类型
-            params.clear();
-            params.put("code", "MEMBERTYPE");
-            dictList = sysDictService.queryByCode(params);
-            dictAttr = new String[dictList.size()];
-            for (int i = 0; i < dictList.size(); i++) {
-                dictAttr[i] = dictList.get(i).getName();
-            }
-            ExcelSelectListUtil.selectList(workbook, 13, 13, dictAttr);
+//            params.clear();
+//            params.put("code", "MEMBERTYPE");
+//            dictList = sysDictService.queryByCode(params);
+//            dictAttr = new String[dictList.size()];
+//            for (int i = 0; i < dictList.size(); i++) {
+//                dictAttr[i] = dictList.get(i).getName();
+//            }
+//            ExcelSelectListUtil.selectList(workbook, 13, 13, dictAttr);
 
             //会员性质
             params.clear();
@@ -345,7 +345,7 @@ public class MemberController extends AbstractController {
             for (int i = 0; i < dictList.size(); i++) {
                 dictAttr[i] = dictList.get(i).getName();
             }
-            ExcelSelectListUtil.selectList(workbook, 14, 14, dictAttr);
+            ExcelSelectListUtil.selectList(workbook, 13, 13, dictAttr);
 
             //会员等级
 //            params.clear();
@@ -365,7 +365,7 @@ public class MemberController extends AbstractController {
             for (int i = 0; i < dictList.size(); i++) {
                 dictAttr[i] = dictList.get(i).getName();
             }
-            ExcelSelectListUtil.selectList(workbook, 15, 15, dictAttr);
+            ExcelSelectListUtil.selectList(workbook, 14, 14, dictAttr);
             response.setCharacterEncoding("UTF-8");
             response.setHeader("content-Type", "application/vnd.ms-excel");
             response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode( "会员信息表." + ExportExcelUtils.ExcelTypeEnum.XLS.getValue(), "UTF-8"));

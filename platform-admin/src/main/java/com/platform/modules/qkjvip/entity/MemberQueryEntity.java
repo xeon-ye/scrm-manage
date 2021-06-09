@@ -78,6 +78,7 @@ public class MemberQueryEntity implements Serializable {
     private String endbirthday;
     private String areatype;
     private String membertype;
+    private String membernature;
     private String activitytype;
     private String startlastactivitydate;
     private String endlastactivitydate;
