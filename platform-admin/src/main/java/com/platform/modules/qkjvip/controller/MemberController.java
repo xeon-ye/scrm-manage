@@ -441,9 +441,10 @@ public class MemberController extends AbstractController {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                return RestResponse.error("导入接口异常！");
             }
         }
-        return RestResponse.success().put("msg", "导入成功！");
+        return RestResponse.success().put("msg", "导入成功！").put("batchno", batchno);
     }
 
     /**
