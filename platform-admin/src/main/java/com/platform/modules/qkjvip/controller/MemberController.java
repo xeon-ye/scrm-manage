@@ -429,6 +429,7 @@ public class MemberController extends AbstractController {
 
                     Map map = new HashMap();
                     map.put("ischeckpass", uploadData.getIscheckpass());
+                    map.put("importtype", uploadData.getImporttype());
                     map.put("datalist", list);
 
                     //调用数据清洗接口

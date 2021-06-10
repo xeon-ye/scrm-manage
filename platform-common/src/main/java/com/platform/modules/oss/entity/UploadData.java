@@ -24,4 +24,5 @@ public class UploadData {
      * 是否忽略非必填项check
      */
     private Boolean ischeckpass;
+    private Integer importtype;
 }
