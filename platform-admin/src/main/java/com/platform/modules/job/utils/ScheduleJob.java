@@ -39,6 +39,11 @@ public class ScheduleJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext context) {
+        if (System.getProperty("disabled-timer-task")!=null&&System.getProperty("disabled-timer-task").equals("true")) {
+
+        }else {
+
+        }
         ScheduleJobEntity scheduleJob = new ScheduleJobEntity();
 
         BeanUtils.copyProperties(context.getMergedJobDataMap().get(ScheduleJobEntity.JOB_PARAM_KEY), scheduleJob);

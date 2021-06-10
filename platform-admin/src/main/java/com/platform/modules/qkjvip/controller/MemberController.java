@@ -529,4 +529,34 @@ public class MemberController extends AbstractController {
         List<MemberEntity> list = memberService.selectMemberByJuruMemberid(params);
         return RestResponse.success().put("list", list);
     }
+
+    /**
+     * 根据backthno获取会员信息
+     * 孙珊珊
+     * @param params 查询参数
+     * @return RestResponse
+     */
+    @RequestMapping("/getMemberInfoByBatchno")
+    public RestResponse getMemberInfoByBatchno(@RequestParam Map<String, Object> params) throws IOException {
+
+        String queryJsonStr = JsonHelper.toJsonString(params, "yyyy-MM-dd HH:mm:ss");
+
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_IMPORTINFO_URL, queryJsonStr);
+        System.out.println("导入批次查询：" + queryJsonStr);
+        //读取会员等级
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+            //查询进度
+            Integer taskprogress = Integer.parseInt(resultObject.get("taskprogress")+"");
+            if (taskprogress!=null&&taskprogress==100){ // 进度100
+                List<MemberEntity> mees=new ArrayList<>();
+                mees=JSON.parseArray(resultObject.getString("listmember"),MemberEntity.class);
+                return RestResponse.success().put("taskprogress",100).put("memberlist", mees);
+            } else {
+                return RestResponse.success().put("taskprogress",taskprogress);
+            }
+        } else {
+            return RestResponse.error(resultObject.get("descr").toString());
+        }
+    }
 }
