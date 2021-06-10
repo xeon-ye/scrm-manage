@@ -386,6 +386,7 @@ public class MemberController extends AbstractController {
     public RestResponse importExcel(MultipartFile file, UploadData uploadData) {
         String fileName = file.getOriginalFilename();
         String batchno = UUID.randomUUID().toString().replaceAll("-", "");  // 批次号
+        if (uploadData == null) uploadData = new UploadData();
         if (StringUtils.isBlank(fileName)) {
             throw new BusinessException("请选择要导入的文件");
         } else {
@@ -396,12 +397,6 @@ public class MemberController extends AbstractController {
                     if (StringUtils.isBlank(list.get(i).getMobile())) {
                         return RestResponse.error("第" + rownum + "行手机号为空，请修改后重新上传！");
                     }
-                    if (StringUtils.isNotBlank(list.get(i).getIdcard())) {
-                        String idCard = list.get(i).getIdcard();
-                        if (!ValidateIdCardUtil.isIDCard(idCard.trim())) {  // 身份证校验不成功
-                            return RestResponse.error("第" + rownum + "行的身份证号不正确,请修改后重新上传！");
-                        }
-                    }
                     if (StringUtils.isBlank(list.get(i).getServicename())) {
                         return RestResponse.error("第" + rownum + "渠道为空,请修改后重新上传！");
                     } else {
@@ -411,6 +406,14 @@ public class MemberController extends AbstractController {
                         list.get(i).setServicename(channel[0]);
                         if (channel.length >= 2) {
                             list.get(i).setMemberchannel(Integer.parseInt(channel[channel.length - 1]));
+                        }
+                    }
+                    if (uploadData.getIscheckpass()) {  // true:非必填项做校验
+                        if (StringUtils.isNotBlank(list.get(i).getIdcard())) {
+                            String idCard = list.get(i).getIdcard();
+                            if (!ValidateIdCardUtil.isIDCard(idCard.trim())) {  // 身份证校验不成功
+                                return RestResponse.error("第" + rownum + "行的身份证号不正确,请修改后重新上传！");
+                            }
                         }
                     }
                     list.get(i).setBatchno(batchno);
@@ -425,7 +428,6 @@ public class MemberController extends AbstractController {
                     qkjvipMemberImportService.addBatch(list); //批量导入临时表
 
                     Map map = new HashMap();
-                    if (uploadData == null) uploadData = new UploadData();
                     map.put("ischeckpass", uploadData.getIscheckpass());
                     map.put("datalist", list);
 
