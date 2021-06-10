@@ -51,5 +51,6 @@ public class QkjvipOrderOrderQuaryEntity implements Serializable {
     private String visitid;
     private String currentmemberid;  // 当前登录用户id
     private String listmemberchannel;  // 用户的渠道权限
+    private String listordertype; // 订单类型列列表
 
 }
