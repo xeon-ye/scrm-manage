@@ -57,6 +57,11 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleDao, SysUserR
     }
 
     @Override
+    public List<SysUserRoleEntity> queryRoleList(String userId) {
+        return baseMapper.queryRoleList(userId);
+    }
+
+    @Override
     public int deleteBatch(String[] roleIds) {
         return baseMapper.deleteBatch(roleIds);
     }

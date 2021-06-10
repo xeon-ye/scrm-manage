@@ -7,7 +7,9 @@ import com.platform.modules.cache.SysDBCacheLogic;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysRoleOrgEntity;
 import com.platform.modules.sys.entity.SysUserEntity;
+import com.platform.modules.sys.entity.SysUserRoleEntity;
 import com.platform.modules.sys.service.SysRoleOrgService;
+import com.platform.modules.sys.service.SysUserRoleService;
 import com.platform.modules.util.JSONUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,12 +31,17 @@ public class ContextHelper extends AbstractController {
 	private static Log log = LogFactory.getLog(ContextHelper.class);
 	@Autowired
 	private SysRoleOrgService sysRoleOrgService;
+	@Autowired
+	private SysUserRoleService sysUserRoleService;
+
+	private static SysUserRoleService sysUserRoleServicestatic;
 
 	private static SysRoleOrgService sysRoleOrgServicestatic;
 
 	@PostConstruct
 	public void init() {
 		sysRoleOrgServicestatic = this.sysRoleOrgService;
+		sysUserRoleServicestatic = this.sysUserRoleService;
 	}
 
 	/**
@@ -104,10 +111,10 @@ public class ContextHelper extends AbstractController {
 	}
 
 
-	public static Set<String> setOrdertypes(List<SysRoleOrgEntity> sros) {
+	public static Set<String> setOrdertypes(List<SysUserRoleEntity> sros) {
 		Set<String> dset = new HashSet<>();
 		if(sros!=null&&sros.size()>0){
-			for(SysRoleOrgEntity d:sros){
+			for(SysUserRoleEntity d:sros){
 				if(d!=null&&d.getOrdertype()!=null){
 					String[] str=d.getOrdertype().split(",");
 					for (int i=0;i<str.length;i++) {
@@ -130,14 +137,16 @@ public class ContextHelper extends AbstractController {
 	}
 
 	public static  Set<String> setOrdertypesm(String userPerm,String userid) {
-		List<SysRoleOrgEntity> sros = new ArrayList<>();
-		Map<String, Object> m = new HashMap<>();
-		m.put("userId", userid);
-		m.put("userPerm", userPerm);
-		sros = sysRoleOrgServicestatic.queryOrgNoIsselect(m);
-
 		Set<String> list = new HashSet<>();
-		list = ContextHelper.setOrdertypes(sros);
+		if (userid.length()>2) { //管理员
+			List<SysUserRoleEntity> surs=new ArrayList<>();
+			surs = sysUserRoleServicestatic.queryRoleList(userid);
+			list = ContextHelper.setOrdertypes(surs);
+		} else{  //管理员
+			for(int i=0;i<11;i++){
+				list.add(i+"");
+			}
+		}
 		return list;
 	}
 }

@@ -11,6 +11,7 @@
  */
 package com.platform.modules.sys.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -39,4 +40,7 @@ public class SysUserRoleEntity implements Serializable {
      * 角色ID
      */
     private String roleId;
+
+    @TableField(exist = false)
+    private String ordertype;
 }

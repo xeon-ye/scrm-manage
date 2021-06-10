@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Controller
@@ -97,8 +98,11 @@ public class QkjvipOrderOrderController extends AbstractController {
     public RestResponse list(@RequestBody QkjvipOrderOrderQuaryEntity order) throws IOException {
         Set<String> list = new HashSet<>();
         list=ContextHelper.setOrdertypesm("qkjvip:memberactivity:list",getUserId());
-        //Object[] result = list.toArray();
-        //Page page = qkjvipOrderOrderService.queryPage(params);
+        if (list.size()>0) {
+            order.setListordertype(StringUtils.join(list.toArray(), ","));
+        } else { //无任何类别查询权限
+            order.setListordertype("0");
+        }
         if (!getUser().getUserName().contains("admin")) {  // 空默认是全部所有权限
             order.setCurrentmemberid(getUserId());
 //            memberQuery.setListorgno(sysRoleOrgService.queryOrgNoListByUserIdAndPerm(getUserId(), "qkjvip:member:list"));

@@ -34,6 +34,9 @@ public interface SysUserRoleDao extends BaseMapper<SysUserRoleEntity> {
     List<String> queryRoleIdList(String userId);
 
 
+    List<SysUserRoleEntity> queryRoleList(String userId);
+
+
     /**
      * 根据角色ID数组，批量删除
      *
