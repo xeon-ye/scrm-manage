@@ -52,6 +52,8 @@ public class MemberPortraitController extends AbstractController {
         if (!getUser().getUserName().contains("admin")) {
             memberPortraitSexEntity.setCurrentmemberid(getUserId());
             memberPortraitSexEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
+        } else {
+            memberPortraitSexEntity.setListmemberchannel("-1");
         }
         Object obj = JSONArray.toJSON(memberPortraitSexEntity);
         String queryJsonStr = JsonHelper.toJsonString(obj);
@@ -79,6 +81,8 @@ public class MemberPortraitController extends AbstractController {
         if (!getUser().getUserName().contains("admin")) {
             memberPortraitAgeEntity.setCurrentmemberid(getUserId());
             memberPortraitAgeEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
+        } else {
+            memberPortraitAgeEntity.setListmemberchannel("-1");
         }
         Object obj = JSONArray.toJSON(memberPortraitAgeEntity);
         String queryJsonStr = JsonHelper.toJsonString(obj);
@@ -106,6 +110,8 @@ public class MemberPortraitController extends AbstractController {
         if (!getUser().getUserName().contains("admin")) {
             memberPortraitAreaEntity.setCurrentmemberid(getUserId());
             memberPortraitAreaEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
+        } else {
+            memberPortraitAreaEntity.setListmemberchannel("-1");
         }
         Object obj = JSONArray.toJSON(memberPortraitAreaEntity);
         String queryJsonStr = JsonHelper.toJsonString(obj);
