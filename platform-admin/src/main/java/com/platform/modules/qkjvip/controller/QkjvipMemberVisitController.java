@@ -383,6 +383,7 @@ public class QkjvipMemberVisitController extends AbstractController {
         String fileName = file.getOriginalFilename();
         String batchno = UUID.randomUUID().toString().replaceAll("-", "");  // 批次号
         List<QkjvipMemberVisitExportEntity> list = new ArrayList<>();
+        if (uploadData == null) uploadData = new UploadData();
         if (org.apache.commons.lang3.StringUtils.isBlank(fileName)) {
             throw new BusinessException("请选择要导入的文件");
         } else {
@@ -419,8 +420,8 @@ public class QkjvipMemberVisitController extends AbstractController {
                     qkjvipMemberImportService.addBatch(importList); //批量导入临时表
 
                     Map map = new HashMap();
-                    map.put("ischeckpass", false);
-                    map.put("importtype", 4);
+                    map.put("ischeckpass", uploadData.getIscheckpass());
+                    map.put("importtype", uploadData.getImporttype());
                     map.put("datalist", importList);
 
                     //调用数据清洗接口
