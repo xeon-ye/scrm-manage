@@ -14,6 +14,7 @@ package com.platform.modules.qkjvip.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.platform.modules.qkjvip.entity.QkjvipMemberVisitEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberVisitMaterialEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ public interface QkjvipMemberVisitService extends IService<QkjvipMemberVisitEnti
      * @return 新增结果
      */
     boolean add(QkjvipMemberVisitEntity qkjvipMemberVisit);
+    void addBatch(List<QkjvipMemberVisitEntity> qkjvipMemberVisitList);
 
     /**
      * 根据主键更新

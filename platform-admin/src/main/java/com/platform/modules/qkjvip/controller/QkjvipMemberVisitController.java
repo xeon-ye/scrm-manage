@@ -11,28 +11,39 @@
  */
 package com.platform.modules.qkjvip.controller;
 
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import cn.emay.util.JsonHelper;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
+import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.utils.StringUtils;
+import com.platform.modules.cache.CacheFactory;
+import com.platform.modules.oss.entity.UploadData;
 import com.platform.modules.qkjvip.entity.*;
-import com.platform.modules.qkjvip.service.QkjvipMemberIntentionorderService;
-import com.platform.modules.qkjvip.service.QkjvipMemberVisitMaterialService;
+import com.platform.modules.qkjvip.service.*;
 import com.platform.modules.sys.controller.AbstractController;
-import com.platform.modules.qkjvip.service.QkjvipMemberVisitService;
+import com.platform.modules.sys.entity.SysDictEntity;
+import com.platform.modules.sys.entity.SysUserChannelEntity;
+import com.platform.modules.sys.service.SysDictService;
 import com.platform.modules.sys.service.SysUserChannelService;
-import com.platform.modules.util.HttpClient;
-import com.platform.modules.util.Vars;
-import org.apache.poi.ss.formula.functions.T;
+import com.platform.modules.util.*;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -52,6 +63,12 @@ public class QkjvipMemberVisitController extends AbstractController {
     private QkjvipMemberIntentionorderService qkjvipMemberIntentionorderService;
     @Autowired
     private SysUserChannelService sysUserChannelService;
+    @Autowired
+    private QkjvipMemberChannelService qkjvipMemberChannelService;
+    @Autowired
+    private SysDictService sysDictService;
+    @Autowired
+    private QkjvipMemberImportService qkjvipMemberImportService;
 
     /**
      * 查看所有列表
@@ -266,5 +283,240 @@ public class QkjvipMemberVisitController extends AbstractController {
     public RestResponse close(@PathVariable("id") String id) {
         qkjvipMemberVisitService.closeById(id);
         return RestResponse.success();
+    }
+
+    /**
+     * 导出拜访数据模板
+     */
+    @SysLog("导出模板")
+    @RequestMapping("/exportTpl")
+    @RequiresPermissions("qkjvip:membervisit:exportTpl")
+    public void exportTplExcel(HttpServletRequest request, HttpServletResponse response) {
+        List<QkjvipMemberVisitExportEntity> list = new ArrayList<>();
+        Map<String, Object> params = new HashMap<>();
+        List<SysDictEntity> dictList = new ArrayList<>();
+        List<QkjvipMemberChannelEntity> memberChannelList = new ArrayList<>();
+        List<SysUserChannelEntity> permChannelList = new ArrayList<>();
+        String[] dictAttr = null;
+        try {
+//            Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("拜访信息表", "拜访信息"), QkjvipMemberVisitExportEntity.class, list);
+
+            // 创建参数对象（用来设定excel得sheet得内容等信息）
+            ExportParams deptExportParams = new ExportParams();
+            // 设置sheet得名称
+            deptExportParams.setSheetName("拜访信息");
+            // 设置表格title
+            deptExportParams.setTitle("拜访信息表");
+            // 创建sheet1使用得map
+            Map<String, Object> deptExportMap = new HashMap<>();
+            // title的参数为ExportParams类型，目前仅仅在ExportParams中设置了sheetName
+            deptExportMap.put("title", deptExportParams);
+            // 模版导出对应得实体类型
+            deptExportMap.put("entity", QkjvipMemberVisitExportEntity.class);
+            // sheet中要填充得数据
+            deptExportMap.put("data", list);
+
+            ExportParams empExportParams = new ExportParams();
+            empExportParams.setSheetName("参考格式");
+            empExportParams.setTitle("拜访信息表");
+            // 创建sheet2使用得map
+            Map<String, Object> empExportMap = new HashMap<>();
+            empExportMap.put("title", empExportParams);
+            empExportMap.put("entity", QkjvipMemberVisitExportEntity.class);
+            empExportMap.put("data", this.exampleList());
+
+            // 将sheet1、sheet2、sheet3使用得map进行包装
+            List<Map<String, Object>> sheetsList = new ArrayList<>();
+            sheetsList.add(deptExportMap);
+            sheetsList.add(empExportMap);
+            // 执行方法
+            Workbook workbook = ExcelExportUtil.exportExcel(sheetsList, ExcelType.HSSF);
+
+            //会员渠道
+            String channelIds = "";
+            channelIds = sysUserChannelService.queryChannelIdByUserId(getUserId());
+            if ("0".equals(channelIds) || getUser().getUserName().contains("admin")) {  // 所有渠道权限
+                params.clear();
+                memberChannelList = qkjvipMemberChannelService.queryAll(params);
+                dictAttr = new String[memberChannelList.size()];
+                for (int i = 0; i < memberChannelList.size(); i++) {
+                    dictAttr[i] = memberChannelList.get(i).getServicename().trim() + "-" + memberChannelList.get(i).getMemberchannel();
+                }
+            } else {  // 查询登陆人的渠道权限
+                params.clear();
+                permChannelList = sysUserChannelService.queryChannelByUserId(getUserId());
+                dictAttr = new String[permChannelList.size()];
+                for (int i = 0; i < permChannelList.size(); i++) {
+                    dictAttr[i] = permChannelList.get(i).getServicename().trim() + "-" + permChannelList.get(i).getChannelId();
+                }
+            }
+            if (dictAttr != null && dictAttr.length > 0) {
+                ExcelSelectListUtil.ExcelTo255(workbook, "hidden", 2, dictAttr, 3, 65535, 1, 1);
+            }
+
+            // 拜访方式
+            params.clear();
+            params.put("code", "VISITTYPE");
+            dictList = sysDictService.queryByCode(params);
+            dictAttr = new String[dictList.size()];
+            for (int i = 0; i < dictList.size(); i++) {
+                dictAttr[i] = dictList.get(i).getName();
+            }
+            ExcelSelectListUtil.selectList(workbook, 5, 5, dictAttr);
+
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode( "拜访信息表." + ExportExcelUtils.ExcelTypeEnum.XLS.getValue(), "UTF-8"));
+            workbook.write(response.getOutputStream());
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 导入拜访数据
+     */
+    @SysLog("导入拜访会员")
+    @RequestMapping("/import")
+    @RequiresPermissions("qkjvip:membervisit:import")
+    public RestResponse importExcel(MultipartFile file, UploadData uploadData) {
+        String fileName = file.getOriginalFilename();
+        String batchno = UUID.randomUUID().toString().replaceAll("-", "");  // 批次号
+        List<QkjvipMemberVisitExportEntity> list = new ArrayList<>();
+        if (org.apache.commons.lang3.StringUtils.isBlank(fileName)) {
+            throw new BusinessException("请选择要导入的文件");
+        } else {
+            try {
+                list = ExportExcelUtils.importExcel(file, 1, 2, QkjvipMemberVisitExportEntity.class);
+                List<QkjvipMemberImportEntity> importList = new ArrayList<>();
+                for (int i = 0; i < list.size(); i++) {
+                    int rownum = i + 4;
+                    if (StringUtils.isBlank(list.get(i).getMobile())) {
+                        return RestResponse.error("第" + rownum + "行手机号为空，请修改后重新上传！");
+                    }
+                    if (StringUtils.isBlank(list.get(i).getServicename())) {
+                        return RestResponse.error("第" + rownum + "渠道为空,请修改后重新上传！");
+                    }
+                    QkjvipMemberImportEntity memberImport = new QkjvipMemberImportEntity();
+                    String[] channel = new String[list.get(i).getServicename().split("-").length];
+                    channel = list.get(i).getServicename().split("-");
+                    memberImport.setServicename(channel[0]);
+                    if (channel.length >= 2) {
+                        memberImport.setMemberchannel(Integer.parseInt(channel[channel.length - 1]));
+                    }
+                    memberImport.setMobile(list.get(i).getMobile());
+                    memberImport.setMemberName(list.get(i).getMemberName());
+                    memberImport.setBatchno(batchno);
+                    memberImport.setOrgUserid(getUserId());  // 导入默认所属人
+                    memberImport.setOrgNo(getOrgNo()); //导入默认所属人部门
+                    memberImport.setAddUser(getUserId());
+                    memberImport.setAddDept(getOrgNo());
+                    memberImport.setAddTime(new Date());
+                    memberImport.setOfflineflag(1);
+                    importList.add(memberImport);
+                }
+                if (importList.size() > 0) {
+                    qkjvipMemberImportService.addBatch(importList); //批量导入临时表
+
+                    Map map = new HashMap();
+                    map.put("ischeckpass", false);
+                    map.put("importtype", 4);
+                    map.put("datalist", importList);
+
+                    //调用数据清洗接口
+                    Object obj = JSONObject.toJSON(map);
+                    String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+                    String resultPost = HttpClient.sendPost(Vars.MEMBER_IMPORT_URL, memberJsonStr);
+
+                    JSONObject resultObject = JSON.parseObject(resultPost);
+                    if (!"200".equals(resultObject.get("resultcode").toString())) {  //清洗失败
+                        return RestResponse.error(resultObject.get("descr").toString());
+                    }
+                    CacheFactory.getCacheInstance().del("visit-import-data");
+                    CacheFactory.getCacheInstance().put("visit-import-data", JSON.toJSONString(list));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return RestResponse.error("导入接口异常！");
+            }
+        }
+        return RestResponse.success().put("msg", "导入成功！").put("batchno", batchno);
+    }
+
+    /**
+     * 导入拜访数据
+     *
+     * @param params 参数
+     * @return RestResponse
+     */
+    @SysLog("导入拜访数据")
+    @RequestMapping("/importDates")
+    public RestResponse importDates(@RequestParam Map<String, Object> params) {
+        List<MemberEntity> memberList = JSON.parseArray((String) CacheFactory.getCacheInstance().get("member-import-data"), MemberEntity.class);
+        List<QkjvipMemberVisitEntity> importList = JSON.parseArray((String) CacheFactory.getCacheInstance().get("visit-import-data"), QkjvipMemberVisitEntity.class);
+        for (int i = 0; i < importList.size(); i++) {
+            for (int j = 0; j < memberList.size(); j++) {
+                if (memberList.get(j).getMobile().equals(importList.get(i).getMobile())) {
+                    importList.get(i).setMemberId(memberList.get(j).getMemberId());
+                    importList.get(i).setAddUser(getUserId());
+                    importList.get(i).setAddDept(getOrgNo());
+                    importList.get(i).setAddTime(new Date());
+                    importList.get(i).setVisitStatus(2);  // 已拜访
+                    break;
+                }
+            }
+        }
+        qkjvipMemberVisitService.addBatch(importList);
+        List<QkjvipMemberVisitMaterialEntity> materialList = new ArrayList<>();
+        for (QkjvipMemberVisitEntity memberVisit : importList) {
+            if (memberVisit.getMaterialList().size() > 0) {
+                for (QkjvipMemberVisitMaterialEntity visitMaterial : memberVisit.getMaterialList()) {
+                    visitMaterial.setVisitId(memberVisit.getId());
+                    visitMaterial.setAddUser(getUserId());
+                    visitMaterial.setAddDept(getUserId());
+                    visitMaterial.setAddTime(new Date());
+                    materialList.add(visitMaterial);
+                }
+            }
+        }
+        if (materialList.size() > 0) {
+            qkjvipMemberVisitMaterialService.addBatch(materialList);
+        }
+        return RestResponse.success().put("msg", "导入成功！");
+    }
+
+    private List<QkjvipMemberVisitExportEntity> exampleList() throws ParseException {
+        List<QkjvipMemberVisitExportEntity> list = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            QkjvipMemberVisitExportEntity memberVisit = new QkjvipMemberVisitExportEntity();
+            if (i == 0 || i == 1) {
+                memberVisit.setMobile("13621255469");
+                memberVisit.setMemberName("天使");
+                memberVisit.setServicename("青稞荟小程序");
+                memberVisit.setVisitStartDate("2021-06-15 09:00:00");
+                memberVisit.setVisitEndDate("2021-06-15 09:15:00");
+                memberVisit.setVisitType("电话");
+                memberVisit.setContent("天使测试");
+            } else {
+                memberVisit.setMobile("13621255468");
+                memberVisit.setMemberName("天使1");
+                memberVisit.setServicename("青稞荟小程序1");
+                memberVisit.setVisitStartDate("2021-06-16 09:00:00");
+                memberVisit.setVisitEndDate("2021-06-16 09:15:00");
+                memberVisit.setVisitType("现场");
+                memberVisit.setContent("天使测试1");
+            }
+
+            List<QkjvipMemberVisitMaterialEntity> materialList = new ArrayList<>();
+            QkjvipMemberVisitMaterialEntity memberVisitMaterial = new QkjvipMemberVisitMaterialEntity();
+            memberVisitMaterial.setName("金宝" + i);
+            memberVisitMaterial.setNumber(2);
+            memberVisitMaterial.setUnit("瓶");
+            memberVisitMaterial.setUnitprice(388.0);
+            materialList.add(memberVisitMaterial);
+            memberVisit.setMaterialList(materialList);
+            list.add(memberVisit);
+        }
+        return list;
     }
 }

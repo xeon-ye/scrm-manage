@@ -55,6 +55,12 @@ public class QkjvipMemberVisitServiceImpl extends ServiceImpl<QkjvipMemberVisitD
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void addBatch(List<QkjvipMemberVisitEntity> qkjvipMemberVisitList) {
+        this.saveBatch(qkjvipMemberVisitList);
+    }
+
+    @Override
     public boolean update(QkjvipMemberVisitEntity qkjvipMemberVisit) {
         return this.updateById(qkjvipMemberVisit);
     }

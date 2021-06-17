@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -40,18 +41,22 @@ public class QkjvipMemberVisitMaterialEntity implements Serializable {
     /**
      * 名称
      */
+    @Excel(name = "物料名称", width = 15)
     private String name;
     /**
      * 数量
      */
+    @Excel(name = "数量", width = 15)
     private Integer number;
     /**
      * 单位
      */
+    @Excel(name = "单位", width = 15)
     private String unit;
     /**
      * 单价
      */
+    @Excel(name = "单价", width = 15)
     private Double unitprice;
     /**
      * 备注

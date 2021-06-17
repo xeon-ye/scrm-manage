@@ -22,6 +22,7 @@ import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.validator.ValidatorUtils;
+import com.platform.modules.cache.CacheFactory;
 import com.platform.modules.oss.entity.UploadData;
 import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.qkjvip.service.*;
@@ -554,6 +555,8 @@ public class MemberController extends AbstractController {
             if (taskprogress!=null&&taskprogress==100){ // 进度100
                 List<MemberEntity> mees=new ArrayList<>();
                 mees=JSON.parseArray(resultObject.getString("listmember"),MemberEntity.class);
+                CacheFactory.getCacheInstance().del("member-import-data");
+                CacheFactory.getCacheInstance().put("member-import-data", resultObject.getString("listmember"));
                 return RestResponse.success().put("taskprogress",100).put("memberlist", mees);
             } else {
                 return RestResponse.success().put("taskprogress",taskprogress);
