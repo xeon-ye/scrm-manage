@@ -52,7 +52,7 @@ public class ActivitiConfig implements ProcessEngineConfigurationConfigurer {
      * @return ProcessEngine
      */
     @Bean
-    public ProcessEngine processEngine(PlatformTransactionManager transactionManager, DataSource dataSource) throws IOException {
+    public ProcessEngine processEngine1(PlatformTransactionManager transactionManager, DataSource dataSource) throws IOException {
         SpringProcessEngineConfiguration processEngineConfiguration = new SpringProcessEngineConfiguration();
         //自动部署已有的流程文件
         Resource[] resources = new PathMatchingResourcePatternResolver().getResources(ResourceLoader.CLASSPATH_URL_PREFIX + "processes/*.bpmn");
