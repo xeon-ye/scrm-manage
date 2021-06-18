@@ -39,56 +39,56 @@ public class ScheduleJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext context) {
-        if (System.getProperty("disabled-timer-task")!=null&&System.getProperty("disabled-timer-task").equals("true")) {
-
+        if (System.getProperty("disabled-timer-task")!=null&&(System.getProperty("disabled-timer-task").equals("true")||System.getProperty("disabled-timer-task").equals("1"))) {
+            System.out.println("定时任务已禁用");
         }else {
+            ScheduleJobEntity scheduleJob = new ScheduleJobEntity();
 
+            BeanUtils.copyProperties(context.getMergedJobDataMap().get(ScheduleJobEntity.JOB_PARAM_KEY), scheduleJob);
+            //获取spring bean
+            ScheduleJobLogService scheduleJobLogService = (ScheduleJobLogService) SpringContextUtils.getBean("scheduleJobLogService");
+
+            //数据库保存执行记录
+            ScheduleJobLogEntity logEntity = new ScheduleJobLogEntity();
+            logEntity.setJobId(scheduleJob.getJobId());
+            logEntity.setBeanName(scheduleJob.getBeanName());
+            logEntity.setMethodName(scheduleJob.getMethodName());
+            logEntity.setParams(scheduleJob.getParams());
+            logEntity.setCreateTime(new Date());
+
+            //任务开始时间
+            long startTime = System.currentTimeMillis();
+
+            try {
+                //执行任务
+                log.info("任务准备执行，任务ID：" + scheduleJob.getJobId());
+                ScheduleRunnable task = new ScheduleRunnable(scheduleJob.getBeanName(),
+                        scheduleJob.getMethodName(), scheduleJob.getParams());
+                Future<?> future = service.submit(task);
+
+                future.get();
+
+                //任务执行总时长
+                long times = System.currentTimeMillis() - startTime;
+                logEntity.setTimes((int) times);
+                //任务状态    0：成功    1：失败
+                logEntity.setStatus(0);
+
+                log.info("任务执行完毕，任务ID：" + scheduleJob.getJobId() + "  总共耗时：" + times + "毫秒");
+            } catch (Exception e) {
+                log.error("任务执行失败，任务ID：" + scheduleJob.getJobId(), e);
+
+                //任务执行总时长
+                long times = System.currentTimeMillis() - startTime;
+                logEntity.setTimes((int) times);
+
+                //任务状态    0：成功    1：失败
+                logEntity.setStatus(1);
+                logEntity.setError(StringUtils.substring(e.toString(), 0, 2000));
+            } finally {
+                scheduleJobLogService.save(logEntity);
+            }
         }
-        ScheduleJobEntity scheduleJob = new ScheduleJobEntity();
 
-        BeanUtils.copyProperties(context.getMergedJobDataMap().get(ScheduleJobEntity.JOB_PARAM_KEY), scheduleJob);
-        //获取spring bean
-        ScheduleJobLogService scheduleJobLogService = (ScheduleJobLogService) SpringContextUtils.getBean("scheduleJobLogService");
-
-        //数据库保存执行记录
-        ScheduleJobLogEntity logEntity = new ScheduleJobLogEntity();
-        logEntity.setJobId(scheduleJob.getJobId());
-        logEntity.setBeanName(scheduleJob.getBeanName());
-        logEntity.setMethodName(scheduleJob.getMethodName());
-        logEntity.setParams(scheduleJob.getParams());
-        logEntity.setCreateTime(new Date());
-
-        //任务开始时间
-        long startTime = System.currentTimeMillis();
-
-        try {
-            //执行任务
-            log.info("任务准备执行，任务ID：" + scheduleJob.getJobId());
-            ScheduleRunnable task = new ScheduleRunnable(scheduleJob.getBeanName(),
-                    scheduleJob.getMethodName(), scheduleJob.getParams());
-            Future<?> future = service.submit(task);
-
-            future.get();
-
-            //任务执行总时长
-            long times = System.currentTimeMillis() - startTime;
-            logEntity.setTimes((int) times);
-            //任务状态    0：成功    1：失败
-            logEntity.setStatus(0);
-
-            log.info("任务执行完毕，任务ID：" + scheduleJob.getJobId() + "  总共耗时：" + times + "毫秒");
-        } catch (Exception e) {
-            log.error("任务执行失败，任务ID：" + scheduleJob.getJobId(), e);
-
-            //任务执行总时长
-            long times = System.currentTimeMillis() - startTime;
-            logEntity.setTimes((int) times);
-
-            //任务状态    0：成功    1：失败
-            logEntity.setStatus(1);
-            logEntity.setError(StringUtils.substring(e.toString(), 0, 2000));
-        } finally {
-            scheduleJobLogService.save(logEntity);
-        }
     }
 }

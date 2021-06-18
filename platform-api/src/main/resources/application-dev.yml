@@ -10,9 +10,6 @@ spring:
         username: crm
         password: Qqkj002646
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-        #        url: jdbc:oracle:thin:@localhost:1521:platform
-        #        username: platform
-        #        password: 123456
       second:   #数据源3
          url: jdbc:sqlserver://111.12.190.162:1433;database=qkjerp
          username: sa

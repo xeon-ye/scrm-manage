@@ -88,3 +88,14 @@ mybatis-plus:
       logic-delete-value: 0
       #逻辑未删除值
       logic-not-delete-value: 1
+
+    log:
+      #日志保存路径
+      path: ../log
+      #日志字符集
+      charset: UTF-8
+      #最大历史天数
+      max-history: 30
+      #单个日志文件最大体积
+      max-file-size: 100MB
+      pattern: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n'
