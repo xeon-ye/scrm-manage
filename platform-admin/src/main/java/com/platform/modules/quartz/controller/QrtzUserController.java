@@ -46,7 +46,7 @@ public class QrtzUserController extends AbstractController {
     @RequestMapping("/quartzUser")
     public void quartzUser() {
         Map<String, Object> params=new HashMap<String, Object>();
-        params.put("status", 1);
+//        params.put("status", 1);
         List<SysUserEntity> users = sysUserService.queryAll(params);  //表中寄存的用户
         try {
             List<QrtzUserEntity> oaUsers = qrtzUserService.queryAll(null);  //OA的人员
