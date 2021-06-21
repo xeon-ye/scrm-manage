@@ -58,15 +58,13 @@ public class QkjvipMemberVisitExportEntity implements Serializable {
     /**
      * 拜访开始时间
      */
-    @Excel(name = "拜访开始时间", mergeVertical = true, format = "yyyy-MM-dd HH:mm:ss", orderNum = "3", width = 20)
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private String visitStartDate;
+    @Excel(name = "拜访开始时间", mergeVertical = true, exportFormat = "yyyy-MM-dd HH:mm:ss", importFormat = "yyyy-MM-dd HH:mm:ss", orderNum = "3", width = 20)
+    private Date visitStartDate;
     /**
      * 拜访结束时间
      */
-    @Excel(name = "拜访结束时间", mergeVertical = true, format = "yyyy-MM-dd HH:mm:ss", orderNum = "4", width = 20)
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private String visitEndDate;
+    @Excel(name = "拜访结束时间", mergeVertical = true, exportFormat = "yyyy-MM-dd HH:mm:ss", importFormat = "yyyy-MM-dd HH:mm:ss", orderNum = "4", width = 20)
+    private Date visitEndDate;
     /**
      * 拜访类型
      */
