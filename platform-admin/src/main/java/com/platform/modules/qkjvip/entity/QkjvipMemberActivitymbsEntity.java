@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -43,22 +44,26 @@ public class QkjvipMemberActivitymbsEntity implements Serializable {
      */
     private String activityId;
 
+
     private Integer status;
 
     /**
      * 会员名称
      */
     @TableField(exist = false)
+    @Excel(name = "会员名称", orderNum = "3", width = 15, groupName = "扩展信息",  fixedIndex = 3)
     private String memberName;
     /*
      * 会员真实姓名
      */
     @TableField(exist = false)
+    @Excel(name = "会员真实姓名", orderNum = "4", width = 15, groupName = "扩展信息",  fixedIndex = 4)
     private String realName;
     /*
      * 会员手机
      */
     @TableField(exist = false)
+    @Excel(name = "会员手机号", orderNum = "5", width = 15, groupName = "扩展信息",  fixedIndex = 5)
     private String mobile;
 
     @TableField(exist = false)
@@ -77,4 +82,21 @@ public class QkjvipMemberActivitymbsEntity implements Serializable {
     private Integer smemtype;
     @TableField(exist = false)
     private String memberidto;
+
+
+    @TableField(exist = false)
+    @Excel(name = "活动标题", orderNum = "0", width = 15, groupName = "扩展信息",  fixedIndex = 0)
+    private String title;
+    @TableField(exist = false)
+    @Excel(name = "活动开始时间", orderNum = "1", width = 15, groupName = "扩展信息",  fixedIndex = 1)
+    private String star_date;
+    @TableField(exist = false)
+    @Excel(name = "活动结束时间", orderNum = "2", width = 15, groupName = "扩展信息",  fixedIndex = 2)
+    private String end_date;
+    @Excel(name = "邀约方式", orderNum = "6", width = 15, groupName = "扩展信息",  fixedIndex = 6)
+    private String statusstr;
+    @Excel(name = "报名状态", orderNum = "6", width = 15, groupName = "扩展信息",  fixedIndex = 6)
+    private String bmstatusstr;
+    @Excel(name = "签到状态", orderNum = "6", width = 15, groupName = "扩展信息",  fixedIndex = 6)
+    private String qdstatusstr;
 }
