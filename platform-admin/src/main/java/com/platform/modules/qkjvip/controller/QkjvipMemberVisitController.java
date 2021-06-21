@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -488,22 +489,23 @@ public class QkjvipMemberVisitController extends AbstractController {
 
     private List<QkjvipMemberVisitExportEntity> exampleList() throws ParseException {
         List<QkjvipMemberVisitExportEntity> list = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (int i = 0; i < 3; i++) {
             QkjvipMemberVisitExportEntity memberVisit = new QkjvipMemberVisitExportEntity();
             if (i == 0 || i == 1) {
                 memberVisit.setMobile("13621255469");
                 memberVisit.setMemberName("天使");
                 memberVisit.setServicename("青稞荟小程序");
-                memberVisit.setVisitStartDate("2021-06-15 09:00:00");
-                memberVisit.setVisitEndDate("2021-06-15 09:15:00");
+                memberVisit.setVisitStartDate(sdf.parse("2021-06-15 09:00:00"));
+                memberVisit.setVisitEndDate(sdf.parse("2021-06-15 09:15:00"));
                 memberVisit.setVisitType("电话");
                 memberVisit.setContent("天使测试");
             } else {
                 memberVisit.setMobile("13621255468");
                 memberVisit.setMemberName("天使1");
                 memberVisit.setServicename("青稞荟小程序1");
-                memberVisit.setVisitStartDate("2021-06-16 09:00:00");
-                memberVisit.setVisitEndDate("2021-06-16 09:15:00");
+                memberVisit.setVisitStartDate(sdf.parse("2021-06-16 09:00:00"));
+                memberVisit.setVisitEndDate(sdf.parse("2021-06-16 09:15:00"));
                 memberVisit.setVisitType("现场");
                 memberVisit.setContent("天使测试1");
             }
