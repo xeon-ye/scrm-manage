@@ -262,7 +262,7 @@ public class SysUserController extends AbstractController {
                                 user.setStatus(1);
 //                                user.setCreateUserId(getUserId());
 //                                user.setCreateUserOrgNo(getOrgNo());
-                                user.setCreateTime(new Date());
+//                                user.setCreateTime(new Date());
                                 user.setDingId(oauser.getHomeaddress().getValue());
                                 sysUsers.add(user);
                                 System.out.println("人员：" + oauser.getLastname().getValue() + "已修改");
@@ -289,6 +289,7 @@ public class SysUserController extends AbstractController {
                     sysUser.setStatus(1);
 //                    sysUser.setCreateUserId(getUserId());
 //                    sysUser.setCreateUserOrgNo(getOrgNo());
+                    sysUser.setCreateTime(new Date());
                     sysUser.setDingId(oauser.getHomeaddress().getValue());
                     sysUser.setOaId(oauser.getUserid().toString());
                     sysUserService.add(sysUser);

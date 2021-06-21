@@ -153,18 +153,17 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
                 SmsResponse response = JsonHelper.fromJson(SmsResponse.class, resultModel.getResult());
                 smsLog.setSendId(response.getSmsId());
                 smsLog.setSendStatus(0);
+                smsLog.setReturnMsg("成功");
             } else {  //发送失败
                 smsLog.setSendStatus(1);
+                smsLog.setReturnMsg(resultModel.getCode());
             }
             smsLog.setType(SmsUtil.TYPE);
             smsLog.setStime(new Date());
             smsLog.setUserId(ShiroUtils.getUserId());
-            smsLog.setReturnMsg(resultModel.getCode());
         }
         //保存发送记录
-        if (smsLog.getSendStatus() == 0) {
-            save(smsLog);
-        }
+        save(smsLog);
         return smsLog;
     }
 
@@ -245,9 +244,10 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
                 for (SmsResponse d : response) {
                     System.out.println("data:" + d.getMobile() + "," + d.getSmsId() + "," + d.getCustomSmsId());
                     SysSmsLogEntity smsLogEntity = new SysSmsLogEntity();
+                    smsLogEntity.setSendStatus(0);
                     smsLogEntity.setSendId(d.getSmsId());
                     smsLogEntity.setMobile(d.getMobile());
-                    smsLogEntity.setReturnMsg(resultModel.getCode());
+                    smsLogEntity.setReturnMsg("成功");
                     smsLogEntity.setType(SmsUtil.TYPE);
                     smsLogEntity.setStime(new Date());
                     smsLogEntity.setContent(content);
@@ -263,7 +263,7 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
                 smsLog.setReturnMsg(resultModel.getCode());
                 smsLog.setSendStatus(1);
                 //保存发送记录
-//                save(smsLog);  //调用发送接口失败不插入 liuqianru mod 2021/06/02
+                save(smsLog);
             }
         }
         return smsLog;

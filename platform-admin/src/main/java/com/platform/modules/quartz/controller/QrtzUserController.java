@@ -67,7 +67,7 @@ public class QrtzUserController extends AbstractController {
                                 user.setEmail(oauser.getEmail());
                                 user.setMobile(oauser.getMobile());
                                 user.setStatus(1);
-                                user.setCreateTime(new Date());
+//                                user.setCreateTime(new Date());
                                 user.setDingId(oauser.getHomeaddress());
                                 sysUsers.add(user);
                                 System.out.println("人员：" + oauser.getLastname() + "已修改");
@@ -92,6 +92,7 @@ public class QrtzUserController extends AbstractController {
                     sysUser.setEmail(oauser.getEmail());
                     sysUser.setMobile(oauser.getMobile());
                     sysUser.setStatus(1);
+                    sysUser.setCreateTime(new Date());
                     sysUser.setDingId(oauser.getHomeaddress());
                     sysUser.setOaId(oauser.getId().toString());
                     sysUserService.add(sysUser);
