@@ -11,16 +11,22 @@
  */
 package com.platform.modules.qkjvip.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipMemberActivitymbsEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberActivitymbsService;
+import com.platform.modules.util.ExportExcelUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.Map;
 
@@ -76,6 +82,19 @@ public class QkjvipMemberActivitymbsController extends AbstractController {
         return RestResponse.success().put("page", page);
     }
 
+    /**
+     * 导出会员数据
+     */
+    @SysLog("导出结果")
+    @RequestMapping("/export")
+    public void exportExcel(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params) {
+        try {
+            List<QkjvipMemberActivitymbsEntity> list = JSON.parseArray(URLDecoder.decode(params.get("dataStr").toString()), QkjvipMemberActivitymbsEntity.class);
+            ExportExcelUtils.exportExcel(list,"活动信息表","活动信息",QkjvipMemberActivitymbsEntity.class,"会员信息",response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * 分页查询根据活动id
      *

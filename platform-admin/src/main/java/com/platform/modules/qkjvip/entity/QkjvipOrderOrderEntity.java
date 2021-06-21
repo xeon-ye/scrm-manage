@@ -192,6 +192,8 @@ public class QkjvipOrderOrderEntity implements Serializable {
 
     private String payusername;
 
+    private String erporderid;
+
     @TableField(exist = false)
     private List<QkjvipProductProductEntity> listproduct;
     @TableField(exist = false)

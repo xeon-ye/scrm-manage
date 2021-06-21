@@ -16,6 +16,9 @@
         <if test="params.ordercode != null and params.ordercode.trim() != ''">
             AND od.OrderCode = '${params.ordercode}'
         </if>
+        <if test="params.orderid != null and params.orderid.trim() != ''">
+            AND t.orderid = '${params.orderid}'
+        </if>
         <if test="params.membername != null and params.membername.trim() != ''">
             AND od.MemberName like '%${params.membername}%'
         </if>

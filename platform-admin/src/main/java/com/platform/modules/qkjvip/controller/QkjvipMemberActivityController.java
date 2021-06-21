@@ -309,6 +309,19 @@ public class QkjvipMemberActivityController extends AbstractController {
                 }
             }
         }
+
+        if (list != null && list.size() > 0) {
+            String myop = list.get(0).getMemberId();
+            map.clear();
+            map.put("activityId", qkjvipMemberActivity.getId());
+            map.put("memberId", myop);
+            List<QkjvipMemberActivitymbsEntity> mbslist = new ArrayList<>();
+            mbslist = qkjvipMemberActivitymbsService.queryTopOne(map);
+            if (mbslist.size() > 0) {//有邀约
+                isinvite = "1";
+            }
+        }
+
         return RestResponse.success().put("memberactivity", qkjvipMemberActivity).put("istake",iscanjia).put("isabove",isabove).put("isinvite",isinvite).put("list",list).put("isbaoming",isbaoming).put("qsign",qsign);
     }
 
