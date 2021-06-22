@@ -35,18 +35,27 @@
 
     <sql id="selectSqlCount">
         SELECT member.real_name,member.member_name,member.mobile,a.*,
-        case when ISNULL(b.id, '')='' then 0
+        case when ISNULL(cc.memberidto, '')='' then 0
         else 1 end as bmstatus,
-        case when ISNULL(m.id, '')='' then 0
-        else 1 end as qdstatus,b.id bmid
+        case when ISNULL(scc.memberidto, '')='' then 0
+        else 1 end as qdstatus,cc.id bmid
 
         from qkjvip_member_activitymbs a
-        left join qkjvip_member_signup b on (a.activity_id=b.acitvity_id and a.member_id=b.memberid)
-        LEFT JOIN qkjvip_member_signupmember m on (m.activity_id=a.activity_id and m.member_id=a.member_id)
-        join qkjvip_member member on (member.member_id=a.member_id)
+        join Func_GetNewestMemberInfo() member on (member.member_id=a.member_id)
+        left join
+        (
+        SELECT bs.memberidto,s.acitvity_id,s.id from qkjvip_member_signup s
+        join Func_GetNewestMemberInfo() bs on (bs.member_id=s.memberid )
+        ) cc on (cc.memberidto = member.memberidto and cc.acitvity_id=a.activity_id)
+        left join
+        (
+        SELECT bs.memberidto,m.activity_id from qkjvip_member_signupmember m
+        join Func_GetNewestMemberInfo() bs on (bs.member_id=m.member_id )
+        ) scc on (scc.memberidto = member.memberidto and scc.activity_id=a.activity_id)
+
         WHERE 1=1
         <if test="params.activityId != null and params.activityId.trim() != ''">
-            AND a.ACTIVITY_ID LIKE '%${params.activityId}%'
+            AND a.ACTIVITY_ID = '${params.activityId}'
         </if>
         <if test="params.memberId != null and params.memberId.trim() != ''">
             AND
@@ -93,6 +102,44 @@
         WHERE 1=1
         <if test="params.activityId != null and params.activityId.trim() != ''">
             AND T.ACTIVITY_ID LIKE '%${params.activityId}%'
+        </if>
+        <if test="params.memberId != null and params.memberId.trim() != ''">
+            AND
+            EXISTS(
+            select top 1 * from qkjvip_member c
+            where ISNULL(c.memberidto,c.member_id)=ISNULL(a.memberidto,a.member_id)
+            and c.member_id='${params.memberId}'
+            )
+        </if>
+    </select>
+
+    <select id="queryAllResultExcel" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberActivitymbsEntity">
+        SELECT acp.title,acp.star_date,acp.end_date,member.real_name,member.member_name,member.mobile,a.*,
+        case when ISNULL(cc.memberidto, '')='' then '否'
+        else '是' end as bmstatusstr,
+        case when ISNULL(scc.memberidto, '')='' then '否'
+        else '是' end as qdstatusstr,
+        case when a.status=1 then '邀约'
+        when a.status=2 then '自主报名'
+        ELSE '现场报名' end as statusstr
+
+        from qkjvip_member_activitymbs a
+        join qkjvip_member_activity acp on (a.activity_id=acp.id)
+        join Func_GetNewestMemberInfo() member on (member.member_id=a.member_id)
+        left join
+        (
+        SELECT bs.memberidto,s.acitvity_id,s.id from qkjvip_member_signup s
+        join Func_GetNewestMemberInfo() bs on (bs.member_id=s.memberid )
+        ) cc on (cc.memberidto = member.memberidto and cc.acitvity_id=a.activity_id)
+        left join
+        (
+        SELECT bs.memberidto,m.activity_id from qkjvip_member_signupmember m
+        join Func_GetNewestMemberInfo() bs on (bs.member_id=m.member_id )
+        ) scc on (scc.memberidto = member.memberidto and scc.activity_id=a.activity_id)
+
+        WHERE 1=1
+        <if test="params.activityId != null and params.activityId.trim() != ''">
+            AND a.ACTIVITY_ID = '${params.activityId}'
         </if>
         <if test="params.memberId != null and params.memberId.trim() != ''">
             AND

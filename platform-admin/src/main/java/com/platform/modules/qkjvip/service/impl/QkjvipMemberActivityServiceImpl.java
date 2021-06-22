@@ -45,7 +45,7 @@ public class QkjvipMemberActivityServiceImpl extends ServiceImpl<QkjvipMemberAct
 
     @Override
     public Page queryAllSignAddress(Map<String, Object> params) {
-        params.put("sidx", "act.istake asc,act.end_date");
+        params.put("sidx", "act.end_date");
         params.put("asc", false);
         Page<QkjvipMemberActivityEntity> page = new Query<QkjvipMemberActivityEntity>(params).getPage();
         page.setRecords(baseMapper.queryAllSignAddress(page,params));

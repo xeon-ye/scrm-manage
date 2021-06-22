@@ -131,7 +131,7 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
                         if(mems.getBmstatus()!=null&&mems.getBmstatus().equals(1)){//已报名
                             bmid=mems.getBmid();
                         }else{//补充报名
-                            bmid=qkjvipMemberSignupService.supadd(qkjvipMemberSignupmember.getActivityId(),mems.getMemberId());
+                            bmid=qkjvipMemberSignupService.supadd(qkjvipMemberSignupmember.getActivityId(),mems.getMemberId(),"");
                         }
                         //添加签到
                         if(bmid!=""){
@@ -213,7 +213,7 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
             //邀请补充
             qkjvipMemberActivitymbsService.supadd(qkjvipMemberSignupmember.getActivityId(),member.getMemberId());
             //报名补充
-            String bmid=qkjvipMemberSignupService.supadd(qkjvipMemberSignupmember.getActivityId(),member.getMemberId());
+            String bmid=qkjvipMemberSignupService.supadd(qkjvipMemberSignupmember.getActivityId(),member.getMemberId(),mobile);
             //添加签到
             Date date=new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -48,6 +48,11 @@ public class QkjvipMemberActivitymbsServiceImpl extends ServiceImpl<QkjvipMember
     }
 
     @Override
+    public List<QkjvipMemberActivitymbsEntity> queryAllResultExcel(Map<String, Object> params) {
+        return baseMapper.queryAllResultExcel(params);
+    }
+
+    @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
         params.put("sidx", "T.id");

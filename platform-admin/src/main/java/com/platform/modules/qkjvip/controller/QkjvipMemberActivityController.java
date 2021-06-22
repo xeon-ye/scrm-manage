@@ -541,7 +541,7 @@ public class QkjvipMemberActivityController extends AbstractController {
                 }
                 if (qkjvipMemberActivity.getIsbackqd()!=null && qkjvipMemberActivity.getIsbackqd()==1) {
                     // 补报名
-                    String bmid=qkjvipMemberSignupService.supadd(qkjvipMemberActivity.getId(),m.getMemberId());
+                    String bmid=qkjvipMemberSignupService.supadd(qkjvipMemberActivity.getId(),m.getMemberId(),"");
                     //签到
                     Date date=new Date();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

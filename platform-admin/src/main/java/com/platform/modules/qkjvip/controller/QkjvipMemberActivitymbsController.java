@@ -89,7 +89,7 @@ public class QkjvipMemberActivitymbsController extends AbstractController {
     @RequestMapping("/export")
     public void exportExcel(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params) {
         try {
-            List<QkjvipMemberActivitymbsEntity> list = JSON.parseArray(URLDecoder.decode(params.get("dataStr").toString()), QkjvipMemberActivitymbsEntity.class);
+            List<QkjvipMemberActivitymbsEntity> list=qkjvipMemberActivitymbsService.queryAllResultExcel(params);
             ExportExcelUtils.exportExcel(list,"活动信息表","活动信息",QkjvipMemberActivitymbsEntity.class,"会员信息",response);
         } catch (IOException e) {
             e.printStackTrace();

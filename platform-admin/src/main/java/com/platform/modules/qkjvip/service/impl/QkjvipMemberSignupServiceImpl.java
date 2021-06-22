@@ -80,7 +80,7 @@ public class QkjvipMemberSignupServiceImpl extends ServiceImpl<QkjvipMemberSignu
     }
 
     @Override
-    public String supadd(String activity,String member_id){
+    public String supadd(String activity,String member_id,String mobile){
         String id="";
         MemberEntity mem=new MemberEntity();
         mem=memberService.getById(member_id);
@@ -94,7 +94,7 @@ public class QkjvipMemberSignupServiceImpl extends ServiceImpl<QkjvipMemberSignu
             QkjvipMemberSignupEntity m=new QkjvipMemberSignupEntity();
             m.setMemberid(member_id);
             m.setAcitvityId(activity);
-            m.setPhone(mem.getMobile());
+            m.setPhone(mobile);
             m.setUserName(mem.getMemberName());
             m.setAddtime(new Date());
             if(mem.getSex()!=null&&(mem.getSex().equals(1) || mem.getSex().equals(2)))m.setSex(mem.getSex());
