@@ -39,9 +39,15 @@ public class QkjvipOrderErporderServiceImpl extends ServiceImpl<QkjvipOrderErpor
     }
 
     @Override
+    public List<QkjvipOrderErporderEntity> queryAllDetail(Map<String, Object> params) {
+        return baseMapper.queryAllDetail(params);
+    }
+
+
+    @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
-        params.put("sidx", "T.id");
+        params.put("sidx", "T.orderdate");
         params.put("asc", false);
         Page<QkjvipOrderErporderEntity> page = new Query<QkjvipOrderErporderEntity>(params).getPage();
         return page.setRecords(baseMapper.selectQkjvipOrderErporderPage(page, params));

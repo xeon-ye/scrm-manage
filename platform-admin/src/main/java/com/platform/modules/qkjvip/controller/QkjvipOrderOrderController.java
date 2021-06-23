@@ -20,11 +20,8 @@ import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
 import com.platform.datascope.ContextHelper;
 import com.platform.modules.qkjvip.entity.*;
-import com.platform.modules.qkjvip.service.QkjvipOrderDeliverlogService;
-import com.platform.modules.qkjvip.service.QkjvipOrderOrderdetailService;
-import com.platform.modules.qkjvip.service.QkjvipProductStockService;
+import com.platform.modules.qkjvip.service.*;
 import com.platform.modules.sys.controller.AbstractController;
-import com.platform.modules.qkjvip.service.QkjvipOrderOrderService;
 import com.platform.modules.sys.service.SysUserChannelService;
 import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.Vars;
@@ -58,6 +55,8 @@ public class QkjvipOrderOrderController extends AbstractController {
     private QkjvipOrderDeliverlogService qkjvipOrderDeliverlogService;
     @Autowired
     private SysUserChannelService sysUserChannelService;
+    @Autowired
+    private QkjvipOrderErporderService qkjvipOrderErporderService;
 
     /**
      * 查看所有列表
@@ -179,7 +178,14 @@ public class QkjvipOrderOrderController extends AbstractController {
             qkjvipOrderOrder.setListstock(liststocks);
             qkjvipOrderOrder.setListout(listout);
         }
-        return RestResponse.success().put("qkjvipOrderOrder", qkjvipOrderOrder);
+        //查询封坛
+        List<QkjvipOrderErporderEntity> list = new ArrayList<>();
+        if (qkjvipOrderOrder!=null&&qkjvipOrderOrder.getErpordercode()!=null&&!qkjvipOrderOrder.getErpordercode().equals("")){
+            Map<String, Object> params= new HashMap<>();
+            params.put("ordercode",qkjvipOrderOrder.getErpordercode());
+            list = qkjvipOrderErporderService.queryAllDetail(params);
+        }
+        return RestResponse.success().put("qkjvipOrderOrder", qkjvipOrderOrder).put("erplist",list);
     }
 
     /**

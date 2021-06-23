@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -18,6 +19,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 实体
@@ -151,4 +153,7 @@ public class QkjvipOrderErporderEntity implements Serializable {
      * TaxTotalAmount
      */
     private BigDecimal taxtotalamount;
+
+    @TableField(exist = false)
+    private List<QkjvipOrderErporderEntity> detaillist;
 }
