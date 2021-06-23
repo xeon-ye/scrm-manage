@@ -13,7 +13,9 @@ package com.platform.modules.sys.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.platform.common.utils.Constant;
 import com.platform.common.utils.Query;
+import com.platform.common.utils.ShiroUtils;
 import com.platform.modules.sys.dao.SysUserChannelDao;
 import com.platform.modules.sys.entity.SysUserChannelEntity;
 import com.platform.modules.sys.service.SysUserChannelService;
@@ -116,6 +118,9 @@ public class SysUserChannelServiceImpl extends ServiceImpl<SysUserChannelDao, Sy
 
     @Override
     public List<SysUserChannelEntity> queryPermissionChannels(Map<String, Object> params) {
+        if (!(ShiroUtils.getUserEntity() != null && ShiroUtils.getUserEntity().getUserName() != null && ShiroUtils.getUserEntity().getUserName().contains("admin"))) {
+            params.put("userId", ShiroUtils.getUserId());
+        }
         return baseMapper.queryPermissionChannels(params);
     }
 }

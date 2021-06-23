@@ -72,23 +72,23 @@ public class MemberQueryEntity implements Serializable {
     private Integer scannumto12;
     private Integer scannumfromall;
     private Integer scannumtoall;
-    private Double startunitprice;
-    private Double endunitprice;
-    private String startbirthday;
-    private String endbirthday;
-    private String areatype;
-    private String membertype;
-    private String membernature;
-    private String activitytype;
-    private String startlastactivitydate;
-    private String endlastactivitydate;
-    private String city;
+    private Double startunitprice; // 客单价
+    private Double endunitprice;  // 客单价
+    private String startbirthday;  // 生日开始
+    private String endbirthday;  // 生日结束
+    private String areatype;  // 地区类型
+    private String membertype;  // 会员类型（暂时废弃）
+    private String membernature;  // 会员性质
+    private String activitytype;  // 活动类型
+    private String startlastactivitydate;  // 最后参加活动开始时间
+    private String endlastactivitydate;  // 最后参加活动结束时间
+    private String city; // 用户所在城市
     private String listorgno;  // 用户的权限部门
     private String currentmemberid;  // 当前登录用户id
     private String listmemberchannel;  // 用户的渠道权限
     private String searchmemberchannel; // 检索条件的渠道
     private String listmemberlevel;  // 会员等级
-    private List<MemberTagsQueryEntity> membertags;
+    private List<MemberTagsQueryEntity> membertags;  // 会员标签
     private Integer pageindex;
     private Integer pagesize;
     private Integer queryall;  // 0:分页 1：不分页

@@ -59,6 +59,8 @@ public class SysMenuController extends AbstractController {
     private QkjvipMemberChannelService qkjvipMemberChannelService;
     @Autowired
     private QkjvipMemberMessageService qkjvipMemberMessageService;
+    @Autowired
+    private SysUserChannelService sysUserChannelService;
 
     /**
      * 导航菜单
@@ -95,7 +97,10 @@ public class SysMenuController extends AbstractController {
         List<QkjvipTaglibsEntity> areaList = qkjvipTaglibsService.list(new QueryWrapper<QkjvipTaglibsEntity>().eq("TAG_GROUP_ID", "9af1533bea3d4c89b856ad80e9d0e457")); //liuqianru add
         List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.queryAll(map);  // 所有得渠道
         List<QkjvipOptionsEntity> appChannels = qkjvipMemberMessageService.queryChannels();
-        List<SysUserChannelEntity> permissionChannels = qkjvipMemberMessageService.queryPermissionChannels(appChannels, getUserId());  // 公众号渠道
+//        List<SysUserChannelEntity> permissionChannels = qkjvipMemberMessageService.queryPermissionChannels(appChannels, getUserId());  // 公众号渠道
+        map.clear();
+        map.put("channelType", 1);
+        List<SysUserChannelEntity> permissionChannels = sysUserChannelService.queryPermissionChannels(map);  // 公众号渠道
         return RestResponse.success()
                 .put("menuList", menuList)
                 .put("permissions", permissions)
