@@ -58,8 +58,8 @@ public class QkjvipOrderErporderController extends AbstractController {
     @GetMapping("/list")
     public RestResponse list(@RequestParam Map<String, Object> params) {
         Page page = qkjvipOrderErporderService.queryPage(params);
-
-        return RestResponse.success().put("page", page);
+        List<QkjvipOrderErporderEntity> list = qkjvipOrderErporderService.queryAllDetail(params);
+        return RestResponse.success().put("page", page).put("detailList",list);
     }
 
     /**

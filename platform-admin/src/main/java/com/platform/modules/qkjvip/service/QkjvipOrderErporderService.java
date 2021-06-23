@@ -34,6 +34,8 @@ public interface QkjvipOrderErporderService extends IService<QkjvipOrderErporder
      */
     List<QkjvipOrderErporderEntity> queryAll(Map<String, Object> params);
 
+    List<QkjvipOrderErporderEntity> queryAllDetail(Map<String, Object> params);
+
     /**
      * 分页查询
      *
