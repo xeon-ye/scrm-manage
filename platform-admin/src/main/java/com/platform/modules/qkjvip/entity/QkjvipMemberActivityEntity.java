@@ -74,6 +74,8 @@ public class QkjvipMemberActivityEntity implements Serializable {
     private Integer clockpoints; //签到积分
     private Integer isprohibit;//是否禁止未邀约人参加
 
+    private Integer channel;
+
     @TableField(exist = false)
     private String htmlurl;
     @TableField(exist = false)
