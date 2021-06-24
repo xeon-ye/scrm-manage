@@ -96,6 +96,39 @@ public class QkjvipOrderOrderController extends AbstractController {
     @PostMapping("/list")
     public RestResponse list(@RequestBody QkjvipOrderOrderQuaryEntity order) throws IOException {
         Set<String> list = new HashSet<>();
+        if (order!=null&&order.getDatetype()!=null) {
+            Date date=new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String date2=sdf.format(date);
+            Calendar c = Calendar.getInstance();
+            if (order.getDatetype()==1) {//一个月
+                c.setTime(new Date());
+                c.add(Calendar.MONTH, -1);
+                Date m = c.getTime();
+                String mon = sdf.format(m);
+                order.setStartorderdate(mon + " 00:00:00");
+            } else if (order.getDatetype()==2) {//三个月
+                //过去三个月
+                c.setTime(new Date());
+                c.add(Calendar.MONTH, -3);
+                Date m3 = c.getTime();
+                String mon3 = sdf.format(m3);
+                order.setStartorderdate(mon3 + " 00:00:00");
+            }else if (order.getDatetype()==3) { //半年
+                c.setTime(new Date());
+                c.add(Calendar.MONTH, -6);
+                Date m3 = c.getTime();
+                String mon3 = sdf.format(m3);
+                order.setStartorderdate(mon3 + " 00:00:00");
+            }else if (order.getDatetype()==4) {//一年
+                c.setTime(new Date());
+                c.add(Calendar.YEAR, -1);
+                Date y = c.getTime();
+                String year = sdf.format(y);
+                order.setStartorderdate(year + " 00:00:00");
+            }
+            order.setEndorderdate(date2 + " 23:59:59");
+        }
         list=ContextHelper.setOrdertypesm("qkjvip:memberactivity:list",getUserId());
         if (list.size()>0) {
             order.setListordertype(StringUtils.join(list.toArray(), ","));
@@ -238,7 +271,7 @@ public class QkjvipOrderOrderController extends AbstractController {
 
         // 推送
         QkjvipOrderOrderEntity newo =new QkjvipOrderOrderEntity();
-        newo.setOrderstatus(30);
+        newo.setOrderstatus(20);
         newo.setMorderid(qkjvipOrderOrder.getMorderid());
         newo.setToqkh(1);
         obj = JSONArray.toJSON(newo);

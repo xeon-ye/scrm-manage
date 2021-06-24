@@ -35,7 +35,7 @@ public class QkjvipOrderOrderQuaryEntity implements Serializable {
     private String  productname;
     private String  ordercode;
     private Integer  ordertype;
-    private String  orderstatus;
+    private Integer  orderstatus;
     private String  startorderdate;
     private String  endorderdate;
     private String  shopname;
@@ -52,5 +52,6 @@ public class QkjvipOrderOrderQuaryEntity implements Serializable {
     private String currentmemberid;  // 当前登录用户id
     private String listmemberchannel;  // 用户的渠道权限
     private String listordertype; // 订单类型列列表
-
+    private Integer datetype;
+    private String servicename;
 }
