@@ -97,10 +97,15 @@ public class SysMenuController extends AbstractController {
         List<QkjvipTaglibsEntity> areaList = qkjvipTaglibsService.list(new QueryWrapper<QkjvipTaglibsEntity>().eq("TAG_GROUP_ID", "9af1533bea3d4c89b856ad80e9d0e457")); //liuqianru add
         List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.queryAll(map);  // 所有得渠道
         List<QkjvipOptionsEntity> appChannels = qkjvipMemberMessageService.queryChannels();
-//        List<SysUserChannelEntity> permissionChannels = qkjvipMemberMessageService.queryPermissionChannels(appChannels, getUserId());  // 公众号渠道
+        String channelIds = "";
+        channelIds = sysUserChannelService.queryChannelIdByUserId(getUserId());
         map.clear();
         map.put("channelType", 1);
-        List<SysUserChannelEntity> permissionChannels = sysUserChannelService.queryPermissionChannels(map);  // 公众号渠道
+        map.put("userId", getUserId());
+        if ("0".equals(channelIds) || getUser().getUserName().contains("admin")) {
+            map.put("queryPermission", "all");
+        }
+        List<SysUserChannelEntity> permissionChannels = sysUserChannelService.queryPermissionChannels(map);  // 有权限的线上渠道
         return RestResponse.success()
                 .put("menuList", menuList)
                 .put("permissions", permissions)

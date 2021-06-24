@@ -70,9 +70,4 @@ public class QkjvipMemberChannelServiceImpl extends ServiceImpl<QkjvipMemberChan
         return this.removeByIds(Arrays.asList(ids));
     }
 
-    @Override
-    public List<QkjvipMemberChannelEntity> selectListByMap(Map<String, Object> params) {
-        return baseMapper.selectQkjvipMemberChannelPage(params);
-    }
-
 }

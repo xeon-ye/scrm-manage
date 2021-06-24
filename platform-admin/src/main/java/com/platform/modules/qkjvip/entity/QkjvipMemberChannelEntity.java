@@ -54,4 +54,16 @@ public class QkjvipMemberChannelEntity implements Serializable {
      * CreateOn
      */
     private Date createon;
+    /**
+     * appid
+     */
+    private String appid;
+    /**
+     * 渠道类型（0：线下 1：线上）
+     */
+    private Integer channeltype;
+    /**
+     * IsMain
+     */
+    private Integer ismain;
 }

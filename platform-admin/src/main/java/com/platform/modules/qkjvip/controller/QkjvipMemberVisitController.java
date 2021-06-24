@@ -345,7 +345,8 @@ public class QkjvipMemberVisitController extends AbstractController {
                 }
             } else {  // 查询登陆人的渠道权限
                 params.clear();
-                permChannelList = sysUserChannelService.queryChannelByUserId(getUserId());
+                params.put("userId", getUserId());
+                permChannelList = sysUserChannelService.queryPermissionChannels(params);
                 dictAttr = new String[permChannelList.size()];
                 for (int i = 0; i < permChannelList.size(); i++) {
                     dictAttr[i] = permChannelList.get(i).getServicename().trim() + "-" + permChannelList.get(i).getChannelId();

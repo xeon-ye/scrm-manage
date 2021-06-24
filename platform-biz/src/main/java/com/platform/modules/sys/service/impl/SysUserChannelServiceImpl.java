@@ -112,15 +112,7 @@ public class SysUserChannelServiceImpl extends ServiceImpl<SysUserChannelDao, Sy
     }
 
     @Override
-    public List<SysUserChannelEntity> queryChannelByUserId(String userId) {
-        return baseMapper.queryChannelList(userId);
-    }
-
-    @Override
     public List<SysUserChannelEntity> queryPermissionChannels(Map<String, Object> params) {
-        if (!(ShiroUtils.getUserEntity() != null && ShiroUtils.getUserEntity().getUserName() != null && ShiroUtils.getUserEntity().getUserName().contains("admin"))) {
-            params.put("userId", ShiroUtils.getUserId());
-        }
         return baseMapper.queryPermissionChannels(params);
     }
 }
