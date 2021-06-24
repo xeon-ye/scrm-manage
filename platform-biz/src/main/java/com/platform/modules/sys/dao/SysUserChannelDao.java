@@ -48,7 +48,5 @@ public interface SysUserChannelDao extends BaseMapper<SysUserChannelEntity> {
 
     List<Integer> queryChannelIdList(String userId);
 
-    List<SysUserChannelEntity> queryChannelList(String userId);
-
     List<SysUserChannelEntity> queryPermissionChannels(@Param("params") Map<String, Object> params);
 }

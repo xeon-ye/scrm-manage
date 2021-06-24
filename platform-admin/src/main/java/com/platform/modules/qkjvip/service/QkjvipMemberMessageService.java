@@ -82,9 +82,4 @@ public interface QkjvipMemberMessageService extends IService<QkjvipMemberMessage
      * @return List
      */
     List<QkjvipOptionsEntity> queryChannels();
-
-    /**
-     * 查询权限允许的渠道
-     */
-    List<SysUserChannelEntity> queryPermissionChannels(List<QkjvipOptionsEntity> appChannels, String userId);
 }

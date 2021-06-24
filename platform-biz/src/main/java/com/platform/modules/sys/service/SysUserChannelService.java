@@ -92,7 +92,5 @@ public interface SysUserChannelService extends IService<SysUserChannelEntity> {
 
     String queryChannelIdByUserId(String userId);
 
-    List<SysUserChannelEntity> queryChannelByUserId(String userId);
-
     List<SysUserChannelEntity> queryPermissionChannels(Map<String, Object> params);
 }

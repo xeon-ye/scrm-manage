@@ -124,11 +124,4 @@ public class QkjvipMemberChannelController extends AbstractController {
 
         return RestResponse.success();
     }
-
-    @RequestMapping("/queryChannelList")
-    public RestResponse queryChannelList(@RequestParam Map<String, Object> params) {
-        List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.selectListByMap(params);
-
-        return RestResponse.success().put("list", channelList).put("type", "会员渠道");
-    }
 }

@@ -4,13 +4,7 @@
 <mapper namespace="com.platform.modules.qkjvip.dao.QkjvipMemberChannelDao">
 
     <sql id="selectSql">
-        SELECT
-        T.ID,
-        T.MEMBERCHANNEL,
-        T.SERVICENAME,
-        T.DISABLED,
-        T.REMARK,
-        T.CREATEON
+        SELECT T.*
         FROM QKJVIP_MEMBER_CHANNEL T
         WHERE 1=1
         <if test="params.servicename != null and params.servicename.trim() != ''">

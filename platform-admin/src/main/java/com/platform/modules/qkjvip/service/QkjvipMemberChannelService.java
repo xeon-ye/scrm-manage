@@ -74,12 +74,4 @@ public interface QkjvipMemberChannelService extends IService<QkjvipMemberChannel
      */
     boolean deleteBatch(String[] ids);
 
-    /**
-     * selectListByMap
-     *
-     * @param params 查询参数
-     * @return List
-     */
-    List<QkjvipMemberChannelEntity> selectListByMap(Map<String, Object> params);
-
 }

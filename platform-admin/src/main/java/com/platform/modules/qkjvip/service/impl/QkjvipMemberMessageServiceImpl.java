@@ -91,29 +91,4 @@ public class QkjvipMemberMessageServiceImpl extends ServiceImpl<QkjvipMemberMess
         }
         return channelList;
     }
-
-    @Override
-    public List<SysUserChannelEntity> queryPermissionChannels(List<QkjvipOptionsEntity> appChannels, String userId) {
-        Map param = new HashMap();
-        if (!Constant.SUPER_ADMIN.equals(userId) && !Constant.SUPER_ADMIN2.equals(userId) && !Constant.SUPER_ADMIN3.equals(userId)) {
-            param.put("userId", userId);
-        }
-        List<SysUserChannelEntity> allPermChannels = new ArrayList<>();
-        allPermChannels = sysUserChannelService.queryPermissionChannels(param); // 取出所有分配的渠道权限
-//        List<QkjvipOptionsEntity> permissionChannels = new ArrayList<>();
-//        if (appChannels != null && appChannels.size() > 0) {
-//            for (int i = 0; i < appChannels.size(); i++) {
-//                QkjvipOptionsEntity qkjvipOptionsEntity = new QkjvipOptionsEntity();
-//                for (int j = 0; j < allPermChannels.size(); j++) {
-//                    if (appChannels.get(i).getAppid().equals(allPermChannels.get(j).getAppid())) {
-//                        qkjvipOptionsEntity.setAppid(appChannels.get(i).getAppid());
-//                        qkjvipOptionsEntity.setName(appChannels.get(i).getName());
-//                        permissionChannels.add(qkjvipOptionsEntity);
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-        return allPermChannels;
-    }
 }
