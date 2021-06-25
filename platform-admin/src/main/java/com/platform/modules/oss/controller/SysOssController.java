@@ -27,16 +27,15 @@ import com.platform.modules.oss.cloud.UploadFactory;
 import com.platform.modules.oss.entity.SysOssEntity;
 import com.platform.modules.oss.service.SysOssService;
 import com.platform.modules.sys.service.SysConfigService;
+import com.platform.modules.util.VideoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.util.*;
 
 /**
  * 文件上传
@@ -155,6 +154,16 @@ public class SysOssController {
         String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
         String url = UploadFactory.build().uploadSuffix(file.getBytes(), suffix);
 
+        // 将视频帧转成图片 liuqianru add
+        String posterImgUrl = "";
+        if (null != action && "uploadvideo".equals(action)) {
+            List<String> files = VideoUtil.fetchPicFromVideo(url, 600, 8);
+            // 为了验证base64串的正确性，解码生成图片文件
+            for (String imgBase64 : files) {
+                posterImgUrl = VideoUtil.base64ToImage(imgBase64);
+            }
+        }
+
         //保存文件信息
         SysOssEntity ossEntity = new SysOssEntity();
         ossEntity.setUrl(url);
@@ -163,7 +172,7 @@ public class SysOssController {
 
         //返回兼容UEditor的参数
         System.out.println("上传后的url:" + url);
-        return RestResponse.success().put("url", url).put("state", "SUCCESS").put("title", url).put("original", url);
+        return RestResponse.success().put("url", url).put("state", "SUCCESS").put("title", url).put("original", url).put("posterurl", posterImgUrl);
     }
 
     /**

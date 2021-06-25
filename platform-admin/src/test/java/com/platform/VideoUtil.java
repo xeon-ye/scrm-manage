@@ -121,7 +121,7 @@ public class VideoUtil {
     public static void main(String[] args) {
         try {
             String outputPath = "E:/";
-            String videoPath = "http://images.qkjebiz.qkjchina.com//qkjebiz/20210624/cc082ebe758c4ea181d1d1d8e36db495.mp4";
+            String videoPath = "http://images.qkjebiz.qkjchina.com//qkjebiz/20210625/60ea2f5944894c588d1a1c09053b4ab2.mp4";
             List<String> files = VideoUtil.fetchPicFromVideo(videoPath, 600, 8);
             // 为了验证base64串的正确性，解码生成图片文件
             for (String imgBase64 : files) {
