@@ -27,7 +27,6 @@
         <if test="params.sendStatus != null and params.sendStatus.trim() != ''">
             AND T.SEND_STATUS = #{params.sendStatus}
         </if>
-        order by T.ADD_TIME desc
     </sql>
 
     <select id="selectQkjvipMemberIntegralPage" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberIntegralEntity">

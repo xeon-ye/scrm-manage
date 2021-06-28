@@ -56,7 +56,7 @@ public class QkjvipMemberIntegralServiceImpl extends ServiceImpl<QkjvipMemberInt
     @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
-        params.put("sidx", "T.id");
+        params.put("sidx", "T.ADD_TIME");
         params.put("asc", false);
         Page<QkjvipMemberIntegralEntity> page = new Query<QkjvipMemberIntegralEntity>(params).getPage();
         page.setRecords(baseMapper.selectQkjvipMemberIntegralPage(page, params));
