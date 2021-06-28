@@ -193,7 +193,6 @@ public class QkjvipOrderOrderController extends AbstractController {
 
             List<QkjvipProductProductEntity> newps=new ArrayList<>();
             if(qkjvipOrderOrder!=null&&qkjvipOrderOrder.getListproduct()!=null){
-
                 for(QkjvipProductProductEntity es:qkjvipOrderOrder.getListproduct()){
                     Double outsum=0.00;
                     for(QkjvipProductStockEntity e:liststocks){
@@ -306,8 +305,8 @@ public class QkjvipOrderOrderController extends AbstractController {
         if ("200".equals(resultObject.get("resultcode").toString())) {  //修改成功
             String orderid=resultObject.get("morderid").toString();
             //添加入库分配
+            qkjvipProductStockService.deleteBatchByOrder(orderid);
             if(qkjvipOrderOrder.getListstock()!=null&&qkjvipOrderOrder.getListstock().size()>0){
-                qkjvipProductStockService.deleteBatchByOrder(orderid);
                 List<QkjvipProductStockEntity> liststock=new ArrayList<>();
                 for(QkjvipProductStockEntity st:qkjvipOrderOrder.getListstock()){
                     if(st.getOuttotalcount()==null){
@@ -322,9 +321,9 @@ public class QkjvipOrderOrderController extends AbstractController {
                 }
                 qkjvipProductStockService.batchAdd(liststock);
             }
+            qkjvipOrderDeliverlogService.deleteBatchByOrder(orderid);
             //添加出库记录
             if(qkjvipOrderOrder.getListout()!=null&&qkjvipOrderOrder.getListout().size()>0){
-                qkjvipOrderDeliverlogService.deleteBatchByOrder(orderid);
                 List<QkjvipOrderDeliverlogEntity> liststock=new ArrayList<>();
                 for(QkjvipOrderDeliverlogEntity st:qkjvipOrderOrder.getListout()){
                     Date date = new Date();//获取当前的日期
