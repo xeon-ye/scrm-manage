@@ -135,4 +135,188 @@ public class MemberPortraitController extends AbstractController {
         return RestResponse.success().put("list", list);
     }
 
+    /**
+     * 高频统计-按渠道
+     *
+     * @param memberPortraitHfQueryEntity 查询参数
+     * @return RestResponse
+     */
+    @PostMapping("/getMemberChannelRateReport")
+    public RestResponse getMemberChannelRateReport(@RequestBody MemberPortraitHfQueryEntity memberPortraitHfQueryEntity) throws IOException {
+        List<MemberPortraitHfResultEntity> list = new ArrayList<>();
+        if (!getUser().getUserName().contains("admin")) {
+            memberPortraitHfQueryEntity.setCurrentmemberid(getUserId());
+            memberPortraitHfQueryEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
+        } else {
+            memberPortraitHfQueryEntity.setListmemberchannel("-1");
+        }
+        Object obj = JSONArray.toJSON(memberPortraitHfQueryEntity);
+        String queryJsonStr = JsonHelper.toJsonString(obj);
+
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_PORTRAIT_HF_CHANNEL_URl, queryJsonStr);
+        System.out.println("高频统计-按渠道-检索条件：" + queryJsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+            if (resultObject.get("list") != null) {
+                list = JSON.parseArray(resultObject.getString("list"),MemberPortraitHfResultEntity.class);
+            }
+            if (!memberPortraitHfQueryEntity.getIsall()) {  //true:分页查询
+                Page page = new Page();
+                page.setRecords(list);
+                page.setTotal(Long.parseLong(resultObject.get("totalcount").toString()));
+                page.setSize(memberPortraitHfQueryEntity.getPagesize() == null? 0 : memberPortraitHfQueryEntity.getPagesize());
+                page.setCurrent(memberPortraitHfQueryEntity.getPageindex() == null? 0 : memberPortraitHfQueryEntity.getPageindex());
+                return RestResponse.success().put("page", page);
+            }
+        }
+        return RestResponse.success().put("list", list);
+    }
+
+    /**
+     * 高频统计-按地区
+     *
+     * @param memberPortraitHfQueryEntity 查询参数
+     * @return RestResponse
+     */
+    @PostMapping("/getMemberCityRateReport")
+    public RestResponse getMemberCityRateReport(@RequestBody MemberPortraitHfQueryEntity memberPortraitHfQueryEntity) throws IOException {
+        List<MemberPortraitHfResultEntity> list = new ArrayList<>();
+        if (!getUser().getUserName().contains("admin")) {
+            memberPortraitHfQueryEntity.setCurrentmemberid(getUserId());
+            memberPortraitHfQueryEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
+        } else {
+            memberPortraitHfQueryEntity.setListmemberchannel("-1");
+        }
+        Object obj = JSONArray.toJSON(memberPortraitHfQueryEntity);
+        String queryJsonStr = JsonHelper.toJsonString(obj);
+
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_PORTRAIT_HF_CITY_URl, queryJsonStr);
+        System.out.println("高频统计-按地区-检索条件：" + queryJsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+            if (resultObject.get("list") != null) {
+                list = JSON.parseArray(resultObject.getString("list"),MemberPortraitHfResultEntity.class);
+            }
+            if (!memberPortraitHfQueryEntity.getIsall()) {  //true:分页查询
+                Page page = new Page();
+                page.setRecords(list);
+                page.setTotal(Long.parseLong(resultObject.get("totalcount").toString()));
+                page.setSize(memberPortraitHfQueryEntity.getPagesize() == null? 0 : memberPortraitHfQueryEntity.getPagesize());
+                page.setCurrent(memberPortraitHfQueryEntity.getPageindex() == null? 0 : memberPortraitHfQueryEntity.getPageindex());
+                return RestResponse.success().put("page", page);
+            }
+        }
+        return RestResponse.success().put("list", list);
+    }
+
+    /**
+     * 高价值统计-按渠道
+     *
+     * @param memberPortraitHvQueryEntity 查询参数
+     * @return RestResponse
+     */
+    @PostMapping("/getMemberChannelAmountReport")
+    public RestResponse getMemberChannelAmountReport(@RequestBody MemberPortraitHvQueryEntity memberPortraitHvQueryEntity) throws IOException {
+        List<MemberPortraitHvResultEntity> list = new ArrayList<>();
+        if (!getUser().getUserName().contains("admin")) {
+            memberPortraitHvQueryEntity.setCurrentmemberid(getUserId());
+            memberPortraitHvQueryEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
+        } else {
+            memberPortraitHvQueryEntity.setListmemberchannel("-1");
+        }
+        Object obj = JSONArray.toJSON(memberPortraitHvQueryEntity);
+        String queryJsonStr = JsonHelper.toJsonString(obj);
+
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_PORTRAIT_HV_CHANNEL_URl, queryJsonStr);
+        System.out.println("高价值统计-按渠道-检索条件：" + queryJsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+            if (resultObject.get("list") != null) {
+                list = JSON.parseArray(resultObject.getString("list"),MemberPortraitHvResultEntity.class);
+            }
+            if (!memberPortraitHvQueryEntity.getIsall()) {  //true:分页查询
+                Page page = new Page();
+                page.setRecords(list);
+                page.setTotal(Long.parseLong(resultObject.get("totalcount").toString()));
+                page.setSize(memberPortraitHvQueryEntity.getPagesize() == null? 0 : memberPortraitHvQueryEntity.getPagesize());
+                page.setCurrent(memberPortraitHvQueryEntity.getPageindex() == null? 0 : memberPortraitHvQueryEntity.getPageindex());
+                return RestResponse.success().put("page", page);
+            }
+        }
+        return RestResponse.success().put("list", list);
+    }
+
+    /**
+     * 高价值统计-按地区
+     *
+     * @param memberPortraitHvQueryEntity 查询参数
+     * @return RestResponse
+     */
+    @PostMapping("/getMemberCityAmountReport")
+    public RestResponse getMemberCityAmountReport(@RequestBody MemberPortraitHvQueryEntity memberPortraitHvQueryEntity) throws IOException {
+        List<MemberPortraitHvResultEntity> list = new ArrayList<>();
+        if (!getUser().getUserName().contains("admin")) {
+            memberPortraitHvQueryEntity.setCurrentmemberid(getUserId());
+            memberPortraitHvQueryEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
+        } else {
+            memberPortraitHvQueryEntity.setListmemberchannel("-1");
+        }
+        Object obj = JSONArray.toJSON(memberPortraitHvQueryEntity);
+        String queryJsonStr = JsonHelper.toJsonString(obj);
+
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_PORTRAIT_HV_CITY_URl, queryJsonStr);
+        System.out.println("高价值统计-按地区-检索条件：" + queryJsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+            if (resultObject.get("list") != null) {
+                list = JSON.parseArray(resultObject.getString("list"),MemberPortraitHvResultEntity.class);
+            }
+            if (!memberPortraitHvQueryEntity.getIsall()) {  //true:分页查询
+                Page page = new Page();
+                page.setRecords(list);
+                page.setTotal(Long.parseLong(resultObject.get("totalcount").toString()));
+                page.setSize(memberPortraitHvQueryEntity.getPagesize() == null? 0 : memberPortraitHvQueryEntity.getPagesize());
+                page.setCurrent(memberPortraitHvQueryEntity.getPageindex() == null? 0 : memberPortraitHvQueryEntity.getPageindex());
+                return RestResponse.success().put("page", page);
+            }
+        }
+        return RestResponse.success().put("list", list);
+    }
+
+    /**
+     * 价值分布统计
+     *
+     * @param memberPortraitValueRangeQueryEntity 查询参数
+     * @return RestResponse
+     */
+    @PostMapping("/getMemberAmountRangeReport")
+    public RestResponse getMemberAmountRangeReport(@RequestBody MemberPortraitValueRangeQueryEntity memberPortraitValueRangeQueryEntity) throws IOException {
+        List<MemberPortraitValueRangeResultEntity> list = new ArrayList<>();
+        if (!getUser().getUserName().contains("admin")) {
+            memberPortraitValueRangeQueryEntity.setCurrentmemberid(getUserId());
+            memberPortraitValueRangeQueryEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
+        } else {
+            memberPortraitValueRangeQueryEntity.setListmemberchannel("-1");
+        }
+        Object obj = JSONArray.toJSON(memberPortraitValueRangeQueryEntity);
+        String queryJsonStr = JsonHelper.toJsonString(obj);
+
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_PORTRAIT_VALUERANGE_URl, queryJsonStr);
+        System.out.println("价值区间统计-检索条件：" + queryJsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+            if (resultObject.get("list") != null) {
+                list = JSON.parseArray(resultObject.getString("list"),MemberPortraitValueRangeResultEntity.class);
+            }
+            if (!memberPortraitValueRangeQueryEntity.getIsall()) {  //true:分页查询
+                Page page = new Page();
+                page.setRecords(list);
+                page.setTotal(Long.parseLong(resultObject.get("totalcount").toString()));
+                page.setSize(memberPortraitValueRangeQueryEntity.getPagesize() == null? 0 : memberPortraitValueRangeQueryEntity.getPagesize());
+                page.setCurrent(memberPortraitValueRangeQueryEntity.getPageindex() == null? 0 : memberPortraitValueRangeQueryEntity.getPageindex());
+                return RestResponse.success().put("page", page);
+            }
+        }
+        return RestResponse.success().put("list", list);
+    }
 }

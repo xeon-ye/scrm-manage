@@ -35,13 +35,13 @@
         <if test="params.dateType != null and params.dateType != '' and params.dateType == 1">
             AND T.visit_start_date >= dateadd(MONTH ,- 1, GETDATE())
         </if>
-        <if test="params.dateType != null and params.dateType != '' and params.dateType == 2">
+        <if test="params.dateType != null and params.dateType != '' and params.dateType == 3">
             AND T.visit_start_date >= dateadd(MONTH ,- 3, GETDATE())
         </if>
-        <if test="params.dateType != null and params.dateType != '' and params.dateType == 3">
+        <if test="params.dateType != null and params.dateType != '' and params.dateType == 6">
             AND T.visit_start_date >= dateadd(MONTH ,- 6, GETDATE())
         </if>
-        <if test="params.dateType != null and params.dateType != '' and params.dateType == 4">
+        <if test="params.dateType != null and params.dateType != '' and params.dateType == 12">
             AND T.visit_start_date >= dateadd(MONTH ,- 12, GETDATE())
         </if>
     </sql>

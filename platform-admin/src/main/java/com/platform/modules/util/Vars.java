@@ -60,6 +60,16 @@ public class Vars {
 	public static String MEMBER_PORTRAIT_AGE_URl = "http://api.scrm.qkj.com.cn/api/Report/GetMemberAgeReport";
 	//地区统计
 	public static String MEMBER_PORTRAIT_AREA_URl = "http://api.scrm.qkj.com.cn/api/Report/GetMemberCityReport";
+	// 高频统计-按渠道
+	public static String MEMBER_PORTRAIT_HF_CHANNEL_URl = "http://api.scrm.qkj.com.cn/api/Report/GetMemberChannelRateReport";
+	// 高频统计-按地区
+	public static String MEMBER_PORTRAIT_HF_CITY_URl = "http://api.scrm.qkj.com.cn/api/Report/GetMemberCityRateReport";
+	// 高价值统计-按渠道
+	public static String MEMBER_PORTRAIT_HV_CHANNEL_URl = "http://api.scrm.qkj.com.cn/api/Report/GetMemberChannelAmountReport";
+	// 高价值统计-按地区
+	public static String MEMBER_PORTRAIT_HV_CITY_URl = "http://api.scrm.qkj.com.cn/api/Report/GetMemberCityAmountReport";
+	// 价值区间统计
+	public static String MEMBER_PORTRAIT_VALUERANGE_URl = "http://api.scrm.qkj.com.cn/api/Report/GetMemberAmountRangeReport";
 	/*会员画像end*/
 	// 消费者首页新闻
 	public static String NEWS_LIST_URl = "http://api.scrm.qkj.com.cn/api/News/GetNewsList";
