@@ -100,12 +100,12 @@ public class SysMenuController extends AbstractController {
         String channelIds = "";
         channelIds = sysUserChannelService.queryChannelIdByUserId(getUserId());
         map.clear();
-        map.put("channelType", 1);
+//        map.put("channelType", 1);
         map.put("userId", getUserId());
         if ("0".equals(channelIds) || getUser().getUserName().contains("admin")) {
             map.put("queryPermission", "all");
         }
-        List<SysUserChannelEntity> permissionChannels = sysUserChannelService.queryPermissionChannels(map);  // 有权限的线上渠道
+        List<SysUserChannelEntity> permissionChannels = sysUserChannelService.queryPermissionChannels(map);  // 有权限的渠道
         return RestResponse.success()
                 .put("menuList", menuList)
                 .put("permissions", permissions)
