@@ -174,7 +174,7 @@ select * from (
             )
             )
         </if>
-        ) act order by act.end_date
+        ) act order by act.end_date desc
     </sql>
 
     <select id="selectQkjvipMemberActivityPage" resultType="com.platform.modules.qkjvip.entity.QkjvipMemberActivityEntity">
