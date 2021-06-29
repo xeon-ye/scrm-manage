@@ -31,7 +31,7 @@ public class MemberPortraitValueRangeQueryEntity implements Serializable {
     private Boolean isall;
     private String currentmemberid;
     private String listmemberchannel;
-    private String servicename;
+    private Integer memberchannel;
     private Integer daterate;
     private List<MemberPortraitValueRangeEntity> listamountrange;
 }
