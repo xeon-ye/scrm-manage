@@ -26,7 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controller
@@ -318,5 +320,42 @@ public class MemberPortraitController extends AbstractController {
             }
         }
         return RestResponse.success().put("list", list);
+    }
+
+    /**
+     * 新增趋势统计
+     *
+     * @param memberPortraitAddtrendQueryEntity 查询参数
+     * @return RestResponse
+     */
+    @PostMapping("/getMemberTrendReport")
+    public RestResponse getMemberTrendReport(@RequestBody MemberPortraitAddtrendQueryEntity memberPortraitAddtrendQueryEntity) throws IOException {
+        List<MemberPortraitAddtrendResultEntity> list = new ArrayList<>();
+        List<String> servicenamelist = new ArrayList<>();
+        List<String> datelist = new ArrayList<>();
+        if (!getUser().getUserName().contains("admin")) {
+            memberPortraitAddtrendQueryEntity.setCurrentmemberid(getUserId());
+            memberPortraitAddtrendQueryEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
+        } else {
+            memberPortraitAddtrendQueryEntity.setListmemberchannel("-1");
+        }
+        Object obj = JSONArray.toJSON(memberPortraitAddtrendQueryEntity);
+        String queryJsonStr = JsonHelper.toJsonString(obj);
+
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_PORTRAIT_ADDTREND_URl, queryJsonStr);
+        System.out.println("新增趋势统计-检索条件：" + queryJsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+            if (resultObject.get("list") != null) {
+                list = JSON.parseArray(resultObject.getString("list"),MemberPortraitAddtrendResultEntity.class);
+            }
+            if (resultObject.get("listservicename") != null) {
+                servicenamelist = JSON.parseArray(resultObject.getString("listservicename"), String.class);
+            }
+            if (resultObject.get("listdate") != null) {
+                datelist = JSON.parseArray(resultObject.getString("listdate"), String.class);
+            }
+        }
+        return RestResponse.success().put("list", list).put("servicenamelist", servicenamelist).put("datelist", datelist);
     }
 }

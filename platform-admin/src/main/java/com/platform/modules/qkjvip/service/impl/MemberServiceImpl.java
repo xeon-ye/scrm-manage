@@ -121,6 +121,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
             Object obj = JSONArray.toJSON(member);
             String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
             String resultPost = HttpClient.sendPost(Vars.MEMBER_UPDATE_URL, memberJsonStr);
+            System.out.println("会员信息更新：" + memberJsonStr);
             JSONObject resultObject = JSON.parseObject(resultPost);
             if (!"200".equals(resultObject.get("resultcode").toString())) {  //修改不成功
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();

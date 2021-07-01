@@ -70,6 +70,8 @@ public class Vars {
 	public static String MEMBER_PORTRAIT_HV_CITY_URl = "http://api.scrm.qkj.com.cn/api/Report/GetMemberCityAmountReport";
 	// 价值区间统计
 	public static String MEMBER_PORTRAIT_VALUERANGE_URl = "http://api.scrm.qkj.com.cn/api/Report/GetMemberAmountRangeReport";
+	// 新增趋势统计
+	public static String MEMBER_PORTRAIT_ADDTREND_URl = "http://api.scrm.qkj.com.cn/api/Report/GetMemberTrendReport";
 	/*会员画像end*/
 	// 消费者首页新闻
 	public static String NEWS_LIST_URl = "http://api.scrm.qkj.com.cn/api/News/GetNewsList";
