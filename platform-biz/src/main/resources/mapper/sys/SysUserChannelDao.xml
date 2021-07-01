@@ -30,7 +30,7 @@
     <select id="queryPermissionChannels" resultType="com.platform.modules.sys.entity.SysUserChannelEntity">
         <choose>
             <when test="params.queryPermission != null and params.queryPermission != '' and params.queryPermission == 'all'">
-                SELECT c.AppId,c.ServiceName FROM qkjvip_member_channel c
+                SELECT c.AppId,c.ServiceName,c.MemberChannel channel_id FROM qkjvip_member_channel c
                 WHERE c.Disabled = 0
                 <if test="params.channelType != null and params.channelType != ''">
                     AND c.ChannelType = #{params.channelType}
