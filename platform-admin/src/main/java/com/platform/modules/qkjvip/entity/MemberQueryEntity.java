@@ -32,8 +32,10 @@ public class MemberQueryEntity implements Serializable {
     private Integer startage;
     private Integer endage;
     private Integer sex;
-    private String startregtime;
-    private String endregtime;
+    private String startregtime;  // 注册开始时间
+    private String endregtime;   // 注册结束时间
+    private String startaddtime;  // 新增时间开始
+    private String endaddtime;  // 新增时间结束
     private String orgno;
     private String orguserid;
     private Double startamount1;
