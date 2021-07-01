@@ -287,6 +287,31 @@ public class QkjvipOrderOrderController extends AbstractController {
     /**
      * 新增
      *
+     * @param id
+     * @return RestResponse
+     */
+    @SysLog("转换正式订单")
+    @RequestMapping("/savestatus")
+    public RestResponse savestatus(@RequestBody String id) throws IOException {
+        // 推送
+        QkjvipOrderOrderEntity newo =new QkjvipOrderOrderEntity();
+        newo.setOrderstatus(70);
+        newo.setMorderid(id);
+        newo.setToqkh(0);
+        Object obj = JSONArray.toJSON(newo);
+        String JsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+        String resultPost = HttpClient.sendPost(Vars.MEMBER_ORDER_ORDER_MDYSTATUS, JsonStr);
+        JSONObject resultObject = JSON.parseObject(resultPost);
+        if (!"200".equals(resultObject.get("resultcode").toString())) {  //清洗失败
+            return RestResponse.error(resultObject.get("descr").toString());
+        }
+        //qkjvipOrderOrderService.add(qkjvipOrderOrder);
+        return RestResponse.success();
+    }
+
+    /**
+     * 新增
+     *
      * @param qkjvipOrderOrder qkjvipOrderOrder
      * @return RestResponse
      */
