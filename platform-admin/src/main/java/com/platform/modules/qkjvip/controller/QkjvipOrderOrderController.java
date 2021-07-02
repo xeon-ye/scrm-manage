@@ -287,16 +287,16 @@ public class QkjvipOrderOrderController extends AbstractController {
     /**
      * 新增
      *
-     * @param id
+     * @param
      * @return RestResponse
      */
     @SysLog("转换正式订单")
     @RequestMapping("/savestatus")
-    public RestResponse savestatus(@RequestBody String id) throws IOException {
+    public RestResponse savestatus(@RequestBody QkjvipOrderOrderEntity qkjvipOrderOrder) throws IOException {
         // 推送
         QkjvipOrderOrderEntity newo =new QkjvipOrderOrderEntity();
         newo.setOrderstatus(70);
-        newo.setMorderid(id);
+        newo.setMorderid(qkjvipOrderOrder.getId());
         newo.setToqkh(0);
         Object obj = JSONArray.toJSON(newo);
         String JsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
@@ -364,7 +364,7 @@ public class QkjvipOrderOrderController extends AbstractController {
         }else {
             return RestResponse.error(resultObject.get("descr").toString());
         }
-
+        
         //qkjvipOrderOrderService.add(qkjvipOrderOrder);
         return RestResponse.success();
     }
