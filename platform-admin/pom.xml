@@ -132,6 +132,21 @@
         </dependency>
 
         <dependency>
+            <groupId>com.dingtalk.api</groupId>
+            <artifactId>dingtalk</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/src/lib/taobao-sdk-java-auto_1479188381469-20210630.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.dingtalk.api.source</groupId>
+            <artifactId>dingtalksource</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/src/lib/taobao-sdk-java-auto_1479188381469-20190212-source.jar</systemPath>
+        </dependency>
+
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.6</version>

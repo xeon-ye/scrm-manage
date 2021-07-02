@@ -364,7 +364,7 @@ public class QkjvipOrderOrderController extends AbstractController {
         }else {
             return RestResponse.error(resultObject.get("descr").toString());
         }
-        
+
         //qkjvipOrderOrderService.add(qkjvipOrderOrder);
         return RestResponse.success();
     }

@@ -13,7 +13,7 @@ public class MessageHelper {
 	public static Receipt send(String accessToken, LightAppMessageDelivery delivery)
 			throws Exception {
 		MessageService messageService = ServiceFactory.getInstance().getOpenService(MessageService.class);
-		MessageSendResult reulst = messageService.sendToCorpConversation(accessToken, delivery.touser, 
+		MessageSendResult reulst = messageService.sendToCorpConversation(accessToken, delivery.touser,
 				delivery.toparty, delivery.agentid, delivery.msgType, delivery.message);
 		Receipt receipt = new Receipt();
 		receipt.invaliduser = reulst.getInvaliduser();
