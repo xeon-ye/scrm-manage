@@ -53,7 +53,8 @@ public class QkjvipSendController extends AbstractController {
      * @return RestResponse
      */
     @RequestMapping("/sendmsg")
-    public RestResponse sendmsg(UserMsgEntity userMsgEntity) {
+    @ResponseBody
+    public RestResponse sendmsg(@RequestBody UserMsgEntity userMsgEntity) {
         if (userMsgEntity!=null && userMsgEntity.getMobilelist() != null && !userMsgEntity.getMobilelist().equals("")) {
             // 发短信
             SysSmsLogEntity smsLog = new SysSmsLogEntity();

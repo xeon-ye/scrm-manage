@@ -32,19 +32,19 @@ public class DingMsg {
         DingMsg d=new DingMsg();
         //d.sendLinkMessage("scrm","1","01672211281464","01672211281464","7b2338f0a5233db0b1a0dfe95763e3a9");
         //d.sendLinkMessageResult("cccsss11","22333","01672211281464","","4dd3d3a8c8dc3df48dbcc22d68e0c3b7");
-//        UserMsgEntity userMsgEntity = new UserMsgEntity();
-//        userMsgEntity.setDinglist("01672211281464");
-//        userMsgEntity.setTitle("孙珊珊的测试");
-//        userMsgEntity.setMsg("孙珊珊的测试");
-//        userMsgEntity.setMobilelist("18810242427");
-//        String queryJsonStr = JsonHelper.toJsonString(userMsgEntity, "yyyy-MM-dd HH:mm:ss");
+        UserMsgEntity userMsgEntity = new UserMsgEntity();
+        userMsgEntity.setDinglist("01672211281464");
+        userMsgEntity.setTitle("孙珊珊的测试");
+        userMsgEntity.setMsg("孙珊珊的测试");
+        userMsgEntity.setMobilelist("18810242427");
+       String queryJsonStr = JsonHelper.toJsonString(userMsgEntity, "yyyy-MM-dd HH:mm:ss");
 //        Map<String,Object> paramsMap = new HashMap<String,Object>();
 //        paramsMap.put("dinglist","01672211281464");
 //        paramsMap.put("title","000");
 //        paramsMap.put("msg","333");
 //        paramsMap.put("mobilelist","18810242427");
 //        HttpUtil.post("https://127.0.0.1:8888/platform-plus/qkjvip/sendmsgbatch/sendmsg",paramsMap);
-        String resultPost = HttpClient.sendPost("https://127.0.0.1:8888/platform-plus/qkjvip/sendmsgbatch/sendmsg",null);
+        String resultPost = HttpClient.sendPost("http://127.0.0.1:8888/platform-plus/qkjvip/sendmsgbatch/sendmsg",queryJsonStr);
         System.out.println(resultPost);
 
     }
