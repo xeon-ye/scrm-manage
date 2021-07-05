@@ -53,8 +53,13 @@ public class QkjvipSendController extends AbstractController {
      * @return RestResponse
      */
     @RequestMapping("/sendmsg")
-    public RestResponse sendmsg(@RequestBody UserMsgEntity userMsgEntity) {
-        if (userMsgEntity!=null && !userMsgEntity.getMobilelist().equals("")) {
+    public RestResponse sendmsg(Map<String, Object> params) {
+        UserMsgEntity userMsgEntity = new UserMsgEntity();
+        userMsgEntity.setMobilelist(params.get("mobilelist")+"");
+        userMsgEntity.setDinglist(params.get("dinglist")+"");
+        userMsgEntity.setTitle(params.get("title")+"");
+        userMsgEntity.setMsg(params.get("msg")+"");
+        if (userMsgEntity!=null && userMsgEntity.getMobilelist() != null && !userMsgEntity.getMobilelist().equals("")) {
             // 发短信
             SysSmsLogEntity smsLog = new SysSmsLogEntity();
             smsLog.setContent(userMsgEntity.getMsg());
@@ -62,7 +67,7 @@ public class QkjvipSendController extends AbstractController {
             SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSmsBach(smsLog);
         }
 
-        if (userMsgEntity!=null && !userMsgEntity.getDinglist().equals("")) {
+        if (userMsgEntity!=null && userMsgEntity.getDinglist()!= null && !userMsgEntity.getDinglist().equals("")) {
             //发钉钉消息
             AccesstokenEntity ak=accesstokenService.queryAll(null).get(0);
             DingMsg demo=new DingMsg();
