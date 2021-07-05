@@ -36,7 +36,6 @@ public class DingMsg {
         userMsgEntity.setDinglist("01672211281464");
         userMsgEntity.setTitle("孙珊珊的测试");
         userMsgEntity.setMsg("孙珊珊的测试");
-        userMsgEntity.setMobilelist("18810242427");
        String queryJsonStr = JsonHelper.toJsonString(userMsgEntity, "yyyy-MM-dd HH:mm:ss");
 //        Map<String,Object> paramsMap = new HashMap<String,Object>();
 //        paramsMap.put("dinglist","01672211281464");

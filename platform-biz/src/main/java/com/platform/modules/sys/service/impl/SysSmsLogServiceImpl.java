@@ -259,7 +259,12 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
             } else {
                 smsLog.setType(SmsUtil.TYPE);
                 smsLog.setStime(new Date());
-                smsLog.setUserId(ShiroUtils.getUserId());
+                if (ShiroUtils.isLogin()) {
+                    smsLog.setUserId(ShiroUtils.getUserId());
+                } else {
+                    smsLog.setUserId("6"); //通过接口调用短信失败
+                }
+
                 smsLog.setReturnMsg(resultModel.getCode());
                 smsLog.setSendStatus(1);
                 //保存发送记录
