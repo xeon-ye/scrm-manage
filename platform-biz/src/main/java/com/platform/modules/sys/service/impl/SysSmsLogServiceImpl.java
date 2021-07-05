@@ -251,7 +251,11 @@ public class SysSmsLogServiceImpl extends ServiceImpl<SysSmsLogDao, SysSmsLogEnt
                     smsLogEntity.setType(SmsUtil.TYPE);
                     smsLogEntity.setStime(new Date());
                     smsLogEntity.setContent(content);
-                    smsLogEntity.setUserId(ShiroUtils.getUserId());
+                    if (ShiroUtils.isLogin()) {
+                        smsLogEntity.setUserId(ShiroUtils.getUserId());
+                    } else {
+                        smsLogEntity.setUserId("6"); //通过接口调用短信失败
+                    }
                     smsLogList.add(smsLogEntity);
                 }
                 System.out.println("=============end sendSmsBach==================");
