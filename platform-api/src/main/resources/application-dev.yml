@@ -16,7 +16,7 @@ spring:
          password: 123qwe_
          driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
       three:  #数据源3
-          url: jdbc:sqlserver://rdsjqyjmzjrjr3q.sqlserver.rds.aliyuncs.com:3433;database=dinglogin
+          url: jdbc:sqlserver://rm-2ze695nl5hdo6rq4e7m.sqlserver.rds.aliyuncs.com:1433;database=dinglogin
           username: dinglogin
           password: Qqkj002646
           driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver

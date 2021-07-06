@@ -53,8 +53,9 @@ public class QkjvipSendController extends AbstractController {
      * @return RestResponse
      */
     @RequestMapping("/sendmsg")
+    @ResponseBody
     public RestResponse sendmsg(@RequestBody UserMsgEntity userMsgEntity) {
-        if (userMsgEntity!=null && !userMsgEntity.getMobilelist().equals("")) {
+        if (userMsgEntity!=null && userMsgEntity.getMobilelist() != null && !userMsgEntity.getMobilelist().equals("")) {
             // 发短信
             SysSmsLogEntity smsLog = new SysSmsLogEntity();
             smsLog.setContent(userMsgEntity.getMsg());
@@ -62,7 +63,7 @@ public class QkjvipSendController extends AbstractController {
             SysSmsLogEntity sysSmsLogEntity = sysSmsLogService.sendSmsBach(smsLog);
         }
 
-        if (userMsgEntity!=null && !userMsgEntity.getDinglist().equals("")) {
+        if (userMsgEntity!=null && userMsgEntity.getDinglist()!= null && !userMsgEntity.getDinglist().equals("")) {
             //发钉钉消息
             AccesstokenEntity ak=accesstokenService.queryAll(null).get(0);
             DingMsg demo=new DingMsg();

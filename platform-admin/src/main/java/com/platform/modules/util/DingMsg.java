@@ -1,5 +1,7 @@
 package com.platform.modules.util;
 
+import cn.emay.util.JsonHelper;
+import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dingtalk.api.DefaultDingTalkClient;
@@ -14,10 +16,14 @@ import com.platform.modules.accesstoken.entity.AccesstokenEntity;
 import com.platform.modules.accesstoken.service.AccesstokenService;
 import com.platform.modules.qkjInterface.entity.UserMsgEntity;
 import com.taobao.api.ApiException;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DingMsg {
     @Autowired
@@ -25,11 +31,22 @@ public class DingMsg {
     public static void main(String[] args)  throws Exception{
         DingMsg d=new DingMsg();
         //d.sendLinkMessage("scrm","1","01672211281464","01672211281464","7b2338f0a5233db0b1a0dfe95763e3a9");
+        //d.sendLinkMessageResult("cccsss11","22333","01672211281464","","4dd3d3a8c8dc3df48dbcc22d68e0c3b7");
         UserMsgEntity userMsgEntity = new UserMsgEntity();
-        userMsgEntity.setDinglist("12364239521232039|01672211281464");
-        userMsgEntity.setTitle("ceshi");
-        userMsgEntity.setMsg("ccccccccc");
-        d.sendLinkMessageResult("cccsss11","22333","01672211281464","","4dd3d3a8c8dc3df48dbcc22d68e0c3b7");
+        userMsgEntity.setDinglist("01672211281464");
+        userMsgEntity.setTitle("孙珊珊的测试33");
+        userMsgEntity.setMsg("孙珊珊的测试33");
+        userMsgEntity.setMobilelist("18810242427");
+       String queryJsonStr = JsonHelper.toJsonString(userMsgEntity, "yyyy-MM-dd HH:mm:ss");
+//        Map<String,Object> paramsMap = new HashMap<String,Object>();
+//        paramsMap.put("dinglist","01672211281464");
+//        paramsMap.put("title","000");
+//        paramsMap.put("msg","333");
+//        paramsMap.put("mobilelist","18810242427");
+//        HttpUtil.post("https://127.0.0.1:8888/platform-plus/qkjvip/sendmsgbatch/sendmsg",paramsMap);
+        String resultPost = HttpClient.sendPost("http://127.0.0.1:8888/platform-plus/qkjvip/sendmsgbatch/sendmsg",queryJsonStr);
+        System.out.println(resultPost);
+
     }
     public void sendLinkMessage(String title,String msg,String user,String singuuid,String accessToken) throws Exception{
         //发送消息
