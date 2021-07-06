@@ -10,6 +10,9 @@
         <if test="params.mainid != null and params.mainid.trim() != ''">
             AND T.mainId = #{params.mainid}
         </if>
+        <if test="params.openid != null and params.openid.trim() != ''">
+            AND T.openId = #{params.openid}
+        </if>
     </sql>
 
     <select id="selectQkjvipLotteryUsersPage" resultType="com.platform.modules.qkjvip.entity.QkjvipLotteryUsersEntity">

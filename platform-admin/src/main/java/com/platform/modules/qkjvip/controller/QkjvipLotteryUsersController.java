@@ -21,11 +21,14 @@ import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.utils.StringUtils;
+import com.platform.modules.accesstoken.entity.AccesstokenEntity;
 import com.platform.modules.oss.entity.UploadData;
+import com.platform.modules.qkjInterface.entity.UserMsgEntity;
 import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.service.QkjvipLotteryUsersService;
 import com.platform.modules.sys.entity.SysDictEntity;
+import com.platform.modules.sys.entity.SysSmsLogEntity;
 import com.platform.modules.sys.entity.SysUserChannelEntity;
 import com.platform.modules.util.*;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -169,5 +172,22 @@ public class QkjvipLotteryUsersController extends AbstractController {
             return RestResponse.error("导入接口异常！");
         }
         return RestResponse.success().put("msg", "导入成功！").put("userList", list);
+    }
+
+    @RequestMapping("/addLotteryUser")
+    @ResponseBody
+    public RestResponse addLotteryUser(@RequestBody QkjvipLotteryUsersEntity lotteryUser) {
+        if (lotteryUser == null) {
+            return RestResponse.error(200, "空数据");
+        }
+        Map map = new HashMap();
+        map.put("mainid", lotteryUser.getMainid());
+        map.put("openid", lotteryUser.getOpenid());
+        List<QkjvipLotteryUsersEntity> list = new ArrayList<>();
+        list = qkjvipLotteryUsersService.queryAll(map);
+        if (list.size() == 0) {  // 数据库中不存在记录
+            qkjvipLotteryUsersService.add(lotteryUser);
+        }
+        return RestResponse.success();
     }
 }
