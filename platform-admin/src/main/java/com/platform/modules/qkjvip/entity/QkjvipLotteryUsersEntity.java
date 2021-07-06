@@ -58,6 +58,10 @@ public class QkjvipLotteryUsersEntity implements Serializable {
      */
     private String openid;
     /**
+     * 微信唯一id
+     */
+    private String unionid;
+    /**
      * 微信头像
      */
     private String headimgurl;
