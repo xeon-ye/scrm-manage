@@ -89,6 +89,23 @@ public class QkjvipLotterySettingController extends AbstractController {
     }
 
     /**
+     * 根据主键查询详情
+     *
+     * @param id 主键
+     * @return RestResponse
+     */
+    @RequestMapping("/getInfo")
+    public RestResponse getInfo(@RequestParam("id") String id) {
+        QkjvipLotterySettingEntity qkjvipLotterySetting = qkjvipLotterySettingService.getById(id);
+        Map map = new HashMap();
+        map.put("mainid", id);
+        List<QkjvipLotteryUsersEntity> users = qkjvipLotteryUsersService.queryAll(map);
+        qkjvipLotterySetting.setUserlist(users);
+
+        return RestResponse.success().put("lotterysetting", qkjvipLotterySetting);
+    }
+
+    /**
      * 新增
      *
      * @param qkjvipLotterySetting qkjvipLotterySetting

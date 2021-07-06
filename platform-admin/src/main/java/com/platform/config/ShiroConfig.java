@@ -96,6 +96,7 @@ public class ShiroConfig {
         filterMap.put("/qkjvip/content/getInfo", "anon");
         filterMap.put("/qkjvip/contentsharerecords/addIntegral", "anon");
         filterMap.put("/qkjvip/lotteryusers/addLotteryUser", "anon");
+        filterMap.put("/qkjvip/lotterysetting/getInfo", "anon");
         filterMap.put("/sys/login2", "anon");
         filterMap.put("/sys/userreg", "anon");
         filterMap.put("/sys/oss/upload", "anon");
