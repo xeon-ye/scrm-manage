@@ -65,6 +65,11 @@ public class QkjvipLotteryUsersServiceImpl extends ServiceImpl<QkjvipLotteryUser
     }
 
     @Override
+    public boolean updateBatch(List<QkjvipLotteryUsersEntity> userList) {
+        return this.updateBatchById(userList, 200);
+    }
+
+    @Override
     public boolean delete(String id) {
         return this.removeById(id);
     }

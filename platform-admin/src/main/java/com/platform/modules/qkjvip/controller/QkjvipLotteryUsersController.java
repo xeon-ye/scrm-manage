@@ -25,6 +25,7 @@ import com.platform.modules.accesstoken.entity.AccesstokenEntity;
 import com.platform.modules.oss.entity.UploadData;
 import com.platform.modules.qkjInterface.entity.UserMsgEntity;
 import com.platform.modules.qkjvip.entity.*;
+import com.platform.modules.quartz.entity.TmpQkjvipMemberBasicEntity;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.service.QkjvipLotteryUsersService;
 import com.platform.modules.sys.entity.SysDictEntity;
@@ -125,6 +126,20 @@ public class QkjvipLotteryUsersController extends AbstractController {
     public RestResponse update(@RequestBody QkjvipLotteryUsersEntity qkjvipLotteryUsers) {
 
         qkjvipLotteryUsersService.update(qkjvipLotteryUsers);
+
+        return RestResponse.success();
+    }
+
+    /**
+     * 批量修改
+     *
+     * @param userList userList
+     * @return RestResponse
+     */
+    @SysLog("批量修改")
+    @RequestMapping("/updateBatch")
+    public RestResponse updateBatch(@RequestBody List<QkjvipLotteryUsersEntity> userList) {
+        qkjvipLotteryUsersService.updateBatch(userList);
 
         return RestResponse.success();
     }
