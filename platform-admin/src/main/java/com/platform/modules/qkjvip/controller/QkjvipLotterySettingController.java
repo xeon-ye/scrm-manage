@@ -11,11 +11,14 @@
  */
 package com.platform.modules.qkjvip.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
+import com.platform.modules.qkjvip.entity.QkjvipLotteryPrizeEntity;
 import com.platform.modules.qkjvip.entity.QkjvipLotteryUsersEntity;
 import com.platform.modules.qkjvip.service.QkjvipLotteryUsersService;
+import com.platform.modules.quartz.entity.TmpQkjvipMemberBasicEntity;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipLotterySettingEntity;
 import com.platform.modules.qkjvip.service.QkjvipLotterySettingService;
@@ -97,6 +100,8 @@ public class QkjvipLotterySettingController extends AbstractController {
     @RequestMapping("/getInfo")
     public RestResponse getInfo(@RequestParam("id") String id) {
         QkjvipLotterySettingEntity qkjvipLotterySetting = qkjvipLotterySettingService.getById(id);
+        List<QkjvipLotteryPrizeEntity> prizelist = JSON.parseArray(qkjvipLotterySetting.getPrizes(), QkjvipLotteryPrizeEntity.class);
+        qkjvipLotterySetting.setPrizelist(prizelist);
         Map map = new HashMap();
         map.put("mainid", id);
         List<QkjvipLotteryUsersEntity> users = qkjvipLotteryUsersService.queryAll(map);

@@ -54,7 +54,7 @@ public class QkjvipLotteryWinnersServiceImpl extends ServiceImpl<QkjvipLotteryWi
 
     @Override
     public boolean addBatch(List<QkjvipLotteryWinnersEntity> winnerList) {
-        this.deleteByMainId(winnerList.get(0).getMainid());
+//        this.deleteByMainId(winnerList.get(0).getMainid());
         return this.saveBatch(winnerList);
     }
 
