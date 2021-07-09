@@ -11,6 +11,8 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -36,10 +38,12 @@ public class QkjvipLotteryWinnersEntity implements Serializable {
     /**
      * 奖品
      */
+    @Excel(name = "奖品", width = 15, orderNum = "4")
     private String prizename;
     /**
      * 奖项等级
      */
+    @Excel(name = "奖项", width = 15, orderNum = "3")
     private String prizelevelname;
     /**
      * mainId
@@ -49,4 +53,11 @@ public class QkjvipLotteryWinnersEntity implements Serializable {
      * userId
      */
     private String userid;
+
+    @TableField(exist = false)
+    @Excel(name = "姓名", width = 15, orderNum = "1")
+    private String username;
+    @TableField(exist = false)
+    @Excel(name = "联系方式", width = 15, orderNum = "2")
+    private String mobile;
 }

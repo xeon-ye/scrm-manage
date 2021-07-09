@@ -33,5 +33,4 @@ public class QkjvipLotteryPrizeEntity implements Serializable {
     private String prizename;   //奖项名称
     private Integer prizenum;   //名额
     private String prizeimg;   //奖品图片
-    private String linkurl;  //生成的抽奖链接
 }

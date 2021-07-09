@@ -66,6 +66,7 @@ public interface QkjvipLotteryWinnersService extends IService<QkjvipLotteryWinne
      * @return 删除结果
      */
     boolean delete(String id);
+    boolean deleteByMainId(String mainid);
 
     /**
      * 根据主键批量删除

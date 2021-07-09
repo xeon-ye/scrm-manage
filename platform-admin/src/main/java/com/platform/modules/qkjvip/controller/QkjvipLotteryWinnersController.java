@@ -11,17 +11,23 @@
  */
 package com.platform.modules.qkjvip.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
-import com.platform.modules.qkjvip.entity.QkjvipLotteryUsersEntity;
+import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.sys.controller.AbstractController;
-import com.platform.modules.qkjvip.entity.QkjvipLotteryWinnersEntity;
 import com.platform.modules.qkjvip.service.QkjvipLotteryWinnersService;
+import com.platform.modules.util.ExportExcelUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -138,5 +144,31 @@ public class QkjvipLotteryWinnersController extends AbstractController {
         qkjvipLotteryWinnersService.deleteBatch(ids);
 
         return RestResponse.success();
+    }
+
+    /**
+     * 根据mainid删除
+     *
+     * @param mainid mainid
+     * @return RestResponse
+     */
+    @RequestMapping("/deleteByMainId")
+    public RestResponse deleteByMainId(@RequestParam("mainid") String mainid) {
+        qkjvipLotteryWinnersService.deleteByMainId(mainid);
+        return RestResponse.success();
+    }
+
+    /**
+     * 导出中奖人员
+     */
+    @SysLog("导出中奖人员")
+    @RequestMapping("/export")
+    public void exportExcel(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> params) {
+        List<QkjvipLotteryWinnersEntity> list = qkjvipLotteryWinnersService.queryAll(params);
+        try {
+            ExportExcelUtils.exportExcel(list,"中奖人员信息表","中奖人员",QkjvipLotteryWinnersEntity.class,"中奖信息表",response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -4,8 +4,9 @@
 <mapper namespace="com.platform.modules.qkjvip.dao.QkjvipLotteryWinnersDao">
 
     <sql id="selectSql">
-        SELECT T.*
+        SELECT T.*, u.userName, u.mobile
         FROM QKJVIP_LOTTERY_WINNERS T
+        LEFT JOIN qkjvip_lottery_users u ON (T.userId = u.id)
         WHERE 1=1
         <if test="params.mainid != null and params.mainid.trim() != ''">
             AND T.mainId = #{params.mainid}

@@ -67,6 +67,7 @@ public class QkjvipLotteryWinnersServiceImpl extends ServiceImpl<QkjvipLotteryWi
     public boolean delete(String id) {
         return this.removeById(id);
     }
+
     public boolean deleteByMainId(String mainId) {
         return baseMapper.deleteByMainId(mainId);
     }
