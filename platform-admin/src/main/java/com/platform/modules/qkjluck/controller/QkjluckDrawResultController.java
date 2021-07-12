@@ -1,22 +1,22 @@
 /*
  * 项目名称:platform-plus
- * 类名称:QkjvipOrderErporderController.java
- * 包名称:com.platform.modules.qkjvip.controller
+ * 类名称:QkjluckDrawResultController.java
+ * 包名称:com.platform.modules.qkjluck.controller
  *
  * 修改履历:
  *     日期                       修正者        主要内容
- *     2021-06-21 09:21:21        孙珊珊     初版做成
+ *     2021-07-05 17:26:24        孙珊珊     初版做成
  *
  * Copyright (c) 2019-2019 微同软件
  */
-package com.platform.modules.qkjvip.controller;
+package com.platform.modules.qkjluck.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
 import com.platform.modules.sys.controller.AbstractController;
-import com.platform.modules.qkjvip.entity.QkjvipOrderErporderEntity;
-import com.platform.modules.qkjvip.service.QkjvipOrderErporderService;
+import com.platform.modules.qkjluck.entity.QkjluckDrawResultEntity;
+import com.platform.modules.qkjluck.service.QkjluckDrawResultService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +28,13 @@ import java.util.Map;
  * Controller
  *
  * @author 孙珊珊
- * @date 2021-06-21 09:21:21
+ * @date 2021-07-05 17:26:24
  */
 @RestController
-@RequestMapping("qkjvip/ordererporder")
-public class QkjvipOrderErporderController extends AbstractController {
+@RequestMapping("qkjluck/drawresult")
+public class QkjluckDrawResultController extends AbstractController {
     @Autowired
-    private QkjvipOrderErporderService qkjvipOrderErporderService;
+    private QkjluckDrawResultService qkjluckDrawResultService;
 
     /**
      * 查看所有列表
@@ -43,8 +43,9 @@ public class QkjvipOrderErporderController extends AbstractController {
      * @return RestResponse
      */
     @RequestMapping("/queryAll")
+    @RequiresPermissions("qkjluck:drawresult:list")
     public RestResponse queryAll(@RequestParam Map<String, Object> params) {
-        List<QkjvipOrderErporderEntity> list = qkjvipOrderErporderService.queryAll(params);
+        List<QkjluckDrawResultEntity> list = qkjluckDrawResultService.queryAll(params);
 
         return RestResponse.success().put("list", list);
     }
@@ -56,11 +57,11 @@ public class QkjvipOrderErporderController extends AbstractController {
      * @return RestResponse
      */
     @GetMapping("/list")
+    @RequiresPermissions("qkjluck:drawresult:list")
     public RestResponse list(@RequestParam Map<String, Object> params) {
-        params.put("isnotcrmorder","1");
-        Page page = qkjvipOrderErporderService.queryPage(params);
-        List<QkjvipOrderErporderEntity> list = qkjvipOrderErporderService.queryAllDetail(params);
-        return RestResponse.success().put("page", page).put("detailList",list);
+        Page page = qkjluckDrawResultService.queryPage(params);
+
+        return RestResponse.success().put("page", page);
     }
 
     /**
@@ -70,25 +71,25 @@ public class QkjvipOrderErporderController extends AbstractController {
      * @return RestResponse
      */
     @RequestMapping("/info/{id}")
-    @RequiresPermissions("qkjvip:ordererporder:info")
+    @RequiresPermissions("qkjluck:drawresult:info")
     public RestResponse info(@PathVariable("id") String id) {
-        QkjvipOrderErporderEntity qkjvipOrderErporder = qkjvipOrderErporderService.getById(id);
+        QkjluckDrawResultEntity qkjluckDrawResult = qkjluckDrawResultService.getById(id);
 
-        return RestResponse.success().put("ordererporder", qkjvipOrderErporder);
+        return RestResponse.success().put("drawresult", qkjluckDrawResult);
     }
 
     /**
      * 新增
      *
-     * @param qkjvipOrderErporder qkjvipOrderErporder
+     * @param qkjluckDrawResult qkjluckDrawResult
      * @return RestResponse
      */
     @SysLog("新增")
     @RequestMapping("/save")
-    @RequiresPermissions("qkjvip:ordererporder:save")
-    public RestResponse save(@RequestBody QkjvipOrderErporderEntity qkjvipOrderErporder) {
+    @RequiresPermissions("qkjluck:drawresult:save")
+    public RestResponse save(@RequestBody QkjluckDrawResultEntity qkjluckDrawResult) {
 
-        qkjvipOrderErporderService.add(qkjvipOrderErporder);
+        qkjluckDrawResultService.add(qkjluckDrawResult);
 
         return RestResponse.success();
     }
@@ -96,15 +97,15 @@ public class QkjvipOrderErporderController extends AbstractController {
     /**
      * 修改
      *
-     * @param qkjvipOrderErporder qkjvipOrderErporder
+     * @param qkjluckDrawResult qkjluckDrawResult
      * @return RestResponse
      */
     @SysLog("修改")
     @RequestMapping("/update")
-    @RequiresPermissions("qkjvip:ordererporder:update")
-    public RestResponse update(@RequestBody QkjvipOrderErporderEntity qkjvipOrderErporder) {
+    @RequiresPermissions("qkjluck:drawresult:update")
+    public RestResponse update(@RequestBody QkjluckDrawResultEntity qkjluckDrawResult) {
 
-        qkjvipOrderErporderService.update(qkjvipOrderErporder);
+        qkjluckDrawResultService.update(qkjluckDrawResult);
 
         return RestResponse.success();
     }
@@ -117,9 +118,9 @@ public class QkjvipOrderErporderController extends AbstractController {
      */
     @SysLog("删除")
     @RequestMapping("/delete")
-    @RequiresPermissions("qkjvip:ordererporder:delete")
+    @RequiresPermissions("qkjluck:drawresult:delete")
     public RestResponse delete(@RequestBody String[] ids) {
-        qkjvipOrderErporderService.deleteBatch(ids);
+        qkjluckDrawResultService.deleteBatch(ids);
 
         return RestResponse.success();
     }

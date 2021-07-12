@@ -9,6 +9,9 @@
         <if test="params.ordercode != null and params.ordercode.trim() != ''">
             AND T.ordercode = '${params.ordercode}'
         </if>
+        <if test="params.isnotcrmorder != null and params.isnotcrmorder.trim() != ''">
+            AND (T.MOrderId is null or T.MOrderId='')
+        </if>
         GROUP BY T.OrderCode,T.orderdate,T.buycompanyname,T.departmentname,T.salesman,T.remark
     </sql>
 

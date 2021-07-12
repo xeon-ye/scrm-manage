@@ -5,10 +5,11 @@
 
     <sql id="selectSql">
         SELECT
-        T.*,u.REAL_NAME addusername
+        T.*,u.REAL_NAME addusername,isnull(m.real_name,m.member_name) membername
         FROM QKJVIP_ORDER_DELIVERLOG T
         left join sys_user u on (t.creator = u.USER_ID)
         join qkjvip_order_order od on (od.Id=t.OrderId)
+        join qkjvip_member m on (od.crm_memberid=m.member_id)
         WHERE 1=1
         <if test="params.productname != null and params.productname.trim() != ''">
             AND T.NAME LIKE '%${params.name}%'

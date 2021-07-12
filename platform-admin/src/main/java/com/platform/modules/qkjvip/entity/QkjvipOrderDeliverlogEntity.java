@@ -92,4 +92,6 @@ public class QkjvipOrderDeliverlogEntity implements Serializable {
     private Float packsize;
     @TableField(exist = false)
     private String addusername;
+    @TableField(exist = false)
+    private String membername;
 }

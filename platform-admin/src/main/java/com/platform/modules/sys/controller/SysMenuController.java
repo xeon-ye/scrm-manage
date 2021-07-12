@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
 import com.platform.common.utils.Constant;
+import com.platform.common.utils.JedisUtil;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.validator.ValidatorUtils;
 import com.platform.common.validator.group.AddGroup;
@@ -62,6 +63,8 @@ public class SysMenuController extends AbstractController {
     @Autowired
     private SysUserChannelService sysUserChannelService;
 
+    @Autowired
+    JedisUtil jedisUtil;
     /**
      * 导航菜单
      *
