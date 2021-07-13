@@ -67,4 +67,6 @@ public class QkjluckDrawAcitiityitemEntity implements Serializable {
     private Integer shownum;
 
     private Integer weight;
+
+    private String prizetakenpathresult;
 }

@@ -307,6 +307,18 @@ public class QkjluckDrawAcitvityController extends AbstractController {
         qkjluckDrawAcitiityitemService.deleteBatchByMain(qkjluckDrawAcitvity.getId());
         if (qkjluckDrawAcitvity!=null&&qkjluckDrawAcitvity.getItemlist()!=null&&qkjluckDrawAcitvity.getItemlist().size()>0) {
             for (QkjluckDrawAcitiityitemEntity item:qkjluckDrawAcitvity.getItemlist()) {
+                if(item.getPrizetakenpath()!=null){
+                    if(item.getPrizetakentype().equals("1")){ //小程序拼接参数
+                        String str ="&activity=";
+                        if(!item.getPrizetakentype().contains("?")){
+                            str = "?activity=";
+                        }
+                        str = item.getPrizetakenpath() + str + "turntable-" + qkjluckDrawAcitvity.getId();
+                        item.setPrizetakenpathresult(str);
+                    }else {
+                        item.setPrizetakenpathresult(item.getPrizetakenpath());
+                    }
+                }
                 item.setActivityId(qkjluckDrawAcitvity.getId());
                 qkjluckDrawAcitiityitemService.add(item);
             }
