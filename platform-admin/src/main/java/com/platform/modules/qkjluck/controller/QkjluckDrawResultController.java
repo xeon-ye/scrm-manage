@@ -43,7 +43,6 @@ public class QkjluckDrawResultController extends AbstractController {
      * @return RestResponse
      */
     @RequestMapping("/queryAll")
-    @RequiresPermissions("qkjluck:drawresult:list")
     public RestResponse queryAll(@RequestParam Map<String, Object> params) {
         List<QkjluckDrawResultEntity> list = qkjluckDrawResultService.queryAll(params);
 
@@ -57,7 +56,6 @@ public class QkjluckDrawResultController extends AbstractController {
      * @return RestResponse
      */
     @GetMapping("/list")
-    @RequiresPermissions("qkjluck:drawresult:list")
     public RestResponse list(@RequestParam Map<String, Object> params) {
         Page page = qkjluckDrawResultService.queryPage(params);
 

@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjluck.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -52,4 +53,11 @@ public class QkjluckDrawResultEntity implements Serializable {
     private String openid;
 
     private Integer num;
+
+    @TableField(exist = false)
+    private String name;
+    @TableField(exist = false)
+    private String subName;
+    @TableField(exist = false)
+    private String prizetakentype;
 }
