@@ -310,7 +310,7 @@ public class QkjluckDrawAcitvityController extends AbstractController {
                 if(item.getPrizetakenpath()!=null){
                     if(item.getPrizetakentype().equals("1")){ //小程序拼接参数
                         String str ="&activity=";
-                        if(!item.getPrizetakentype().contains("?")){
+                        if(!item.getPrizetakenpath().contains("?")){
                             str = "?activity=";
                         }
                         str = item.getPrizetakenpath() + str + "turntable-" + qkjluckDrawAcitvity.getId();
