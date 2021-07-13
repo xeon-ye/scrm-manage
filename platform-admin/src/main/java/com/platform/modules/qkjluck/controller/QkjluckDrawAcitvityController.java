@@ -239,21 +239,26 @@ public class QkjluckDrawAcitvityController extends AbstractController {
             if ((num - lucknum)>0) {//开始
                 int n;
                 Random random = new Random();
-                int len =qkjluckDrawAcitvity.getItemlist().size();
-                String [] array = new String[len];
-                for (int i = 0; i < len; i++) {
-                    array[i]=qkjluckDrawAcitvity.getItemlist().get(i).getId();
+                String [] array = new String[100];
+                int cindex = 0;
+                for (int i=0;i<qkjluckDrawAcitvity.getItemlist().size();i++) {
+                    int itemnum = qkjluckDrawAcitvity.getItemlist().get(i).getWeight();
+                    for (int j =0;j<itemnum;j++) {
+                        array[cindex] = qkjluckDrawAcitvity.getItemlist().get(i).getId()+","+i;
+                        cindex += 1;
+                    }
                 }
                 int length=array.length;
                 int resultnum = (int) (Math.random()*length);
-                index= resultnum+","+array[resultnum]+"," + (num - lucknum);;
+                String[] str = array[resultnum].split(",");
+                index= str[1]+","+str[0]+"," + (num - lucknum);;
 
                 // 保存抽奖结果
                 List<QkjluckDrawResultEntity> qdes = new ArrayList<>();
                 QkjluckDrawResultEntity qkjluckDrawResult = new QkjluckDrawResultEntity();
                 qkjluckDrawResult.setActivityId(id);
                 qkjluckDrawResult.setOpenid(openid);
-                qkjluckDrawResult.setItemId(array[resultnum]);
+                qkjluckDrawResult.setItemId(str[0]);
                 qkjluckDrawResult.setNum(0);
                 qkjluckDrawResult.setAddtime(new Date());
                 qdes.add(qkjluckDrawResult);
@@ -302,6 +307,18 @@ public class QkjluckDrawAcitvityController extends AbstractController {
         qkjluckDrawAcitiityitemService.deleteBatchByMain(qkjluckDrawAcitvity.getId());
         if (qkjluckDrawAcitvity!=null&&qkjluckDrawAcitvity.getItemlist()!=null&&qkjluckDrawAcitvity.getItemlist().size()>0) {
             for (QkjluckDrawAcitiityitemEntity item:qkjluckDrawAcitvity.getItemlist()) {
+                if(item.getPrizetakenpath()!=null){
+                    if(item.getPrizetakentype().equals("1")){ //小程序拼接参数
+                        String str ="&activity=";
+                        if(!item.getPrizetakentype().contains("?")){
+                            str = "?activity=";
+                        }
+                        str = item.getPrizetakenpath() + str + "turntable-" + qkjluckDrawAcitvity.getId();
+                        item.setPrizetakenpathresult(str);
+                    }else {
+                        item.setPrizetakenpathresult(item.getPrizetakenpath());
+                    }
+                }
                 item.setActivityId(qkjluckDrawAcitvity.getId());
                 qkjluckDrawAcitiityitemService.add(item);
             }
