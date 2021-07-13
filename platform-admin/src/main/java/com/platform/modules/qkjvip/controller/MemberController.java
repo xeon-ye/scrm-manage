@@ -388,11 +388,18 @@ public class MemberController extends AbstractController {
     public RestResponse importExcel(MultipartFile file, UploadData uploadData) {
         String fileName = file.getOriginalFilename();
         String batchno = UUID.randomUUID().toString().replaceAll("-", "");  // 批次号
+        List<SysUserChannelEntity> permissionChannels = new ArrayList<>();
         if (uploadData == null) uploadData = new UploadData();
         if (StringUtils.isBlank(fileName)) {
             throw new BusinessException("请选择要导入的文件");
         } else {
             try {
+                Map params = new HashMap();
+                params.put("userId", getUserId());
+                if (getUser().getUserName().contains("admin")) {
+                    params.put("queryPermission", "all");
+                }
+                permissionChannels = sysUserChannelService.queryPermissionChannels(params);
                 List<QkjvipMemberImportEntity> list = ExportExcelUtils.importExcel(file, 1, 2,QkjvipMemberImportEntity.class);
                 for (int i = 0; i < list.size(); i++) {
                     int rownum = i + 4;
@@ -400,7 +407,9 @@ public class MemberController extends AbstractController {
                         return RestResponse.error("第" + rownum + "行手机号为空，请修改后重新上传！");
                     }
                     if (StringUtils.isBlank(list.get(i).getServicename())) {
-                        return RestResponse.error("第" + rownum + "渠道为空,请修改后重新上传！");
+                        return RestResponse.error("第" + rownum + "行渠道为空,请修改后重新上传！");
+                    } else if (!JsonHelper.toJsonString(permissionChannels).contains(list.get(i).getServicename()) || list.get(i).getServicename().split("-").length < 2) {
+                        return RestResponse.error("第" + rownum + "行渠道请选择下拉的渠道,请修改后重新上传！");
                     } else {
                         String[] channel = null;
                         channel = new String[list.get(i).getServicename().split("-").length];
