@@ -5,7 +5,7 @@
 
     <sql id="selectSql">
         SELECT
-        T.*,i.name,i.sub_name,i.prizetakentype
+        T.*,i.name,i.sub_name,i.prizetakentype,i.prizetakenpathresult
         FROM QKJLUCK_DRAW_RESULT T
         join qkjluck_draw_acitiityitem i on (i.id=t.item_id)
         WHERE 1=1
