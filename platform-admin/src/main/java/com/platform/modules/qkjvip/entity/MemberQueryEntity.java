@@ -88,6 +88,7 @@ public class MemberQueryEntity implements Serializable {
     private String listorgno;  // 用户的权限部门
     private String currentmemberid;  // 当前登录用户id
     private String listmemberchannel;  // 用户的渠道权限
+    private Boolean issearchmain;  // 是否主渠道（0否 1是）
     private String searchmemberchannel; // 检索条件的渠道
     private String listmemberlevel;  // 会员等级
     private List<MemberTagsQueryEntity> membertags;  // 会员标签
