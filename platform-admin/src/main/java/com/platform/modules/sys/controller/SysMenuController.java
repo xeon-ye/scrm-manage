@@ -11,6 +11,7 @@
  */
 package com.platform.modules.sys.controller;
 
+import cn.emay.util.JsonHelper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
@@ -96,7 +97,20 @@ public class SysMenuController extends AbstractController {
 
         List<SysDictEntity> dictList = sysDictService.queryAll(map);
         List<SysOrgEntity> orgList = orgService.list(new QueryWrapper<SysOrgEntity>().eq("STATUS", 1)); //liuqianru mod
-        List<SysUserEntity> userList = userService.list(new QueryWrapper<SysUserEntity>().select("USER_ID,REAL_NAME"));
+        List<SysUserEntity> userList = new ArrayList<>();
+        //userlist加入缓存过期时间24小时
+        redisEntity red = (redisEntity) jedisUtil.getObject("MTM_CACHE:USERLISTALL:USERS");
+        if(red!=null&&red.getUserEntityList()!=null&&red.getUserEntityList().size()>0){
+            userList = red.getUserEntityList();
+        } else {
+            List<SysUserEntity> userListNew = userService.list(new QueryWrapper<SysUserEntity>().select("USER_ID,REAL_NAME"));
+            red=new redisEntity();
+            red.setKey("users");
+            red.setUserEntityList(userListNew);
+            jedisUtil.setObject("MTM_CACHE:USERLISTALL:USERS",red,86400);
+            userList=userListNew;
+        }
+
         List<QkjvipTaglibsEntity> areaList = qkjvipTaglibsService.list(new QueryWrapper<QkjvipTaglibsEntity>().eq("TAG_GROUP_ID", "9af1533bea3d4c89b856ad80e9d0e457")); //liuqianru add
         List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.queryAll(map);  // 所有得渠道
         List<QkjvipOptionsEntity> appChannels = qkjvipMemberMessageService.queryChannels();
