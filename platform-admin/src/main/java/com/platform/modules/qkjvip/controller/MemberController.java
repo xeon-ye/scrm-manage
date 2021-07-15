@@ -408,7 +408,7 @@ public class MemberController extends AbstractController {
                     }
                     if (StringUtils.isBlank(list.get(i).getServicename())) {
                         return RestResponse.error("第" + rownum + "行渠道为空,请修改后重新上传！");
-                    } else if (!JsonHelper.toJsonString(permissionChannels).contains(list.get(i).getServicename()) || list.get(i).getServicename().split("-").length < 2) {
+                    } else if (!JsonHelper.toJsonString(permissionChannels).contains(list.get(i).getServicename().split("-")[0]) || list.get(i).getServicename().split("-").length < 2) {
                         return RestResponse.error("第" + rownum + "行渠道请选择下拉的渠道,请修改后重新上传！");
                     } else {
                         String[] channel = null;
