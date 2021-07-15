@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjluck.controller;
 
+import cn.emay.util.DateUtil;
 import cn.emay.util.JsonHelper;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -29,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -108,25 +110,37 @@ public class QkjluckDrawAcitvityController extends AbstractController {
         itemlist=getitemlist(id);
         qkjluckDrawAcitvity.setItemlist(itemlist);//查询奖项
 
+        //是否在抽奖时间段内
+        Date nowDate = new Date();
+        Date star_date= DateUtil.parseDate(qkjluckDrawAcitvity.getStrDate(),"yyyy-MM-dd");
+        Date end_date=DateUtil.parseDate(qkjluckDrawAcitvity.getEndDate(),"yyyy-MM-dd");
+
+        Boolean endflag = nowDate.before(end_date);
+        Boolean starflag = nowDate.after(star_date);
+
         // 抽奖
         int luckresultindex = -1;
         String luckresultid = "";//抽中奖品id
         int lucknum = 0;//剩余抽奖次数
-        if (qkjluckDrawAcitvity!=null) {
-            List<QkjluckDrawResultEntity> itemlistresult = new ArrayList<>();
-            String itemlsresult = jedisUtil.get("MTM_CACHE:LUCKACTIVITY:RESULT_" + id + openid);
-            itemlistresult = JSON.parseArray(itemlsresult, QkjluckDrawResultEntity.class);
+        Boolean issureluck = true;
+        if (endflag == true && starflag == true) { //在有效时间内
+            if (qkjluckDrawAcitvity!=null) {
+                List<QkjluckDrawResultEntity> itemlistresult = new ArrayList<>();
+                String itemlsresult = jedisUtil.get("MTM_CACHE:LUCKACTIVITY:RESULT_" + id + openid);
+                itemlistresult = JSON.parseArray(itemlsresult, QkjluckDrawResultEntity.class);
 
-            String lucnum = luckDraw(qkjluckDrawAcitvity,itemlistresult,id,openid);
-            String[] res = lucnum.split(",");
-            if(!lucnum.equals("-1")&&res.length>1){ //有抽奖机会
-                luckresultindex = Integer.parseInt(res[0]);
-                luckresultid = res[1];
-                lucknum = Integer.parseInt(res[2]);
+                String lucnum = luckDraw(qkjluckDrawAcitvity,itemlistresult,id,openid);
+                String[] res = lucnum.split(",");
+                if(!lucnum.equals("-1")&&res.length>1){ //有抽奖机会
+                    luckresultindex = Integer.parseInt(res[0]);
+                    luckresultid = res[1];
+                    lucknum = Integer.parseInt(res[2]);
+                }
             }
+        } else {
+            issureluck = false;
         }
-
-        return RestResponse.success().put("drawacitvity", qkjluckDrawAcitvity).put("luckresultindex",luckresultindex).put("luckresultid",luckresultid).put("lucknum",lucknum);
+        return RestResponse.success().put("drawacitvity", qkjluckDrawAcitvity).put("luckresultindex",luckresultindex).put("luckresultid",luckresultid).put("lucknum",lucknum).put("issureluck",issureluck);
     }
 
     /**
