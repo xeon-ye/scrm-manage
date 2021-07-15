@@ -35,6 +35,15 @@
                 <if test="params.channelType != null and params.channelType != ''">
                     AND c.ChannelType = #{params.channelType}
                 </if>
+                <if test="params.iscore != null">
+                    AND c.IsCore=1
+                </if>
+                <if test="params.userIdIsscore != null and params.userIdIsscore.trim() != ''">
+                    AND
+                    EXISTS (SELECT 1 from SYS_USER_CHANNEL l
+                    where l.CHANNEL_ID=c.MemberChannel
+                    and l.user_id = #{params.userIdIsscore})
+                </if>
             </when>
             <otherwise>
                 SELECT T.*,c.AppId,c.ServiceName FROM SYS_USER_CHANNEL T

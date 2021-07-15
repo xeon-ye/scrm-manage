@@ -26,7 +26,9 @@ import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.qkjvip.service.*;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysSmsLogEntity;
+import com.platform.modules.sys.entity.SysUserChannelEntity;
 import com.platform.modules.sys.service.SysSmsLogService;
+import com.platform.modules.sys.service.SysUserChannelService;
 import com.platform.modules.util.HttpClient;
 import com.platform.modules.util.QRCodeUtil;
 import com.platform.modules.util.Vars;
@@ -76,6 +78,8 @@ public class QkjvipMemberActivityController extends AbstractController {
     private MemberService memberService;
     @Autowired
     private QkjvipMemberSignupmemberService qkjvipMemberSignupmemberService;
+    @Autowired
+    private SysUserChannelService sysUserChannelService;
 
     /**
      * 查看所有列表
@@ -611,6 +615,23 @@ public class QkjvipMemberActivityController extends AbstractController {
 //            }
         }
         return RestResponse.success();
+    }
+
+    @GetMapping("/permChannelList")
+    public RestResponse permChannelList(@RequestParam Map<String, Object> params) {
+        String channelIds = "";
+        channelIds = sysUserChannelService.queryChannelIdByUserId(getUserId());
+        params.put("queryPermission", "all");
+        if ("0".equals(channelIds) || getUser().getUserName().contains("admin")) {
+
+        } else{
+            params.put("userId", getUserId());
+        }
+
+        params.put("iscore",1);
+        List<SysUserChannelEntity> permChannelList = sysUserChannelService.queryPermissionChannels(params);
+
+        return RestResponse.success().put("list", permChannelList);
     }
 
     /**

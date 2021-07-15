@@ -103,7 +103,7 @@ public class SysMenuController extends AbstractController {
         if(red!=null&&red.getUserEntityList()!=null&&red.getUserEntityList().size()>0){
             userList = red.getUserEntityList();
         } else {
-            List<SysUserEntity> userListNew = userService.list(new QueryWrapper<SysUserEntity>().select("USER_ID,REAL_NAME"));
+            List<SysUserEntity> userListNew = userService.list(new QueryWrapper<SysUserEntity>().select("USER_ID,REAL_NAME,ORG_NO,status"));
             red=new redisEntity();
             red.setKey("users");
             red.setUserEntityList(userListNew);
