@@ -4,8 +4,7 @@
 <mapper namespace="com.platform.modules.qkjvip.dao.QkjvipMemberVisitDao">
 
     <sql id="selectSql">
-        SELECT T.*, ISNULL(m.member_name, m.real_name) member_name,u.USER_NAME add_user_name FROM QKJVIP_MEMBER_VISIT T
-        LEFT JOIN sys_user u ON (T.add_user = u.USER_ID)
+        SELECT T.*, ISNULL(m.real_name, m.member_name) member_name FROM QKJVIP_MEMBER_VISIT T
         LEFT JOIN qkjvip_member m ON (m.member_id = T.member_id)
         WHERE 1=1
         <if test="params.id != null and params.id.trim() != ''">

@@ -106,11 +106,6 @@ public class QkjvipMemberVisitEntity implements Serializable {
      */
     @TableField(exist = false)
     private String memberName;
-    /**
-     * 添加人姓名
-     */
-    @TableField(exist = false)
-    private String addUserName;
 
     @TableField(exist = false)
     private List<QkjvipMemberVisitMaterialEntity> materialList;
