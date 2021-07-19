@@ -18,7 +18,6 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 实体
@@ -27,42 +26,19 @@ import java.util.List;
  * @date 2021-07-16 10:27:08
  */
 @Data
-@TableName("QKJVIP_QUESTIONNAIRE_QUESTION")
-public class QkjvipQuestionnaireQuestionEntity implements Serializable {
+public class QkjvipQuestionnaireQuestionOptionEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 主键
+     * 编号
      */
-    @TableId
-    private String id;
-    /**
-     * 题目
-     */
-    private String topic;
-    /**
-     * 主表id
-     */
-    private String mainid;
-    /**
-     * 问题类型
-     */
-    private Integer questiontype;
-    /**
-     * 问题选项
-     */
-    private String questionoptions;
-    /**
-     * addUser
-     */
-    private String adduser;
-    /**
-     * addTime
-     */
-    private Date addtime;
+    private String number;
     /**
      * 选项
      */
-    @TableField(exist = false)
-    private List<QkjvipQuestionnaireQuestionOptionEntity> optionlist;
+    private String content;
+    /**
+     * 积分
+     */
+    private Integer integral;
 }

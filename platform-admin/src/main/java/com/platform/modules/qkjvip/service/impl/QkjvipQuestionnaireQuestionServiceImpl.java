@@ -55,6 +55,12 @@ public class QkjvipQuestionnaireQuestionServiceImpl extends ServiceImpl<QkjvipQu
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean addBatch(List<QkjvipQuestionnaireQuestionEntity> questionList) {
+        return this.saveBatch(questionList);
+    }
+
+    @Override
     public boolean update(QkjvipQuestionnaireQuestionEntity qkjvipQuestionnaireQuestion) {
         return this.updateById(qkjvipQuestionnaireQuestion);
     }
@@ -68,5 +74,10 @@ public class QkjvipQuestionnaireQuestionServiceImpl extends ServiceImpl<QkjvipQu
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteBatch(String[] ids) {
         return this.removeByIds(Arrays.asList(ids));
+    }
+
+    @Override
+    public boolean deleteByMainId(String mainId) {
+        return baseMapper.deleteByMainId(mainId);
     }
 }

@@ -49,6 +49,7 @@ public interface QkjvipQuestionnaireQuestionService extends IService<QkjvipQuest
      * @return 新增结果
      */
     boolean add(QkjvipQuestionnaireQuestionEntity qkjvipQuestionnaireQuestion);
+    boolean addBatch(List<QkjvipQuestionnaireQuestionEntity> questionList);
 
     /**
      * 根据主键更新
@@ -73,4 +74,5 @@ public interface QkjvipQuestionnaireQuestionService extends IService<QkjvipQuest
      * @return 删除结果
      */
     boolean deleteBatch(String[] ids);
+    boolean deleteByMainId(String mainId);
 }

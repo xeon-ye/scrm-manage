@@ -11,16 +11,22 @@
  */
 package com.platform.modules.qkjvip.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
+import com.platform.common.utils.StringUtils;
+import com.platform.modules.qkjvip.entity.*;
+import com.platform.modules.qkjvip.service.QkjvipQuestionnaireQuestionService;
+import com.platform.modules.quartz.entity.QrtzMemberBasicEntity;
 import com.platform.modules.sys.controller.AbstractController;
-import com.platform.modules.qkjvip.entity.QkjvipQuestionnaireEntity;
 import com.platform.modules.qkjvip.service.QkjvipQuestionnaireService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +41,8 @@ import java.util.Map;
 public class QkjvipQuestionnaireController extends AbstractController {
     @Autowired
     private QkjvipQuestionnaireService qkjvipQuestionnaireService;
+    @Autowired
+    private QkjvipQuestionnaireQuestionService qkjvipQuestionnaireQuestionService;
 
     /**
      * 查看所有列表
@@ -74,6 +82,33 @@ public class QkjvipQuestionnaireController extends AbstractController {
     @RequiresPermissions("qkjvip:questionnaire:info")
     public RestResponse info(@PathVariable("id") String id) {
         QkjvipQuestionnaireEntity qkjvipQuestionnaire = qkjvipQuestionnaireService.getById(id);
+        Map map = new HashMap();
+        map.put("mainid", id);
+        List<QkjvipQuestionnaireQuestionEntity> questionlist = qkjvipQuestionnaireQuestionService.queryAll(map);
+        qkjvipQuestionnaire.setQuestionlist(questionlist);
+        for (QkjvipQuestionnaireQuestionEntity questionEntity : questionlist) {
+            questionEntity.setOptionlist(StringUtils.isNotBlank(questionEntity.getQuestionoptions()) ? JSON.parseArray(questionEntity.getQuestionoptions(), QkjvipQuestionnaireQuestionOptionEntity.class) : null);
+        }
+
+        return RestResponse.success().put("questionnaire", qkjvipQuestionnaire);
+    }
+
+    /**
+     * 根据主键查询详情
+     *
+     * @param id 主键
+     * @return RestResponse
+     */
+    @RequestMapping("/getInfo")
+    public RestResponse getInfo(@RequestParam("id") String id) {
+        QkjvipQuestionnaireEntity qkjvipQuestionnaire = qkjvipQuestionnaireService.getById(id);
+        Map map = new HashMap();
+        map.put("mainid", id);
+        List<QkjvipQuestionnaireQuestionEntity> questionlist = qkjvipQuestionnaireQuestionService.queryAll(map);
+        qkjvipQuestionnaire.setQuestionlist(questionlist);
+        for (QkjvipQuestionnaireQuestionEntity questionEntity : questionlist) {
+            questionEntity.setOptionlist(StringUtils.isNotBlank(questionEntity.getQuestionoptions()) ? JSON.parseArray(questionEntity.getQuestionoptions(), QkjvipQuestionnaireQuestionOptionEntity.class) : null);
+        }
 
         return RestResponse.success().put("questionnaire", qkjvipQuestionnaire);
     }
@@ -88,9 +123,10 @@ public class QkjvipQuestionnaireController extends AbstractController {
     @RequestMapping("/save")
     @RequiresPermissions("qkjvip:questionnaire:save")
     public RestResponse save(@RequestBody QkjvipQuestionnaireEntity qkjvipQuestionnaire) {
-
+        qkjvipQuestionnaire.setAdduser(getUserId());
+        qkjvipQuestionnaire.setAddtime(new Date());
         qkjvipQuestionnaireService.add(qkjvipQuestionnaire);
-
+        this.mdyQuestion(qkjvipQuestionnaire);
         return RestResponse.success();
     }
 
@@ -106,7 +142,7 @@ public class QkjvipQuestionnaireController extends AbstractController {
     public RestResponse update(@RequestBody QkjvipQuestionnaireEntity qkjvipQuestionnaire) {
 
         qkjvipQuestionnaireService.update(qkjvipQuestionnaire);
-
+        this.mdyQuestion(qkjvipQuestionnaire);
         return RestResponse.success();
     }
 
@@ -124,4 +160,18 @@ public class QkjvipQuestionnaireController extends AbstractController {
 
         return RestResponse.success();
     }
+
+    private void mdyQuestion(QkjvipQuestionnaireEntity qkjvipQuestionnaire) {
+        qkjvipQuestionnaireQuestionService.deleteByMainId(qkjvipQuestionnaire.getId());
+        List<QkjvipQuestionnaireQuestionEntity> questionlist = qkjvipQuestionnaire.getQuestionlist();
+        if (questionlist.size() > 0) {
+            for (QkjvipQuestionnaireQuestionEntity questionEntity : questionlist) {
+                questionEntity.setMainid(qkjvipQuestionnaire.getId());
+                questionEntity.setAdduser(getUserId());
+                questionEntity.setAddtime(new Date());
+            }
+            qkjvipQuestionnaireQuestionService.addBatch(questionlist);
+        }
+    }
+
 }

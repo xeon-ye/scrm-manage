@@ -45,4 +45,6 @@ public interface QkjvipQuestionnaireQuestionDao extends BaseMapper<QkjvipQuestio
      * @return List
      */
     List<QkjvipQuestionnaireQuestionEntity> selectQkjvipQuestionnaireQuestionPage(IPage page, @Param("params") Map<String, Object> params);
+
+    boolean deleteByMainId(String mainId);
 }
