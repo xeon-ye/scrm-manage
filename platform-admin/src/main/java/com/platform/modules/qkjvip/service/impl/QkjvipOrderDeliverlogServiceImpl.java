@@ -41,7 +41,7 @@ public class QkjvipOrderDeliverlogServiceImpl extends ServiceImpl<QkjvipOrderDel
     @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
-        params.put("sidx", "T.id");
+        params.put("sidx", "T.createOn");
         params.put("asc", false);
         Page<QkjvipOrderDeliverlogEntity> page = new Query<QkjvipOrderDeliverlogEntity>(params).getPage();
         page.setRecords(baseMapper.selectQkjvipOrderDeliverlogPage(page, params));
