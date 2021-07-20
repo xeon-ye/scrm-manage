@@ -1,6 +1,6 @@
 /*
  * 项目名称:platform-plus
- * 类名称:ValidateIdCardUtil.java
+ * 类名称:ValidateUtil.java
  * 包名称:com.platform.modules.util
  *
  * 修改履历:
@@ -15,6 +15,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * ValidateIdCardUtil
@@ -22,7 +23,7 @@ import java.util.Map;
  * @author liuqianru
  * @date 2021/6/1 9:16
  */
-public class ValidateIdCardUtil {
+public class ValidateUtil {
     final static Map<Integer, String> zoneNum = new HashMap<Integer, String>();
 
     static {
@@ -137,6 +138,16 @@ public class ValidateIdCardUtil {
         cday.setTime(birthdate);
         String year = String.valueOf(cday.get(Calendar.YEAR));
         return year;
+    }
+
+    /**
+     *  正则：手机号（简单）, 1字头＋10位数字即可.
+     * @param in
+     * @return
+     */
+    public static boolean validateMobilePhone(String in) {
+        Pattern pattern = Pattern.compile("^[1]\\d{10}$");
+        return pattern.matcher(in).matches();
     }
 
 //    public static void main(String[] args) {

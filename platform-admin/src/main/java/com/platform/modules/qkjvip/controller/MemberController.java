@@ -406,6 +406,9 @@ public class MemberController extends AbstractController {
                     if (StringUtils.isBlank(list.get(i).getMobile())) {
                         return RestResponse.error("第" + rownum + "行手机号为空，请修改后重新上传！");
                     }
+                    if (!ValidateUtil.validateMobilePhone(list.get(i).getMobile())) {
+                        return RestResponse.error("第" + rownum + "行手机号不正确，请修改后重新上传！");
+                    }
                     if (StringUtils.isBlank(list.get(i).getServicename())) {
                         return RestResponse.error("第" + rownum + "行渠道为空,请修改后重新上传！");
                     } else if (!JsonHelper.toJsonString(permissionChannels).contains(list.get(i).getServicename().split("-")[0]) || list.get(i).getServicename().split("-").length < 2) {
@@ -422,7 +425,7 @@ public class MemberController extends AbstractController {
                     if (uploadData.getIscheckpass()) {  // true:非必填项做校验
                         if (StringUtils.isNotBlank(list.get(i).getIdcard())) {
                             String idCard = list.get(i).getIdcard();
-                            if (!ValidateIdCardUtil.isIDCard(idCard.trim())) {  // 身份证校验不成功
+                            if (!ValidateUtil.isIDCard(idCard.trim())) {  // 身份证校验不成功
                                 return RestResponse.error("第" + rownum + "行的身份证号不正确,请修改后重新上传！");
                             }
                         }
