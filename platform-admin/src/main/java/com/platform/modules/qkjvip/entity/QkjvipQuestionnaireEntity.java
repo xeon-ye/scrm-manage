@@ -41,14 +41,6 @@ public class QkjvipQuestionnaireEntity implements Serializable {
      */
     private String title;
     /**
-     * 网址类型
-     */
-    private Integer urltype;
-    /**
-     * 网址地址
-     */
-    private String urlpath;
-    /**
      * addTime
      */
     private Date addtime;
@@ -61,5 +53,4 @@ public class QkjvipQuestionnaireEntity implements Serializable {
      */
     @TableField(exist = false)
     private List<QkjvipQuestionnaireQuestionEntity> questionlist;
-
 }

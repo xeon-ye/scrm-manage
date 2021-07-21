@@ -13,6 +13,7 @@ package com.platform.modules.qkjvip.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.zxing.WriterException;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.utils.StringUtils;
@@ -21,10 +22,13 @@ import com.platform.modules.qkjvip.service.QkjvipQuestionnaireQuestionService;
 import com.platform.modules.qkjvip.service.QkjvipQuestionnaireRecordService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.service.QkjvipQuestionnaireService;
+import com.platform.modules.util.QRCodeUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -167,6 +171,19 @@ public class QkjvipQuestionnaireController extends AbstractController {
         qkjvipQuestionnaireService.deleteBatch(ids);
 
         return RestResponse.success();
+    }
+
+    /**
+     * 根据url生成二维码
+     *
+     * @param url url
+     * @return RestResponse
+     */
+    @RequestMapping("/getQrCode")
+    public RestResponse getQrCode(@RequestParam("url") String url) throws IOException, WriterException {
+        String qrCodeUrl = "";
+        qrCodeUrl = QRCodeUtil.createQrCode(URLDecoder.decode(url,"UTF-8"),90,".jpg");
+        return RestResponse.success().put("qrCodeUrl", qrCodeUrl);
     }
 
     private void mdyQuestion(QkjvipQuestionnaireEntity qkjvipQuestionnaire) {
