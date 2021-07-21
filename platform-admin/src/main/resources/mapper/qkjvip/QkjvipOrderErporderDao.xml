@@ -12,6 +12,10 @@
         <if test="params.isnotcrmorder != null and params.isnotcrmorder.trim() != ''">
             AND (T.MOrderId is null or T.MOrderId='')
         </if>
+        <if test="params.ordertype != null">
+            AND t.OrderType = #{params.ordertype}
+        </if>
+
         GROUP BY T.OrderCode,T.orderdate,T.buycompanyname,T.departmentname,T.salesman,T.remark
     </sql>
 
