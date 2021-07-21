@@ -18,7 +18,7 @@ import com.platform.common.utils.RestResponse;
 import com.platform.common.utils.StringUtils;
 import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.qkjvip.service.QkjvipQuestionnaireQuestionService;
-import com.platform.modules.quartz.entity.QrtzMemberBasicEntity;
+import com.platform.modules.qkjvip.service.QkjvipQuestionnaireRecordService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.service.QkjvipQuestionnaireService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -43,6 +43,8 @@ public class QkjvipQuestionnaireController extends AbstractController {
     private QkjvipQuestionnaireService qkjvipQuestionnaireService;
     @Autowired
     private QkjvipQuestionnaireQuestionService qkjvipQuestionnaireQuestionService;
+    @Autowired
+    private QkjvipQuestionnaireRecordService qkjvipQuestionnaireRecordService;
 
     /**
      * 查看所有列表
@@ -100,7 +102,7 @@ public class QkjvipQuestionnaireController extends AbstractController {
      * @return RestResponse
      */
     @RequestMapping("/getInfo")
-    public RestResponse getInfo(@RequestParam("id") String id) {
+    public RestResponse getInfo(@RequestParam("id") String id, @RequestParam("openid") String openid) {
         QkjvipQuestionnaireEntity qkjvipQuestionnaire = qkjvipQuestionnaireService.getById(id);
         Map map = new HashMap();
         map.put("mainid", id);
@@ -109,8 +111,14 @@ public class QkjvipQuestionnaireController extends AbstractController {
         for (QkjvipQuestionnaireQuestionEntity questionEntity : questionlist) {
             questionEntity.setOptionlist(StringUtils.isNotBlank(questionEntity.getQuestionoptions()) ? JSON.parseArray(questionEntity.getQuestionoptions(), QkjvipQuestionnaireQuestionOptionEntity.class) : null);
         }
+        map.put("openid", openid);
+        List<QkjvipQuestionnaireRecordEntity> recordList = qkjvipQuestionnaireRecordService.queryAll(map);
+        boolean submitflag = false;
+        if (recordList != null && recordList.size() > 0) {
+            submitflag = true;
+        }
 
-        return RestResponse.success().put("questionnaire", qkjvipQuestionnaire);
+        return RestResponse.success().put("questionnaire", qkjvipQuestionnaire).put("submitflag", submitflag);
     }
 
     /**

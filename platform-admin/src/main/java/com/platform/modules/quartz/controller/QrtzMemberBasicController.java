@@ -66,55 +66,55 @@ public class QrtzMemberBasicController extends AbstractController {
     @SysLog("会员读取定时任务")
     @RequestMapping("/getMembers")
     public void getMembers(String params) throws IOException, NoSuchAlgorithmException {
-//        String url = "http://open.api.zhongjiu.cn/DashboardOpenAPI/ShopMeberDataSync";
-//        QrtzLastUpdateTimeEntity updateTimeEntity = new QrtzLastUpdateTimeEntity();
-//        String timeStamp = DateUtils.getTimeStamp();  //时间戳
-//        Date nowDate = new Date();
-//        String endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
-//        String starttime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -2), "yyyy-MM-dd HH:mm:ss"); //默认是2分钟前
-//        SortedMap<String, String> map = new TreeMap<>();
-//        String urlParam = "";
-//        String sign = "";
-//        String resultPost = "";  //返回结果
-//        if (!StringUtils.isEmpty(params) && params.split(",").length == 2) {   //当定时任务有参数时，按照参数指定日期同步数据
-//            String[] paramArr = new String[params.split(",").length];
-//            paramArr = params.split(",");
-//            starttime = paramArr[0].trim();
-//            endtime = paramArr[1].trim();
-//        } else {
-//            Map paramMap = new HashMap();
-//            paramMap.put("type", 1);
-//            List<QrtzLastUpdateTimeEntity> updateTimeList = qrtzLastUpdateTimeService.queryAll(paramMap);
-//            updateTimeEntity = updateTimeList.get(0);
-//            if (updateTimeList.get(0).getLastDatetime() != null) {
-//                starttime = DateUtils.format(updateTimeList.get(0).getLastDatetime(), "yyyy-MM-dd HH:mm:ss");
-//            }
-//            updateTimeEntity.setLastDatetime(nowDate);
-//        }
-//        map.clear();
-//        map.put("starttime", starttime);
-//        map.put("endtime", endtime);
-//        map.put("timestamp", timeStamp);
-//        map.put("app_key", Vars.APP_KEY);
-//        for(int i = 0; i <= 1; i++) {
-//            map.put("timetype", i + "");
-//            sign = MD5Utils.getMD5Sign(map);
-//            urlParam = "?starttime=" + starttime
-//                    + "&endtime=" + endtime
-//                    + "&timetype=" + i+""
-//                    + "&timestamp=" + timeStamp
-//                    + "&app_key=" + Vars.APP_KEY
-//                    + "&sign=" + sign;
-//            System.out.println("key:sign" + " vlaue:" + sign);
-//            resultPost = HttpClient.doPost(url + urlParam);
-//            if (resultPost != null && !"[]".equals(resultPost)) {
-//                this.saveOrUpdateMember(resultPost, i + "");
-//            }
-//        }
-//        //将最后更新时间存入数据库
-//        if (!StringUtils.isEmpty(updateTimeEntity.getId())) {
-//            qrtzLastUpdateTimeService.updateLastDatetime(updateTimeEntity);
-//        }
+        String url = "http://open.api.zhongjiu.cn/DashboardOpenAPI/ShopMeberDataSync";
+        QrtzLastUpdateTimeEntity updateTimeEntity = new QrtzLastUpdateTimeEntity();
+        String timeStamp = DateUtils.getTimeStamp();  //时间戳
+        Date nowDate = new Date();
+        String endtime = DateUtils.format(nowDate, "yyyy-MM-dd HH:mm:ss");  //现在时间
+        String starttime = DateUtils.format(DateUtils.addDateMinutes(nowDate, -2), "yyyy-MM-dd HH:mm:ss"); //默认是2分钟前
+        SortedMap<String, String> map = new TreeMap<>();
+        String urlParam = "";
+        String sign = "";
+        String resultPost = "";  //返回结果
+        if (!StringUtils.isEmpty(params) && params.split(",").length == 2) {   //当定时任务有参数时，按照参数指定日期同步数据
+            String[] paramArr = new String[params.split(",").length];
+            paramArr = params.split(",");
+            starttime = paramArr[0].trim();
+            endtime = paramArr[1].trim();
+        } else {
+            Map paramMap = new HashMap();
+            paramMap.put("type", 1);
+            List<QrtzLastUpdateTimeEntity> updateTimeList = qrtzLastUpdateTimeService.queryAll(paramMap);
+            updateTimeEntity = updateTimeList.get(0);
+            if (updateTimeList.get(0).getLastDatetime() != null) {
+                starttime = DateUtils.format(updateTimeList.get(0).getLastDatetime(), "yyyy-MM-dd HH:mm:ss");
+            }
+            updateTimeEntity.setLastDatetime(nowDate);
+        }
+        map.clear();
+        map.put("starttime", starttime);
+        map.put("endtime", endtime);
+        map.put("timestamp", timeStamp);
+        map.put("app_key", Vars.APP_KEY);
+        for(int i = 0; i <= 1; i++) {
+            map.put("timetype", i + "");
+            sign = MD5Utils.getMD5Sign(map);
+            urlParam = "?starttime=" + starttime
+                    + "&endtime=" + endtime
+                    + "&timetype=" + i+""
+                    + "&timestamp=" + timeStamp
+                    + "&app_key=" + Vars.APP_KEY
+                    + "&sign=" + sign;
+            System.out.println("key:sign" + " vlaue:" + sign);
+            resultPost = HttpClient.doPost(url + urlParam);
+            if (resultPost != null && !"[]".equals(resultPost)) {
+                this.saveOrUpdateMember(resultPost, i + "");
+            }
+        }
+        //将最后更新时间存入数据库
+        if (!StringUtils.isEmpty(updateTimeEntity.getId())) {
+            qrtzLastUpdateTimeService.updateLastDatetime(updateTimeEntity);
+        }
     }
 
     public void saveOrUpdateMember(String resultPost, String timeType) {
