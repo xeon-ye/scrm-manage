@@ -332,7 +332,7 @@ public class QkjluckDrawAcitvityController extends AbstractController {
                         str = item.getPrizetakenpath() + str + "turntable-" + qkjluckDrawAcitvity.getId();
                         item.setPrizetakenpathresult(str);
                     }else if (item.getPrizetakentype().equals("3")){ //产品
-                        String str = "" + "?" + item.getPrizetakenpath();
+                        String str = "/pages/product/detail" + "?from=lottery&fromid="+qkjluckDrawAcitvity.getId()+"&pid=" + item.getPrizetakenpath();
                         item.setPrizetakenpathresult(str);
                     }else {
                         item.setPrizetakenpathresult(item.getPrizetakenpath());
