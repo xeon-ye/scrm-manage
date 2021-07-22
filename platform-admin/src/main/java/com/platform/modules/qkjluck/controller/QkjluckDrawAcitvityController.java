@@ -104,6 +104,7 @@ public class QkjluckDrawAcitvityController extends AbstractController {
     @GetMapping("/luckinfo")
     public RestResponse luckinfo(@RequestParam Map<String, Object> paramsa) {
         String openid = paramsa.get("openid")+"";//参与人
+        String unionid = paramsa.get("unionid")+"";//参与人
         String id=paramsa.get("id")+"";//活动id
         QkjluckDrawAcitvityEntity qkjluckDrawAcitvity = qdklucbBean(id,paramsa);//查询活动
         List itemlist = new ArrayList<>();
@@ -126,10 +127,10 @@ public class QkjluckDrawAcitvityController extends AbstractController {
         if (endflag == true && starflag == true) { //在有效时间内
             if (qkjluckDrawAcitvity!=null) {
                 List<QkjluckDrawResultEntity> itemlistresult = new ArrayList<>();
-                String itemlsresult = jedisUtil.get("MTM_CACHE:LUCKACTIVITY:RESULT_" + id + openid);
+                String itemlsresult = jedisUtil.get("MTM_CACHE:LUCKACTIVITY:RESULT_" + id + unionid);
                 itemlistresult = JSON.parseArray(itemlsresult, QkjluckDrawResultEntity.class);
 
-                String lucnum = luckDraw(qkjluckDrawAcitvity,itemlistresult,id,openid);
+                String lucnum = luckDraw(qkjluckDrawAcitvity,itemlistresult,id,openid,unionid);
                 String[] res = lucnum.split(",");
                 if(!lucnum.equals("-1")&&res.length>1){ //有抽奖机会
                     luckresultindex = Integer.parseInt(res[0]);
@@ -153,7 +154,7 @@ public class QkjluckDrawAcitvityController extends AbstractController {
     @RequestMapping("/updateluckstatus")
     public RestResponse updateluckstatus(@RequestBody QkjluckDrawResultEntity qkjluckDrawResult) {
         List<QkjluckDrawResultEntity> itemlistresult = new ArrayList<>();
-        String itemlsresult = jedisUtil.get("MTM_CACHE:LUCKACTIVITY:RESULT_" + qkjluckDrawResult.getActivityId() + qkjluckDrawResult.getOpenid());
+        String itemlsresult = jedisUtil.get("MTM_CACHE:LUCKACTIVITY:RESULT_" + qkjluckDrawResult.getActivityId() + qkjluckDrawResult.getUnionid());
         itemlistresult = JSON.parseArray(itemlsresult, QkjluckDrawResultEntity.class);
         int luckresultindex = -1;
         String luckresultid = "";//抽中奖品id
@@ -165,18 +166,18 @@ public class QkjluckDrawAcitvityController extends AbstractController {
         if(itemlistresult!=null){
             List<QkjluckDrawResultEntity> newitemlist = new ArrayList<>();
             for(QkjluckDrawResultEntity qd:itemlistresult){
-                if (qd!=null&&qd.getActivityId().equals(qkjluckDrawResult.getActivityId())&&qd.getOpenid().equals(qkjluckDrawResult.getOpenid())&&qd.getItemId().equals(qkjluckDrawResult.getItemId())) {
+                if (qd!=null&&qd.getActivityId().equals(qkjluckDrawResult.getActivityId())&&qd.getUnionid().equals(qkjluckDrawResult.getUnionid())&&qd.getItemId().equals(qkjluckDrawResult.getItemId())) {
                     qd.setNum(1);
                 }
                 newitemlist.add(qd);
             }
             String queryJsonStr = JsonHelper.toJsonString(newitemlist, "yyyy-MM-dd HH:mm:ss");
-            jedisUtil.set("MTM_CACHE:LUCKACTIVITY:RESULT_" + qkjluckDrawResult.getActivityId() + qkjluckDrawResult.getOpenid(),queryJsonStr,0);
+            jedisUtil.set("MTM_CACHE:LUCKACTIVITY:RESULT_" + qkjluckDrawResult.getActivityId() + qkjluckDrawResult.getUnionid(),queryJsonStr,0);
             // 查询是否还有抽奖机会，有返回下一次抽奖结果
             List itemlist = new ArrayList<>();
             itemlist=getitemlist(qkjluckDrawResult.getActivityId());
             qkjluckDrawAcitvity.setItemlist(itemlist);//查询奖项orderorder
-            String lucnum = luckDraw(qkjluckDrawAcitvity,itemlistresult,qkjluckDrawResult.getActivityId(),qkjluckDrawResult.getOpenid());
+            String lucnum = luckDraw(qkjluckDrawAcitvity,itemlistresult,qkjluckDrawResult.getActivityId(),qkjluckDrawResult.getOpenid(),qkjluckDrawResult.getUnionid());
             String[] res = lucnum.split(",");
             if(!lucnum.equals("-1")&&res.length>1) { //有抽奖机会
                 luckresultindex = Integer.parseInt(res[0]);
@@ -222,7 +223,7 @@ public class QkjluckDrawAcitvityController extends AbstractController {
         return itemlist;
     }
     //抽奖
-    public String luckDraw (QkjluckDrawAcitvityEntity qkjluckDrawAcitvity,List<QkjluckDrawResultEntity> itemlist,String id,String openid) {
+    public String luckDraw (QkjluckDrawAcitvityEntity qkjluckDrawAcitvity,List<QkjluckDrawResultEntity> itemlist,String id,String openid,String unionid) {
         int num = qkjluckDrawAcitvity.getPeonum()!=null ? qkjluckDrawAcitvity.getPeonum() : 1;
         String index= "-1";//默认没有抽奖机会
         int lucknum = itemlist!=null ? itemlist.size():0;//已抽奖次数
@@ -272,6 +273,7 @@ public class QkjluckDrawAcitvityController extends AbstractController {
                 QkjluckDrawResultEntity qkjluckDrawResult = new QkjluckDrawResultEntity();
                 qkjluckDrawResult.setActivityId(id);
                 qkjluckDrawResult.setOpenid(openid);
+                qkjluckDrawResult.setUnionid(unionid);
                 qkjluckDrawResult.setItemId(str[0]);
                 qkjluckDrawResult.setNum(0);
                 qkjluckDrawResult.setAddtime(new Date());
@@ -282,7 +284,7 @@ public class QkjluckDrawAcitvityController extends AbstractController {
                     queryJsonStr = JsonHelper.toJsonString(itemlist, "yyyy-MM-dd HH:mm:ss");
                 }
                 //更新redis
-                jedisUtil.set("MTM_CACHE:LUCKACTIVITY:RESULT_" + id + openid, queryJsonStr,0);
+                jedisUtil.set("MTM_CACHE:LUCKACTIVITY:RESULT_" + id + unionid, queryJsonStr,0);
                 //添加数据库（异步）
                 addluckresult(qkjluckDrawResult);
             }
@@ -328,6 +330,9 @@ public class QkjluckDrawAcitvityController extends AbstractController {
                             str = "?activity=";
                         }
                         str = item.getPrizetakenpath() + str + "turntable-" + qkjluckDrawAcitvity.getId();
+                        item.setPrizetakenpathresult(str);
+                    }else if (item.getPrizetakentype().equals("3")){ //产品
+                        String str = "" + "?" + item.getPrizetakenpath();
                         item.setPrizetakenpathresult(str);
                     }else {
                         item.setPrizetakenpathresult(item.getPrizetakenpath());
