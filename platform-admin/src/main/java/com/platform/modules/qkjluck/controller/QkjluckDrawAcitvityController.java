@@ -115,16 +115,17 @@ public class QkjluckDrawAcitvityController extends AbstractController {
         Date nowDate = new Date();
         Date star_date= DateUtil.parseDate(qkjluckDrawAcitvity.getStrDate(),"yyyy-MM-dd");
         Date end_date=DateUtil.parseDate(qkjluckDrawAcitvity.getEndDate(),"yyyy-MM-dd");
-
+        String nowday = DateUtil.toString(nowDate,"yyyy-MM-dd");
         Boolean endflag = nowDate.before(end_date);
         Boolean starflag = nowDate.after(star_date);
+
 
         // 抽奖
         int luckresultindex = -1;
         String luckresultid = "";//抽中奖品id
         int lucknum = 0;//剩余抽奖次数
         Boolean issureluck = true;
-        if (endflag == true && starflag == true) { //在有效时间内
+        if ((endflag == true || qkjluckDrawAcitvity.getStrDate().equals(nowday)) && (starflag == true || qkjluckDrawAcitvity.getEndDate().equals(nowday))) { //在有效时间内
             if (qkjluckDrawAcitvity!=null) {
                 List<QkjluckDrawResultEntity> itemlistresult = new ArrayList<>();
                 String itemlsresult = jedisUtil.get("MTM_CACHE:LUCKACTIVITY:RESULT_" + id + unionid);
