@@ -303,6 +303,14 @@ public class MemberEntity implements Serializable {
      * 是否同步到青稞荟
      */
     private Integer toqkh;
+    /**
+     * 会员等级有效期
+     */
+    private String validstarttime;
+    /**
+     * 会员等级有效期
+     */
+    private String validendtime;
 
     /**
      * 所属人姓名
@@ -393,6 +401,14 @@ public class MemberEntity implements Serializable {
                 return  false;
             }
         } else if (!this.mobile.equals(other.mobile)) {
+            return false;
+        }
+
+        if (this.memberchannel == null) {
+            if (other.memberchannel != null) {
+                return  false;
+            }
+        } else if (!this.memberchannel.equals(other.memberchannel)) {
             return false;
         }
 

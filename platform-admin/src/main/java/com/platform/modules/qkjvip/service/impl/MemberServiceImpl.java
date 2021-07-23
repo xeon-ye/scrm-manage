@@ -111,10 +111,10 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+//    @Transactional(rollbackFor = Exception.class)
     public void update(MemberEntity member, Map<String, Object> params) throws IOException {
         //修改会员标签
-        memberTagsService.saveOrUpdate(member);  //先调用修改标签逻辑是避免调接口成功我这边失败时无法回滚接口那边的数据的问题
+//        memberTagsService.saveOrUpdate(member);  //先调用修改标签逻辑是避免调接口成功我这边失败时无法回滚接口那边的数据的问题,改为藕周红的接口处理2021-07-23
         MemberEntity oldStaff = this.getById(member.getMemberId());
         if (!member.equals(oldStaff)) {  // 不相等证明有修改
             member.setStatusflag(2);   // 锁住

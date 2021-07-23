@@ -227,7 +227,7 @@ public class MemberController extends AbstractController {
             if ("200".equals(resultObject.get("resultcode").toString())) {  //清洗成功
                 member.setMemberId(resultObject.get("memberid").toString());
                 member.setMembertags(memberImport.getMembertags());
-                memberTagsService.saveOrUpdate(member);
+//                memberTagsService.saveOrUpdate(member);  // 调藕周红接口更新标签2021-07-23
             } else {
                 return RestResponse.error(resultObject.get("descr").toString());
             }
@@ -246,7 +246,7 @@ public class MemberController extends AbstractController {
     @SysLog("修改用户")
     @PostMapping("/update")
     @RequiresPermissions("qkjvip:member:update")
-    public RestResponse update(@RequestBody MemberEntity member) throws IOException {
+    public RestResponse update(@RequestBody MemberEntity member) {
         ValidatorUtils.validateEntity(member);
         Map<String, Object> params = new HashMap<>(2);
         params.put("memberchannel", member.getMemberchannel());
@@ -254,7 +254,18 @@ public class MemberController extends AbstractController {
         if (channelList.size() > 0) {
             member.setServicename(channelList.get(0).getServicename());
         }
-        memberService.update(member, params);
+        try {
+            Object obj = JSONArray.toJSON(member);
+            String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+            String resultPost = HttpClient.sendPost(Vars.MEMBER_UPDATE_URL, memberJsonStr);
+            System.out.println("会员信息更新：" + memberJsonStr);
+            JSONObject resultObject = JSON.parseObject(resultPost);
+            if (!"200".equals(resultObject.get("resultcode").toString())) {  //修改不成功
+                return RestResponse.error(resultObject.get("descr").toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return RestResponse.success().put("member", member);
     }
 

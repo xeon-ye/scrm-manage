@@ -300,6 +300,14 @@ public class QkjvipMemberImportEntity implements Serializable {
      */
     private Integer toqkh;
     /**
+     * 会员等级有效期
+     */
+    private String validstarttime;
+    /**
+     * 会员等级有效期
+     */
+    private String validendtime;
+    /**
      * 导入批次号
      */
     private String batchno;

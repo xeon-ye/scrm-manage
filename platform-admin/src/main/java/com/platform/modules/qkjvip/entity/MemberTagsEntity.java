@@ -65,7 +65,7 @@ public class MemberTagsEntity implements Serializable {
     private String items;
 
     /**
-     * 标签组类型（1：输入型 2：选择性 3：只读）
+     * 标签组类型（1：输入型 2：选择性 3：只读 4:只读选择型）
      */
     @TableField(exist = false)
     private Integer tagType;
