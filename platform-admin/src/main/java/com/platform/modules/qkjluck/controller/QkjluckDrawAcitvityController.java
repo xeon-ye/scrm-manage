@@ -125,7 +125,7 @@ public class QkjluckDrawAcitvityController extends AbstractController {
         String luckresultid = "";//抽中奖品id
         int lucknum = 0;//剩余抽奖次数
         Boolean issureluck = true;
-        if ((endflag == true || qkjluckDrawAcitvity.getStrDate().equals(nowday)) && (starflag == true || qkjluckDrawAcitvity.getEndDate().equals(nowday))) { //在有效时间内
+        if ((endflag == true || qkjluckDrawAcitvity.getEndDate().equals(nowday)) && (starflag == true || qkjluckDrawAcitvity.getStrDate().equals(nowday))) { //在有效时间内
             if (qkjluckDrawAcitvity!=null) {
                 List<QkjluckDrawResultEntity> itemlistresult = new ArrayList<>();
                 String itemlsresult = jedisUtil.get("MTM_CACHE:LUCKACTIVITY:RESULT_" + id + unionid);
