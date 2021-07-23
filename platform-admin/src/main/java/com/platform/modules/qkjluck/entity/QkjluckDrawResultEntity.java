@@ -52,6 +52,8 @@ public class QkjluckDrawResultEntity implements Serializable {
      */
     private String openid;
 
+    private String unionid;
+
     private Integer num;
 
     @TableField(exist = false)

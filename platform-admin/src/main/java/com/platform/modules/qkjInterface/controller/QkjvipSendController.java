@@ -16,18 +16,16 @@ import com.platform.common.utils.RestResponse;
 import com.platform.modules.accesstoken.entity.AccesstokenEntity;
 import com.platform.modules.accesstoken.service.AccesstokenService;
 import com.platform.modules.qkjInterface.entity.UserMsgEntity;
-import com.platform.modules.qkjvip.entity.*;
+import com.platform.modules.qkjluck.entity.QkjluckDrawResultEntity;
+import com.platform.modules.qkjluck.service.QkjluckDrawResultService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysSmsLogEntity;
-import com.platform.modules.sys.entity.SysUserEntity;
 import com.platform.modules.sys.service.SysSmsLogService;
 import com.platform.modules.sys.service.SysUserService;
-import com.platform.modules.tb.service.UserService;
 import com.platform.modules.util.DingMsg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -45,6 +43,8 @@ public class QkjvipSendController extends AbstractController {
     private SysUserService sysUserService;
     @Autowired
     private AccesstokenService accesstokenService;
+    @Autowired
+    private QkjluckDrawResultService qkjluckDrawResultService;
 
     /**
      * 发短信及钉钉消息
@@ -74,6 +74,25 @@ public class QkjvipSendController extends AbstractController {
         }
 
         return RestResponse.success();
+    }
+
+
+    /**
+     * 验证是否中奖
+     *
+     * @param
+     * @return RestResponse
+     */
+    @RequestMapping("/luckCheck")
+    public RestResponse luckCheck(@RequestParam Map<String, Object> params) {
+        Boolean flag = false;
+        if (params.get("unionid")!=null && params.get("productid")!=null) {
+            List<QkjluckDrawResultEntity> list = qkjluckDrawResultService.queryAll(params);
+            if (list!=null && list.size()>0) {
+                flag = true;
+            }
+        }
+        return RestResponse.success().put("luckresult",flag);
     }
 
     public static void main(String[] args) {

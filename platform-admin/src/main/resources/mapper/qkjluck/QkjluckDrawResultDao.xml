@@ -15,6 +15,12 @@
         <if test="params.openid != null and params.openid.trim() != ''">
             AND T.OPENID = '${params.openid}'
         </if>
+        <if test="params.unionid != null and params.unionid.trim() != ''">
+            AND T.unionid = '${params.unionid}'
+        </if>
+        <if test="params.productid != null and params.productid.trim() != ''">
+            AND i.prizetakenpath = '${params.productid}'
+        </if>
         <if test="params.num != null">
             AND T.num = #{params.num}
         </if>

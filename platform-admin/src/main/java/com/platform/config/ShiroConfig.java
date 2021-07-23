@@ -74,7 +74,7 @@ public class ShiroConfig {
         filterMap.put("/qkjvip/memberactivity/queryAllhtml", "anon");
         filterMap.put("/qkjvip/memberactivity/queryAllcount", "anon");
         filterMap.put("/qkjvip/memberactivity/actityisexist", "anon");
-        filterMap.put("/qkjvip/sendmsgbatch/sendmsg", "anon");
+        filterMap.put("/qkjvip/sendmsgbatch/**", "anon");
         filterMap.put("/qkjvip/membersignupmember/savesign", "anon");
         filterMap.put("/qkjvip/membercpon/sendCponDetail", "anon");
         filterMap.put("/qkjvip/member/selectMemByOpenid", "anon");
