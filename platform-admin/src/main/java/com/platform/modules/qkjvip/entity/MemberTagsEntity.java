@@ -71,6 +71,12 @@ public class MemberTagsEntity implements Serializable {
     private Integer tagType;
 
     /**
+     * 选项型标签的类型（1：单选 2：多选）
+     */
+    @TableField(exist = false)
+    private Integer optiontype;
+
+    /**
      * 标签组名称
      */
     @TableField(exist = false)

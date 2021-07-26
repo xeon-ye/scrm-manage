@@ -47,11 +47,15 @@ public class MemberTagsQueryEntity implements Serializable {
      */
     private List<QkjvipTaglibsEntity> tagList;
     /**
-     * 标签类型
+     * 标签类型（1: 输入型标签，2：选项标签，3：只读选项(只有值)，4：只读选择型）
      */
     private Integer tagType;
     /**
      * 标签值（输入型标签才有值）
      */
     private String tagValue;
+    /**
+     * 选项类型（1：单选 2：多选）
+     */
+    private Integer optiontype;
 }

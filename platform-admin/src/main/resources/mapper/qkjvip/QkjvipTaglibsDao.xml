@@ -4,13 +4,7 @@
 <mapper namespace="com.platform.modules.qkjvip.dao.QkjvipTaglibsDao">
 
     <sql id="selectSql">
-        SELECT
-        T.TAG_ID,
-        T.TAG_NAME,
-        T.ADD_DEPT,
-        T.ADD_TIME,
-        T.ADD_USER,
-        T.TAG_GROUP_ID
+        SELECT T.*
         FROM QKJVIP_TAGLIBS T
         WHERE 1=1
         <if test="params.tagName != null and params.tagName.trim() != ''">
