@@ -45,7 +45,7 @@
                     FROM
                         qkjvip_member_tags with(nolock)
                     WHERE
-                        a.member_id = member_id AND a.tag_group_id = tag_group_id FOR xml path ('')
+                        a.member_id = member_id AND a.tag_group_id = tag_group_id AND tag_locktype &lt;&gt; 1 FOR xml path ('')
                 ),
                 1,
                 1,
@@ -55,6 +55,6 @@
             qkjvip_member_tags a with(nolock)
         LEFT JOIN sys_dict d ON (a.tag_group_id=d.id)
         WHERE a.tag_locktype &lt;&gt; 1 and a.member_id = #{params.memberId}
-        ORDER BY a.tag_group_id
+        ORDER BY d.tag_type,a.tag_group_id
 	</select>
 </mapper>
