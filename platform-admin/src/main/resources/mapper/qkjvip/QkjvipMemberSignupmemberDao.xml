@@ -63,5 +63,14 @@
         </if>
     </select>
 
+    <select id="queryLotteryUsers" resultType="com.platform.modules.qkjvip.entity.QkjvipLotteryUsersEntity">
+        SELECT s.member_id id,ISNULL(m.real_name, m.member_name) userName,m.mobile,m.head_img_url headImgUrl FROM qkjvip_member_signupmember s
+        JOIN qkjvip_member m ON (s.member_id=m.member_id)
+        WHERE 1=1
+        <if test="params.activityId != null and params.activityId.trim() != ''">
+            AND s.activity_id = #{params.activityId}
+        </if>
+    </select>
+
 
 </mapper>

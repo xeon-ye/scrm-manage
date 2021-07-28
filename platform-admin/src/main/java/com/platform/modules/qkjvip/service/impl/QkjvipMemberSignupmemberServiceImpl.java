@@ -39,6 +39,11 @@ public class QkjvipMemberSignupmemberServiceImpl extends ServiceImpl<QkjvipMembe
     }
 
     @Override
+    public List<QkjvipMemberSignupmemberEntity> queryLotteryUsers(Map<String, Object> params) {
+        return baseMapper.queryLotteryUsers(params);
+    }
+
+    @Override
     public List<QkjvipMemberSignupmemberEntity> queryTopOne(Map<String, Object> params) {
         return baseMapper.queryTopOne(params);
     }

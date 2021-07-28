@@ -35,6 +35,14 @@ public interface QkjvipMemberSignupmemberService extends IService<QkjvipMemberSi
     List<QkjvipMemberSignupmemberEntity> queryAll(Map<String, Object> params);
 
     /**
+     * 查询抽奖人员
+     *
+     * @param params 查询参数
+     * @return List
+     */
+    List<QkjvipMemberSignupmemberEntity> queryLotteryUsers(Map<String, Object> params);
+
+    /**
      * 查询是否存在
      *
      * @param params 查询参数

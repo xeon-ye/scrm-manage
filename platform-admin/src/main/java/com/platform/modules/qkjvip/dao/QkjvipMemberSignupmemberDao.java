@@ -47,4 +47,6 @@ public interface QkjvipMemberSignupmemberDao extends BaseMapper<QkjvipMemberSign
      * @return List
      */
     List<QkjvipMemberSignupmemberEntity> selectQkjvipMemberSignupmemberPage(IPage page, @Param("params") Map<String, Object> params);
+
+    List<QkjvipMemberSignupmemberEntity> queryLotteryUsers(@Param("params") Map<String, Object> params);
 }
