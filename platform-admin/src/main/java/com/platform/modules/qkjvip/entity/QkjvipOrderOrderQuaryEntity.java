@@ -56,4 +56,5 @@ public class QkjvipOrderOrderQuaryEntity implements Serializable {
     private Integer datetype;
     private String servicename;
     private Boolean isneworder;
+    private Boolean isformal;
 }
