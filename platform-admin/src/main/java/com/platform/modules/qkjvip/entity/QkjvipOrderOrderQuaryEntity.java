@@ -55,4 +55,5 @@ public class QkjvipOrderOrderQuaryEntity implements Serializable {
     private String listordertype; // 订单类型列列表
     private Integer datetype;
     private String servicename;
+    private Boolean isneworder;
 }
