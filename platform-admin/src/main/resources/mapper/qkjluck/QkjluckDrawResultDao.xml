@@ -5,7 +5,7 @@
 
     <sql id="selectSql">
         SELECT
-        T.*,i.name,i.sub_name,i.prizetakentype,i.prizetakenpathresult
+        T.*,i.name,i.sub_name,i.prizetakentype,i.prizetakenpathresult,i.takedate
         FROM QKJLUCK_DRAW_RESULT T
         join qkjluck_draw_acitiityitem i on (i.id=t.item_id)
         WHERE 1=1
@@ -20,6 +20,12 @@
         </if>
         <if test="params.productid != null and params.productid.trim() != ''">
             AND i.prizetakenpath = '${params.productid}'
+        </if>
+        <if test="params.itemid != null and params.itemid.trim() != ''">
+            AND i.id = '${params.itemid}'
+        </if>
+        <if test="params.pronum != null">
+            AND i.pronum = #{params.pronum}
         </if>
         <if test="params.num != null">
             AND T.num = #{params.num}
