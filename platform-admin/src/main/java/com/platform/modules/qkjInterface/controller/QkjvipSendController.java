@@ -26,6 +26,8 @@ import com.platform.modules.util.DingMsg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -86,13 +88,33 @@ public class QkjvipSendController extends AbstractController {
     @RequestMapping("/luckCheck")
     public RestResponse luckCheck(@RequestParam Map<String, Object> params) {
         Boolean flag = false;
-        if (params.get("unionid")!=null && params.get("productid")!=null) {
+        String msg ="";
+        if (params.get("unionid")!=null && params.get("productid")!=null && params.get("itemid")!=null&&params.get("pronum")!=null) {
             List<QkjluckDrawResultEntity> list = qkjluckDrawResultService.queryAll(params);
             if (list!=null && list.size()>0) {
-                flag = true;
+                QkjluckDrawResultEntity debean = list.get(0);
+                //判断当日期是否大于最后领奖日期
+                String checkdate= debean.getTakedate();
+                if (checkdate!=null&&!checkdate.equals("")) {
+                    Date date=new Date();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date date2= null;
+                    try {
+                        date2 = sdf.parse(checkdate);
+                    } catch (ParseException e) {
+                        //e.printStackTrace();
+                    }
+                    if(date.getTime()>date2.getTime()){
+                        msg="领奖时间已过期。";
+                    }else{
+                        flag = true;
+                    }
+                }else{
+                    flag = true;
+                }
             }
         }
-        return RestResponse.success().put("luckresult",flag);
+        return RestResponse.success().put("luckresult",flag).put("msg",msg);
     }
 
     public static void main(String[] args) {

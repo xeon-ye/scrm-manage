@@ -133,7 +133,7 @@ public class QkjvipOrderOrderController extends AbstractController {
         if (list.size()>0) {
             order.setListordertype(StringUtils.join(list.toArray(), ","));
         } else { //无任何类别查询权限
-            order.setListordertype("0");
+            //order.setListordertype("0");
         }
         if (!getUser().getUserName().contains("admin")) {  // 空默认是全部所有权限
             order.setCurrentmemberid(getUserId());

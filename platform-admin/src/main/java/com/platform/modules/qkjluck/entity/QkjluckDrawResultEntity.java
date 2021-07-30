@@ -64,4 +64,6 @@ public class QkjluckDrawResultEntity implements Serializable {
     private String prizetakentype;
     @TableField(exist = false)
     private String prizetakenpathresult;
+    @TableField(exist = false)
+    private String takedate;
 }
