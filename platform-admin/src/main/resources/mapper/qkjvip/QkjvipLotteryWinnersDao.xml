@@ -4,13 +4,23 @@
 <mapper namespace="com.platform.modules.qkjvip.dao.QkjvipLotteryWinnersDao">
 
     <sql id="selectSql">
-        SELECT T.*, u.userName, u.mobile
-        FROM QKJVIP_LOTTERY_WINNERS T
-        LEFT JOIN qkjvip_lottery_users u ON (T.userId = u.id)
+        <choose>
+            <when test="params.usertype != null and params.usertype != '' and params.usertype == 2">
+                SELECT T.*, ISNULL(u.real_name, u.member_name) userName, u.mobile
+                FROM QKJVIP_LOTTERY_WINNERS T
+                LEFT JOIN Func_GetNewestMemberInfo() u ON (T.userId = u.member_id)
+            </when>
+            <otherwise>
+                SELECT T.*, u.userName, u.mobile
+                FROM QKJVIP_LOTTERY_WINNERS T
+                LEFT JOIN qkjvip_lottery_users u ON (T.userId = u.id)
+            </otherwise>
+        </choose>
         WHERE 1=1
         <if test="params.mainid != null and params.mainid.trim() != ''">
             AND T.mainId = #{params.mainid}
         </if>
+        ORDER BY T.prizeLevel ASC
     </sql>
 
     <select id="selectQkjvipLotteryWinnersPage" resultType="com.platform.modules.qkjvip.entity.QkjvipLotteryWinnersEntity">

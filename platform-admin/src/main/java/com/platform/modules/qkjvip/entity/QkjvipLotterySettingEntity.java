@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -56,6 +57,16 @@ public class QkjvipLotterySettingEntity implements Serializable {
      * 是否允许重复抽奖（0否1是）
      */
     private Integer repeatallowed;
+    /**
+     * 关联活动id
+     */
+    @TableField(fill = FieldFill.UPDATE)
+    private String activityid;
+    /**
+     * 关联活动标题
+     */
+    @TableField(fill = FieldFill.UPDATE)
+    private String activitytitle;
     /**
      * 创建人
      */

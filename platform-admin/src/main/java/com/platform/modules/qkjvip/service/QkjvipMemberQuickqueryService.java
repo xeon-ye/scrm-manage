@@ -1,11 +1,11 @@
 /*
  * 项目名称:platform-plus
- * 类名称:QkjvipMemberSignupmemberService.java
+ * 类名称:QkjvipMemberQuickqueryService.java
  * 包名称:com.platform.modules.qkjvip.service
  *
  * 修改履历:
  *     日期                       修正者        主要内容
- *     2020-10-26 13:18:34        孙珊珊     初版做成
+ *     2021-07-26 14:05:17        liuqianru     初版做成
  *
  * Copyright (c) 2019-2019 微同软件
  */
@@ -13,7 +13,7 @@ package com.platform.modules.qkjvip.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.platform.modules.qkjvip.entity.QkjvipMemberSignupmemberEntity;
+import com.platform.modules.qkjvip.entity.QkjvipMemberQuickqueryEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -21,10 +21,10 @@ import java.util.Map;
 /**
  * Service接口
  *
- * @author 孙珊珊
- * @date 2020-10-26 13:18:34
+ * @author liuqianru
+ * @date 2021-07-26 14:05:17
  */
-public interface QkjvipMemberSignupmemberService extends IService<QkjvipMemberSignupmemberEntity> {
+public interface QkjvipMemberQuickqueryService extends IService<QkjvipMemberQuickqueryEntity> {
 
     /**
      * 查询所有列表
@@ -32,24 +32,7 @@ public interface QkjvipMemberSignupmemberService extends IService<QkjvipMemberSi
      * @param params 查询参数
      * @return List
      */
-    List<QkjvipMemberSignupmemberEntity> queryAll(Map<String, Object> params);
-
-    /**
-     * 查询抽奖人员
-     *
-     * @param params 查询参数
-     * @return List
-     */
-    List<QkjvipMemberSignupmemberEntity> queryLotteryUsers(Map<String, Object> params);
-
-    /**
-     * 查询是否存在
-     *
-     * @param params 查询参数
-     * @return List
-     */
-
-    List<QkjvipMemberSignupmemberEntity> queryTopOne(Map<String, Object> params);
+    List<QkjvipMemberQuickqueryEntity> queryAll(Map<String, Object> params);
 
     /**
      * 分页查询
@@ -62,18 +45,18 @@ public interface QkjvipMemberSignupmemberService extends IService<QkjvipMemberSi
     /**
      * 新增
      *
-     * @param qkjvipMemberSignupmember 
+     * @param qkjvipMemberQuickquery 
      * @return 新增结果
      */
-    boolean add(QkjvipMemberSignupmemberEntity qkjvipMemberSignupmember);
+    boolean add(QkjvipMemberQuickqueryEntity qkjvipMemberQuickquery);
 
     /**
      * 根据主键更新
      *
-     * @param qkjvipMemberSignupmember 
+     * @param qkjvipMemberQuickquery 
      * @return 更新结果
      */
-    boolean update(QkjvipMemberSignupmemberEntity qkjvipMemberSignupmember);
+    boolean update(QkjvipMemberQuickqueryEntity qkjvipMemberQuickquery);
 
     /**
      * 根据主键删除

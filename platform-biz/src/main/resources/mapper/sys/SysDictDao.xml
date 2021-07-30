@@ -4,13 +4,13 @@
 <mapper namespace="com.platform.modules.sys.dao.SysDictDao">
 
     <select id="queryByCode" resultType="com.platform.modules.sys.entity.SysDictEntity">
-        SELECT ID,NAME,VALUE,tag_type FROM SYS_DICT WHERE 1=1
+        SELECT ID,NAME,VALUE,tag_type,optionType FROM SYS_DICT WHERE 1=1
             AND GROUP_ID = (SELECT ID FROM SYS_DICT_GROUP WHERE CODE = #{code})
             AND STATUS = 1 ORDER BY SORT
     </select>
 
     <sql id="selectSql">
-        SELECT D.ID,D.GROUP_ID,D.NAME,D.VALUE,D.SORT,D.STATUS,D.REMARK,D.tag_type,G.CODE CODE FROM SYS_DICT D LEFT JOIN SYS_DICT_GROUP G ON D.GROUP_ID = G.ID
+        SELECT D.ID,D.GROUP_ID,D.NAME,D.VALUE,D.SORT,D.STATUS,D.REMARK,D.tag_type,D.optionType,G.CODE CODE FROM SYS_DICT D LEFT JOIN SYS_DICT_GROUP G ON D.GROUP_ID = G.ID
         WHERE 1=1
         <if test="params.name != null and params.name != ''">
             and D.NAME LIKE '%${params.name}%'

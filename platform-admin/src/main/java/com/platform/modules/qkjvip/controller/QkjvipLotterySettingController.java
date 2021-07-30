@@ -18,6 +18,7 @@ import com.platform.common.utils.RestResponse;
 import com.platform.modules.qkjvip.entity.QkjvipLotteryPrizeEntity;
 import com.platform.modules.qkjvip.entity.QkjvipLotteryUsersEntity;
 import com.platform.modules.qkjvip.service.QkjvipLotteryUsersService;
+import com.platform.modules.qkjvip.service.QkjvipMemberSignupmemberService;
 import com.platform.modules.quartz.entity.TmpQkjvipMemberBasicEntity;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.qkjvip.entity.QkjvipLotterySettingEntity;
@@ -26,10 +27,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Controller
@@ -44,6 +42,8 @@ public class QkjvipLotterySettingController extends AbstractController {
     private QkjvipLotterySettingService qkjvipLotterySettingService;
     @Autowired
     private QkjvipLotteryUsersService qkjvipLotteryUsersService;
+    @Autowired
+    private QkjvipMemberSignupmemberService qkjvipMemberSignupmemberService;
 
     /**
      * 查看所有列表
@@ -103,8 +103,16 @@ public class QkjvipLotterySettingController extends AbstractController {
         List<QkjvipLotteryPrizeEntity> prizelist = JSON.parseArray(qkjvipLotterySetting.getPrizes(), QkjvipLotteryPrizeEntity.class);
         qkjvipLotterySetting.setPrizelist(prizelist);
         Map map = new HashMap();
-        map.put("mainid", id);
-        List<QkjvipLotteryUsersEntity> users = qkjvipLotteryUsersService.queryAll(map);
+        List<QkjvipLotteryUsersEntity> users = new ArrayList<>();
+        if (qkjvipLotterySetting.getUsertype() == 2) {  // 活动签到
+            map.clear();
+            map.put("activityId", qkjvipLotterySetting.getActivityid());
+            users = qkjvipMemberSignupmemberService.queryLotteryUsers(map);
+        } else {
+            map.clear();
+            map.put("mainid", id);
+            users = qkjvipLotteryUsersService.queryAll(map);
+        }
         qkjvipLotterySetting.setUserlist(users);
 
         return RestResponse.success().put("lotterysetting", qkjvipLotterySetting);

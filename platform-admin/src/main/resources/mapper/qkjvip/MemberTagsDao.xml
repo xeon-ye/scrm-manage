@@ -36,24 +36,25 @@
             d.name as tagGroupName,
             a.tag_value,
             d.tag_type,
+            d.optionType,
             a.tag_value_text,
             stuff(
                 (
                     SELECT DISTINCT
                         ',' + tag_id
                     FROM
-                        qkjvip_member_tags
+                        qkjvip_member_tags with(nolock)
                     WHERE
-                        a.member_id = member_id AND a.tag_group_id = tag_group_id FOR xml path ('')
+                        a.member_id = member_id AND a.tag_group_id = tag_group_id AND tag_locktype &lt;&gt; 1 FOR xml path ('')
                 ),
                 1,
                 1,
                 ''
             ) items
         FROM
-            qkjvip_member_tags a
+            qkjvip_member_tags a with(nolock)
         LEFT JOIN sys_dict d ON (a.tag_group_id=d.id)
-        WHERE a.tag_locktype &lt;&gt; 1 and a.member_id = #{params.memberId}
-        ORDER BY a.tag_group_id
+        WHERE a.tag_locktype &lt;&gt; 1 and a.member_id = '${params.memberId}'
+        ORDER BY d.tag_type,a.tag_group_id
 	</select>
 </mapper>

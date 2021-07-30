@@ -356,6 +356,11 @@ public class MemberEntity implements Serializable {
     @TableField(exist = false)
     private List<MemberChannelEntity> listmemberchannel;
     /**
+     * 注册时间
+     */
+    @TableField(exist = false)
+    private String addTimeFormat;
+    /**
      * 孙珊添加活动报名用
      */
     @TableField(exist = false)

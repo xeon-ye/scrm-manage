@@ -69,6 +69,8 @@ public class SysDictEntity implements Serializable {
 
     @TableField(fill = FieldFill.UPDATE)
     private Integer tagType;
+    @TableField(fill = FieldFill.UPDATE)
+    private Integer optiontype;
 
     @TableField(exist = false)
     private String code;

@@ -173,6 +173,7 @@ public class MemberController extends AbstractController {
                 memberTagsQueryEntity.setTagGroupId(memberTagsEntities.get(i).getTagGroupId());
                 memberTagsQueryEntity.setTagGroupName(memberTagsEntities.get(i).getTagGroupName());
                 memberTagsQueryEntity.setTagType(memberTagsEntities.get(i).getTagType());
+                memberTagsQueryEntity.setOptiontype(memberTagsEntities.get(i).getOptiontype());
                 params.put("tagGroupId", memberTagsEntities.get(i).getTagGroupId());
                 List<QkjvipTaglibsEntity> tagList = qkjvipTaglibsService.queryAll(params);
                 memberTagsQueryEntity.setTagList(tagList);
@@ -226,7 +227,7 @@ public class MemberController extends AbstractController {
             JSONObject resultObject = JSON.parseObject(resultPost);
             if ("200".equals(resultObject.get("resultcode").toString())) {  //清洗成功
                 member.setMemberId(resultObject.get("memberid").toString());
-                member.setMembertags(memberImport.getMembertags());
+//                member.setMembertags(memberImport.getMembertags());
 //                memberTagsService.saveOrUpdate(member);  // 调藕周红接口更新标签2021-07-23
             } else {
                 return RestResponse.error(resultObject.get("descr").toString());

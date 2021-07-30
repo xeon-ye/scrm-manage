@@ -41,8 +41,8 @@ public class QkjvipLotteryWinnersServiceImpl extends ServiceImpl<QkjvipLotteryWi
     @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
-        params.put("sidx", "T.id");
-        params.put("asc", false);
+        params.put("sidx", "T.prizeLevel");
+        params.put("asc", true);
         Page<QkjvipLotteryWinnersEntity> page = new Query<QkjvipLotteryWinnersEntity>(params).getPage();
         return page.setRecords(baseMapper.selectQkjvipLotteryWinnersPage(page, params));
     }

@@ -46,6 +46,10 @@ public class QkjvipLotteryWinnersEntity implements Serializable {
     @Excel(name = "奖项", width = 15, orderNum = "3")
     private String prizelevelname;
     /**
+     * 奖项等级
+     */
+    private Integer prizelevel;
+    /**
      * mainId
      */
     private String mainid;
