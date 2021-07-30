@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjvip.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -54,4 +55,11 @@ public class QkjvipTaglibsEntity implements Serializable {
      * 标签组id
      */
     private String tagGroupId;
+
+    @TableField(exist = false)
+    private String tagGroupName;
+    @TableField(exist = false)
+    private Integer tagType;
+    @TableField(exist = false)
+    private Integer optiontype;
 }

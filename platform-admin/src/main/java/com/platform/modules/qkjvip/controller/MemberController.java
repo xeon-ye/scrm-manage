@@ -34,6 +34,9 @@ import com.platform.modules.sys.service.SysRoleOrgService;
 import com.platform.modules.sys.service.SysUserChannelService;
 import com.platform.modules.util.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -315,72 +318,74 @@ public class MemberController extends AbstractController {
         String[] dictAttr = null;
         try {
             Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("会员信息表", "会员信息"), MemberExportEntity.class, list);
-            //这里是自己加的 带下拉框的代码
-            ExcelSelectListUtil.selectList(workbook, 5, 5, new String[]{"男","女","未知"});
-            ExcelSelectListUtil.selectList(workbook, 6, 6, new String[]{"是","否"});
-
-            //会员渠道
-            String channelIds = "";
-            channelIds = sysUserChannelService.queryChannelIdByUserId(getUserId());
-            if ("0".equals(channelIds) || getUser().getUserName().contains("admin")) {  // 所有渠道权限
-                params.clear();
-                memberChannelList = qkjvipMemberChannelService.queryAll(params);
-                dictAttr = new String[memberChannelList.size()];
-                for (int i = 0; i < memberChannelList.size(); i++) {
-                    dictAttr[i] = memberChannelList.get(i).getServicename().trim() + "-" + memberChannelList.get(i).getMemberchannel();
+            Sheet sheet = workbook.getSheet("会员信息");
+            //获取第三行
+            Row titlerow = sheet.getRow(2);
+            //有多少列
+            int cellNum = titlerow.getLastCellNum();
+            for (int k = 0; k < cellNum; k++) {
+                //根据索引获取对应的列
+                Cell cell = titlerow.getCell(k);
+                String cellTitle = cell != null? cell.toString() : "";
+                if (cell != null && !"".equals(cell.toString())) {
+                    switch (cellTitle) {
+                        case "性别":
+                            ExcelSelectListUtil.selectList(workbook, k, k, new String[]{"男","女","未知"});
+                            break;
+                        case "是否潜在客户":
+                            ExcelSelectListUtil.selectList(workbook, k, k, new String[]{"是","否"});
+                            break;
+                        case "会员渠道":
+                            //会员渠道
+                            String channelIds = "";
+                            channelIds = sysUserChannelService.queryChannelIdByUserId(getUserId());
+                            if ("0".equals(channelIds) || getUser().getUserName().contains("admin")) {  // 所有渠道权限
+                                params.clear();
+                                memberChannelList = qkjvipMemberChannelService.queryAll(params);
+                                dictAttr = new String[memberChannelList.size()];
+                                for (int i = 0; i < memberChannelList.size(); i++) {
+                                    dictAttr[i] = memberChannelList.get(i).getServicename().trim() + "-" + memberChannelList.get(i).getMemberchannel();
+                                }
+                            } else {  // 查询登陆人的渠道权限
+                                params.clear();
+                                params.put("userId", getUserId());
+                                permChannelList = sysUserChannelService.queryPermissionChannels(params);
+                                dictAttr = new String[permChannelList.size()];
+                                for (int i = 0; i < permChannelList.size(); i++) {
+                                    dictAttr[i] = permChannelList.get(i).getServicename().trim() + "-" + permChannelList.get(i).getChannelId();
+                                }
+                            }
+                            if (dictAttr != null && dictAttr.length > 0) {
+                                ExcelSelectListUtil.ExcelTo255(workbook, "hidden", 1, dictAttr, 3, 65535, k, k);
+                            }
+                            break;
+                        case "会员性质":
+                            //会员性质
+                            params.clear();
+                            params.put("code", "MEMBERNATURE");
+                            dictList = sysDictService.queryByCode(params);
+                            dictAttr = new String[dictList.size()];
+                            for (int i = 0; i < dictList.size(); i++) {
+                                dictAttr[i] = dictList.get(i).getName();
+                            }
+                            ExcelSelectListUtil.selectList(workbook, k, k, dictAttr);
+                            break;
+                        case "会员来源":
+                            //会员来源
+                            params.clear();
+                            params.put("code", "MEMBERSOURCE");
+                            dictList = sysDictService.queryByCode(params);
+                            dictAttr = new String[dictList.size()];
+                            for (int i = 0; i < dictList.size(); i++) {
+                                dictAttr[i] = dictList.get(i).getName();
+                            }
+                            ExcelSelectListUtil.selectList(workbook, k, k, dictAttr);
+                            break;
+                        default:
+                            break;
+                    }
                 }
-            } else {  // 查询登陆人的渠道权限
-                params.clear();
-                params.put("userId", getUserId());
-                permChannelList = sysUserChannelService.queryPermissionChannels(params);
-                dictAttr = new String[permChannelList.size()];
-                for (int i = 0; i < permChannelList.size(); i++) {
-                    dictAttr[i] = permChannelList.get(i).getServicename().trim() + "-" + permChannelList.get(i).getChannelId();
-                }
             }
-            if (dictAttr != null && dictAttr.length > 0) {
-                ExcelSelectListUtil.ExcelTo255(workbook, "hidden", 1, dictAttr, 3, 65535, 2, 2);
-            }
-
-            //会员类型
-//            params.clear();
-//            params.put("code", "MEMBERTYPE");
-//            dictList = sysDictService.queryByCode(params);
-//            dictAttr = new String[dictList.size()];
-//            for (int i = 0; i < dictList.size(); i++) {
-//                dictAttr[i] = dictList.get(i).getName();
-//            }
-//            ExcelSelectListUtil.selectList(workbook, 13, 13, dictAttr);
-
-            //会员性质
-            params.clear();
-            params.put("code", "MEMBERNATURE");
-            dictList = sysDictService.queryByCode(params);
-            dictAttr = new String[dictList.size()];
-            for (int i = 0; i < dictList.size(); i++) {
-                dictAttr[i] = dictList.get(i).getName();
-            }
-            ExcelSelectListUtil.selectList(workbook, 13, 13, dictAttr);
-
-            //会员等级
-//            params.clear();
-//            params.put("code", "MEMBERLEVEL");
-//            dictList = sysDictService.queryByCode(params);
-//            dictAttr = new String[dictList.size()];
-//            for (int i = 0; i < dictList.size(); i++) {
-//                dictAttr[i] = dictList.get(i).getName();
-//            }
-//            ExcelSelectListUtil.selectList(workbook, 16, 16, dictAttr);
-
-            //会员来源
-            params.clear();
-            params.put("code", "MEMBERSOURCE");
-            dictList = sysDictService.queryByCode(params);
-            dictAttr = new String[dictList.size()];
-            for (int i = 0; i < dictList.size(); i++) {
-                dictAttr[i] = dictList.get(i).getName();
-            }
-            ExcelSelectListUtil.selectList(workbook, 14, 14, dictAttr);
             response.setCharacterEncoding("UTF-8");
             response.setHeader("content-Type", "application/vnd.ms-excel");
             response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode( "会员信息表." + ExportExcelUtils.ExcelTypeEnum.XLS.getValue(), "UTF-8"));
@@ -442,6 +447,89 @@ public class MemberController extends AbstractController {
                             }
                         }
                     }
+                    List<QkjvipTaglibsEntity> tagList = new ArrayList<>();
+                    List<MemberTagsQueryEntity> membertags = new ArrayList<>();
+                    if (StringUtils.isNotBlank(list.get(i).getTag1())) {
+                        params.clear();
+                        params.put("tagName", list.get(i).getTag1());
+                        params.put("tagGroupId", "4bd7f98607e44647bf409589b16836b4");
+                        tagList = qkjvipTaglibsService.queryToCheck(params);
+                        if (tagList.size() > 0) {
+                            MemberTagsQueryEntity memberTagsQueryEntity = new MemberTagsQueryEntity();
+                            memberTagsQueryEntity.setTagGroupId(tagList.get(0).getTagGroupId());
+                            memberTagsQueryEntity.setTagGroupName(tagList.get(0).getTagGroupName());
+                            List<String> tagIdList = new ArrayList<>();
+                            tagIdList.add(tagList.get(0).getTagId());
+                            memberTagsQueryEntity.setTagIdList(tagIdList);
+                            memberTagsQueryEntity.setTagType(tagList.get(0).getTagType());
+                            memberTagsQueryEntity.setOptiontype(tagList.get(0).getOptiontype());
+                            memberTagsQueryEntity.setTagValue("");
+                            membertags.add(memberTagsQueryEntity);
+                        } else {
+                            return RestResponse.error("第" + rownum + "行省份标签不正确,请修改后重新上传！");
+                        }
+                    }
+                    if (StringUtils.isNotBlank(list.get(i).getTag2())) {
+                        params.clear();
+                        params.put("tagName", list.get(i).getTag2());
+                        params.put("tagGroupId", "9af1533bea3d4c89b856ad80e9d0e457");
+                        tagList = qkjvipTaglibsService.queryToCheck(params);
+                        if (tagList.size() > 0) {
+                            MemberTagsQueryEntity memberTagsQueryEntity = new MemberTagsQueryEntity();
+                            memberTagsQueryEntity.setTagGroupId(tagList.get(0).getTagGroupId());
+                            memberTagsQueryEntity.setTagGroupName(tagList.get(0).getTagGroupName());
+                            List<String> tagIdList = new ArrayList<>();
+                            tagIdList.add(tagList.get(0).getTagId());
+                            memberTagsQueryEntity.setTagIdList(tagIdList);
+                            memberTagsQueryEntity.setTagType(tagList.get(0).getTagType());
+                            memberTagsQueryEntity.setOptiontype(tagList.get(0).getOptiontype());
+                            memberTagsQueryEntity.setTagValue("");
+                            membertags.add(memberTagsQueryEntity);
+                        } else {
+                            return RestResponse.error("第" + rownum + "行市标签不正确,请修改后重新上传！");
+                        }
+                    }
+                    if (StringUtils.isNotBlank(list.get(i).getTag3())) {
+                        params.clear();
+                        params.put("tagName", list.get(i).getTag3());
+                        params.put("tagGroupId", "961fd24ebf5263aa2028f065503f90af");
+                        tagList = qkjvipTaglibsService.queryToCheck(params);
+                        if (tagList.size() > 0) {
+                            MemberTagsQueryEntity memberTagsQueryEntity = new MemberTagsQueryEntity();
+                            memberTagsQueryEntity.setTagGroupId(tagList.get(0).getTagGroupId());
+                            memberTagsQueryEntity.setTagGroupName(tagList.get(0).getTagGroupName());
+                            List<String> tagIdList = new ArrayList<>();
+                            tagIdList.add(tagList.get(0).getTagId());
+                            memberTagsQueryEntity.setTagIdList(tagIdList);
+                            memberTagsQueryEntity.setTagType(tagList.get(0).getTagType());
+                            memberTagsQueryEntity.setOptiontype(tagList.get(0).getOptiontype());
+                            memberTagsQueryEntity.setTagValue("");
+                            membertags.add(memberTagsQueryEntity);
+                        } else {
+                            return RestResponse.error("第" + rownum + "行圈层标签不正确,请修改后重新上传！");
+                        }
+                    }
+                    if (StringUtils.isNotBlank(list.get(i).getTag4())) {
+                        params.clear();
+                        params.put("tagName", list.get(i).getTag4());
+                        params.put("tagGroupId", "c7f0689645f68feec5953f1b27460e3d");
+                        tagList = qkjvipTaglibsService.queryToCheck(params);
+                        if (tagList.size() > 0) {
+                            MemberTagsQueryEntity memberTagsQueryEntity = new MemberTagsQueryEntity();
+                            memberTagsQueryEntity.setTagGroupId(tagList.get(0).getTagGroupId());
+                            memberTagsQueryEntity.setTagGroupName(tagList.get(0).getTagGroupName());
+                            List<String> tagIdList = new ArrayList<>();
+                            tagIdList.add(tagList.get(0).getTagId());
+                            memberTagsQueryEntity.setTagIdList(tagIdList);
+                            memberTagsQueryEntity.setTagType(tagList.get(0).getTagType());
+                            memberTagsQueryEntity.setOptiontype(tagList.get(0).getOptiontype());
+                            memberTagsQueryEntity.setTagValue("");
+                            membertags.add(memberTagsQueryEntity);
+                        } else {
+                            return RestResponse.error("第" + rownum + "行消费者群体标签不正确,请修改后重新上传！");
+                        }
+                    }
+                    list.get(i).setMembertags(membertags);
                     list.get(i).setBatchno(batchno);
                     list.get(i).setOrgUserid(getUserId());  // 导入默认所属人
                     list.get(i).setOrgNo(getOrgNo()); //导入默认所属人部门

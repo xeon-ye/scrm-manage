@@ -45,4 +45,6 @@ public interface QkjvipTaglibsDao extends BaseMapper<QkjvipTaglibsEntity> {
      * @return List
      */
     List<QkjvipTaglibsEntity> selectQkjvipTaglibsPage(IPage page, @Param("params") Map<String, Object> params);
+
+    List<QkjvipTaglibsEntity> queryToCheck(@Param("params") Map<String, Object> params);
 }

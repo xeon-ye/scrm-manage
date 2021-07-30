@@ -27,6 +27,9 @@
         <if test="params.memberId != null and params.memberId != ''">
             AND mt.member_id = #{params.memberId}
         </if>
+        <if test="params.tagValue != null and params.tagValue != ''">
+            AND mt.tag_value = #{params.tagValue}
+        </if>
     </select>
 
     <select id="queryTagsList" resultType="com.platform.modules.qkjvip.entity.MemberTagsEntity">
@@ -54,7 +57,7 @@
         FROM
             qkjvip_member_tags a with(nolock)
         LEFT JOIN sys_dict d ON (a.tag_group_id=d.id)
-        WHERE a.tag_locktype &lt;&gt; 1 and a.member_id = '${params.memberId}'
+        WHERE a.tag_locktype &lt;&gt; 1 and a.member_id = convert(varchar,#{params.memberId})
         ORDER BY d.tag_type,a.tag_group_id
 	</select>
 </mapper>
