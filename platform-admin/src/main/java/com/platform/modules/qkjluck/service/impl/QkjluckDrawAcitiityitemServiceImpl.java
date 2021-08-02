@@ -72,4 +72,9 @@ public class QkjluckDrawAcitiityitemServiceImpl extends ServiceImpl<QkjluckDrawA
     public int deleteBatchByMain(String mainid) {
         return baseMapper.deleteBatchByMain(mainid);
     }
+
+    @Override
+    public boolean update(String mainId) {
+        return baseMapper.updateResultAddressByMainId(mainId);
+    }
 }

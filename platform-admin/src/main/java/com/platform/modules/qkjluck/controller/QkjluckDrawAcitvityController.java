@@ -394,7 +394,7 @@ public class QkjluckDrawAcitvityController extends AbstractController {
         }
 
         //修改产品的连接
-
+        qkjluckDrawAcitiityitemService.update(qkjluckDrawAcitvity.getId());
 
         //更新redis
         // 查询奖品

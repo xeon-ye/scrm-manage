@@ -52,4 +52,6 @@ public interface QkjluckDrawAcitiityitemDao extends BaseMapper<QkjluckDrawAcitii
      * @return
      */
     int deleteBatchByMain(String mainid);
+
+    boolean updateResultAddressByMainId(String mainId);
 }

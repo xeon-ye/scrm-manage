@@ -80,4 +80,12 @@ public interface QkjluckDrawAcitiityitemService extends IService<QkjluckDrawAcit
      * @return
      */
     int deleteBatchByMain(String mainId);
+
+    /**
+     * 根据活动更新连接地址
+     *
+     * @param mainId
+     * @return 更新结果
+     */
+    boolean update(String mainId);
 }
