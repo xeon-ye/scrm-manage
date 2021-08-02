@@ -151,6 +151,30 @@ public class QkjvipMemberImportEntity implements Serializable {
      */
     @Excel(name = "身份证", orderNum = "20", width = 15, groupName = "扩展信息", fixedIndex = 20)
     private String idcard;
+    /*
+     * 标签-省
+     */
+    @TableField(exist = false)
+    @Excel(name = "省", orderNum = "21", width = 15, groupName = "会员标签", fixedIndex = 21)
+    private String tag1;
+    /*
+     * 标签-市
+     */
+    @TableField(exist = false)
+    @Excel(name = "市", orderNum = "22", width = 15, groupName = "会员标签", fixedIndex = 22)
+    private String tag2;
+    /*
+     * 标签-圈层
+     */
+    @TableField(exist = false)
+    @Excel(name = "圈层", orderNum = "23", width = 15, groupName = "会员标签", fixedIndex = 23)
+    private String tag3;
+    /*
+     * 标签-消费者群体
+     */
+    @TableField(exist = false)
+    @Excel(name = "消费者群体", orderNum = "24", width = 15, groupName = "会员标签", fixedIndex = 24)
+    private String tag4;
     /**
      * 会员类型
      */

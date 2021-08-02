@@ -41,6 +41,13 @@ public interface QkjvipTaglibsService extends IService<QkjvipTaglibsEntity> {
      * @return Page
      */
     Page queryPage(Map<String, Object> params);
+    /**
+     * 查询所有列表
+     *
+     * @param params 查询参数
+     * @return List
+     */
+    List<QkjvipTaglibsEntity> queryToCheck(Map<String, Object> params);
 
     /**
      * 新增

@@ -23,4 +23,17 @@
         <include refid="selectSql"/>
         ORDER BY add_time ASC
     </select>
+
+    <select id="queryToCheck" resultType="com.platform.modules.qkjvip.entity.QkjvipTaglibsEntity">
+        SELECT TOP 1 T.*, d.NAME tagGroupName, d.tag_type, d.optionType
+        FROM QKJVIP_TAGLIBS T
+        LEFT JOIN sys_dict d ON (T.tag_group_id = d.ID)
+        WHERE 1=1
+        <if test="params.tagName != null and params.tagName.trim() != ''">
+            AND T.TAG_NAME = #{params.tagName}
+        </if>
+        <if test="params.tagGroupId != null and params.tagGroupId.trim() != ''">
+            AND T.tag_group_id = #{params.tagGroupId}
+        </if>
+    </select>
 </mapper>

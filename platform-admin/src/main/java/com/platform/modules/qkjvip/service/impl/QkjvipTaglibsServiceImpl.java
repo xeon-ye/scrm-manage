@@ -50,6 +50,11 @@ public class QkjvipTaglibsServiceImpl extends ServiceImpl<QkjvipTaglibsDao, Qkjv
     }
 
     @Override
+    public List<QkjvipTaglibsEntity> queryToCheck(Map<String, Object> params) {
+        return baseMapper.queryToCheck(params);
+    }
+
+    @Override
     public boolean add(QkjvipTaglibsEntity qkjvipTaglibs) {
         return this.save(qkjvipTaglibs);
     }
