@@ -41,7 +41,7 @@ public class QkjluckDrawAcitvityServiceImpl extends ServiceImpl<QkjluckDrawAcitv
     @Override
     public Page queryPage(Map<String, Object> params) {
         //排序
-        params.put("sidx", "T.id");
+        params.put("sidx", "T.addtime");
         params.put("asc", false);
         Page<QkjluckDrawAcitvityEntity> page = new Query<QkjluckDrawAcitvityEntity>(params).getPage();
         return page.setRecords(baseMapper.selectQkjluckDrawAcitvityPage(page, params));

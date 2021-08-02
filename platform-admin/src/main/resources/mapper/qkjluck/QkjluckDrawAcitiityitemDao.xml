@@ -24,4 +24,12 @@
     <delete id="deleteBatchByMain">
         DELETE FROM QKJLUCK_DRAW_ACITIITYITEM WHERE ACTIVITY_ID = #{mainid}
     </delete>
+    <update id="updateResultAddressByMainId">
+		UPDATE a set a.prizetakenpathresult = (a.prizetakenpathresult + '&amp;fromid=' + a.id + '&amp;qt=' +  convert(varchar(50),isnull(a.pronum,0)))
+          from qkjluck_draw_acitiityitem a
+        where
+        a.activity_id= #{value}
+        and a.prizetakentype = 3
+
+	</update>
 </mapper>
