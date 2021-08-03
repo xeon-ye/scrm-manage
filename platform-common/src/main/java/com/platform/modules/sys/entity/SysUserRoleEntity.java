@@ -42,5 +42,7 @@ public class SysUserRoleEntity implements Serializable {
     private String roleId;
 
     @TableField(exist = false)
+    private Integer orgnoselect;
+    @TableField(exist = false)
     private String ordertype;
 }

@@ -147,4 +147,9 @@ public class SysUserEntity implements Serializable {
 
     private  String oaId;
 
+    /**
+     * 监管部门
+     */
+    private String superviseorgnos;
+
 }

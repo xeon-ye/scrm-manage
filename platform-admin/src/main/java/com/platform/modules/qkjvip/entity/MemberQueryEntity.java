@@ -86,6 +86,7 @@ public class MemberQueryEntity implements Serializable {
     private String endlastactivitydate;  // 最后参加活动结束时间
     private String city; // 用户所在城市
     private String listorgno;  // 用户的权限部门
+    private String searchlistorgno;   // 搜索部门列表
     private String currentmemberid;  // 当前登录用户id
     private String listmemberchannel;  // 用户的渠道权限
     private Boolean issearchmain;  // 是否主渠道（0否 1是）

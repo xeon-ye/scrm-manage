@@ -15,8 +15,15 @@
 	</select>
 
 	<select id="queryRoleList" resultType="com.platform.modules.sys.entity.SysUserRoleEntity">
-		SELECT a.ROLE_ID,b.ordertype FROM SYS_USER_ROLE a
-		join sys_role b on (a.Role_id=b.ROLE_ID) WHERE a.USER_ID = #{value}
+		SELECT a.ROLE_ID,b.orgnoselect,b.ordertype FROM SYS_USER_ROLE a
+		join sys_role b on (a.Role_id=b.ROLE_ID)
+		WHERE 1 = 1
+		<if test="params.userId != null and params.userId != ''">
+			AND a.USER_ID = #{params.userId}
+		</if>
+		<if test="params.rolePerm != null and params.rolePerm != ''">
+			AND a.ROLE_ID IN (${params.rolePerm})
+		</if>
 	</select>
 
 </mapper>
