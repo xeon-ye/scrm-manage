@@ -41,12 +41,15 @@ public final class SysDBCacheLogic extends SysCacheLogic {
 
 	// 子部门列表前缀
 	public final static String CACHE_DEPT_PREFIX_SUB = "dept-sub-";
+	// 父部门列表前缀
+	public final static String CACHE_DEPT_PREFIX_PARENT = "dept-parent-";
 
 	public synchronized void cacheDept(boolean delFlag) {
 		// 是否需要先清空原缓存
 		if (delFlag) {
 			log.info("开始清空原部门缓存数据");
 			cache.del(CACHE_DEPT_PREFIX_SUB + "*");
+			cache.del(CACHE_DEPT_PREFIX_PARENT + "*");
 			log.info("原部门缓存数据清空完毕");
 		}
 		log.info("开始缓存部门数据");
@@ -68,11 +71,15 @@ public final class SysDBCacheLogic extends SysCacheLogic {
 				if (ToolsUtil.checkParent(m, d2.getKey(), d1.getKey())) {
 					cacheMap(sub_map, CACHE_DEPT_PREFIX_SUB + d1.getKey(), d2.getKey());
 				}
+				if (ToolsUtil.checkParent(m, d1.getKey(), d2.getKey())) {
+					cacheMap(parent_map, CACHE_DEPT_PREFIX_PARENT + d1.getKey(), d2.getKey());
+				}
 			}
 			
 		}
 
 		cacheValue2JSON(sub_map);
+		cacheValue2JSON(parent_map);
 		log.info("缓存部门数据完成");
 	}
 
