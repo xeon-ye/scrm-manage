@@ -395,8 +395,31 @@ public class QkjvipOrderOrderController extends AbstractController {
     @SysLog("删除")
     @RequestMapping("/delete")
     public RestResponse delete(@RequestBody String[] ids) {
-        qkjvipOrderOrderService.deleteBatch(ids);
-
+        // qkjvipOrderOrderService.deleteBatch(ids);
+        QkjvipOrderOrderEntity qkjvipOrderOrder;
+        for (int i=0;i<ids.length;i++) {
+            if(ids[i]!=null&&!ids[i].equals("")){
+                qkjvipOrderOrder = new QkjvipOrderOrderEntity();
+                qkjvipOrderOrder.setMorderid(ids[i]);
+                qkjvipOrderOrder.setMemberid(getUserId());
+                qkjvipOrderOrder.setMembername(getUser().getUserName());
+                Object obj = JSONArray.toJSON(qkjvipOrderOrder);
+                String JsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+                String resultPost = null;
+                try {
+                    resultPost = HttpClient.sendPost(Vars.MEMBER_ORDER_ORDER_DELTET, JsonStr);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                JSONObject resultObject = JSON.parseObject(resultPost);
+                if ("200".equals(resultObject.get("resultcode").toString())) {
+                    return RestResponse.success();
+                }else {
+                    return RestResponse.error(resultObject.get("descr").toString());
+                }
+                }
+        }
+        //
         return RestResponse.success();
     }
 }
