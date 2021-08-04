@@ -146,10 +146,10 @@ public class SysUserEntity implements Serializable {
     private  String dingId;
 
     private  String oaId;
-
     /**
      * 监管部门
      */
-    private String superviseorgnos;
+    @TableField(exist = false)
+    private List<SysUserSuperviseEntity> deptlist;
 
 }

@@ -57,7 +57,7 @@
         FROM
             qkjvip_member_tags a with(nolock)
         LEFT JOIN sys_dict d ON (a.tag_group_id=d.id)
-        WHERE a.tag_locktype &lt;&gt; 1 and a.member_id = convert(varchar(32),#{params.memberId})
+        WHERE a.tag_locktype &lt;&gt; 1 and a.member_id = #{params.memberId}
         ORDER BY d.tag_type,a.tag_group_id
 	</select>
 </mapper>

@@ -19,11 +19,14 @@ import com.platform.common.validator.AbstractAssert;
 import com.platform.common.validator.ValidatorUtils;
 import com.platform.common.validator.group.AddGroup;
 import com.platform.common.validator.group.UpdateGroup;
+import com.platform.datascope.ContextHelper;
 import com.platform.modules.sys.entity.SysUserEntity;
+import com.platform.modules.sys.entity.SysUserSuperviseEntity;
 import com.platform.modules.sys.form.PasswordForm;
 import com.platform.modules.sys.service.SysUserChannelService;
 import com.platform.modules.sys.service.SysUserRoleService;
 import com.platform.modules.sys.service.SysUserService;
+import com.platform.modules.sys.service.SysUserSuperviseService;
 import com.platform.modules.webservices.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -49,6 +52,8 @@ public class SysUserController extends AbstractController {
     private SysUserRoleService sysUserRoleService;
     @Autowired
     private SysUserChannelService sysUserChannelService;
+    @Autowired
+    private SysUserSuperviseService sysUserSuperviseService;
 
     /**
      * 查看所有列表
@@ -134,6 +139,12 @@ public class SysUserController extends AbstractController {
         //获取用户所属的渠道列表
         List<Integer> channelIdlList = sysUserChannelService.queryChannelIdList(userId);
         user.setChannelIdList(channelIdlList);
+
+        // 获取用户的监管部门
+        Map params = new HashMap();
+        params.put("userId", userId);
+        List<SysUserSuperviseEntity> deptlist = sysUserSuperviseService.queryAll(params);
+        user.setDeptlist(deptlist);
 
         return RestResponse.success().put("user", user);
     }

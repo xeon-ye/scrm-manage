@@ -8,9 +8,11 @@ import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysRoleOrgEntity;
 import com.platform.modules.sys.entity.SysUserEntity;
 import com.platform.modules.sys.entity.SysUserRoleEntity;
+import com.platform.modules.sys.entity.SysUserSuperviseEntity;
 import com.platform.modules.sys.service.SysRoleOrgService;
 import com.platform.modules.sys.service.SysUserRoleService;
 import com.platform.modules.sys.service.SysUserService;
+import com.platform.modules.sys.service.SysUserSuperviseService;
 import com.platform.modules.util.JSONUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -35,15 +37,20 @@ public class ContextHelper extends AbstractController {
 	private SysRoleOrgService sysRoleOrgService;
 	@Autowired
 	private SysUserRoleService sysUserRoleService;
+	@Autowired
+	private SysUserSuperviseService sysUserSuperviseService;
 
 	private static SysUserRoleService sysUserRoleServicestatic;
 
 	private static SysRoleOrgService sysRoleOrgServicestatic;
 
+	private static SysUserSuperviseService sysUserSuperviseServiceStatic;
+
 	@PostConstruct
 	public void init() {
 		sysRoleOrgServicestatic = this.sysRoleOrgService;
 		sysUserRoleServicestatic = this.sysUserRoleService;
+		sysUserSuperviseServiceStatic = this.sysUserSuperviseService;
 	}
 
 	/**
@@ -79,9 +86,9 @@ public class ContextHelper extends AbstractController {
 		SysUserEntity user = ShiroUtils.getUserEntity();
 		Set<String> orgs = new HashSet<>();
 		if (!user.getUserName().contains("admin")) {
-			orgs = ContextHelper.setSearchDepts(user.getUserId(), user.getOrgNo());
+			orgs = setSearchDepts(user.getUserId(), user.getOrgNo());
 			if (orgs.isEmpty()) {
-				orgs = ContextHelper.setSearchDepts(userPerm, user.getUserId(), user.getOrgNo());
+				orgs = setSearchDepts(userPerm, user.getUserId(), user.getOrgNo());
 			}
 		} else {
 			return "-1";
@@ -124,7 +131,7 @@ public class ContextHelper extends AbstractController {
 		return depts;
 	}
 
-	public static Set<String> setSearchPermitDept(List<SysUserRoleEntity> roles, String dept, String superviseOrgNos) {
+	public static Set<String> setSearchPermitDept(List<SysUserRoleEntity> roles, String dept, List<SysUserSuperviseEntity> deptlist) {
 		Set<String> depts = new HashSet<>();
 		if(roles != null && roles.size() > 0) {
 			String str = (String) CacheFactory.getCacheInstance().get(SysDBCacheLogic.CACHE_DEPT_PREFIX_SUB + dept);
@@ -149,10 +156,20 @@ public class ContextHelper extends AbstractController {
 			}
 		}
 		// 监管部门
-		if (StringUtils.isNotBlank(superviseOrgNos)) {
-			String[] orgNos = (String[]) JSONUtil.toObject(superviseOrgNos, String[].class);
-			for (int i = 0; i < orgNos.length; i++) {
-				depts.add(orgNos[i]);
+		if (deptlist.size() > 0) {
+			for(SysUserSuperviseEntity userSupervise : deptlist) {
+				if (userSupervise.getSelfchecked()) {  // 部门权限
+					depts.add(userSupervise.getOrgNo());
+				}
+				if (userSupervise.getSubchecked() != null && userSupervise.getSubchecked()) { // 子部门权限
+					String str = (String) CacheFactory.getCacheInstance().get(SysDBCacheLogic.CACHE_DEPT_PREFIX_SUB + userSupervise.getOrgNo());
+					String[] s = (String[]) JSONUtil.toObject(str, String[].class);// 转换成数组
+					if (s != null && s.length > 0) {
+						for (int i = 0; i < s.length; i++) {
+							depts.add(s[i]);
+						}
+					}
+				}
 			}
 		}
 		return depts;
@@ -174,14 +191,18 @@ public class ContextHelper extends AbstractController {
 	}
 
 	public static Set<String> setSearchDepts(String userId,String dept) {
+		// 默认角色部门
 		List<SysUserRoleEntity> roles = new ArrayList<>();
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", userId);
 		map.put("rolePerm", "'397076822ac95125c279c18875f8b81c','5d3ec74da121e069221541823facef7e'");
 		roles = sysUserRoleServicestatic.queryRoleList(map);
-		SysUserEntity user = ShiroUtils.getUserEntity();
+		// 用户的监管部门
+		List<SysUserSuperviseEntity> deptlist = new ArrayList<>();
+		deptlist = sysUserSuperviseServiceStatic.queryAll(map);
+		// 拼接用户的部门
 		Set<String> orgs = new HashSet<>();
-		orgs = ContextHelper.setSearchPermitDept(roles, dept, user.getSuperviseorgnos());
+		orgs = setSearchPermitDept(roles, dept, deptlist);
 		return orgs;
 	}
 
@@ -192,7 +213,7 @@ public class ContextHelper extends AbstractController {
 		m.put("userPerm", userPerm);
 		sros = sysRoleOrgServicestatic.queryOrgNoIsselect(m);
 		Set<String> orgs = new HashSet<>();
-		orgs = ContextHelper.setSearchDeptPermit4Search(sros, dept);
+		orgs = setSearchDeptPermit4Search(sros, dept);
 		return orgs;
 	}
 
@@ -203,7 +224,7 @@ public class ContextHelper extends AbstractController {
 			Map map = new HashMap();
 			map.put("userId", userid);
 			surs = sysUserRoleServicestatic.queryRoleList(map);
-			list = ContextHelper.setOrdertypes(surs);
+			list = setOrdertypes(surs);
 		} else{  //管理员
 			for(int i=0;i<11;i++){
 				list.add(i+"");
