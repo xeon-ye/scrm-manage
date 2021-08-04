@@ -11,11 +11,14 @@
 package com.platform.modules.quartz.controller;
 
 import com.platform.common.annotation.SysLog;
+import com.platform.modules.cache.CacheFactory;
+import com.platform.modules.cache.SysDBCacheLogic;
 import com.platform.modules.quartz.entity.QrtzUserEntity;
 import com.platform.modules.quartz.service.QrtzUserService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysUserEntity;
 import com.platform.modules.sys.service.SysUserService;
+import com.platform.modules.util.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -102,11 +105,27 @@ public class QrtzUserController extends AbstractController {
             if (sysUsers.size() > 0) {
                 sysUserService.quartzBatchUpdate(sysUsers);
             }
+            //修改用户父部门列表
+            updateFatherDepts(users);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void updateFatherDepts(List<SysUserEntity> users){
+        for (SysUserEntity org:users) {
+            String str = (String) CacheFactory.getCacheInstance().get(SysDBCacheLogic.CACHE_DEPT_PREFIX_PARENT + org.getOrgNo());//
+            String[] s = (String[]) JSONUtil.toObject(str, String[].class);// 转换成数组
+            StringBuilder sb = new StringBuilder();
+            for(int j=0;j<s.length;j++){
+                sb.append(s[j]+",");
+            }
+            sb.append(org.getOrgNo());
+            org.setFatherDeptList(sb.toString());
+        }
+        sysUserService.quartzBatchUpdate(users);
+    }
     public void freezeUser (List<SysUserEntity> users, List<QrtzUserEntity> oaUsers) {
         for(SysUserEntity user:users){
             Boolean flag = true;  //用户是否在oa存在标识true不存在

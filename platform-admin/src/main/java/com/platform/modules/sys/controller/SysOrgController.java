@@ -14,20 +14,22 @@ package com.platform.modules.sys.controller;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.utils.StringUtils;
+import com.platform.modules.cache.CacheFactory;
+import com.platform.modules.cache.SysDBCacheLogic;
 import com.platform.modules.sys.dao.SysOrgDao;
 import com.platform.modules.sys.entity.SysOrgEntity;
+import com.platform.modules.sys.entity.SysOrgUpdatelogEntity;
 import com.platform.modules.sys.entity.SysUserEntity;
 import com.platform.modules.sys.service.SysOrgService;
+import com.platform.modules.sys.service.SysOrgUpdatelogService;
+import com.platform.modules.util.JSONUtil;
 import com.platform.modules.webservices.*;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 组织机构Controller
@@ -41,6 +43,8 @@ import java.util.Map;
 public class SysOrgController extends AbstractController {
     @Autowired
     private SysOrgService sysOrgService;
+    @Autowired
+    private SysOrgUpdatelogService sysOrgUpdatelogService;
 
     /**
      * 查看所有列表
@@ -129,6 +133,7 @@ public class SysOrgController extends AbstractController {
         Map<String, Object> params=new HashMap<String, Object>();
         List<SysOrgEntity> depts = sysOrgService.queryAll(params);  //表中寄存的部门
         HrmService service = new HrmService();
+        List<SysOrgEntity> fathermdydepts = new ArrayList<>();  //父部门修改列表
         try {
             HrmServicePortType clien = service.getHrmServiceHttpPort();
             ArrayOfDepartmentBean arrayDept = clien.getHrmDepartmentInfo("221.207.54.67", "");
@@ -147,6 +152,10 @@ public class SysOrgController extends AbstractController {
                     } else {
                         if (dept.getOrgNo().equals(oadept.getDepartmentid().getValue())) {
                             if (!dept.getOrgName().equals(oadept.getFullname().getValue()) || !dept.getParentNo().equals(oadept.getSupdepartmentid().getValue())) {
+                                //父部门修改列表
+                                if (!dept.getParentNo().equals(oadept.getSupdepartmentid().getValue())) {
+                                    fathermdydepts.add(dept);
+                                }
                                 SysOrgEntity sysOrg = new SysOrgEntity();
 //                                SysUserEntity user = getUser();
                                 sysOrg.setOrgNo(oadept.getDepartmentid().getValue());
@@ -179,8 +188,43 @@ public class SysOrgController extends AbstractController {
                 }
             }
 
+            // 更新部门缓存 孙珊珊
+            CacheFactory.CacheFlow("dept");
+            //更新部门的父部门 孙珊珊
+            updateFatherDepts(depts,fathermdydepts);
+            depts = null;// 置空方便垃圾回收处理
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void updateFatherDepts(List<SysOrgEntity> depts,List<SysOrgEntity> fathermdydepts){
+        List<SysOrgUpdatelogEntity> logs = new ArrayList<>();
+        for (SysOrgEntity org:depts) {
+            String str = (String) CacheFactory.getCacheInstance().get(SysDBCacheLogic.CACHE_DEPT_PREFIX_PARENT + org.getOrgNo());//
+            String[] s = (String[]) JSONUtil.toObject(str, String[].class);// 转换成数组
+            StringBuilder sb = new StringBuilder();
+            if (s!=null) {
+                for(int j=0;j<s.length;j++){
+                    sb.append(s[j]+",");
+                }
+            }
+            sb.append(org.getOrgNo());
+            org.setFatherDeptList(sb.toString());
+            if(fathermdydepts!=null&&fathermdydepts.size()>0){
+                for (SysOrgEntity ore:fathermdydepts) {
+                    if(org.getOrgNo().equals(ore.getOrgNo())){//同一部门
+                        SysOrgUpdatelogEntity sule = new SysOrgUpdatelogEntity();
+                        sule.setDeptcode(org.getOrgNo());
+                        sule.setOldfatherlist(ore.getFatherDeptList());
+                        sule.setNewfatherlist(sb.toString());
+                        sule.setAddTime(new Date());
+                        logs.add(sule);
+                    }
+                }
+            }
+        }
+        sysOrgService.quartzBatchUpdate(depts);
+        sysOrgUpdatelogService.batchAdd(logs);
     }
 }

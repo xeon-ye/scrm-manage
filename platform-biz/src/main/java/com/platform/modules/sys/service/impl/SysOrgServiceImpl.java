@@ -95,6 +95,11 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgDao, SysOrgEntity> impl
         baseMapper.insert(sysOrg);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void quartzBatchUpdate(List<SysOrgEntity> orgs) {
+        this.updateBatchById(orgs, 1000);
+    }
     private int getOrgType(String orgNo) {
         int two = 2;
         int four = 4;

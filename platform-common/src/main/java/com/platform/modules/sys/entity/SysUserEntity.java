@@ -147,4 +147,6 @@ public class SysUserEntity implements Serializable {
 
     private  String oaId;
 
+    private String fatherDeptList;
+
 }

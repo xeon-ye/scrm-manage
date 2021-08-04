@@ -74,4 +74,6 @@ public class SysOrgEntity implements Serializable {
 
     @TableField(exist = false)
     private String parentName;
+
+    private String fatherDeptList;
 }
