@@ -75,4 +75,11 @@ public interface SysOrgService extends IService<SysOrgEntity> {
      * @param sysOrg 实体
      */
     void quartzAdd(SysOrgEntity sysOrg);
+
+    /**
+     * 修改用户
+     *
+     * @param users 用户
+     */
+    void quartzBatchUpdate(List<SysOrgEntity> users);
 }

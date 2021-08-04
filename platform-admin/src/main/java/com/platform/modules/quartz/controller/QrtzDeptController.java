@@ -11,11 +11,14 @@
 package com.platform.modules.quartz.controller;
 
 import com.platform.common.annotation.SysLog;
+import com.platform.modules.cache.CacheFactory;
+import com.platform.modules.cache.SysDBCacheLogic;
 import com.platform.modules.quartz.entity.QrtzDeptEntity;
 import com.platform.modules.quartz.service.QrtzDeptService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysOrgEntity;
 import com.platform.modules.sys.service.SysOrgService;
+import com.platform.modules.util.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -95,9 +98,10 @@ public class QrtzDeptController extends AbstractController {
                     System.out.println("部门：" + oadept.getDepartmentname() + "已添加");
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
 }

@@ -152,4 +152,6 @@ public class SysUserEntity implements Serializable {
     @TableField(exist = false)
     private List<SysUserSuperviseEntity> deptlist;
 
+    private String fatherDeptList;
+
 }

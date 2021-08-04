@@ -19,6 +19,8 @@ import com.platform.common.validator.AbstractAssert;
 import com.platform.common.validator.ValidatorUtils;
 import com.platform.common.validator.group.AddGroup;
 import com.platform.common.validator.group.UpdateGroup;
+import com.platform.modules.cache.CacheFactory;
+import com.platform.modules.cache.SysDBCacheLogic;
 import com.platform.datascope.ContextHelper;
 import com.platform.modules.sys.entity.SysUserEntity;
 import com.platform.modules.sys.entity.SysUserRoleEntity;
@@ -27,6 +29,7 @@ import com.platform.modules.sys.form.PasswordForm;
 import com.platform.modules.sys.service.SysUserChannelService;
 import com.platform.modules.sys.service.SysUserRoleService;
 import com.platform.modules.sys.service.SysUserService;
+import com.platform.modules.util.JSONUtil;
 import com.platform.modules.sys.service.SysUserSuperviseService;
 import com.platform.modules.webservices.*;
 import org.apache.commons.lang.ArrayUtils;
@@ -314,10 +317,27 @@ public class SysUserController extends AbstractController {
                 }
             }
             sysUserService.quartzBatchUpdate(sysUsers);
-
+            //修改用户父部门列表
+            updateFatherDepts(users);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void updateFatherDepts(List<SysUserEntity> users){
+        for (SysUserEntity org:users) {
+            String str = (String) CacheFactory.getCacheInstance().get(SysDBCacheLogic.CACHE_DEPT_PREFIX_PARENT + org.getOrgNo());//
+            String[] s = (String[]) JSONUtil.toObject(str, String[].class);// 转换成数组
+            StringBuilder sb = new StringBuilder();
+            if(s!=null){
+                for(int j=0;j<s.length;j++){
+                    sb.append(s[j]+",");
+                }
+            }
+            sb.append(org.getOrgNo());
+            org.setFatherDeptList(sb.toString());
+        }
+        sysUserService.quartzBatchUpdate(users);
     }
 
     public void freezeUser (List<SysUserEntity> users, List<UserBean> oaUsers) {
