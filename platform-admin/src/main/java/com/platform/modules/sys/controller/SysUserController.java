@@ -21,6 +21,7 @@ import com.platform.common.validator.group.AddGroup;
 import com.platform.common.validator.group.UpdateGroup;
 import com.platform.datascope.ContextHelper;
 import com.platform.modules.sys.entity.SysUserEntity;
+import com.platform.modules.sys.entity.SysUserRoleEntity;
 import com.platform.modules.sys.entity.SysUserSuperviseEntity;
 import com.platform.modules.sys.form.PasswordForm;
 import com.platform.modules.sys.service.SysUserChannelService;
@@ -304,6 +305,11 @@ public class SysUserController extends AbstractController {
                     sysUser.setDingId(oauser.getHomeaddress().getValue());
                     sysUser.setOaId(oauser.getUserid().toString());
                     sysUserService.add(sysUser);
+                    // 保存默认角色
+                    SysUserRoleEntity sysUserRoleEntity = new SysUserRoleEntity();
+                    sysUserRoleEntity.setUserId(sysUser.getUserId());
+                    sysUserRoleEntity.setRoleId("397076822ac95125c279c18875f8b81c");
+                    sysUserRoleService.add(sysUserRoleEntity);
                     System.out.println("人员：" + oauser.getLastname().getValue() + "已添加");
                 }
             }

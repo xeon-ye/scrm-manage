@@ -361,6 +361,16 @@ public class MemberEntity implements Serializable {
     @TableField(exist = false)
     private String addTimeFormat;
     /**
+     * 消费者群体
+     */
+    @TableField(exist = false)
+    private String membergroup;
+    /**
+     * 圈层
+     */
+    @TableField(exist = false)
+    private List<MemberLayerEntity> listmemberlayer;
+    /**
      * 孙珊添加活动报名用
      */
     @TableField(exist = false)

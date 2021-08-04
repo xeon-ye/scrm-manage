@@ -29,6 +29,11 @@ import java.util.Map;
 public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleDao, SysUserRoleEntity> implements SysUserRoleService {
 
     @Override
+    public boolean add(SysUserRoleEntity sysUserRoleEntity) {
+        return this.save(sysUserRoleEntity);
+    }
+
+    @Override
     public void saveOrUpdate(String userId, List<String> roleIdList) {
         Map<String, Object> map = new HashMap<>(2);
         map.put("user_id", userId);

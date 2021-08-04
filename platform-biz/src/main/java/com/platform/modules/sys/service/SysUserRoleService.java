@@ -23,6 +23,13 @@ import java.util.Map;
  * @author 李鹏军
  */
 public interface SysUserRoleService extends IService<SysUserRoleEntity> {
+    /**
+     * 新增
+     *
+     * @param sysUserRoleEntity
+     * @return 新增结果
+     */
+    boolean add(SysUserRoleEntity sysUserRoleEntity);
 
     /**
      * saveOrUpdate

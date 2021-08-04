@@ -15,6 +15,8 @@ import com.platform.modules.quartz.entity.QrtzUserEntity;
 import com.platform.modules.quartz.service.QrtzUserService;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysUserEntity;
+import com.platform.modules.sys.entity.SysUserRoleEntity;
+import com.platform.modules.sys.service.SysUserRoleService;
 import com.platform.modules.sys.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,8 @@ public class QrtzUserController extends AbstractController {
     private SysUserService sysUserService;
     @Autowired
     private QrtzUserService qrtzUserService;
+    @Autowired
+    private SysUserRoleService sysUserRoleService;
 
     /**
      * 人员定时任务
@@ -96,6 +100,11 @@ public class QrtzUserController extends AbstractController {
                     sysUser.setDingId(oauser.getHomeaddress());
                     sysUser.setOaId(oauser.getId().toString());
                     sysUserService.add(sysUser);
+                    // 保存默认角色
+                    SysUserRoleEntity sysUserRoleEntity = new SysUserRoleEntity();
+                    sysUserRoleEntity.setUserId(sysUser.getUserId());
+                    sysUserRoleEntity.setRoleId("397076822ac95125c279c18875f8b81c");
+                    sysUserRoleService.add(sysUserRoleEntity);
                     System.out.println("人员：" + oauser.getLastname() + "已添加");
                 }
             }
