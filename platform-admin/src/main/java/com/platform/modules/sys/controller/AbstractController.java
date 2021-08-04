@@ -19,13 +19,11 @@ import com.platform.modules.sys.entity.SysRoleOrgEntity;
 import com.platform.modules.sys.entity.SysUserEntity;
 import com.platform.modules.sys.service.SysRoleOrgService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Controller公共组件
@@ -119,8 +117,21 @@ public abstract class AbstractController {
         if (!getUser().getUserName().contains("admin")) {
             dataScope.setUserAlias(userAlias);
             dataScope.setOrgAlias(orgAlias);
-            String orgs = ContextHelper.setSearchDepts(userPerm,getUserId(),getOrgNo());
-            dataScope.setOrgNos(orgs);
+            Set<String> orgs = new HashSet<>();
+            orgs = ContextHelper.setSearchDepts(getUserId(),getOrgNo());  // 查询部门权限，此部门权限与功能权限无关联
+            if (orgs.isEmpty()) {
+                orgs = ContextHelper.setSearchDepts(userPerm,getUserId(),getOrgNo());
+            }
+            String orgNos = "";
+            if (orgs.size() > 0) {
+                StringBuilder orgStr = new StringBuilder();
+                for (String str : orgs) {
+                    orgStr.append(",");
+                    orgStr.append("'" + str + "'");
+                }
+                orgNos = orgStr.toString().substring(1, orgStr.length());
+            }
+            dataScope.setOrgNos(orgNos);
         }
         return dataScope;
     }

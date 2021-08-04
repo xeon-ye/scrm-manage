@@ -21,12 +21,15 @@ import com.platform.common.validator.group.AddGroup;
 import com.platform.common.validator.group.UpdateGroup;
 import com.platform.modules.cache.CacheFactory;
 import com.platform.modules.cache.SysDBCacheLogic;
+import com.platform.datascope.ContextHelper;
 import com.platform.modules.sys.entity.SysUserEntity;
+import com.platform.modules.sys.entity.SysUserSuperviseEntity;
 import com.platform.modules.sys.form.PasswordForm;
 import com.platform.modules.sys.service.SysUserChannelService;
 import com.platform.modules.sys.service.SysUserRoleService;
 import com.platform.modules.sys.service.SysUserService;
 import com.platform.modules.util.JSONUtil;
+import com.platform.modules.sys.service.SysUserSuperviseService;
 import com.platform.modules.webservices.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -52,6 +55,8 @@ public class SysUserController extends AbstractController {
     private SysUserRoleService sysUserRoleService;
     @Autowired
     private SysUserChannelService sysUserChannelService;
+    @Autowired
+    private SysUserSuperviseService sysUserSuperviseService;
 
     /**
      * 查看所有列表
@@ -137,6 +142,12 @@ public class SysUserController extends AbstractController {
         //获取用户所属的渠道列表
         List<Integer> channelIdlList = sysUserChannelService.queryChannelIdList(userId);
         user.setChannelIdList(channelIdlList);
+
+        // 获取用户的监管部门
+        Map params = new HashMap();
+        params.put("userId", userId);
+        List<SysUserSuperviseEntity> deptlist = sysUserSuperviseService.queryAll(params);
+        user.setDeptlist(deptlist);
 
         return RestResponse.success().put("user", user);
     }
@@ -243,63 +254,63 @@ public class SysUserController extends AbstractController {
         List<SysUserEntity> users = sysUserService.queryAll(params);  //表中寄存的用户
         HrmService service = new HrmService();
         try {
-//            HrmServicePortType clien = service.getHrmServiceHttpPort();
-//            ArrayOfUserBean arrayUser = clien.getHrmUserInfo("221.207.54.67", "", "", "","", "");
-//            List<UserBean> oaUsers = arrayUser.getUserBean();  //OA的人员
-//            List<SysUserEntity> sysUsers = new ArrayList<>();
-//            // 将crm系统存在但oa不存在的人员冻结
-//            this.freezeUser(users, oaUsers);
-//            for (UserBean oauser:oaUsers) {
-//                Boolean flag = true; //用户是否在crm存在标识
-//                for (SysUserEntity user:users) {
-//                    if(oauser.getAccounttype() == 0) {
-//                        if (user.getOaId() != null && user.getOaId().equals(oauser.getUserid().toString()) && (oauser.getLoginid().getValue()!=null && !"".equals(oauser.getLoginid().getValue()))) {
-//                            if (Integer.parseInt(oauser.getStatus().getValue()) < 4) {  //正常在职员工
-//                                //修改人员信息
-//                                user.setSex((oauser.getSex().getValue()==null || "".equals(oauser.getSex().getValue())) ? 3 : ("男".equals(oauser.getSex().getValue()) ? 1 : 2));
-//                                user.setRealName(oauser.getLastname().getValue());
-//                                user.setUserName(oauser.getLoginid().getValue());
-//                                user.setOrgNo(oauser.getDepartmentid().getValue());
-//                                user.setEmail(oauser.getEmail().getValue());
-//                                user.setMobile(oauser.getMobile().getValue());
-//                                user.setStatus(1);
-////                                user.setCreateUserId(getUserId());
-////                                user.setCreateUserOrgNo(getOrgNo());
-////                                user.setCreateTime(new Date());
-//                                user.setDingId(oauser.getHomeaddress().getValue());
-//                                sysUsers.add(user);
-//                                System.out.println("人员：" + oauser.getLastname().getValue() + "已修改");
-//                            } else {  //离职、退休、无效的员工
-//                                //修改状态为禁用
-//                                user.setStatus(0);
-//                                sysUserService.quartzUpdate(user);
-//                                System.out.println("人员：" + oauser.getLastname().getValue() + "已修改为禁用");
-//                            }
-//                            flag = false;
-//                            break;
-//                        }
-//                    }
-//                }
-//
-//                if(flag == true && oauser.getAccounttype() == 0 && Integer.parseInt(oauser.getStatus().getValue()) < 4 && (oauser.getLoginid().getValue()!=null && !"".equals(oauser.getLoginid().getValue()))) {//添加
-//                    SysUserEntity sysUser = new SysUserEntity();
-//                    sysUser.setSex((oauser.getSex().getValue()==null || "".equals(oauser.getSex().getValue())) ? 3 : ("男".equals(oauser.getSex().getValue()) ? 1 : 2));
-//                    sysUser.setRealName(oauser.getLastname().getValue());
-//                    sysUser.setUserName(oauser.getLoginid().getValue());
-//                    sysUser.setOrgNo(oauser.getDepartmentid().getValue());
-//                    sysUser.setEmail(oauser.getEmail().getValue());
-//                    sysUser.setMobile(oauser.getMobile().getValue());
-//                    sysUser.setStatus(1);
-////                    sysUser.setCreateUserId(getUserId());
-////                    sysUser.setCreateUserOrgNo(getOrgNo());
-//                    sysUser.setCreateTime(new Date());
-//                    sysUser.setDingId(oauser.getHomeaddress().getValue());
-//                    sysUser.setOaId(oauser.getUserid().toString());
-//                    sysUserService.add(sysUser);
-//                    System.out.println("人员：" + oauser.getLastname().getValue() + "已添加");
-//                }
-//            }
-//            sysUserService.quartzBatchUpdate(sysUsers);
+            HrmServicePortType clien = service.getHrmServiceHttpPort();
+            ArrayOfUserBean arrayUser = clien.getHrmUserInfo("221.207.54.67", "", "", "","", "");
+            List<UserBean> oaUsers = arrayUser.getUserBean();  //OA的人员
+            List<SysUserEntity> sysUsers = new ArrayList<>();
+            // 将crm系统存在但oa不存在的人员冻结
+            this.freezeUser(users, oaUsers);
+            for (UserBean oauser:oaUsers) {
+                Boolean flag = true; //用户是否在crm存在标识
+                for (SysUserEntity user:users) {
+                    if(oauser.getAccounttype() == 0) {
+                        if (user.getOaId() != null && user.getOaId().equals(oauser.getUserid().toString()) && (oauser.getLoginid().getValue()!=null && !"".equals(oauser.getLoginid().getValue()))) {
+                            if (Integer.parseInt(oauser.getStatus().getValue()) < 4) {  //正常在职员工
+                                //修改人员信息
+                                user.setSex((oauser.getSex().getValue()==null || "".equals(oauser.getSex().getValue())) ? 3 : ("男".equals(oauser.getSex().getValue()) ? 1 : 2));
+                                user.setRealName(oauser.getLastname().getValue());
+                                user.setUserName(oauser.getLoginid().getValue());
+                                user.setOrgNo(oauser.getDepartmentid().getValue());
+                                user.setEmail(oauser.getEmail().getValue());
+                                user.setMobile(oauser.getMobile().getValue());
+                                user.setStatus(1);
+//                                user.setCreateUserId(getUserId());
+//                                user.setCreateUserOrgNo(getOrgNo());
+//                                user.setCreateTime(new Date());
+                                user.setDingId(oauser.getHomeaddress().getValue());
+                                sysUsers.add(user);
+                                System.out.println("人员：" + oauser.getLastname().getValue() + "已修改");
+                            } else {  //离职、退休、无效的员工
+                                //修改状态为禁用
+                                user.setStatus(0);
+                                sysUserService.quartzUpdate(user);
+                                System.out.println("人员：" + oauser.getLastname().getValue() + "已修改为禁用");
+                            }
+                            flag = false;
+                            break;
+                        }
+                    }
+                }
+
+                if(flag == true && oauser.getAccounttype() == 0 && Integer.parseInt(oauser.getStatus().getValue()) < 4 && (oauser.getLoginid().getValue()!=null && !"".equals(oauser.getLoginid().getValue()))) {//添加
+                    SysUserEntity sysUser = new SysUserEntity();
+                    sysUser.setSex((oauser.getSex().getValue()==null || "".equals(oauser.getSex().getValue())) ? 3 : ("男".equals(oauser.getSex().getValue()) ? 1 : 2));
+                    sysUser.setRealName(oauser.getLastname().getValue());
+                    sysUser.setUserName(oauser.getLoginid().getValue());
+                    sysUser.setOrgNo(oauser.getDepartmentid().getValue());
+                    sysUser.setEmail(oauser.getEmail().getValue());
+                    sysUser.setMobile(oauser.getMobile().getValue());
+                    sysUser.setStatus(1);
+//                    sysUser.setCreateUserId(getUserId());
+//                    sysUser.setCreateUserOrgNo(getOrgNo());
+                    sysUser.setCreateTime(new Date());
+                    sysUser.setDingId(oauser.getHomeaddress().getValue());
+                    sysUser.setOaId(oauser.getUserid().toString());
+                    sysUserService.add(sysUser);
+                    System.out.println("人员：" + oauser.getLastname().getValue() + "已添加");
+                }
+            }
+            sysUserService.quartzBatchUpdate(sysUsers);
             //修改用户父部门列表
             updateFatherDepts(users);
         } catch (Exception e) {

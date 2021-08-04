@@ -86,7 +86,12 @@ public class SysMenuController extends AbstractController {
                 if(str!=null&&!str.contains(":info")&&!str.contains(":list")){
                     permsSet.add(str+userId);
                     //菜单部门
-                    String orgs = ContextHelper.setSearchDepts(str,getUserId(),getOrgNo());
+                    Set<String> orgNos = new HashSet<>();
+                    orgNos = ContextHelper.setSearchDepts(str,getUserId(),getOrgNo());
+                    String orgs = "";
+                    if (!orgNos.isEmpty()) {
+                        orgs = StringUtils.join(orgNos.toArray(), ",");
+                    }
                     permsSet.add(str+orgs+";");
                 }
             }

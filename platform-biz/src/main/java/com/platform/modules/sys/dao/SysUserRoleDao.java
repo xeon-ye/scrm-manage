@@ -14,8 +14,10 @@ package com.platform.modules.sys.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.platform.modules.sys.entity.SysUserRoleEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户与角色对应关系
@@ -34,7 +36,7 @@ public interface SysUserRoleDao extends BaseMapper<SysUserRoleEntity> {
     List<String> queryRoleIdList(String userId);
 
 
-    List<SysUserRoleEntity> queryRoleList(String userId);
+    List<SysUserRoleEntity> queryRoleList(@Param("params") Map<String, Object> params);
 
 
     /**

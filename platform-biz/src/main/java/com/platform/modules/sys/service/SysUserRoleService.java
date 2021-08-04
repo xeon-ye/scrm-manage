@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.platform.modules.sys.entity.SysUserRoleEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户与角色对应关系
@@ -39,7 +40,7 @@ public interface SysUserRoleService extends IService<SysUserRoleEntity> {
      */
     List<String> queryRoleIdList(String userId);
 
-    List<SysUserRoleEntity> queryRoleList(String userId);
+    List<SysUserRoleEntity> queryRoleList(Map<String, Object> params);
 
     /**
      * 根据角色ID数组，批量删除
