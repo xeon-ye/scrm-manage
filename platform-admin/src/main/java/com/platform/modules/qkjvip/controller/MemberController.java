@@ -121,6 +121,7 @@ public class MemberController extends AbstractController {
                 memberQuery.getMembertags().get(i).setTagList(null);
             }
         }
+        memberQuery.setListorgno(ContextHelper.getPermitDepts("qkjvip:member:list"));
         if (!getUser().getUserName().contains("admin")) {  // 空默认是全部所有权限
             memberQuery.setCurrentmemberid(getUserId());
 //            memberQuery.setListorgno(sysRoleOrgService.queryOrgNoListByUserIdAndPerm(getUserId(), "qkjvip:member:list"));
