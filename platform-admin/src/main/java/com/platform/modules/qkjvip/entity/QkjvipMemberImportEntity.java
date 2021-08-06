@@ -340,4 +340,14 @@ public class QkjvipMemberImportEntity implements Serializable {
      */
     @TableField(exist = false)
     private List<MemberTagsQueryEntity> membertags;
+    /**
+     * 所属部门
+     */
+    @TableField(exist = false)
+    private List<QkjvipMemberDatadepEntity> deptlist;
+    /**
+     * 所属业务员
+     */
+    @TableField(exist = false)
+    private List<QkjvipMemberOrguserEntity> userlist;
 }

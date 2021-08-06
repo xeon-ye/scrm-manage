@@ -371,6 +371,16 @@ public class MemberEntity implements Serializable {
     @TableField(exist = false)
     private List<MemberLayerEntity> listmemberlayer;
     /**
+     * 所属部门
+     */
+    @TableField(exist = false)
+    private List<QkjvipMemberDatadepEntity> deptlist;
+    /**
+     * 所属业务员
+     */
+    @TableField(exist = false)
+    private List<QkjvipMemberOrguserEntity> userlist;
+    /**
      * 孙珊添加活动报名用
      */
     @TableField(exist = false)

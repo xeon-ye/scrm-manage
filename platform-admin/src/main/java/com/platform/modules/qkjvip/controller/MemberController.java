@@ -78,6 +78,10 @@ public class MemberController extends AbstractController {
     private SysUserChannelService sysUserChannelService;
     @Autowired
     private QkjvipMemberChannelService qkjvipMemberChannelService;
+    @Autowired
+    private QkjvipMemberDatadepService qkjvipMemberDatadepService;
+    @Autowired
+    private QkjvipMemberOrguserService qkjvipMemberOrguserService;
 
     /**
      * 查看所有列表
@@ -166,6 +170,10 @@ public class MemberController extends AbstractController {
         //获取会员标签
         Map<String, Object> params = new HashMap<>();
         params.put("memberId", memberId);
+        List<QkjvipMemberDatadepEntity> deptlist = qkjvipMemberDatadepService.queryAll(params);
+        member.setDeptlist(deptlist);
+        List<QkjvipMemberOrguserEntity> userlist = qkjvipMemberOrguserService.queryAll(params);
+        member.setUserlist(userlist);
         List<MemberTagsEntity> memberTagsEntities = memberTagsService.queryTagsList(params);
         List<MemberTagsQueryEntity> membertags = new ArrayList<>();
         if (memberTagsEntities.size() > 0) {   //会员打了标签的情况下
