@@ -30,16 +30,18 @@ import com.platform.modules.qkjvip.service.*;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.entity.SysDictEntity;
 import com.platform.modules.sys.entity.SysUserChannelEntity;
+import com.platform.modules.sys.entity.SysUserEntity;
 import com.platform.modules.sys.service.SysDictService;
 import com.platform.modules.sys.service.SysRoleOrgService;
 import com.platform.modules.sys.service.SysUserChannelService;
+import com.platform.modules.sys.service.SysUserService;
 import com.platform.modules.util.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -73,7 +75,7 @@ public class MemberController extends AbstractController {
     @Autowired
     private QkjvipMemberImportService qkjvipMemberImportService;
     @Autowired
-    private SysRoleOrgService sysRoleOrgService;
+    private SysUserService sysUserService;
     @Autowired
     private SysUserChannelService sysUserChannelService;
     @Autowired
@@ -219,6 +221,11 @@ public class MemberController extends AbstractController {
     @PostMapping("/save")
     @RequiresPermissions("qkjvip:member:save")
     public RestResponse save(@RequestBody QkjvipMemberImportEntity memberImport) {
+        if (memberImport.getMembertags() != null && memberImport.getMembertags().size() > 0) {
+            for (int i = 0; i < memberImport.getMembertags().size(); i++) {
+                memberImport.getMembertags().get(i).setTagList(null);
+            }
+        }
         Map params = new HashMap();
         params.put("memberchannel", memberImport.getMemberchannel());
         List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.queryAll(params);
@@ -262,6 +269,11 @@ public class MemberController extends AbstractController {
     @RequiresPermissions("qkjvip:member:update")
     public RestResponse update(@RequestBody MemberEntity member) {
         ValidatorUtils.validateEntity(member);
+        if (member.getMembertags() != null && member.getMembertags().size() > 0) {
+            for (int i = 0; i < member.getMembertags().size(); i++) {
+                member.getMembertags().get(i).setTagList(null);
+            }
+        }
         Map<String, Object> params = new HashMap<>(2);
         params.put("memberchannel", member.getMemberchannel());
         List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.queryAll(params);
@@ -334,6 +346,8 @@ public class MemberController extends AbstractController {
             //有多少列
             int cellNum = titlerow.getLastCellNum();
             for (int k = 0; k < cellNum; k++) {
+                List<QkjvipTaglibsEntity> tagList = new ArrayList<>();
+                String content = "";
                 //根据索引获取对应的列
                 Cell cell = titlerow.getCell(k);
                 String cellTitle = cell != null? cell.toString() : "";
@@ -391,6 +405,35 @@ public class MemberController extends AbstractController {
                             }
                             ExcelSelectListUtil.selectList(workbook, k, k, dictAttr);
                             break;
+                        case "生日":
+                            ExcelUtil.addComment(cell, "格式：2021-01-01", "xls");
+                            break;
+                        case "注册时间":
+                            ExcelUtil.addComment(cell, "格式：2021-01-01", "xls");
+                            break;
+                        case "主责业务员":
+                            ExcelUtil.addComment(cell, "请填写主责业务员SCRM系统的登录账号，否则导入会有问题！", "xls");
+                            break;
+                        case "圈层":
+                            params.clear();
+                            params.put("tagGroupId", "961fd24ebf5263aa2028f065503f90af");
+                            tagList = qkjvipTaglibsService.queryAll(params);
+                            content = "可输入以下分类：\r\n";
+                            for (QkjvipTaglibsEntity tag : tagList) {
+                                content += tag.getTagName() + "\r\n";
+                            }
+                            ExcelUtil.addComment(cell, content, "xls");
+                            break;
+                        case "消费者群体":
+                            params.clear();
+                            params.put("tagGroupId", "c7f0689645f68feec5953f1b27460e3d");
+                            tagList = qkjvipTaglibsService.queryAll(params);
+                            content = "可输入以下分类：\r\n";
+                            for (QkjvipTaglibsEntity tag : tagList) {
+                                content += tag.getTagName() + "\r\n";
+                            }
+                            ExcelUtil.addComment(cell, content, "xls");
+                            break;
                         default:
                             break;
                     }
@@ -429,6 +472,10 @@ public class MemberController extends AbstractController {
                 permissionChannels = sysUserChannelService.queryPermissionChannels(params);
                 List<QkjvipMemberImportEntity> list = ExportExcelUtils.importExcel(file, 1, 2,QkjvipMemberImportEntity.class);
                 for (int i = 0; i < list.size(); i++) {
+                    QkjvipMemberOrguserEntity orgUser = new QkjvipMemberOrguserEntity();
+                    QkjvipMemberDatadepEntity dataDept = new QkjvipMemberDatadepEntity();
+                    List<QkjvipMemberDatadepEntity> deptlist = new ArrayList<>();
+                    List<QkjvipMemberOrguserEntity> userlist = new ArrayList<>();
                     int rownum = i + 4;
                     if (StringUtils.isBlank(list.get(i).getMobile())) {
                         return RestResponse.error("第" + rownum + "行手机号为空，请修改后重新上传！");
@@ -440,13 +487,21 @@ public class MemberController extends AbstractController {
                         return RestResponse.error("第" + rownum + "行渠道为空,请修改后重新上传！");
                     } else if (!JsonHelper.toJsonString(permissionChannels).contains(list.get(i).getServicename().split("-")[0]) || list.get(i).getServicename().split("-").length < 2) {
                         return RestResponse.error("第" + rownum + "行渠道请选择下拉的渠道,请修改后重新上传！");
+                    }
+                    if (StringUtils.isBlank(list.get(i).getUserName())) {
+                        return RestResponse.error("第" + rownum + "行主责业务员为空,请修改后重新上传！");
                     } else {
-                        String[] channel = null;
-                        channel = new String[list.get(i).getServicename().split("-").length];
-                        channel = list.get(i).getServicename().split("-");
-                        list.get(i).setServicename(channel[0]);
-                        if (channel.length >= 2) {
-                            list.get(i).setMemberchannel(Integer.parseInt(channel[channel.length - 1]));
+                        SysUserEntity user = sysUserService.queryByUserName(list.get(i).getUserName());
+                        if (user == null) {
+                            return RestResponse.error("第" + rownum + "行主责业务员账号不存在,请修改后重新上传！");
+                        } else {
+                            orgUser.setUserid(user.getUserId());
+                            orgUser.setUsername(user.getRealName());
+                            orgUser.setIsmain(true);
+                            userlist.add(orgUser);
+                            dataDept.setOrgno(user.getOrgNo());
+                            dataDept.setIsmain(true);
+                            deptlist.add(dataDept);
                         }
                     }
                     if (uploadData.getIscheckpass()) {  // true:非必填项做校验
@@ -539,6 +594,15 @@ public class MemberController extends AbstractController {
                             return RestResponse.error("第" + rownum + "行消费者群体标签不正确,请修改后重新上传！");
                         }
                     }
+                    String[] channel = null;
+                    channel = new String[list.get(i).getServicename().split("-").length];
+                    channel = list.get(i).getServicename().split("-");
+                    list.get(i).setServicename(channel[0]);
+                    if (channel.length >= 2) {
+                        list.get(i).setMemberchannel(Integer.parseInt(channel[channel.length - 1]));
+                    }
+                    list.get(i).setUserlist(userlist);
+                    list.get(i).setDeptlist(deptlist);
                     list.get(i).setMembertags(membertags);
                     list.get(i).setBatchno(batchno);
                     list.get(i).setOrgUserid(getUserId());  // 导入默认所属人
