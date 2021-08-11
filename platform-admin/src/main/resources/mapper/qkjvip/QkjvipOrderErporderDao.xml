@@ -5,7 +5,7 @@
 
     <sql id="selectSql">
         SELECT T.OrderCode,T.orderdate,T.buycompanyname,T.departmentname,T.salesman,T.remark from qkjvip_order_erporder T
-        WHERE 1=1
+        WHERE t.Disabled=0
         <if test="params.ordercode != null and params.ordercode.trim() != ''">
             AND T.ordercode = '${params.ordercode}'
         </if>
@@ -21,9 +21,15 @@
 
     <sql id="selectSqlDetail">
         SELECT T.* from qkjvip_order_erporder T
-        WHERE 1=1
+        WHERE t.Disabled=0
         <if test="params.ordercode != null and params.ordercode.trim() != ''">
             AND T.ordercode = '${params.ordercode}'
+        </if>
+        <if test="params.isnotcrmorder != null and params.isnotcrmorder.trim() != ''">
+            AND (T.MOrderId is null or T.MOrderId='')
+        </if>
+        <if test="params.ordertype != null">
+            AND t.OrderType = #{params.ordertype}
         </if>
     </sql>
 

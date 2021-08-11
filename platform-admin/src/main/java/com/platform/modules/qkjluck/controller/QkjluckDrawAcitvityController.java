@@ -107,6 +107,7 @@ public class QkjluckDrawAcitvityController extends AbstractController {
      */
     @GetMapping("/luckinfo")
     public RestResponse luckinfo(@RequestParam Map<String, Object> paramsa) {
+        String yltype = paramsa.get("yltype")+"";//是否是预览
         String openid = paramsa.get("openid")+"";//参与人
         String unionid = paramsa.get("unionid")+"";//参与人
         String id=paramsa.get("id")+"";//活动id
@@ -130,7 +131,7 @@ public class QkjluckDrawAcitvityController extends AbstractController {
         int lucknum = 0;//剩余抽奖次数
         Boolean issureluck = true;
         if ((endflag == true || qkjluckDrawAcitvity.getEndDate().equals(nowday)) && (starflag == true || qkjluckDrawAcitvity.getStrDate().equals(nowday))) { //在有效时间内
-            if (qkjluckDrawAcitvity!=null) {
+            if (qkjluckDrawAcitvity!=null&&(yltype==null||yltype.equals(""))) {// 非预览情况
                 List<QkjluckDrawResultEntity> itemlistresult = new ArrayList<>();
                 String itemlsresult = jedisUtil.get("MTM_CACHE:LUCKACTIVITY:RESULT_" + id +":" + unionid);
                 itemlistresult = JSON.parseArray(itemlsresult, QkjluckDrawResultEntity.class);

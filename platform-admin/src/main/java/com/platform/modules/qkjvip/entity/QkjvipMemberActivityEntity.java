@@ -73,6 +73,7 @@ public class QkjvipMemberActivityEntity implements Serializable {
     private Integer cardpoints;//活动积分
     private Integer clockpoints; //签到积分
     private Integer isprohibit;//是否禁止未邀约人参加
+    private Integer issignup;// 是否显示报名按钮
 
     private Integer channel;
 
