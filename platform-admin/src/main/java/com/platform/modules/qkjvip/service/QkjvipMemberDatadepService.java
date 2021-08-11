@@ -43,6 +43,14 @@ public interface QkjvipMemberDatadepService extends IService<QkjvipMemberDatadep
     Page queryPage(Map<String, Object> params);
 
     /**
+     * queryByOrgNo
+     *
+     * @param orgNo 部门号
+     * @return QkjvipMemberDatadepEntity
+     */
+    QkjvipMemberDatadepEntity queryByOrgNo(String orgNo);
+
+    /**
      * 新增
      *
      * @param qkjvipMemberDatadep 

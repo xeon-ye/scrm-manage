@@ -11,6 +11,7 @@
  */
 package com.platform.modules.qkjvip.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.platform.common.utils.Query;
@@ -45,6 +46,11 @@ public class QkjvipMemberDatadepServiceImpl extends ServiceImpl<QkjvipMemberData
         params.put("asc", false);
         Page<QkjvipMemberDatadepEntity> page = new Query<QkjvipMemberDatadepEntity>(params).getPage();
         return page.setRecords(baseMapper.selectQkjvipMemberDatadepPage(page, params));
+    }
+
+    @Override
+    public QkjvipMemberDatadepEntity queryByOrgNo(String orgNo) {
+        return baseMapper.selectOne(new QueryWrapper<QkjvipMemberDatadepEntity>().eq("OrgNo", orgNo).eq("Disabled", 0));
     }
 
     @Override

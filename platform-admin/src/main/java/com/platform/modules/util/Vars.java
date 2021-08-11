@@ -23,8 +23,8 @@ public class Vars {
 	public static String SECRETKEY = "5E2#BD40&FAE^7";
 	//AES加密用常量end
 
-//	public static String APIURL = "http://api.scrm.qkj.com.cn/";
-	public static String APIURL = "http://123.56.178.176:8086/";
+	public static String APIURL = "http://api.scrm.qkj.com.cn/";
+//	public static String APIURL = "http://123.56.178.176:8086/";
 
 	//数据清洗url start
 	public static String MEMBER_ADD_URL = APIURL + "api/Member/AddMember";
