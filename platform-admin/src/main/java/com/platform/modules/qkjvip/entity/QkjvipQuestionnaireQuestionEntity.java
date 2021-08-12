@@ -53,6 +53,10 @@ public class QkjvipQuestionnaireQuestionEntity implements Serializable {
      */
     private String questionoptions;
     /**
+     * 积分
+     */
+    private Integer integral;
+    /**
      * addUser
      */
     private String adduser;
