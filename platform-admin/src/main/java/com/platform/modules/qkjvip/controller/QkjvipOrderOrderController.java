@@ -130,8 +130,24 @@ public class QkjvipOrderOrderController extends AbstractController {
             order.setEndorderdate(date2 + " 23:59:59");
         }
         list=ContextHelper.setOrdertypesm("qkjvip:memberactivity:list",getUserId());
+        StringBuilder typs = new StringBuilder();
+        if(order!=null&&order.getListordertype()!=null){
+            String[] liststr=order.getListordertype().split(",");
+            for(String l:liststr){
+                for (String str:list) {
+                    if(l.equals(str)){ //有权限
+                        typs.append(str+",");
+                    }
+                }
+            }
+
+        }else{
+            for (String str:list) {
+                typs.append(str+",");
+            }
+        }
         if (list.size()>0) {
-            order.setListordertype(StringUtils.join(list.toArray(), ","));
+            order.setListordertype(typs.toString().substring(0,typs.length()-1));
         } else { //无任何类别查询权限
             //order.setListordertype("0");
         }
