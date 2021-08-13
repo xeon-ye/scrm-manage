@@ -38,7 +38,7 @@ public class QkjvipQuestionnaireQuestionOptionEntity implements Serializable {
      */
     private String content;
     /**
-     * 积分
+     * 是否是正确答案
      */
-    private Integer integral;
+    private Boolean isright;
 }

@@ -16,6 +16,8 @@ import com.platform.common.utils.RestResponse;
 import com.platform.common.utils.StringUtils;
 import com.platform.modules.cache.CacheFactory;
 import com.platform.modules.cache.SysDBCacheLogic;
+import com.platform.modules.qkjvip.entity.QkjvipMemberDatadepEntity;
+import com.platform.modules.qkjvip.service.QkjvipMemberDatadepService;
 import com.platform.modules.sys.dao.SysOrgDao;
 import com.platform.modules.sys.entity.SysOrgEntity;
 import com.platform.modules.sys.entity.SysOrgUpdatelogEntity;
@@ -45,6 +47,8 @@ public class SysOrgController extends AbstractController {
     private SysOrgService sysOrgService;
     @Autowired
     private SysOrgUpdatelogService sysOrgUpdatelogService;
+    @Autowired
+    private QkjvipMemberDatadepService qkjvipMemberDatadepService;
 
     /**
      * 查看所有列表
@@ -143,10 +147,16 @@ public class SysOrgController extends AbstractController {
                 for (SysOrgEntity dept:depts) {
                     if (oadept.getCanceled().getValue() != null && oadept.getCanceled().getValue().equals("1")) {  //OA中废弃的部门
                         if (dept.getOrgNo().equals(oadept.getDepartmentid().getValue()) && dept.getStatus() == 1) {
-                            dept.setStatus(0);
-                            sysOrgService.update(dept);   //OA中废弃的部门在crm系统改为无效
-                            flag = false;
-                            System.out.println("部门：" + oadept.getFullname().getValue() + "已修改为无效");
+                            QkjvipMemberDatadepEntity deptEntity = qkjvipMemberDatadepService.queryByOrgNo(dept.getOrgNo());
+                            if (deptEntity == null) {  // 表示此部门下没有会员
+                                dept.setStatus(0);
+                                sysOrgService.update(dept);   //OA中废弃的部门在crm系统改为无效
+                                flag = false;
+                                System.out.println("部门：" + oadept.getFullname().getValue() + "已修改为无效");
+                            } else {
+                                dept.setOrgName(dept.getOrgName() + "(OA已删除)");
+                                sysOrgService.update(dept);
+                            }
                             break;
                         }
                     } else {

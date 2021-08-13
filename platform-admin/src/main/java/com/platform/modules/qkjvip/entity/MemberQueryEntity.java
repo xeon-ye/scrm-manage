@@ -96,4 +96,5 @@ public class MemberQueryEntity implements Serializable {
     private Integer pageindex;
     private Integer pagesize;
     private Integer queryall;  // 0:分页 1：不分页
+    private Boolean isconsultant;  // 是否检索的是品牌顾问
 }
