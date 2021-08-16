@@ -34,4 +34,5 @@ public class MemberPortraitValueRangeQueryEntity implements Serializable {
     private Integer memberchannel;
     private Integer daterate;
     private List<MemberPortraitValueRangeEntity> listamountrange;
+    private String listorgno;  // 权限部门
 }

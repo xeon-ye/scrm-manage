@@ -33,4 +33,5 @@ public class MemberPortraitAddtrendQueryEntity implements Serializable {
     private String starttime;
     private String endtime;
     private Integer dategroup;
+    private String listorgno;  // 权限部门
 }

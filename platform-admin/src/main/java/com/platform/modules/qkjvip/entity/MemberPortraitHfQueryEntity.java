@@ -35,4 +35,5 @@ public class MemberPortraitHfQueryEntity implements Serializable {
     private String listmemberchannel;
     private Integer daterate;
     private Integer buynum;
+    private String listorgno;  // 权限部门
 }

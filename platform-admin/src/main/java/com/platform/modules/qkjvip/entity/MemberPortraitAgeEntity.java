@@ -38,6 +38,7 @@ public class MemberPortraitAgeEntity implements Serializable {
     private Date endregtime;
     private String currentmemberid;
     private String listmemberchannel;
+    private String listorgno;  // 权限部门
     /*检索条件end*/
 
     /*返回值start*/

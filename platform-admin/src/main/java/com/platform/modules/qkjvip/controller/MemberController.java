@@ -123,7 +123,7 @@ public class MemberController extends AbstractController {
                 memberQuery.getMembertags().get(i).setTagList(null);
             }
         }
-//        memberQuery.setListorgno(ContextHelper.getPermitDepts("qkjvip:member:list"));
+        memberQuery.setListorgno(ContextHelper.getPermitDepts("qkjvip:member:list"));
         if (!getUser().getUserName().contains("admin")) {  // 空默认是全部所有权限
             memberQuery.setCurrentmemberid(getUserId());
 //            memberQuery.setListorgno(sysRoleOrgService.queryOrgNoListByUserIdAndPerm(getUserId(), "qkjvip:member:list"));
@@ -411,9 +411,9 @@ public class MemberController extends AbstractController {
                         case "注册时间":
                             ExcelUtil.addComment(cell, "格式：2021-01-01", "xls");
                             break;
-                        case "主责业务员":
-                            ExcelUtil.addComment(cell, "请填写主责业务员SCRM系统的登录账号，否则导入会有问题！", "xls");
-                            break;
+//                        case "主责业务员":
+//                            ExcelUtil.addComment(cell, "请填写主责业务员SCRM系统的登录账号，否则导入会有问题！", "xls");
+//                            break;
                         case "圈层":
                             params.clear();
                             params.put("tagGroupId", "961fd24ebf5263aa2028f065503f90af");
@@ -488,22 +488,22 @@ public class MemberController extends AbstractController {
                     } else if (!JsonHelper.toJsonString(permissionChannels).contains(list.get(i).getServicename().split("-")[0]) || list.get(i).getServicename().split("-").length < 2) {
                         return RestResponse.error("第" + rownum + "行渠道请选择下拉的渠道,请修改后重新上传！");
                     }
-                    if (StringUtils.isBlank(list.get(i).getUserName())) {
-                        return RestResponse.error("第" + rownum + "行主责业务员为空,请修改后重新上传！");
-                    } else {
-                        SysUserEntity user = sysUserService.queryByUserName(list.get(i).getUserName());
-                        if (user == null) {
-                            return RestResponse.error("第" + rownum + "行主责业务员账号不存在,请修改后重新上传！");
-                        } else {
-                            orgUser.setUserid(user.getUserId());
-                            orgUser.setUsername(user.getRealName());
-                            orgUser.setIsmain(true);
-                            userlist.add(orgUser);
-                            dataDept.setOrgno(user.getOrgNo());
-                            dataDept.setIsmain(true);
-                            deptlist.add(dataDept);
-                        }
-                    }
+//                    if (StringUtils.isBlank(list.get(i).getUserName())) {
+//                        return RestResponse.error("第" + rownum + "行主责业务员为空,请修改后重新上传！");
+//                    } else {
+//                        SysUserEntity user = sysUserService.queryByUserName(list.get(i).getUserName());
+//                        if (user == null) {
+//                            return RestResponse.error("第" + rownum + "行主责业务员账号不存在,请修改后重新上传！");
+//                        } else {
+//                            orgUser.setUserid(user.getUserId());
+//                            orgUser.setUsername(user.getRealName());
+//                            orgUser.setIsmain(true);
+//                            userlist.add(orgUser);
+//                            dataDept.setOrgno(user.getOrgNo());
+//                            dataDept.setIsmain(true);
+//                            deptlist.add(dataDept);
+//                        }
+//                    }
                     if (uploadData.getIscheckpass()) {  // true:非必填项做校验
                         if (StringUtils.isNotBlank(list.get(i).getIdcard())) {
                             String idCard = list.get(i).getIdcard();
@@ -516,7 +516,7 @@ public class MemberController extends AbstractController {
                     List<MemberTagsQueryEntity> membertags = new ArrayList<>();
                     if (StringUtils.isNotBlank(list.get(i).getTag1())) {
                         params.clear();
-                        params.put("tagName", list.get(i).getTag1());
+                        params.put("tagName", list.get(i).getTag1().trim());
                         params.put("tagGroupId", "4bd7f98607e44647bf409589b16836b4");
                         tagList = qkjvipTaglibsService.queryToCheck(params);
                         if (tagList.size() > 0) {
@@ -536,7 +536,7 @@ public class MemberController extends AbstractController {
                     }
                     if (StringUtils.isNotBlank(list.get(i).getTag2())) {
                         params.clear();
-                        params.put("tagName", list.get(i).getTag2());
+                        params.put("tagName", list.get(i).getTag2().trim());
                         params.put("tagGroupId", "9af1533bea3d4c89b856ad80e9d0e457");
                         tagList = qkjvipTaglibsService.queryToCheck(params);
                         if (tagList.size() > 0) {
@@ -556,7 +556,7 @@ public class MemberController extends AbstractController {
                     }
                     if (StringUtils.isNotBlank(list.get(i).getTag3())) {
                         params.clear();
-                        params.put("tagName", list.get(i).getTag3());
+                        params.put("tagName", list.get(i).getTag3().trim());
                         params.put("tagGroupId", "961fd24ebf5263aa2028f065503f90af");
                         tagList = qkjvipTaglibsService.queryToCheck(params);
                         if (tagList.size() > 0) {
@@ -576,7 +576,7 @@ public class MemberController extends AbstractController {
                     }
                     if (StringUtils.isNotBlank(list.get(i).getTag4())) {
                         params.clear();
-                        params.put("tagName", list.get(i).getTag4());
+                        params.put("tagName", list.get(i).getTag4().trim());
                         params.put("tagGroupId", "c7f0689645f68feec5953f1b27460e3d");
                         tagList = qkjvipTaglibsService.queryToCheck(params);
                         if (tagList.size() > 0) {
@@ -601,6 +601,12 @@ public class MemberController extends AbstractController {
                     if (channel.length >= 2) {
                         list.get(i).setMemberchannel(Integer.parseInt(channel[channel.length - 1]));
                     }
+                    orgUser.setUserid(getUserId());
+                    orgUser.setIsmain(true);
+                    userlist.add(orgUser);
+                    dataDept.setOrgno(getOrgNo());
+                    dataDept.setIsmain(true);
+                    deptlist.add(dataDept);
                     list.get(i).setUserlist(userlist);
                     list.get(i).setDeptlist(deptlist);
                     list.get(i).setMembertags(membertags);
@@ -614,6 +620,311 @@ public class MemberController extends AbstractController {
                 }
                 if (list.size() > 0) {
                     qkjvipMemberImportService.addBatch(list); //批量导入临时表
+
+                    Map map = new HashMap();
+                    map.put("ischeckpass", uploadData.getIscheckpass());
+                    map.put("importtype", uploadData.getImporttype());
+                    map.put("datalist", list);
+
+                    //调用数据清洗接口
+                    Object obj = JSONObject.toJSON(map);
+                    String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
+                    String resultPost = HttpClient.sendPost(Vars.MEMBER_IMPORT_URL, memberJsonStr);
+
+                    JSONObject resultObject = JSON.parseObject(resultPost);
+                    if (!"200".equals(resultObject.get("resultcode").toString())) {  //清洗失败
+                        return RestResponse.error(resultObject.get("descr").toString());
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return RestResponse.error("导入接口异常！");
+            }
+        }
+        return RestResponse.success().put("msg", "导入成功！").put("batchno", batchno);
+    }
+
+    /**
+     * 导出会员数据模板
+     * 品牌顾问用
+     */
+    @SysLog("导出会员模板")
+    @RequestMapping("/exportTpl2")
+    @RequiresPermissions("qkjvip:member:exportTpl")
+    public void exportTpl2(HttpServletRequest request, HttpServletResponse response) {
+        List<MemberExportEntity> list = new ArrayList<>();
+        Map<String, Object> params = new HashMap<>();
+        List<SysDictEntity> dictList = new ArrayList<>();
+        List<QkjvipMemberChannelEntity> memberChannelList = new ArrayList<>();
+        List<SysUserChannelEntity> permChannelList = new ArrayList<>();
+        String[] dictAttr = null;
+        try {
+            Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("会员信息表", "会员信息"), MemberExportBcEntity.class, list);
+            Sheet sheet = workbook.getSheet("会员信息");
+            //获取第三行
+            Row titlerow = sheet.getRow(2);
+            //有多少列
+            int cellNum = titlerow.getLastCellNum();
+            for (int k = 0; k < cellNum; k++) {
+                List<QkjvipTaglibsEntity> tagList = new ArrayList<>();
+                String content = "";
+                //根据索引获取对应的列
+                Cell cell = titlerow.getCell(k);
+                String cellTitle = cell != null? cell.toString() : "";
+                if (cell != null && !"".equals(cell.toString())) {
+                    switch (cellTitle) {
+                        case "性别":
+                            ExcelSelectListUtil.selectList(workbook, k, k, new String[]{"男","女","未知"});
+                            break;
+                        case "是否潜在客户":
+                            ExcelSelectListUtil.selectList(workbook, k, k, new String[]{"是","否"});
+                            break;
+                        case "会员渠道":
+                            //会员渠道
+                            String channelIds = "";
+                            channelIds = sysUserChannelService.queryChannelIdByUserId(getUserId());
+                            if ("0".equals(channelIds) || getUser().getUserName().contains("admin")) {  // 所有渠道权限
+                                params.clear();
+                                memberChannelList = qkjvipMemberChannelService.queryAll(params);
+                                dictAttr = new String[memberChannelList.size()];
+                                for (int i = 0; i < memberChannelList.size(); i++) {
+                                    dictAttr[i] = memberChannelList.get(i).getServicename().trim() + "-" + memberChannelList.get(i).getMemberchannel();
+                                }
+                            } else {  // 查询登陆人的渠道权限
+                                params.clear();
+                                params.put("userId", getUserId());
+                                permChannelList = sysUserChannelService.queryPermissionChannels(params);
+                                dictAttr = new String[permChannelList.size()];
+                                for (int i = 0; i < permChannelList.size(); i++) {
+                                    dictAttr[i] = permChannelList.get(i).getServicename().trim() + "-" + permChannelList.get(i).getChannelId();
+                                }
+                            }
+                            if (dictAttr != null && dictAttr.length > 0) {
+                                ExcelSelectListUtil.ExcelTo255(workbook, "hidden", 1, dictAttr, 3, 65535, k, k);
+                            }
+                            break;
+                        case "会员性质":
+                            //会员性质
+                            params.clear();
+                            params.put("code", "MEMBERNATURE");
+                            dictList = sysDictService.queryByCode(params);
+                            dictAttr = new String[dictList.size()];
+                            for (int i = 0; i < dictList.size(); i++) {
+                                dictAttr[i] = dictList.get(i).getName();
+                            }
+                            ExcelSelectListUtil.selectList(workbook, k, k, dictAttr);
+                            break;
+                        case "会员来源":
+                            //会员来源
+                            params.clear();
+                            params.put("code", "MEMBERSOURCE");
+                            dictList = sysDictService.queryByCode(params);
+                            dictAttr = new String[dictList.size()];
+                            for (int i = 0; i < dictList.size(); i++) {
+                                dictAttr[i] = dictList.get(i).getName();
+                            }
+                            ExcelSelectListUtil.selectList(workbook, k, k, dictAttr);
+                            break;
+                        case "生日":
+                            ExcelUtil.addComment(cell, "格式：2021-01-01", "xls");
+                            break;
+                        case "注册时间":
+                            ExcelUtil.addComment(cell, "格式：2021-01-01", "xls");
+                            break;
+                        case "圈层":
+                            params.clear();
+                            params.put("tagGroupId", "961fd24ebf5263aa2028f065503f90af");
+                            tagList = qkjvipTaglibsService.queryAll(params);
+                            content = "可输入以下分类：\r\n";
+                            for (QkjvipTaglibsEntity tag : tagList) {
+                                content += tag.getTagName() + "\r\n";
+                            }
+                            ExcelUtil.addComment(cell, content, "xls");
+                            break;
+                        case "消费者群体":
+                            params.clear();
+                            params.put("tagGroupId", "c7f0689645f68feec5953f1b27460e3d");
+                            tagList = qkjvipTaglibsService.queryAll(params);
+                            content = "可输入以下分类：\r\n";
+                            for (QkjvipTaglibsEntity tag : tagList) {
+                                content += tag.getTagName() + "\r\n";
+                            }
+                            ExcelUtil.addComment(cell, content, "xls");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode( "会员信息表." + ExportExcelUtils.ExcelTypeEnum.XLS.getValue(), "UTF-8"));
+            workbook.write(response.getOutputStream());
+//            ExportExcelUtils.exportExcel(list,"会员信息表","会员信息",MemberEntity.class,"会员信息",response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 导入会员数据
+     * 品牌顾问用
+     */
+    @SysLog("导入会员")
+    @RequestMapping("/import2")
+    @RequiresPermissions("qkjvip:member:import")
+    public RestResponse import2(MultipartFile file, UploadData uploadData) {
+        String fileName = file.getOriginalFilename();
+        String batchno = UUID.randomUUID().toString().replaceAll("-", "");  // 批次号
+        List<SysUserChannelEntity> permissionChannels = new ArrayList<>();
+        if (uploadData == null) uploadData = new UploadData();
+        if (StringUtils.isBlank(fileName)) {
+            throw new BusinessException("请选择要导入的文件");
+        } else {
+            try {
+                Map params = new HashMap();
+                params.put("userId", getUserId());
+                if (getUser().getUserName().contains("admin")) {
+                    params.put("queryPermission", "all");
+                }
+                permissionChannels = sysUserChannelService.queryPermissionChannels(params);
+                List<QkjvipMemberImportBcEntity> list = ExportExcelUtils.importExcel(file, 1, 2,QkjvipMemberImportBcEntity.class);
+                for (int i = 0; i < list.size(); i++) {
+                    QkjvipMemberOrguserEntity orgUser = new QkjvipMemberOrguserEntity();
+                    QkjvipMemberDatadepEntity dataDept = new QkjvipMemberDatadepEntity();
+                    List<QkjvipMemberDatadepEntity> deptlist = new ArrayList<>();
+                    List<QkjvipMemberOrguserEntity> userlist = new ArrayList<>();
+                    int rownum = i + 4;
+                    if (StringUtils.isBlank(list.get(i).getMobile())) {
+                        return RestResponse.error("第" + rownum + "行手机号为空，请修改后重新上传！");
+                    }
+                    if (!ValidateUtil.validateMobilePhone(list.get(i).getMobile())) {
+                        return RestResponse.error("第" + rownum + "行手机号不正确，请修改后重新上传！");
+                    }
+                    if (StringUtils.isBlank(list.get(i).getServicename())) {
+                        return RestResponse.error("第" + rownum + "行渠道为空,请修改后重新上传！");
+                    } else if (!JsonHelper.toJsonString(permissionChannels).contains(list.get(i).getServicename().split("-")[0]) || list.get(i).getServicename().split("-").length < 2) {
+                        return RestResponse.error("第" + rownum + "行渠道请选择下拉的渠道,请修改后重新上传！");
+                    }
+                    if (uploadData.getIscheckpass()) {  // true:非必填项做校验
+                        if (StringUtils.isNotBlank(list.get(i).getIdcard())) {
+                            String idCard = list.get(i).getIdcard();
+                            if (!ValidateUtil.isIDCard(idCard.trim())) {  // 身份证校验不成功
+                                return RestResponse.error("第" + rownum + "行的身份证号不正确,请修改后重新上传！");
+                            }
+                        }
+                    }
+                    List<QkjvipTaglibsEntity> tagList = new ArrayList<>();
+                    List<MemberTagsQueryEntity> membertags = new ArrayList<>();
+                    if (StringUtils.isNotBlank(list.get(i).getTag1())) {
+                        params.clear();
+                        params.put("tagName", list.get(i).getTag1().trim());
+                        params.put("tagGroupId", "4bd7f98607e44647bf409589b16836b4");
+                        tagList = qkjvipTaglibsService.queryToCheck(params);
+                        if (tagList.size() > 0) {
+                            MemberTagsQueryEntity memberTagsQueryEntity = new MemberTagsQueryEntity();
+                            memberTagsQueryEntity.setTagGroupId(tagList.get(0).getTagGroupId());
+                            memberTagsQueryEntity.setTagGroupName(tagList.get(0).getTagGroupName());
+                            List<String> tagIdList = new ArrayList<>();
+                            tagIdList.add(tagList.get(0).getTagId());
+                            memberTagsQueryEntity.setTagIdList(tagIdList);
+                            memberTagsQueryEntity.setTagType(tagList.get(0).getTagType());
+                            memberTagsQueryEntity.setOptiontype(tagList.get(0).getOptiontype());
+                            memberTagsQueryEntity.setTagValue("");
+                            membertags.add(memberTagsQueryEntity);
+                        } else {
+                            return RestResponse.error("第" + rownum + "行省份标签不正确,请修改后重新上传！");
+                        }
+                    }
+                    if (StringUtils.isNotBlank(list.get(i).getTag2())) {
+                        params.clear();
+                        params.put("tagName", list.get(i).getTag2().trim());
+                        params.put("tagGroupId", "9af1533bea3d4c89b856ad80e9d0e457");
+                        tagList = qkjvipTaglibsService.queryToCheck(params);
+                        if (tagList.size() > 0) {
+                            MemberTagsQueryEntity memberTagsQueryEntity = new MemberTagsQueryEntity();
+                            memberTagsQueryEntity.setTagGroupId(tagList.get(0).getTagGroupId());
+                            memberTagsQueryEntity.setTagGroupName(tagList.get(0).getTagGroupName());
+                            List<String> tagIdList = new ArrayList<>();
+                            tagIdList.add(tagList.get(0).getTagId());
+                            memberTagsQueryEntity.setTagIdList(tagIdList);
+                            memberTagsQueryEntity.setTagType(tagList.get(0).getTagType());
+                            memberTagsQueryEntity.setOptiontype(tagList.get(0).getOptiontype());
+                            memberTagsQueryEntity.setTagValue("");
+                            membertags.add(memberTagsQueryEntity);
+                        } else {
+                            return RestResponse.error("第" + rownum + "行市标签不正确,请修改后重新上传！");
+                        }
+                    }
+                    if (StringUtils.isNotBlank(list.get(i).getTag3())) {
+                        params.clear();
+                        params.put("tagName", list.get(i).getTag3().trim());
+                        params.put("tagGroupId", "961fd24ebf5263aa2028f065503f90af");
+                        tagList = qkjvipTaglibsService.queryToCheck(params);
+                        if (tagList.size() > 0) {
+                            MemberTagsQueryEntity memberTagsQueryEntity = new MemberTagsQueryEntity();
+                            memberTagsQueryEntity.setTagGroupId(tagList.get(0).getTagGroupId());
+                            memberTagsQueryEntity.setTagGroupName(tagList.get(0).getTagGroupName());
+                            List<String> tagIdList = new ArrayList<>();
+                            tagIdList.add(tagList.get(0).getTagId());
+                            memberTagsQueryEntity.setTagIdList(tagIdList);
+                            memberTagsQueryEntity.setTagType(tagList.get(0).getTagType());
+                            memberTagsQueryEntity.setOptiontype(tagList.get(0).getOptiontype());
+                            memberTagsQueryEntity.setTagValue("");
+                            membertags.add(memberTagsQueryEntity);
+                        } else {
+                            return RestResponse.error("第" + rownum + "行圈层标签不正确,请修改后重新上传！");
+                        }
+                    } else {
+                        return RestResponse.error("第" + rownum + "行圈层标签为空,请修改后重新上传！");
+                    }
+                    if (StringUtils.isNotBlank(list.get(i).getTag4())) {
+                        params.clear();
+                        params.put("tagName", list.get(i).getTag4().trim());
+                        params.put("tagGroupId", "c7f0689645f68feec5953f1b27460e3d");
+                        tagList = qkjvipTaglibsService.queryToCheck(params);
+                        if (tagList.size() > 0) {
+                            MemberTagsQueryEntity memberTagsQueryEntity = new MemberTagsQueryEntity();
+                            memberTagsQueryEntity.setTagGroupId(tagList.get(0).getTagGroupId());
+                            memberTagsQueryEntity.setTagGroupName(tagList.get(0).getTagGroupName());
+                            List<String> tagIdList = new ArrayList<>();
+                            tagIdList.add(tagList.get(0).getTagId());
+                            memberTagsQueryEntity.setTagIdList(tagIdList);
+                            memberTagsQueryEntity.setTagType(tagList.get(0).getTagType());
+                            memberTagsQueryEntity.setOptiontype(tagList.get(0).getOptiontype());
+                            memberTagsQueryEntity.setTagValue("");
+                            membertags.add(memberTagsQueryEntity);
+                        } else {
+                            return RestResponse.error("第" + rownum + "行消费者群体标签不正确,请修改后重新上传！");
+                        }
+                    }
+                    String[] channel = null;
+                    channel = new String[list.get(i).getServicename().split("-").length];
+                    channel = list.get(i).getServicename().split("-");
+                    list.get(i).setServicename(channel[0]);
+                    if (channel.length >= 2) {
+                        list.get(i).setMemberchannel(Integer.parseInt(channel[channel.length - 1]));
+                    }
+                    orgUser.setUserid(getUserId());
+                    orgUser.setIsmain(true);
+                    userlist.add(orgUser);
+                    dataDept.setOrgno(getOrgNo());
+                    dataDept.setIsmain(true);
+                    deptlist.add(dataDept);
+                    list.get(i).setUserlist(userlist);
+                    list.get(i).setDeptlist(deptlist);
+                    list.get(i).setMembertags(membertags);
+                    list.get(i).setBatchno(batchno);
+                    list.get(i).setOrgUserid(getUserId());  // 导入默认所属人
+                    list.get(i).setOrgNo(getOrgNo()); //导入默认所属人部门
+                    list.get(i).setAddUser(getUserId());
+                    list.get(i).setAddDept(getOrgNo());
+                    list.get(i).setAddTime(new Date());
+                    list.get(i).setOfflineflag(1);
+                }
+                if (list.size() > 0) {
+                    List<QkjvipMemberImportEntity> list2 = JSON.parseArray(JsonHelper.toJsonString(list), QkjvipMemberImportEntity.class);
+                    qkjvipMemberImportService.addBatch(list2); //批量导入临时表
 
                     Map map = new HashMap();
                     map.put("ischeckpass", uploadData.getIscheckpass());
