@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Service接口
  *
- * @author 李鹏军
+ * @author liuqianru
  * @date 2020-09-25 08:41:43
  */
 public interface QkjvipMemberImportService extends IService<QkjvipMemberImportEntity> {

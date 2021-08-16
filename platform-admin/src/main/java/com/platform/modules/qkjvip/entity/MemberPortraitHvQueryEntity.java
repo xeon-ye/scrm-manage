@@ -32,4 +32,5 @@ public class MemberPortraitHvQueryEntity implements Serializable {
     private String listmemberchannel;
     private Integer daterate;
     private Double buyamount;
+    private String listorgno;  // 权限部门
 }

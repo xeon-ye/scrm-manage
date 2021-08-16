@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.utils.RestResponse;
+import com.platform.datascope.ContextHelper;
 import com.platform.modules.qkjvip.entity.*;
 import com.platform.modules.sys.controller.AbstractController;
 import com.platform.modules.sys.service.SysUserChannelService;
@@ -51,6 +52,7 @@ public class MemberPortraitController extends AbstractController {
     @PostMapping("/getMemberSexReport")
     public RestResponse getMemberSexReport(@RequestBody MemberPortraitSexEntity memberPortraitSexEntity) throws IOException {
         List<MemberPortraitSexEntity> list = new ArrayList<>();
+        memberPortraitSexEntity.setListorgno(ContextHelper.getPermitDepts(""));
         if (!getUser().getUserName().contains("admin")) {
             memberPortraitSexEntity.setCurrentmemberid(getUserId());
             memberPortraitSexEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
@@ -80,6 +82,7 @@ public class MemberPortraitController extends AbstractController {
     @PostMapping("/getMemberAgeReport")
     public RestResponse getMemberAgeReport(@RequestBody MemberPortraitAgeEntity memberPortraitAgeEntity) throws IOException {
         List<MemberPortraitAgeEntity> list = new ArrayList<>();
+        memberPortraitAgeEntity.setListorgno(ContextHelper.getPermitDepts(""));
         if (!getUser().getUserName().contains("admin")) {
             memberPortraitAgeEntity.setCurrentmemberid(getUserId());
             memberPortraitAgeEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
@@ -109,6 +112,7 @@ public class MemberPortraitController extends AbstractController {
     @PostMapping("/getMemberCityReport")
     public RestResponse getMemberCityReport(@RequestBody MemberPortraitAreaEntity memberPortraitAreaEntity) throws IOException {
         List<MemberPortraitAreaEntity> list = new ArrayList<>();
+        memberPortraitAreaEntity.setListorgno(ContextHelper.getPermitDepts(""));
         if (!getUser().getUserName().contains("admin")) {
             memberPortraitAreaEntity.setCurrentmemberid(getUserId());
             memberPortraitAreaEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
@@ -146,6 +150,7 @@ public class MemberPortraitController extends AbstractController {
     @PostMapping("/getMemberChannelRateReport")
     public RestResponse getMemberChannelRateReport(@RequestBody MemberPortraitHfQueryEntity memberPortraitHfQueryEntity) throws IOException {
         List<MemberPortraitHfResultEntity> list = new ArrayList<>();
+        memberPortraitHfQueryEntity.setListorgno(ContextHelper.getPermitDepts(""));
         if (!getUser().getUserName().contains("admin")) {
             memberPortraitHfQueryEntity.setCurrentmemberid(getUserId());
             memberPortraitHfQueryEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
@@ -183,6 +188,7 @@ public class MemberPortraitController extends AbstractController {
     @PostMapping("/getMemberCityRateReport")
     public RestResponse getMemberCityRateReport(@RequestBody MemberPortraitHfQueryEntity memberPortraitHfQueryEntity) throws IOException {
         List<MemberPortraitHfResultEntity> list = new ArrayList<>();
+        memberPortraitHfQueryEntity.setListorgno(ContextHelper.getPermitDepts(""));
         if (!getUser().getUserName().contains("admin")) {
             memberPortraitHfQueryEntity.setCurrentmemberid(getUserId());
             memberPortraitHfQueryEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
@@ -220,6 +226,7 @@ public class MemberPortraitController extends AbstractController {
     @PostMapping("/getMemberChannelAmountReport")
     public RestResponse getMemberChannelAmountReport(@RequestBody MemberPortraitHvQueryEntity memberPortraitHvQueryEntity) throws IOException {
         List<MemberPortraitHvResultEntity> list = new ArrayList<>();
+        memberPortraitHvQueryEntity.setListorgno(ContextHelper.getPermitDepts(""));
         if (!getUser().getUserName().contains("admin")) {
             memberPortraitHvQueryEntity.setCurrentmemberid(getUserId());
             memberPortraitHvQueryEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
@@ -257,6 +264,7 @@ public class MemberPortraitController extends AbstractController {
     @PostMapping("/getMemberCityAmountReport")
     public RestResponse getMemberCityAmountReport(@RequestBody MemberPortraitHvQueryEntity memberPortraitHvQueryEntity) throws IOException {
         List<MemberPortraitHvResultEntity> list = new ArrayList<>();
+        memberPortraitHvQueryEntity.setListorgno(ContextHelper.getPermitDepts(""));
         if (!getUser().getUserName().contains("admin")) {
             memberPortraitHvQueryEntity.setCurrentmemberid(getUserId());
             memberPortraitHvQueryEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
@@ -294,6 +302,7 @@ public class MemberPortraitController extends AbstractController {
     @PostMapping("/getMemberAmountRangeReport")
     public RestResponse getMemberAmountRangeReport(@RequestBody MemberPortraitValueRangeQueryEntity memberPortraitValueRangeQueryEntity) throws IOException {
         List<MemberPortraitValueRangeResultEntity> list = new ArrayList<>();
+        memberPortraitValueRangeQueryEntity.setListorgno(ContextHelper.getPermitDepts(""));
         if (!getUser().getUserName().contains("admin")) {
             memberPortraitValueRangeQueryEntity.setCurrentmemberid(getUserId());
             memberPortraitValueRangeQueryEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
@@ -333,6 +342,7 @@ public class MemberPortraitController extends AbstractController {
         List<MemberPortraitAddtrendResultEntity> list = new ArrayList<>();
         List<String> servicenamelist = new ArrayList<>();
         List<String> datelist = new ArrayList<>();
+        memberPortraitAddtrendQueryEntity.setListorgno(ContextHelper.getPermitDepts(""));
         if (!getUser().getUserName().contains("admin")) {
             memberPortraitAddtrendQueryEntity.setCurrentmemberid(getUserId());
             memberPortraitAddtrendQueryEntity.setListmemberchannel("0".equals(sysUserChannelService.queryChannelIdByUserId(getUserId())) ? "-1" : sysUserChannelService.queryChannelIdByUserId(getUserId()));
