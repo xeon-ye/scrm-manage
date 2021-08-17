@@ -38,4 +38,12 @@ public interface SysCacheService {
      * @return int
      */
     int deleteBatch(String[] keys);
+
+    /**
+     * 更新redis
+     *
+     * @param  list,String keyname,String rediskey
+     * @return BufferedImage
+     */
+    void saveDictRedis(List list, String keyname, String rediskey);
 }

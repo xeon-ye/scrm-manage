@@ -20,6 +20,7 @@ import com.platform.common.validator.group.AddGroup;
 import com.platform.common.validator.group.UpdateGroup;
 import com.platform.modules.sys.entity.SysDictEntity;
 import com.platform.modules.sys.entity.SysDictGroupEntity;
+import com.platform.modules.sys.service.SysCacheService;
 import com.platform.modules.sys.service.SysDictGroupService;
 import com.platform.modules.sys.service.SysDictService;
 import org.apache.commons.lang.StringUtils;
@@ -27,6 +28,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +45,8 @@ public class SysDictController {
     private SysDictService sysDictService;
     @Autowired
     private SysDictGroupService sysDictGroupService;
+    @Autowired
+    SysCacheService sysCacheService;
 
     /**
      * 查看所有列表
@@ -96,7 +100,7 @@ public class SysDictController {
     public RestResponse save(@RequestBody SysDictEntity sysDict) {
         ValidatorUtils.validateEntity(sysDict, AddGroup.class);
         sysDictService.add(sysDict);
-
+        saveDictRedis();
         return RestResponse.success();
     }
 
@@ -110,10 +114,18 @@ public class SysDictController {
     public RestResponse update(@RequestBody SysDictEntity sysDict) {
         ValidatorUtils.validateEntity(sysDict, UpdateGroup.class);
         sysDictService.update(sysDict);
-
+        saveDictRedis();
         return RestResponse.success();
     }
 
+    /**
+     * 更新redis
+     */
+    public void saveDictRedis (){
+        Map<String, Object> map = new HashMap<>();
+        List list = sysDictService.queryAll(map);
+        sysCacheService.saveDictRedis(list,"dictList","MTM_CACHE:IMMELISTALL:DICTLIST");
+    }
     /**
      * 删除
      *
