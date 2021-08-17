@@ -57,4 +57,5 @@ public class QkjvipOrderOrderQuaryEntity implements Serializable {
     private String servicename;
     private Boolean isneworder;
     private Boolean isformal;
+    private String listorgno;  // 用户的权限部门
 }

@@ -151,6 +151,7 @@ public class QkjvipOrderOrderController extends AbstractController {
         } else { //无任何类别查询权限
             //order.setListordertype("0");
         }
+        order.setListorgno(ContextHelper.getPermitDepts("qkjvip:memberactivity:list"));
         if (!getUser().getUserName().contains("admin")) {  // 空默认是全部所有权限
             order.setCurrentmemberid(getUserId());
 //            memberQuery.setListorgno(sysRoleOrgService.queryOrgNoListByUserIdAndPerm(getUserId(), "qkjvip:member:list"));
