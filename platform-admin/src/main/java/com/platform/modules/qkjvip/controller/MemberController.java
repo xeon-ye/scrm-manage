@@ -99,16 +99,6 @@ public class MemberController extends AbstractController {
     }
 
     /**
-     * 根据手机查询列表
-     */
-    @RequestMapping("/queryAllByMobile")
-    public RestResponse queryAllByMobile(@RequestParam Map<String, Object> params) {
-        List<MemberEntity> list = memberService.queryAllByMobile(params);
-
-        return RestResponse.success().put("list", list);
-    }
-
-    /**
      * 所有会员列表
      *
      * @param memberQuery 查询参数
@@ -170,6 +160,81 @@ public class MemberController extends AbstractController {
         } else {
             member.setIsqkh(false);
         }
+        //获取会员标签--20210817 del 标签、所属在点击tab时分别掉接口取值
+//        Map<String, Object> params = new HashMap<>();
+//        params.put("memberId", memberId);
+//        List<QkjvipMemberDatadepEntity> deptlist = qkjvipMemberDatadepService.queryAll(params);
+//        member.setDeptlist(deptlist);
+//        List<QkjvipMemberOrguserEntity> userlist = qkjvipMemberOrguserService.queryAll(params);
+//        member.setUserlist(userlist);
+//        List<MemberTagsEntity> memberTagsEntities = memberTagsService.queryTagsList(params);
+//        List<MemberTagsQueryEntity> membertags = new ArrayList<>();
+//        if (memberTagsEntities.size() > 0) {   //会员打了标签的情况下
+//            for (int i = 0; i < memberTagsEntities.size(); i++) {
+//                if (i > 0 && memberTagsEntities.get(i).getTagGroupId().equals(memberTagsEntities.get(i - 1).getTagGroupId())) {
+//                    continue;
+//                }
+//                MemberTagsQueryEntity memberTagsQueryEntity = new MemberTagsQueryEntity();
+//                memberTagsQueryEntity.setTagGroupId(memberTagsEntities.get(i).getTagGroupId());
+//                memberTagsQueryEntity.setTagGroupName(memberTagsEntities.get(i).getTagGroupName());
+//                memberTagsQueryEntity.setTagType(memberTagsEntities.get(i).getTagType());
+//                memberTagsQueryEntity.setOptiontype(memberTagsEntities.get(i).getOptiontype());
+//                params.put("tagGroupId", memberTagsEntities.get(i).getTagGroupId());
+//                List<QkjvipTaglibsEntity> tagList = qkjvipTaglibsService.queryAll(params);
+//                memberTagsQueryEntity.setTagList(tagList);
+//                if (memberTagsEntities.get(i).getTagType() != null && memberTagsEntities.get(i).getTagType() == 2) {  // 选择型的，用户可再编辑
+//                    memberTagsQueryEntity.setTagIdList(Arrays.asList(memberTagsEntities.get(i).getItems().split(",")));
+//                    memberTagsQueryEntity.setTagValue("");
+//                } else if (memberTagsEntities.get(i).getTagType() != null && memberTagsEntities.get(i).getTagType() == 4) {  // 只读选择型的，用户不可编辑
+//                    List<String> tagIdList = new ArrayList<>();
+//                    memberTagsQueryEntity.setTagIdList(tagIdList);
+//                    memberTagsQueryEntity.setTagValue(memberTagsEntities.get(i).getTagValueText());
+//                } else {  // 输入型和只读型
+//                    List<String> tagIdList = new ArrayList<>();
+//                    memberTagsQueryEntity.setTagIdList(tagIdList);
+//                    memberTagsQueryEntity.setTagValue(memberTagsEntities.get(i).getTagValue());
+//                }
+//                membertags.add(memberTagsQueryEntity);
+//            }
+//        }
+//        member.setMembertags(membertags);
+        return RestResponse.success().put("member", member);
+    }
+
+    /**
+     * 根据手机号查询详情
+     *
+     * @param mobile
+     * @return RestResponse
+     */
+    @RequestMapping("/getInfo")
+    @RequiresPermissions("qkjvip:member:info")
+    public RestResponse getInfo(@RequestParam("mobile") String mobile) {
+        List<MemberEntity> list = memberService.queryMemberInfo(mobile);
+        MemberEntity member = new MemberEntity();
+        if (list.size() > 0) {
+            member = list.get(0);
+            int qkhcnt = memberService.selectQkhMemberById(member.getMemberId());
+            if (qkhcnt > 0) {
+                member.setIsqkh(true);
+            } else {
+                member.setIsqkh(false);
+            }
+        }
+        member.setMobile(mobile);
+        return RestResponse.success().put("member", member);
+    }
+
+    /**
+     * 根据主键查询详情
+     *
+     * @param memberId 主键
+     * @return RestResponse
+     */
+    @GetMapping("/deptAndUserInfo/{memberId}")
+    @RequiresPermissions("qkjvip:member:info")
+    public RestResponse deptAndUserInfo(@PathVariable("memberId") String memberId) throws IOException {
+        MemberEntity member = new MemberEntity();
         //获取会员标签
         Map<String, Object> params = new HashMap<>();
         params.put("memberId", memberId);
@@ -177,6 +242,22 @@ public class MemberController extends AbstractController {
         member.setDeptlist(deptlist);
         List<QkjvipMemberOrguserEntity> userlist = qkjvipMemberOrguserService.queryAll(params);
         member.setUserlist(userlist);
+        return RestResponse.success().put("member", member);
+    }
+
+    /**
+     * 根据主键查询详情
+     *
+     * @param memberId 主键
+     * @return RestResponse
+     */
+    @GetMapping("/tagsInfo/{memberId}")
+    @RequiresPermissions("qkjvip:member:info")
+    public RestResponse tagsInfo(@PathVariable("memberId") String memberId) throws IOException {
+        MemberEntity member = new MemberEntity();
+        //获取会员标签
+        Map<String, Object> params = new HashMap<>();
+        params.put("memberId", memberId);
         List<MemberTagsEntity> memberTagsEntities = memberTagsService.queryTagsList(params);
         List<MemberTagsQueryEntity> membertags = new ArrayList<>();
         if (memberTagsEntities.size() > 0) {   //会员打了标签的情况下
@@ -280,6 +361,7 @@ public class MemberController extends AbstractController {
         if (channelList.size() > 0) {
             member.setServicename(channelList.get(0).getServicename());
         }
+        member.setCurrentmemberid(getUserId());  // 当前登录人id，接口判断是否主业务员用
         try {
             Object obj = JSONArray.toJSON(member);
             String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
@@ -947,6 +1029,16 @@ public class MemberController extends AbstractController {
             }
         }
         return RestResponse.success().put("msg", "导入成功！").put("batchno", batchno);
+    }
+
+    /**
+     * 根据手机查询列表
+     */
+    @RequestMapping("/queryAllByMobile")
+    public RestResponse queryAllByMobile(@RequestParam Map<String, Object> params) {
+        List<MemberEntity> list = memberService.queryAllByMobile(params);
+
+        return RestResponse.success().put("list", list);
     }
 
     /**
