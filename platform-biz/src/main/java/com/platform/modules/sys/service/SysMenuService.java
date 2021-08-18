@@ -70,6 +70,8 @@ public interface SysMenuService extends IService<SysMenuEntity> {
      */
     List<SysMenuEntity> queryList();
 
+    List<SysMenuEntity> queryListRedis();
+
     /**
      * 新增菜单
      *

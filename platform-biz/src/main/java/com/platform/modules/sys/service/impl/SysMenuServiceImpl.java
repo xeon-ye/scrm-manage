@@ -92,6 +92,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
     }
 
     @Override
+    public List<SysMenuEntity> queryListRedis() {
+        return baseMapper.queryAllPermsToRedis();
+    }
+
+    @Override
     public boolean add(SysMenuEntity menu) {
         String parentId = menu.getParentId();
         String maxId = baseMapper.queryMaxIdByParentId(parentId);

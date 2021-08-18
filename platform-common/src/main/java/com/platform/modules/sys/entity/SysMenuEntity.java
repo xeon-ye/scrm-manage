@@ -89,4 +89,7 @@ public class SysMenuEntity implements Serializable {
 
     @TableField(exist = false)
     private List<?> list;
+
+    @TableField(exist = false)
+    private String userId;
 }

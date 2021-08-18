@@ -13,4 +13,11 @@
     <select id="queryMaxIdByParentId" resultType="string">
 		SELECT MAX(MENU_ID) FROM SYS_MENU WHERE PARENT_ID = #{parentId}
 	</select>
+
+	<!-- 查询所有权限redis -->
+	<select id="queryAllPermsToRedis" resultType="com.platform.modules.sys.entity.SysMenuEntity">
+		SELECT M.MENU_ID,M.PERMS,UR.USER_ID from SYS_MENU M
+		LEFT JOIN SYS_ROLE_MENU RM on RM.MENU_ID = M.MENU_ID
+		LEFT JOIN SYS_USER_ROLE UR ON UR.ROLE_ID = RM.ROLE_ID;
+	</select>
 </mapper>

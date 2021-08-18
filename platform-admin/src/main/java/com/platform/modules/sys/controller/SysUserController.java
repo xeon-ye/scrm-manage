@@ -60,6 +60,8 @@ public class SysUserController extends AbstractController {
     private SysUserSuperviseService sysUserSuperviseService;
     @Autowired
     SysCacheService sysCacheService;
+    @Autowired
+    SysMenuService sysMenuService;
 
     /**
      * 查看所有列表
@@ -176,7 +178,11 @@ public class SysUserController extends AbstractController {
 
         // 更新redis用户列表
         List userListNew = sysUserService.list(new QueryWrapper<SysUserEntity>().select("USER_ID,REAL_NAME,ORG_NO,status"));
-        saveDictRedis(userListNew);
+        saveDictRedis(userListNew,"userList","MTM_CACHE:USERLISTALL:USERS");
+
+        //更新rold列表
+        List rolesusers = sysMenuService.queryListRedis();
+        saveDictRedis(rolesusers,"userRoleList","MTM_CACHE:IMMELISTALL:USERROLELIST");
 
         return RestResponse.success();
     }
@@ -202,7 +208,12 @@ public class SysUserController extends AbstractController {
 
         // 更新redis用户列表
         List userListNew = sysUserService.list(new QueryWrapper<SysUserEntity>().select("USER_ID,REAL_NAME,ORG_NO,status"));
-        saveDictRedis(userListNew);
+        saveDictRedis(userListNew,"userList","MTM_CACHE:USERLISTALL:USERS");
+
+        //更新rold列表
+        List rolesusers = sysMenuService.queryListRedis();
+        saveDictRedis(rolesusers,"userRoleList","MTM_CACHE:IMMELISTALL:USERROLELIST");
+
 
         return RestResponse.success();
     }
@@ -332,7 +343,11 @@ public class SysUserController extends AbstractController {
 
             // 更新redis用户列表
             List userListNew = sysUserService.list(new QueryWrapper<SysUserEntity>().select("USER_ID,REAL_NAME,ORG_NO,status"));
-            saveDictRedis(userListNew);
+            saveDictRedis(userListNew,"userList","MTM_CACHE:USERLISTALL:USERS");
+
+            //更新rold列表
+            List rolesusers = sysMenuService.queryListRedis();
+            saveDictRedis(rolesusers,"userRoleList","MTM_CACHE:IMMELISTALL:USERROLELIST");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -341,8 +356,8 @@ public class SysUserController extends AbstractController {
     /**
      * 更新redis
      */
-    public void saveDictRedis (List list){
-        sysCacheService.saveDictRedis(list,"userList","MTM_CACHE:USERLISTALL:USERS");
+    public void saveDictRedis (List list,String keyname, String key){
+        sysCacheService.saveDictRedis(list,keyname,key);
     }
 
     public void updateFatherDepts(List<SysUserEntity> users){

@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.exceptions.JedisException;
 
 import java.util.*;
@@ -82,6 +83,31 @@ public class JedisUtil {
         }
         return value;
     }
+
+    /**
+     * 批量执行get 减少查询次数
+     * @param keys 孙珊珊
+     */
+    public List getpipeline(List<String> keys) {
+        Jedis jedis = null;
+        jedis = getResource();
+        Pipeline pipeline = jedis.pipelined();
+        for (String key : keys){
+            // 组装命令
+            pipeline.get(getBytesKey(key));
+        }
+        // 执行命令
+        List<Object> result = pipeline.syncAndReturnAll();
+        //类型转换
+        List newlist= new ArrayList();
+        for (int i=0;i<result.size();i++) {
+            Object value = null;
+            value = toObject((byte[]) result.get(i));
+            newlist.add(value);
+        }
+        return newlist;
+    }
+
 
     public String set(String key, String value) {
         return set(key, value, expireTime);

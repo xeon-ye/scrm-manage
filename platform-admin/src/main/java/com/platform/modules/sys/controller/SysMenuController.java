@@ -12,6 +12,7 @@
 package com.platform.modules.sys.controller;
 
 import cn.emay.util.JsonHelper;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.exception.BusinessException;
@@ -66,6 +67,8 @@ public class SysMenuController extends AbstractController {
 
     @Autowired
     JedisUtil jedisUtil;
+    @Autowired
+    SysCacheService sysCacheService;
     /**
      * 导航菜单
      *
@@ -73,11 +76,61 @@ public class SysMenuController extends AbstractController {
      */
     @GetMapping("/nav")
     public RestResponse nav() {
+        Map<String, Object> map = new HashMap<>(2);
+        long start1=System.currentTimeMillis();
+        List<String> listkey = Arrays.asList("MTM_CACHE:IMMELISTALL:DICTLIST","MTM_CACHE:ORGLISTALL:ORGLIST","MTM_CACHE:USERLISTALL:USERS","MTM_CACHE:IMMELISTALL:USERROLELIST");
+        List list = jedisUtil.getpipeline(listkey);
+        List<SysDictEntity> dictList = new ArrayList<>();//字典
+        List<SysOrgEntity> orgList = new ArrayList<>();//部门列表
+        List<SysUserEntity> userList = new ArrayList<>();//userlist
+        List<SysMenuEntity> roleuserList = new ArrayList<>();// 权限列表
+        if (list!=null&&list.size()>0) {
+            for(int i=0;i<list.size();i++){
+                redisEntity red = new redisEntity();
+                red =  (redisEntity) list.get(i);
+                if (red!=null) {
+                    if (red.getKey()!=null&&red.getKey().equals("dictList")) dictList=red.getEntityList();
+                    if (red.getKey()!=null&&red.getKey().equals("orgList")) orgList=red.getEntityList();
+                    if (red.getKey()!=null&&red.getKey().equals("userList")) userList=red.getEntityList();
+                    if (red.getKey()!=null&&red.getKey().equals("userRoleList")) roleuserList=red.getEntityList();
+                }
+            }
+        }
+        // 如果缓存中没有取到从数据库取
+        if (dictList==null||dictList.size()<=0)dictList=getsqlList(1);
+        if (orgList==null||orgList.size()<=0)orgList =getsqlList(2);
+        if (userList==null||userList.size()<=0)userList =getsqlList(3);
+        if (roleuserList==null||roleuserList.size()<=0)roleuserList =getsqlList(4);
+
+        String username=getUser().getUserName();
+        String userId=getUserId();
+        //用户权限列表
+        Set<String> permissions = new HashSet<>();
+        List<String> permsList = new ArrayList<>();
+        for (SysMenuEntity sme:roleuserList) {
+            if (username!=null&&username.contains("admin")) { //管理员
+                permsList.add(sme.getPerms());
+            } else {
+                if(sme.getUserId()!=null&&sme.getUserId().equals(userId)){
+                    permsList.add(sme.getPerms());
+                }
+            }
+        }
+        for (String perms : permsList) {
+            if (StringUtils.isBlank(perms)) {
+                continue;
+            }
+            permissions.addAll(Arrays.asList(perms.trim().split(",")));
+        }
+        long end2=System.currentTimeMillis();
+        logger.info("the redis get time "+(end2-start1));
+
+        long start2=System.currentTimeMillis();
         List<SysMenuEntity> menuList = sysMenuService.getUserMenuList(getUserId());
-        Set<String> permissions = shiroService.getUserPermissions(getUserId());
+        //permissions = shiroService.getUserPermissions(getUserId());
 
         // sunshanshan
-        String userId=getUserId();
+
         if (!Constant.SUPER_ADMIN.equals(userId) && !Constant.SUPER_ADMIN2.equals(userId) && !Constant.SUPER_ADMIN3.equals(userId)) {
             Set<String> permsSet = new HashSet<>();
             Iterator<String> it = permissions.iterator();
@@ -98,22 +151,6 @@ public class SysMenuController extends AbstractController {
             permissions.addAll(permsSet);
         }
 
-        Map<String, Object> map = new HashMap<>(2);
-
-        //字典
-        redisEntity red = new redisEntity(); red = (redisEntity) jedisUtil.getObject("MTM_CACHE:IMMELISTALL:DICTLIST");
-        List<SysDictEntity> dictList = new ArrayList<>();
-        if (red!=null) dictList = red.getEntityList();
-
-        //部门列表
-        red = new redisEntity (); red = (redisEntity) jedisUtil.getObject("MTM_CACHE:ORGLISTALL:ORGLIST");
-        List<SysOrgEntity> orgList = new ArrayList<>();
-        if (red!=null)  orgList = red.getEntityList(); //sunshanshan mod
-        //userlist
-        red = new redisEntity (); red =  (redisEntity) jedisUtil.getObject("MTM_CACHE:USERLISTALL:USERS");
-        List<SysUserEntity> userList = new ArrayList<>();
-        if (red!=null)  userList = red.getEntityList();
-
         List<QkjvipTaglibsEntity> areaList = qkjvipTaglibsService.list(new QueryWrapper<QkjvipTaglibsEntity>().eq("TAG_GROUP_ID", "9af1533bea3d4c89b856ad80e9d0e457")); //liuqianru add
         List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.queryAll(map);  // 所有得渠道
         List<QkjvipOptionsEntity> appChannels = qkjvipMemberMessageService.queryChannels();
@@ -126,6 +163,9 @@ public class SysMenuController extends AbstractController {
             map.put("queryPermission", "all");
         }
         List<SysUserChannelEntity> permissionChannels = sysUserChannelService.queryPermissionChannels(map);  // 有权限的渠道
+
+        long end22=System.currentTimeMillis();
+        logger.info("the selectsql get time "+(end22-start2));
         return RestResponse.success()
                 .put("menuList", menuList)
                 .put("permissions", permissions)
@@ -138,6 +178,32 @@ public class SysMenuController extends AbstractController {
                 .put("permissionChannels", permissionChannels);
     }
 
+
+    /**
+     * 更新redis
+     */
+    public List getsqlList (Integer type){
+        Map<String, Object> map = new HashMap<>();
+        List list = new ArrayList();
+        if (type == 1){
+            list = sysDictService.queryAll(map);
+            sysCacheService.saveDictRedis(list,"dictList","MTM_CACHE:IMMELISTALL:DICTLIST");
+        };
+        if (type == 2){
+            list = orgService.list(new QueryWrapper<SysOrgEntity>().eq("STATUS", 1));
+            sysCacheService.saveDictRedis(list,"orgList","MTM_CACHE:ORGLISTALL:ORGLIST");
+        };
+        if (type == 3){
+            list = userService.list(new QueryWrapper<SysUserEntity>().select("USER_ID,REAL_NAME,ORG_NO,status"));
+            sysCacheService.saveDictRedis(list,"userList","MTM_CACHE:USERLISTALL:USERS");
+        };
+        if (type == 4){
+            list = sysMenuService.queryListRedis();
+            sysCacheService.saveDictRedis(list,"userRoleList","MTM_CACHE:IMMELISTALL:USERROLELIST");
+        };
+        logger.info("存在序列化失败问题：类型：" + type);
+        return list;
+    }
     /**
      * 所有菜单列表
      *

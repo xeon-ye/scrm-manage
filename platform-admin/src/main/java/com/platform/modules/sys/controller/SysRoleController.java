@@ -18,9 +18,7 @@ import com.platform.common.validator.ValidatorUtils;
 import com.platform.modules.qkjvip.entity.QkjvipMemberChannelEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberChannelService;
 import com.platform.modules.sys.entity.SysRoleEntity;
-import com.platform.modules.sys.service.SysRoleMenuService;
-import com.platform.modules.sys.service.SysRoleOrgService;
-import com.platform.modules.sys.service.SysRoleService;
+import com.platform.modules.sys.service.*;
 import com.platform.modules.util.ToolsUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +44,10 @@ public class SysRoleController extends AbstractController {
     private SysRoleOrgService sysRoleOrgService;
     @Autowired
     private QkjvipMemberChannelService qkjvipMemberChannelService;
+    @Autowired
+    SysCacheService sysCacheService;
+    @Autowired
+    SysMenuService sysMenuService;
 
     /**
      * 角色列表
@@ -146,9 +148,18 @@ public class SysRoleController extends AbstractController {
         role.setCreateUserOrgNo(getOrgNo());
         sysRoleService.update(role);
 
+        //更新rold列表
+        List rolesusers = sysMenuService.queryListRedis();
+        saveDictRedis(rolesusers,"userRoleList","MTM_CACHE:IMMELISTALL:USERROLELIST");
         return RestResponse.success();
     }
 
+    /**
+     * 更新redis
+     */
+    public void saveDictRedis (List list,String keyname, String key){
+        sysCacheService.saveDictRedis(list,keyname,key);
+    }
     /**
      * 删除角色
      *

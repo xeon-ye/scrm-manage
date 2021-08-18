@@ -9,7 +9,7 @@
 			LEFT JOIN SYS_MENU M ON RM.MENU_ID = M.MENU_ID
 		WHERE UR.USER_ID = #{userId}
 	</select>
-	
+
 	<!-- 查询用户的所有菜单ID --> 
 	<select id="queryAllMenuId" resultType="string">
 		SELECT DISTINCT RM.MENU_ID FROM SYS_USER_ROLE UR

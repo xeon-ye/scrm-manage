@@ -46,4 +46,6 @@ public interface SysMenuDao extends BaseMapper<SysMenuEntity> {
      * @return String
      */
     String queryMaxIdByParentId(String parentId);
+
+    List<SysMenuEntity> queryAllPermsToRedis();
 }
