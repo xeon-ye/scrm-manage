@@ -130,6 +130,11 @@
         WHERE 1=1
         <include refid="selectSql"/>
     </select>
+
+    <select id="queryMemberInfo" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
+        SELECT TOP 1 * FROM qkjvip_member m WHERE 1=1 and statusflag!=1 and mobile = #{value}
+    </select>
+
     <!--根据openid判断是否关注公众号：孙珊珊-->
     <select id="selectMemberByOpenid" resultType="com.platform.modules.qkjvip.entity.MemberEntity">
         select top 1 ISNULL(b.memberidto,b.member_id) as memberId,

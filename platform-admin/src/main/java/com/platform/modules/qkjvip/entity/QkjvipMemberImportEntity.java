@@ -182,6 +182,10 @@ public class QkjvipMemberImportEntity implements Serializable {
     @Excel(name = "消费者群体", orderNum = "24", width = 15, groupName = "会员标签", fixedIndex = 24)
     private String tag4;
     /**
+     * 会员身份级别
+     */
+    private Integer identitylevel;
+    /**
      * 会员类型
      */
     private String memberType;
@@ -356,4 +360,9 @@ public class QkjvipMemberImportEntity implements Serializable {
      */
     @TableField(exist = false)
     private List<QkjvipMemberOrguserEntity> userlist;
+    /**
+     * 当前登录人是否为主业务员
+     */
+    @TableField(exist = false)
+    private Boolean ismain;
 }

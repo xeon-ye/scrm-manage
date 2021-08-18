@@ -71,6 +71,10 @@ public class MemberEntity implements Serializable {
      */
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date birthday;
+    /**
+     * 会员身份级别
+     */
+    private Integer identitylevel;
     /*
      * 会员类型
      */
@@ -380,6 +384,11 @@ public class MemberEntity implements Serializable {
      */
     @TableField(exist = false)
     private List<QkjvipMemberOrguserEntity> userlist;
+    /**
+     * 当前登录业务员id
+     */
+    @TableField(exist = false)
+    private String currentmemberid;
     /**
      * 孙珊添加活动报名用
      */

@@ -38,6 +38,7 @@ public interface MemberService extends IService<MemberEntity> {
     int selectQkhMemberById(String memberId);
 
     List<MemberEntity> queryAllByMobile(Map<String, Object> params);
+    List<MemberEntity> queryMemberInfo(String mobile);
 
     /**
      * 查询条数

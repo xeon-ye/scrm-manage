@@ -58,6 +58,11 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     }
 
     @Override
+    public List<MemberEntity> queryMemberInfo(String mobile) {
+        return baseMapper.queryMemberInfo(mobile);
+    }
+
+    @Override
     public List<MemberEntity> selectMemberByOpenid(Map<String, Object> params) {
         return baseMapper.selectMemberByOpenid(params);
     }

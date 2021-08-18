@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
+import com.platform.common.utils.StringUtils;
 import com.platform.modules.qkjvip.entity.MemberEntity;
 import com.platform.modules.qkjvip.entity.QkjvipMemberIntegralruleEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberIntegralruleService;
@@ -169,16 +170,18 @@ public class QkjvipContentSharerecordsController extends AbstractController {
             map.put("actiontype", 15);
             map.put("integral", qkjvipMemberIntegralrule.getIntegral());
 
-            String queryJsonStr = JsonHelper.toJsonString(map);
-            String resultPost = HttpClient.sendPost(Vars.CONTENT_SHARE_URL, queryJsonStr);
-            JSONObject resultObject = JSON.parseObject(resultPost);
-            if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
-                System.out.println((contentSharerecordsEntity.getRecordValue() == 1 ? "阅读文章" : "分享文章") + "获得积分成功！");
-                return RestResponse.success();
-            } else {
-                System.out.println((contentSharerecordsEntity.getRecordValue() == 1 ? "阅读文章" : "分享文章") + "获得积分失败！");
-                TransactionAspectSupport.currentTransactionStatus().rollbackToSavepoint(savePoint);
-                return RestResponse.error(resultObject.get("descr").toString());
+            if (qkjvipMemberIntegralrule.getIntegral() != null && qkjvipMemberIntegralrule.getIntegral() > 0) {
+                String queryJsonStr = JsonHelper.toJsonString(map);
+                String resultPost = HttpClient.sendPost(Vars.CONTENT_SHARE_URL, queryJsonStr);
+                JSONObject resultObject = JSON.parseObject(resultPost);
+                if ("200".equals(resultObject.get("resultcode").toString())) {  //调用成功
+                    System.out.println((contentSharerecordsEntity.getRecordValue() == 1 ? "阅读文章" : "分享文章") + "获得积分成功！");
+                    return RestResponse.success();
+                } else {
+                    System.out.println((contentSharerecordsEntity.getRecordValue() == 1 ? "阅读文章" : "分享文章") + "获得积分失败！");
+                    TransactionAspectSupport.currentTransactionStatus().rollbackToSavepoint(savePoint);
+                    return RestResponse.error(resultObject.get("descr").toString());
+                }
             }
         }
 
