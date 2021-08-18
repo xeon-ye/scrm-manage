@@ -11,9 +11,11 @@
  */
 package com.platform.modules.sys.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.Constant;
+import com.platform.common.utils.JedisUtil;
 import com.platform.common.utils.RestResponse;
 import com.platform.common.validator.AbstractAssert;
 import com.platform.common.validator.ValidatorUtils;
@@ -25,12 +27,10 @@ import com.platform.datascope.ContextHelper;
 import com.platform.modules.sys.entity.SysUserEntity;
 import com.platform.modules.sys.entity.SysUserRoleEntity;
 import com.platform.modules.sys.entity.SysUserSuperviseEntity;
+import com.platform.modules.sys.entity.redisEntity;
 import com.platform.modules.sys.form.PasswordForm;
-import com.platform.modules.sys.service.SysUserChannelService;
-import com.platform.modules.sys.service.SysUserRoleService;
-import com.platform.modules.sys.service.SysUserService;
+import com.platform.modules.sys.service.*;
 import com.platform.modules.util.JSONUtil;
-import com.platform.modules.sys.service.SysUserSuperviseService;
 import com.platform.modules.webservices.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -58,6 +58,8 @@ public class SysUserController extends AbstractController {
     private SysUserChannelService sysUserChannelService;
     @Autowired
     private SysUserSuperviseService sysUserSuperviseService;
+    @Autowired
+    SysCacheService sysCacheService;
 
     /**
      * 查看所有列表
@@ -172,6 +174,10 @@ public class SysUserController extends AbstractController {
         user.setCreateUserOrgNo(getOrgNo());
         sysUserService.add(user, params);
 
+        // 更新redis用户列表
+        List userListNew = sysUserService.list(new QueryWrapper<SysUserEntity>().select("USER_ID,REAL_NAME,ORG_NO,status"));
+        saveDictRedis(userListNew);
+
         return RestResponse.success();
     }
 
@@ -193,6 +199,10 @@ public class SysUserController extends AbstractController {
         user.setCreateUserId(getUserId());
         user.setCreateUserOrgNo(getOrgNo());
         sysUserService.update(user, params);
+
+        // 更新redis用户列表
+        List userListNew = sysUserService.list(new QueryWrapper<SysUserEntity>().select("USER_ID,REAL_NAME,ORG_NO,status"));
+        saveDictRedis(userListNew);
 
         return RestResponse.success();
     }
@@ -319,9 +329,20 @@ public class SysUserController extends AbstractController {
             sysUserService.quartzBatchUpdate(sysUsers);
             //修改用户父部门列表
             updateFatherDepts(users);
+
+            // 更新redis用户列表
+            List userListNew = sysUserService.list(new QueryWrapper<SysUserEntity>().select("USER_ID,REAL_NAME,ORG_NO,status"));
+            saveDictRedis(userListNew);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 更新redis
+     */
+    public void saveDictRedis (List list){
+        sysCacheService.saveDictRedis(list,"userList","MTM_CACHE:USERLISTALL:USERS");
     }
 
     public void updateFatherDepts(List<SysUserEntity> users){

@@ -11,17 +11,17 @@
  */
 package com.platform.modules.sys.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
-import com.platform.common.utils.StringUtils;
 import com.platform.modules.cache.CacheFactory;
 import com.platform.modules.cache.SysDBCacheLogic;
 import com.platform.modules.qkjvip.entity.QkjvipMemberDatadepEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberDatadepService;
-import com.platform.modules.sys.dao.SysOrgDao;
 import com.platform.modules.sys.entity.SysOrgEntity;
 import com.platform.modules.sys.entity.SysOrgUpdatelogEntity;
 import com.platform.modules.sys.entity.SysUserEntity;
+import com.platform.modules.sys.service.SysCacheService;
 import com.platform.modules.sys.service.SysOrgService;
 import com.platform.modules.sys.service.SysOrgUpdatelogService;
 import com.platform.modules.util.JSONUtil;
@@ -49,6 +49,8 @@ public class SysOrgController extends AbstractController {
     private SysOrgUpdatelogService sysOrgUpdatelogService;
     @Autowired
     private QkjvipMemberDatadepService qkjvipMemberDatadepService;
+    @Autowired
+    SysCacheService sysCacheService;
 
     /**
      * 查看所有列表
@@ -90,6 +92,9 @@ public class SysOrgController extends AbstractController {
         SysUserEntity user = getUser();
         sysOrg.setCreateUserId(user.getUserId());
         sysOrgService.add(sysOrg);
+        // 更新redis部门列表 where STATUS=1
+        List orgList = sysOrgService.list(new QueryWrapper<SysOrgEntity>().eq("STATUS", 1));
+        saveDictRedis(orgList);
         return RestResponse.success();
     }
 
@@ -104,6 +109,9 @@ public class SysOrgController extends AbstractController {
     @RequiresPermissions("sys:org:update")
     public RestResponse update(@RequestBody SysOrgEntity sysOrg) {
         sysOrgService.update(sysOrg);
+        // 更新redis部门列表 where STATUS=1
+        List orgList = sysOrgService.list(new QueryWrapper<SysOrgEntity>().eq("STATUS", 1));
+        saveDictRedis(orgList);
         return RestResponse.success();
     }
 
@@ -124,6 +132,9 @@ public class SysOrgController extends AbstractController {
         } else {
             sysOrgService.delete(orgNo);
         }
+        // 更新redis部门列表 where STATUS=1
+        List orgList = sysOrgService.list(new QueryWrapper<SysOrgEntity>().eq("STATUS", 1));
+        saveDictRedis(orgList);
         return RestResponse.success();
     }
 
@@ -202,10 +213,21 @@ public class SysOrgController extends AbstractController {
             CacheFactory.CacheFlow("dept");
             //更新部门的父部门 孙珊珊
             updateFatherDepts(depts,fathermdydepts);
+
+            // 更新redis部门列表 where STATUS=1
+            List orgList = sysOrgService.list(new QueryWrapper<SysOrgEntity>().eq("STATUS", 1));
+            saveDictRedis(orgList);
             depts = null;// 置空方便垃圾回收处理
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 更新redis
+     */
+    public void saveDictRedis (List list){
+        sysCacheService.saveDictRedis(list,"orgList","MTM_CACHE:ORGLISTALL:ORGLIST");
     }
 
     public void updateFatherDepts(List<SysOrgEntity> depts,List<SysOrgEntity> fathermdydepts){

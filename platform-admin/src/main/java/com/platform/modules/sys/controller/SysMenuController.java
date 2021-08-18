@@ -100,21 +100,19 @@ public class SysMenuController extends AbstractController {
 
         Map<String, Object> map = new HashMap<>(2);
 
-        List<SysDictEntity> dictList = sysDictService.queryAll(map);
-        List<SysOrgEntity> orgList = orgService.list(new QueryWrapper<SysOrgEntity>().eq("STATUS", 1)); //liuqianru mod
+        //字典
+        redisEntity red = new redisEntity(); red = (redisEntity) jedisUtil.getObject("MTM_CACHE:IMMELISTALL:DICTLIST");
+        List<SysDictEntity> dictList = new ArrayList<>();
+        if (red!=null) dictList = red.getEntityList();
+
+        //部门列表
+        red = new redisEntity (); red = (redisEntity) jedisUtil.getObject("MTM_CACHE:ORGLISTALL:ORGLIST");
+        List<SysOrgEntity> orgList = new ArrayList<>();
+        if (red!=null)  orgList = red.getEntityList(); //sunshanshan mod
+        //userlist
+        red = new redisEntity (); red =  (redisEntity) jedisUtil.getObject("MTM_CACHE:USERLISTALL:USERS");
         List<SysUserEntity> userList = new ArrayList<>();
-        //userlist加入缓存过期时间24小时
-        redisEntity red = (redisEntity) jedisUtil.getObject("MTM_CACHE:USERLISTALL:USERS");
-        if(red!=null&&red.getUserEntityList()!=null&&red.getUserEntityList().size()>0){
-            userList = red.getUserEntityList();
-        } else {
-            List<SysUserEntity> userListNew = userService.list(new QueryWrapper<SysUserEntity>().select("USER_ID,REAL_NAME,ORG_NO,status"));
-            red=new redisEntity();
-            red.setKey("users");
-            red.setUserEntityList(userListNew);
-            jedisUtil.setObject("MTM_CACHE:USERLISTALL:USERS",red,86400);
-            userList=userListNew;
-        }
+        if (red!=null)  userList = red.getEntityList();
 
         List<QkjvipTaglibsEntity> areaList = qkjvipTaglibsService.list(new QueryWrapper<QkjvipTaglibsEntity>().eq("TAG_GROUP_ID", "9af1533bea3d4c89b856ad80e9d0e457")); //liuqianru add
         List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.queryAll(map);  // 所有得渠道

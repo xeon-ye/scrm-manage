@@ -14,6 +14,7 @@ package com.platform.modules.sys.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.platform.common.utils.JedisUtil;
 import com.platform.modules.sys.entity.SysCacheEntity;
+import com.platform.modules.sys.entity.redisEntity;
 import com.platform.modules.sys.service.SysCacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,5 +60,13 @@ public class SysCacheServiceImpl implements SysCacheService {
             jedisUtil.del(key);
         }
         return keys.length;
+    }
+
+    @Override
+    public void saveDictRedis (List list,String keyname,String rediskey){
+        redisEntity red = new redisEntity();
+        red.setKey(keyname);
+        red.setEntityList(list);
+        jedisUtil.setObject(rediskey,red,0);
     }
 }

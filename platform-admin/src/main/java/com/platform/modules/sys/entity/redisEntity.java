@@ -9,5 +9,5 @@ import java.util.List;
 @Data
 public class redisEntity implements Serializable {
     private String key;
-    private List<SysUserEntity> userEntityList;
+    private List entityList;
 }
