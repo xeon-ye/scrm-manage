@@ -360,9 +360,4 @@ public class QkjvipMemberImportEntity implements Serializable {
      */
     @TableField(exist = false)
     private List<QkjvipMemberOrguserEntity> userlist;
-    /**
-     * 当前登录人是否为主业务员
-     */
-    @TableField(exist = false)
-    private Boolean ismain;
 }

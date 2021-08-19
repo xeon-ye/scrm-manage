@@ -348,7 +348,7 @@ public class MemberEntity implements Serializable {
      * 是否为青稞荟的会员
      */
     @TableField(exist = false)
-    private boolean isqkh;
+    private Boolean isqkh;
     /**
      * 标签数组
      */
@@ -389,6 +389,11 @@ public class MemberEntity implements Serializable {
      */
     @TableField(exist = false)
     private String currentmemberid;
+    /**
+     * 是否添加协同业务员
+     */
+    @TableField(exist = false)
+    private Boolean isAddUser;
     /**
      * 孙珊添加活动报名用
      */

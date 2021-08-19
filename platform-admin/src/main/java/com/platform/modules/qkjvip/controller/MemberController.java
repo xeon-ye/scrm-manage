@@ -231,9 +231,9 @@ public class MemberController extends AbstractController {
      * @param memberId 主键
      * @return RestResponse
      */
-    @GetMapping("/deptAndUserInfo/{memberId}")
+    @GetMapping("/otherTabInfo/{memberId}")
     @RequiresPermissions("qkjvip:member:info")
-    public RestResponse deptAndUserInfo(@PathVariable("memberId") String memberId) throws IOException {
+    public RestResponse otherTabInfo(@PathVariable("memberId") String memberId) throws IOException {
         MemberEntity member = new MemberEntity();
         //获取会员标签
         Map<String, Object> params = new HashMap<>();
@@ -242,22 +242,6 @@ public class MemberController extends AbstractController {
         member.setDeptlist(deptlist);
         List<QkjvipMemberOrguserEntity> userlist = qkjvipMemberOrguserService.queryAll(params);
         member.setUserlist(userlist);
-        return RestResponse.success().put("member", member);
-    }
-
-    /**
-     * 根据主键查询详情
-     *
-     * @param memberId 主键
-     * @return RestResponse
-     */
-    @GetMapping("/tagsInfo/{memberId}")
-    @RequiresPermissions("qkjvip:member:info")
-    public RestResponse tagsInfo(@PathVariable("memberId") String memberId) throws IOException {
-        MemberEntity member = new MemberEntity();
-        //获取会员标签
-        Map<String, Object> params = new HashMap<>();
-        params.put("memberId", memberId);
         List<MemberTagsEntity> memberTagsEntities = memberTagsService.queryTagsList(params);
         List<MemberTagsQueryEntity> membertags = new ArrayList<>();
         if (memberTagsEntities.size() > 0) {   //会员打了标签的情况下
@@ -370,12 +354,26 @@ public class MemberController extends AbstractController {
             JSONObject resultObject = JSON.parseObject(resultPost);
             if (!"200".equals(resultObject.get("resultcode").toString())) {  //修改不成功
                 return RestResponse.error(resultObject.get("descr").toString());
+            } else {
+                if (member.getIsAddUser() != null && member.getIsAddUser()) {  // 添加协同业务员
+                    params.clear();
+                    params.put("currentmemberid", getUserId());
+                    params.put("memberid", member.getMemberId());
+                    memberJsonStr = JsonHelper.toJsonString(params);
+                    resultPost = HttpClient.sendPost(Vars.MEMBER_ADDUSER_URL, memberJsonStr);
+                    resultObject = JSON.parseObject(resultPost);
+                    if (!"200".equals(resultObject.get("resultcode").toString())) {  //添加不成功
+                        return RestResponse.error(resultObject.get("descr").toString());
+                    }
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return RestResponse.success().put("member", member);
     }
+
+
 
     /**
      * 删除用户
