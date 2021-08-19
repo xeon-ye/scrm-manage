@@ -57,6 +57,8 @@ public class SysRoleEntity implements Serializable {
 
     private String ordertype;
 
+    private String orglist;
+
     @TableField(exist = false)
     private String[] ordertypes;
 

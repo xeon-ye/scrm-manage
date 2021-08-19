@@ -14,6 +14,7 @@ package com.platform.modules.sys.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.platform.common.annotation.SysLog;
 import com.platform.common.utils.RestResponse;
+import com.platform.common.utils.StringUtils;
 import com.platform.common.validator.ValidatorUtils;
 import com.platform.modules.qkjvip.entity.QkjvipMemberChannelEntity;
 import com.platform.modules.qkjvip.service.QkjvipMemberChannelService;
@@ -126,6 +127,15 @@ public class SysRoleController extends AbstractController {
         role.setOrdertype(ToolsUtil.Array2String(role.getOrdertypes() == null ? new String[] {} : role.getOrdertypes(), ","));
         role.setCreateUserId(getUserId());
         role.setCreateUserOrgNo(getOrgNo());
+        if (role!=null&&role.getOrgNoList()!=null&&role.getOrgNoList().size()>0) {
+            StringBuilder str = new StringBuilder();
+            for (String orgNo : role.getOrgNoList()) {
+                if(StringUtils.isNotBlank(orgNo)){
+                    str.append(orgNo + ",");
+                }
+            }
+            role.setOrglist(str+"");//冗余字段：记录人员角色对应的部门权限
+        }
         sysRoleService.add(role);
 
         return RestResponse.success();
@@ -143,7 +153,15 @@ public class SysRoleController extends AbstractController {
     public RestResponse update(@RequestBody SysRoleEntity role) {
         ValidatorUtils.validateEntity(role);
         role.setOrdertype(ToolsUtil.Array2String(role.getOrdertypes() == null ? new String[] {} : role.getOrdertypes(), ","));
-
+        if (role!=null&&role.getOrgNoList()!=null&&role.getOrgNoList().size()>0) {
+            StringBuilder str = new StringBuilder();
+            for (String orgNo : role.getOrgNoList()) {
+               if(StringUtils.isNotBlank(orgNo)){
+                   str.append(orgNo + ",");
+               }
+            }
+            role.setOrglist(str+"");//冗余字段：记录人员角色对应的部门权限
+        }
         role.setCreateUserId(getUserId());
         role.setCreateUserOrgNo(getOrgNo());
         sysRoleService.update(role);

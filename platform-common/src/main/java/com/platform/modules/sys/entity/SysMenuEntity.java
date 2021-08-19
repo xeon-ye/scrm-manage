@@ -92,4 +92,10 @@ public class SysMenuEntity implements Serializable {
 
     @TableField(exist = false)
     private String userId;
+    @TableField(exist = false)
+    private String ordertype;
+    @TableField(exist = false)
+    private String orglist;
+    @TableField(exist = false)
+    private Integer orgnoselect;
 }

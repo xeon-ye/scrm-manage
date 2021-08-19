@@ -131,6 +131,43 @@ public class ContextHelper extends AbstractController {
 		return depts;
 	}
 
+
+	/**
+	 * 为nav方法提供返回部门list
+	 * @param
+	 */
+	public static Set<String> setSearchDeptPermit4Search(Integer noselectdept, String roledepts, String dept) {
+		Set<String> depts = new HashSet<>();
+		if(roledepts!=null&&roledepts.length()>0){
+			String str = (String) CacheFactory.getCacheInstance().get(SysDBCacheLogic.CACHE_DEPT_PREFIX_SUB + dept);
+			String[] s = (String[]) JSONUtil.toObject(str, String[].class);// 转换成数组
+			String[] roledeptsstr = roledepts.split(",");
+			for(String d:roledeptsstr){
+				if(d!=null&&!d.equals("")){
+					if(noselectdept.equals("1")){//只有本部门权
+						depts.add(dept);
+					}else if(noselectdept.equals("2")){ //本部门权及子部门
+						if(s!=null&&s.length>0){
+							for(int i=0;i<s.length;i++){
+								depts.add(s[i]);
+							}
+						}
+						depts.add(dept);
+					}else if(noselectdept.equals("3")){ //仅子部门
+						if(s!=null&&s.length>0){
+							for(int i=0;i<s.length;i++){
+								depts.add(s[i]);
+							}
+						}
+					}else{
+						depts.add(d);
+					}
+				}
+			}
+		}
+		return depts;
+	}
+
 	public static Set<String> setSearchPermitDept(List<SysUserRoleEntity> roles, String dept, List<SysUserSuperviseEntity> deptlist) {
 		Set<String> depts = new HashSet<>();
 		if(roles != null && roles.size() > 0) {
@@ -214,6 +251,17 @@ public class ContextHelper extends AbstractController {
 		sros = sysRoleOrgServicestatic.queryOrgNoIsselect(m);
 		Set<String> orgs = new HashSet<>();
 		orgs = setSearchDeptPermit4Search(sros, dept);
+		return orgs;
+	}
+
+	/**
+	 * 最新权限取部门方法（缓存）
+	 * @param
+	 * @return
+	 */
+	public static Set<String> setSearchDepts(Integer noselectdept, String roledepts,String dept) {
+		Set<String> orgs = new HashSet<>();
+		orgs = setSearchDeptPermit4Search(noselectdept, roledepts,dept);
 		return orgs;
 	}
 

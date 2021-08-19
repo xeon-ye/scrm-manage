@@ -107,50 +107,48 @@ public class SysMenuController extends AbstractController {
         //用户权限列表
         Set<String> permissions = new HashSet<>();
         List<String> permsList = new ArrayList<>();
+        Map<String, Object> orgMaps = new HashMap<>();
         for (SysMenuEntity sme:roleuserList) {
             if (username!=null&&username.contains("admin")) { //管理员
                 permsList.add(sme.getPerms());
             } else {
                 if(sme.getUserId()!=null&&sme.getUserId().equals(userId)){
                     permsList.add(sme.getPerms());
+                    orgMaps.put(sme.getPerms(),sme.getOrgnoselect()+";" + sme.getOrglist());
                 }
+
             }
         }
         for (String perms : permsList) {
             if (StringUtils.isBlank(perms)) {
                 continue;
             }
-            permissions.addAll(Arrays.asList(perms.trim().split(",")));
+            String [] perstr=perms.trim().split(",");
+            permissions.addAll(Arrays.asList(perstr));
+            if (username!=null&&!username.contains("admin")&&!perms.contains(":info")&&!perms.contains(":list")) { //非管理员 查询 权限对应部门
+                String pstr = (String) orgMaps.get(perms);
+                Set<String> permsSet = new HashSet<>();
+                permsSet.add(perms+userId);
+                String[] pstrmap = pstr.split(";");
+                //菜单部门
+                if (pstrmap.length>0) {
+                    Set<String> orgNos = new HashSet<>();
+                    Integer noselectdept= Integer.parseInt(pstrmap[0]);
+                    orgNos = ContextHelper.setSearchDepts(noselectdept,pstrmap[1],getOrgNo());
+                    String orgs = "";
+                    if (!orgNos.isEmpty()) {
+                        orgs = StringUtils.join(orgNos.toArray(), ",");
+                    }
+                    permsSet.add(perms+orgs+";");
+                }
+                permissions.addAll(permsSet);
+            }
         }
         long end2=System.currentTimeMillis();
         logger.info("the redis get time "+(end2-start1));
 
         long start2=System.currentTimeMillis();
         List<SysMenuEntity> menuList = sysMenuService.getUserMenuList(getUserId());
-        //permissions = shiroService.getUserPermissions(getUserId());
-
-        // sunshanshan
-
-        if (!Constant.SUPER_ADMIN.equals(userId) && !Constant.SUPER_ADMIN2.equals(userId) && !Constant.SUPER_ADMIN3.equals(userId)) {
-            Set<String> permsSet = new HashSet<>();
-            Iterator<String> it = permissions.iterator();
-            while (it.hasNext()) {
-                String str = it.next();
-                if(str!=null&&!str.contains(":info")&&!str.contains(":list")){
-                    permsSet.add(str+userId);
-                    //菜单部门
-                    Set<String> orgNos = new HashSet<>();
-                    orgNos = ContextHelper.setSearchDepts(str,getUserId(),getOrgNo());
-                    String orgs = "";
-                    if (!orgNos.isEmpty()) {
-                        orgs = StringUtils.join(orgNos.toArray(), ",");
-                    }
-                    permsSet.add(str+orgs+";");
-                }
-            }
-            permissions.addAll(permsSet);
-        }
-
         List<QkjvipTaglibsEntity> areaList = qkjvipTaglibsService.list(new QueryWrapper<QkjvipTaglibsEntity>().eq("TAG_GROUP_ID", "9af1533bea3d4c89b856ad80e9d0e457")); //liuqianru add
         List<QkjvipMemberChannelEntity> channelList = qkjvipMemberChannelService.queryAll(map);  // 所有得渠道
         List<QkjvipOptionsEntity> appChannels = qkjvipMemberMessageService.queryChannels();
@@ -163,9 +161,9 @@ public class SysMenuController extends AbstractController {
             map.put("queryPermission", "all");
         }
         List<SysUserChannelEntity> permissionChannels = sysUserChannelService.queryPermissionChannels(map);  // 有权限的渠道
-
         long end22=System.currentTimeMillis();
         logger.info("the selectsql get time "+(end22-start2));
+
         return RestResponse.success()
                 .put("menuList", menuList)
                 .put("permissions", permissions)
