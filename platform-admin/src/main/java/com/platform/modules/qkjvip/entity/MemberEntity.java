@@ -321,6 +321,8 @@ public class MemberEntity implements Serializable {
      */
     @TableField(exist = false)
     private String orgUsername;
+    @TableField(exist = false)
+    private Boolean isclient;
 
     /**
      * 最后一次参加活动日期

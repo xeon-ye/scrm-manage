@@ -194,6 +194,7 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
         member.setMemberId(qkjvipMemberSignupmember.getMemberId());
         member.setMemberName(qkjvipMemberSignupmember.getUserName());
         member.setSex(qkjvipMemberSignupmember.getSex());
+        member.setIsclient(true);
         //是否已签到
         params.clear();
         params.put("memberId",member.getMemberId());
@@ -264,6 +265,7 @@ public class QkjvipMemberSignupmemberController extends AbstractController {
     @Async
     public  void updateMember (QkjvipMemberSignupmemberEntity qkjvipMemberSignupmember,MemberEntity member) {
         if(qkjvipMemberSignupmember!=null&&qkjvipMemberSignupmember.getIsphone()!=null&&qkjvipMemberSignupmember.getIsphone()==1){
+
             Object obj = JSONArray.toJSON(member);
             String memberJsonStr = JsonHelper.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
             String resultPost = null;
