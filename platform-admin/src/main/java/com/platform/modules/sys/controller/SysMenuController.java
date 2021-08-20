@@ -125,24 +125,6 @@ public class SysMenuController extends AbstractController {
             }
             String [] perstr=perms.trim().split(",");
             permissions.addAll(Arrays.asList(perstr));
-            if (username!=null&&!username.contains("admin")&&!perms.contains(":info")&&!perms.contains(":list")) { //非管理员 查询 权限对应部门
-                String pstr = (String) orgMaps.get(perms);
-                Set<String> permsSet = new HashSet<>();
-                permsSet.add(perms+userId);
-                String[] pstrmap = pstr.split(";");
-                //菜单部门
-                if (pstrmap.length>0) {
-                    Set<String> orgNos = new HashSet<>();
-                    Integer noselectdept= Integer.parseInt(pstrmap[0]);
-                    orgNos = ContextHelper.setSearchDepts(noselectdept,pstrmap[1],getOrgNo());
-                    String orgs = "";
-                    if (!orgNos.isEmpty()) {
-                        orgs = StringUtils.join(orgNos.toArray(), ",");
-                    }
-                    permsSet.add(perms+orgs+";");
-                }
-                permissions.addAll(permsSet);
-            }
         }
         long end2=System.currentTimeMillis();
         logger.info("the redis get time "+(end2-start1));
@@ -353,4 +335,25 @@ public class SysMenuController extends AbstractController {
             }
         }
     }
+
+
+
+//            if (username!=null&&!username.contains("admin")&&!perms.contains(":info")&&!perms.contains(":list")) { //非管理员 查询 权限对应部门
+//        String pstr = (String) orgMaps.get(perms);
+//        Set<String> permsSet = new HashSet<>();
+//        permsSet.add(perms+userId);
+//        String[] pstrmap = pstr.split(";");
+//        //菜单部门
+//        if (pstrmap.length>0) {
+//            Set<String> orgNos = new HashSet<>();
+//            Integer noselectdept= Integer.parseInt(pstrmap[0]);
+//            orgNos = ContextHelper.setSearchDepts(noselectdept,pstrmap[1],getOrgNo());
+//            String orgs = "";
+//            if (!orgNos.isEmpty()) {
+//                orgs = StringUtils.join(orgNos.toArray(), ",");
+//            }
+//            permsSet.add(perms+orgs+";");
+//        }
+//        permissions.addAll(permsSet);
+//    }
 }
