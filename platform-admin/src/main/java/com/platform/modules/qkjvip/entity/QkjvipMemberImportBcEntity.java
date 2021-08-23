@@ -347,6 +347,11 @@ public class QkjvipMemberImportBcEntity implements Serializable {
      */
     private String memberlayer;
     /**
+     * 圈层
+     */
+    @TableField(exist = false)
+    private String listmemberlayer;
+    /**
      * 标签数组
      */
     @TableField(exist = false)

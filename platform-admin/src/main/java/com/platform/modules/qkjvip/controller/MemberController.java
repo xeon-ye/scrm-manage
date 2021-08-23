@@ -570,7 +570,7 @@ public class MemberController extends AbstractController {
                         boolean ishave = false;
                         for (SysDictEntity dict : dictList) {
                             if ("MEMBERLAYER".equals(dict.getCode()) && list.get(i).getMemberlayername().equals(dict.getName())) {
-                                list.get(i).setMemberlayer(dict.getValue());
+                                list.get(i).setListmemberlayer(dict.getValue());
                                 ishave = true;
                                 break;
                             }
@@ -852,7 +852,7 @@ public class MemberController extends AbstractController {
                         boolean ishave = false;
                         for (SysDictEntity dict : dictList) {
                             if ("MEMBERLAYER".equals(dict.getCode()) && list.get(i).getMemberlayername().equals(dict.getName())) {
-                                list.get(i).setMemberlayer(dict.getValue());
+                                list.get(i).setListmemberlayer(dict.getValue());
                                 ishave = true;
                                 break;
                             }
