@@ -121,6 +121,7 @@ public class QkjvipMemberSignupController extends AbstractController {
             member.setMemberId(qkjvipMemberSignup.getMemberid());
             member.setSex(qkjvipMemberSignup.getSex());
             member.setMemberName(qkjvipMemberSignup.getUserName());
+            member.setIsclient(true);
             try {
                 if(qkjvipMemberSignup!=null){
                     Boolean isqxflag = false;//是否清洗
