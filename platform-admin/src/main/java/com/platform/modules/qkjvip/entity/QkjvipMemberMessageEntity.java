@@ -102,4 +102,7 @@ public class QkjvipMemberMessageEntity implements Serializable {
 
     @TableField(exist = false)
     private List<String> appidList;
+
+    @TableField(exist = false)
+    private Integer sureLayer;
 }

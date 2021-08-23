@@ -43,5 +43,10 @@
         inner join qkjvip_member m1 WITH(NOLOCK) on c.member_id=m1.member_id
         left join  qkjvip_member m2 WITH(NOLOCK) on m1.memberidto=m2.member_id
         where c.MAIN_ID = #{value}
+        <if test="params.sureLayer != null and params.sureLayer != 0">
+            AND ((ISNULL(m2.MemberLayer, 'null') = 'null' or m2.MemberLayer='')
+            or (ISNULL(m1.memberidto,'null') = 'null' and (ISNULL(m1.MemberLayer, 'null') = 'null' or m1.MemberLayer=''))
+            )
+        </if>
     </select>
 </mapper>
