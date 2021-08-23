@@ -315,6 +315,14 @@ public class MemberEntity implements Serializable {
      * 会员等级有效期
      */
     private String validendtime;
+    /**
+     * 消费者群体
+     */
+    private String membergroup;
+    /**
+     * 圈层
+     */
+    private String memberlayer;
 
     /**
      * 所属人姓名
@@ -366,11 +374,6 @@ public class MemberEntity implements Serializable {
      */
     @TableField(exist = false)
     private String addTimeFormat;
-    /**
-     * 消费者群体
-     */
-    @TableField(exist = false)
-    private String membergroup;
     /**
      * 圈层
      */

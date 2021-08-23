@@ -166,6 +166,7 @@ public class SysMenuController extends AbstractController {
         Map<String, Object> map = new HashMap<>();
         List list = new ArrayList();
         if (type == 1){
+            map.put("status", 1);
             list = sysDictService.queryAll(map);
             sysCacheService.saveDictRedis(list,"dictList","MTM_CACHE:IMMELISTALL:DICTLIST");
         };

@@ -97,4 +97,7 @@ public class MemberQueryEntity implements Serializable {
     private Integer pagesize;
     private Integer queryall;  // 0:分页 1：不分页
     private Boolean isconsultant;  // 是否检索的是品牌顾问
+    private String membergroup;  // 消费者群体
+    private String listmemberlayer;  // 圈层
+    private String identitylevel;  // 身份等级
 }
