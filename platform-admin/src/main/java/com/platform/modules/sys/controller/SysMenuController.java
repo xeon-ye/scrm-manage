@@ -248,7 +248,14 @@ public class SysMenuController extends AbstractController {
 
         sysMenuService.add(menu);
 
+        //更新rold列表
+        List rolesusers = sysMenuService.queryListRedis();
+        saveDictRedis(rolesusers,"userRoleList","MTM_CACHE:IMMELISTALL:USERROLELIST");
         return RestResponse.success();
+    }
+
+    public void saveDictRedis (List list,String keyname, String key){
+        sysCacheService.saveDictRedis(list,keyname,key);
     }
 
     /**
@@ -266,6 +273,10 @@ public class SysMenuController extends AbstractController {
         verifyForm(menu);
 
         sysMenuService.updateById(menu);
+
+        //更新rold列表
+        List rolesusers = sysMenuService.queryListRedis();
+        saveDictRedis(rolesusers,"userRoleList","MTM_CACHE:IMMELISTALL:USERROLELIST");
 
         return RestResponse.success();
     }
