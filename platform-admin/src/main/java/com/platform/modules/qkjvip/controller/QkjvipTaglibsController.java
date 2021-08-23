@@ -47,7 +47,7 @@ public class QkjvipTaglibsController extends AbstractController {
      * @return RestResponse
      */
     @RequestMapping("/queryAll")
-    @RequiresPermissions("qkjvip:taglibs:list")
+//    @RequiresPermissions("qkjvip:taglibs:list")
     public RestResponse queryAll(@RequestParam Map<String, Object> params) {
         List<QkjvipTaglibsEntity> list = qkjvipTaglibsService.queryAll(params);
 

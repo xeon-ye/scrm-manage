@@ -83,7 +83,7 @@ public class SysDictController {
      * @return RestResponse
      */
     @RequestMapping("/info/{id}")
-    @RequiresPermissions("sys:dict:info")
+//    @RequiresPermissions("sys:dict:info")
     public RestResponse info(@PathVariable("id") String id) {
         SysDictEntity sysDict = sysDictService.getById(id);
 
